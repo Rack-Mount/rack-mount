@@ -12,8 +12,11 @@
 export interface DataCenterLocation { 
     readonly id?: number;
     name: string;
+    short_name: string;
     location: string;
     capacity: number;
-    operational_since: string;
+    readonly operational_since?: string;
+    manager?: string;
+    manager_mail?: string | null;
 }
 
