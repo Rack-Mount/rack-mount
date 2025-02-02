@@ -17,7 +17,7 @@ Including another URLconf
 from .permissions import AccessListPermission
 from django.conf.urls.static import static
 from django.conf import settings
-# from Blog import urls as blog_urls
+# from dc import urls as dc_urls
 from rest_framework import permissions
 from rest_framework.schemas import get_schema_view
 from django.urls import path, include
@@ -29,11 +29,11 @@ urlpatterns = [
 ]
 
 schema_url_patterns = [
-    # path('blog/', include(blog_urls.urlpatterns)),
+    # path('datacenter/', include(dc_urls.urlpatterns)),
 ]
 
 urlpatterns = [
-    # path("blog/", include(blog_urls.urlpatterns)),
+    # path("datacenter/", include(dc_urls.urlpatterns)),
     path('admin/', admin.site.urls),
     path('', get_schema_view(
          title="Datacenter API",
