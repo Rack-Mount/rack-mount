@@ -3,3 +3,5 @@ venv
 __pycache__
 *.pyc
 settings.py
+datacenter-ui/src/environments/environment.development.ts
+datacenter-ui/src/environments/environment.ts
