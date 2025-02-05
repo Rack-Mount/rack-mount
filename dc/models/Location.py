@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class DataCenterLocation(models.Model):
+class Location(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     short_name = models.CharField(
         max_length=15, blank=False, null=False, unique=True

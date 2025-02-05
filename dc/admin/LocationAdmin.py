@@ -1,9 +1,11 @@
 from django.contrib import admin
-from .models import DataCenterLocation
+
+from dc.admin import LocationCustomFieldInline
+from dc.models import Location
 
 
-@admin.register(DataCenterLocation)
-class DataCenterLocationAdmin(admin.ModelAdmin):
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
     save_on_top = True
     fields = [
         ('name', 'short_name'),
@@ -22,3 +24,4 @@ class DataCenterLocationAdmin(admin.ModelAdmin):
     )
     search_fields = ['name', 'location']
     readonly_fields = ['operational_since']
+    inlines = [LocationCustomFieldInline]

@@ -1,0 +1,2 @@
+from .LocationCustomFieldAdmin import LocationCustomFieldAdmin, LocationCustomFieldInline
+from .LocationAdmin import LocationAdmin
