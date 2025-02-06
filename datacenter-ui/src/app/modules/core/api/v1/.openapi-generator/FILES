@@ -8,7 +8,11 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
-model/dataCenterLocation.ts
+model/listLocationCustomFields200Response.ts
+model/listLocations200Response.ts
+model/location.ts
+model/locationCustomField.ts
+model/locationCustomFieldsInner.ts
 model/models.ts
 param.ts
 variables.ts

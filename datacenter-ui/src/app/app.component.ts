@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
   constructor(private readonly datacenterService: DatacenterService) {}
 
   ngOnInit() {
-    this.datacenterService.listDataCenterLocations().subscribe((data) => {
+    this.datacenterService.listLocations().subscribe((data) => {
       console.log(data);
     });
   }

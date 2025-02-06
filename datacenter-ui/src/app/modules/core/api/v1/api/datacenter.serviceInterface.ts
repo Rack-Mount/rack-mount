@@ -11,32 +11,67 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { DataCenterLocation } from '../model/models';
+import { ListLocationCustomFields200Response } from '../model/models';
+import { ListLocations200Response } from '../model/models';
+import { Location } from '../model/models';
+import { LocationCustomField } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
 
 
-export interface CreateDataCenterLocationRequestParams {
-    dataCenterLocation?: DataCenterLocation;
+export interface CreateLocationRequestParams {
+    location?: Location;
 }
 
-export interface DestroyDataCenterLocationRequestParams {
+export interface CreateLocationCustomFieldRequestParams {
+    locationCustomField?: LocationCustomField;
+}
+
+export interface DestroyLocationRequestParams {
     id: string;
 }
 
-export interface PartialUpdateDataCenterLocationRequestParams {
-    id: string;
-    dataCenterLocation?: DataCenterLocation;
-}
-
-export interface RetrieveDataCenterLocationRequestParams {
+export interface DestroyLocationCustomFieldRequestParams {
     id: string;
 }
 
-export interface UpdateDataCenterLocationRequestParams {
+export interface ListLocationCustomFieldsRequestParams {
+    limit?: number;
+    offset?: number;
+}
+
+export interface ListLocationsRequestParams {
+    limit?: number;
+    offset?: number;
+}
+
+export interface PartialUpdateLocationRequestParams {
     id: string;
-    dataCenterLocation?: DataCenterLocation;
+    location?: Location;
+}
+
+export interface PartialUpdateLocationCustomFieldRequestParams {
+    id: string;
+    locationCustomField?: LocationCustomField;
+}
+
+export interface RetrieveLocationRequestParams {
+    id: string;
+}
+
+export interface RetrieveLocationCustomFieldRequestParams {
+    id: string;
+}
+
+export interface UpdateLocationRequestParams {
+    id: string;
+    location?: Location;
+}
+
+export interface UpdateLocationCustomFieldRequestParams {
+    id: string;
+    locationCustomField?: LocationCustomField;
 }
 
 
@@ -49,40 +84,83 @@ export interface DatacenterServiceInterface {
      * 
 * @param requestParameters
      */
-    createDataCenterLocation(requestParameters: CreateDataCenterLocationRequestParams, extraHttpRequestParams?: any): Observable<DataCenterLocation>;
+    createLocation(requestParameters: CreateLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    destroyDataCenterLocation(requestParameters: DestroyDataCenterLocationRequestParams, extraHttpRequestParams?: any): Observable<{}>;
-
-    /**
-     * 
-     * 
-*/
-    listDataCenterLocations(extraHttpRequestParams?: any): Observable<Array<DataCenterLocation>>;
+    createLocationCustomField(requestParameters: CreateLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    partialUpdateDataCenterLocation(requestParameters: PartialUpdateDataCenterLocationRequestParams, extraHttpRequestParams?: any): Observable<DataCenterLocation>;
+    destroyLocation(requestParameters: DestroyLocationRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    retrieveDataCenterLocation(requestParameters: RetrieveDataCenterLocationRequestParams, extraHttpRequestParams?: any): Observable<DataCenterLocation>;
+    destroyLocationCustomField(requestParameters: DestroyLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
      * 
 * @param requestParameters
      */
-    updateDataCenterLocation(requestParameters: UpdateDataCenterLocationRequestParams, extraHttpRequestParams?: any): Observable<DataCenterLocation>;
+    listLocationCustomFields(requestParameters: ListLocationCustomFieldsRequestParams, extraHttpRequestParams?: any): Observable<ListLocationCustomFields200Response>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    listLocations(requestParameters: ListLocationsRequestParams, extraHttpRequestParams?: any): Observable<ListLocations200Response>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    partialUpdateLocation(requestParameters: PartialUpdateLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    partialUpdateLocationCustomField(requestParameters: PartialUpdateLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    retrieveLocation(requestParameters: RetrieveLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    retrieveLocationCustomField(requestParameters: RetrieveLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    updateLocation(requestParameters: UpdateLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    updateLocationCustomField(requestParameters: UpdateLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
 }
