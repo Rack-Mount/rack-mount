@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from dc.models import Location
-from dc.serializers import LocationCustomFieldSerializer
+from datacenter.models import Location
+from datacenter.serializers import LocationCustomFieldSerializer
 
 
 class LocationSerializer(serializers.HyperlinkedModelSerializer):

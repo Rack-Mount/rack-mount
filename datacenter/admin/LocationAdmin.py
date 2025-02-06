@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from dc.admin import LocationCustomFieldInline
-from dc.models import Location
+from datacenter.admin import LocationCustomFieldInline
+from datacenter.models import Location
 
 
 @admin.register(Location)

@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework import permissions
-from dc.models import Location
-from dc.serializers import LocationSerializer
+from datacenter.models import Location
+from datacenter.serializers import LocationSerializer
 
 
 class LocationViewSet(viewsets.ModelViewSet):

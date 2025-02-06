@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework import permissions
-from dc.models import LocationCustomField
-from dc.serializers import LocationCustomFieldSerializer
+from datacenter.models import LocationCustomField
+from datacenter.serializers import LocationCustomFieldSerializer
 
 
 class LocationCustomFieldViewSet(viewsets.ModelViewSet):
