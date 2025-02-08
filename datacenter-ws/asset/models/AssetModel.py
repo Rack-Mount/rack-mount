@@ -17,3 +17,6 @@ class AssetModel(models.Model):
 
     def __str__(self):
         return f"{self.vendor} - {self.name} - {self.type}"
+
+    class Meta:
+        unique_together = ('name', 'vendor', 'type')

@@ -12,3 +12,6 @@ class AssetCustomField(models.Model):
 
     def __str__(self):
         return f"{self.field_name}: {self.field_value}"
+
+    class Meta:
+        unique_together = ('asset', 'field_name')

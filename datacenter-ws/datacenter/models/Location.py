@@ -16,3 +16,8 @@ class Location(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Location'
+        verbose_name_plural = 'Locations'

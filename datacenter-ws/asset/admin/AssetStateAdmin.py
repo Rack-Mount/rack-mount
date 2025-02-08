@@ -6,10 +6,8 @@ from asset.models import AssetState
 class AssetStateAdmin(admin.ModelAdmin):
     save_on_top = True
 
-    list_display = ('name', 'description',
-                    'created_at', 'updated_at')
+    list_display = ('name', 'description',)
     search_fields = ('name', 'description')
-    list_filter = ('created_at', 'updated_at')
     ordering = ('name',)
 
     def has_delete_permission(self, request, obj=None):
