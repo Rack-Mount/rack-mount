@@ -1,6 +1,6 @@
 from django.db import models
 from datacenter.models import Location
-from asset.models import AssetModel
+from asset.models import AssetModel, AssetState
 import reversion
 
 
@@ -15,7 +15,7 @@ class Asset(models.Model):
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name='assets')
     state = models.ForeignKey(
-        'AssetState', on_delete=models.CASCADE, related_name='assets')
+        AssetState, on_delete=models.CASCADE, related_name='assets')
     power_supplies = models.PositiveIntegerField(default=1, null=False)
     power_cosumption_watt = models.PositiveIntegerField(default=0, null=False)
     note = models.TextField(blank=True)
