@@ -19,9 +19,3 @@ class AssetAdmin(VersionAdmin):
     def has_delete_permission(self, request, obj=None):
         # Disable delete
         return False
-
-    # def get_form(self, request, obj=None, **kwargs):
-    #     form = super(AssetAdmin, self).get_form(request, obj, **kwargs)
-    #     form.base_fields['model'].queryset = AssetModel.objects.filter(
-    #         name__iexact='company')
-    #     return form
