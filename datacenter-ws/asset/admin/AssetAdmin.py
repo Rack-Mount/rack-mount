@@ -1,14 +1,16 @@
 from django.contrib import admin
 from asset.models import Asset
 from asset.admin import AssetCustomFieldInline
+from reversion.admin import VersionAdmin
 
 
 @admin.register(Asset)
-class AssetAdmin(admin.ModelAdmin):
-    list_display = ('hostname', 'asset_type', 'model', 'vendor',
+class AssetAdmin(VersionAdmin):
+    save_on_top = True
+    list_display = ('hostname', 'type', 'model', 'vendor',
                     'rack_units', 'location', 'state', 'purchase_date')
-    search_fields = ('hostname', 'asset_type')
-    list_filter = ('asset_type',)
+    search_fields = ('hostname', 'type__name', 'model',)
+    list_filter = ('type',)
     ordering = ('-purchase_date',)
     inlines = [AssetCustomFieldInline]
 

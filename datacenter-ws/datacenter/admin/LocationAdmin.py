@@ -1,11 +1,12 @@
 from django.contrib import admin
+from reversion.admin import VersionAdmin
 
 from datacenter.admin import LocationCustomFieldInline
 from datacenter.models import Location
 
 
 @admin.register(Location)
-class LocationAdmin(admin.ModelAdmin):
+class LocationAdmin(VersionAdmin):
     save_on_top = True
     fields = [
         ('name', 'short_name'),

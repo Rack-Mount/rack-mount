@@ -1,13 +1,15 @@
 from django.db import models
 from datacenter.models import Location
+import reversion
 
 
+@reversion.register()
 class Asset(models.Model):
     hostname = models.CharField(max_length=100, default='', null=False)
     vendor = models.ForeignKey(
         'Vendor', on_delete=models.CASCADE, related_name='assets')
     model = models.CharField(max_length=100, default='', null=False)
-    asset_type = models.ForeignKey(
+    type = models.ForeignKey(
         'AssetType', on_delete=models.CASCADE, related_name='assets')
     serial_number = models.CharField(null=False, max_length=50, default='')
     sap_id = models.CharField(blank=True, max_length=50)

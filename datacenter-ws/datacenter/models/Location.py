@@ -1,6 +1,8 @@
 from django.db import models
+import reversion
 
 
+@reversion.register()
 class Location(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     short_name = models.CharField(
