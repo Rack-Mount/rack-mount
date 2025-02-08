@@ -5,3 +5,4 @@ __pycache__
 settings.py
 datacenter-ui/src/environments/environment.development.ts
 datacenter-ui/src/environments/environment.ts
+datacenter-ws/files

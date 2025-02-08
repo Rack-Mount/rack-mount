@@ -1,7 +1,8 @@
 from django.contrib import admin
-from asset.models import Asset
+from asset.models import Asset, AssetState
 from asset.admin import AssetCustomFieldInline
 from reversion.admin import VersionAdmin
+from django import forms
 
 
 @admin.register(Asset)
@@ -16,9 +17,16 @@ class AssetAdmin(VersionAdmin):
     list_filter = ('model__type__name', 'model__vendor',
                    'location__name', 'state')
     ordering = ('hostname',)
+    readonly_fields = ['front_image_preview', 'rear_image_preview']
+
     inlines = [AssetCustomFieldInline]
     autocomplete_fields = ['model', 'location']
 
     def has_delete_permission(self, request, obj=None):
         # Disable delete
         return True
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(AssetAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['state'].initial = AssetState.objects.get(name='New')
+        return form

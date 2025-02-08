@@ -2,6 +2,8 @@ from django.db import models
 from datacenter.models import Location
 from asset.models import AssetModel, AssetState
 import reversion
+from django.utils.html import mark_safe
+from django.conf import settings
 
 
 @reversion.register()
@@ -16,7 +18,7 @@ class Asset(models.Model):
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name='assets')
     state = models.ForeignKey(
-        AssetState, on_delete=models.CASCADE, related_name='assets', default=(AssetState.objects.get(name='New')))
+        AssetState, on_delete=models.CASCADE, related_name='assets')
     decommissioned_date = models.DateField(null=True, blank=True)
     warranty_expiration = models.DateField(null=True, blank=True)
     support_expiration = models.DateField(null=True, blank=True)
@@ -25,6 +27,12 @@ class Asset(models.Model):
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def front_image_preview(self):
+        return mark_safe('<img src="/%s/%s" width="300" />' % (settings.MEDIA_ROOT, self.model.front_image)) if self.model.front_image else ''
+
+    def rear_image_preview(self):
+        return mark_safe('<img src="/%s/%s" width="300" />' % (settings.MEDIA_ROOT, self.model.rear_image)) if self.model.rear_image else ''
 
     def __str__(self):
         return f"{self.hostname} - {self.model.vendor} - {self.model.name}"
