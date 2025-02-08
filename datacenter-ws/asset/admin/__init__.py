@@ -1,3 +1,4 @@
+from .FieldAdmin import FieldAdmin
 from .AssetStateAdmin import AssetStateAdmin
 from .VendorAdmin import VendorAdmin
 from .AssetTypeAdmin import AssetTypeAdmin

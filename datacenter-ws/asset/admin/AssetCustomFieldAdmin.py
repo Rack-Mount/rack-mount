@@ -14,10 +14,11 @@ class AssetCustomFieldInline(admin.TabularInline):
 class AssetCustomFieldAdmin(admin.ModelAdmin):
     save_on_top = True
     fields = [
-        ('field_name', 'field_value'),
+        ('asset'), ('field_name', 'field_value'),
     ]
 
     list_display = (
+        'asset',
         'field_name',
         'field_value'
     )

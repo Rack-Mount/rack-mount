@@ -1,3 +1,4 @@
+from .Field import Field
 from .Vendor import Vendor
 from .AssetState import AssetState
 from .AssetType import AssetType

@@ -12,7 +12,7 @@ class AssetAdmin(VersionAdmin):
                     'model__rack_units', 'location', 'state', 'purchase_date')
     search_fields = ('hostname', 'model__type__name', 'model',)
     list_filter = ('model__type__name',)
-    ordering = ('-purchase_date',)
+    ordering = ('hostname',)
     inlines = [AssetCustomFieldInline]
     autocomplete_fields = ['model', 'location']
 
