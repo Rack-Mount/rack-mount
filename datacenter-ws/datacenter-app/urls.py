@@ -18,6 +18,7 @@ from .permissions import AccessListPermission
 from django.conf.urls.static import static
 from django.conf import settings
 from datacenter import urls as dc_urls
+from asset import urls as asset_urls
 from rest_framework import permissions
 from rest_framework.schemas import get_schema_view
 from django.urls import path, include
@@ -30,10 +31,12 @@ urlpatterns = [
 
 schema_url_patterns = [
     path('datacenter/', include(dc_urls.urlpatterns)),
+    path('asset/', include(asset_urls.urlpatterns)),
 ]
 
 urlpatterns = [
     path("datacenter/", include(dc_urls.urlpatterns)),
+    path("asset/", include(asset_urls.urlpatterns)),
     path('admin/', admin.site.urls),
     path('', get_schema_view(
          title="Datacenter API",
