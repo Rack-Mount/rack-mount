@@ -25,3 +25,10 @@ class LocationAdmin(admin.ModelAdmin):
     search_fields = ['name', 'location']
     readonly_fields = ['operational_since']
     inlines = [LocationCustomFieldInline]
+
+    def has_delete_permission(self, request, obj=None):
+        # Disable delete
+        return False
+
+    def has_change_permission(self, request, obj=...):
+        return False
