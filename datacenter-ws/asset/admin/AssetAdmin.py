@@ -8,6 +8,8 @@ from reversion.admin import VersionAdmin
 @admin.register(Asset)
 class AssetAdmin(VersionAdmin):
     save_on_top = True
+    save_as = True
+
     list_display = ('hostname', 'model__type', 'model__name', 'model__vendor',
                     'model__rack_units', 'location', 'state', 'purchase_date')
     search_fields = ('hostname', 'model__type__name', 'model',)

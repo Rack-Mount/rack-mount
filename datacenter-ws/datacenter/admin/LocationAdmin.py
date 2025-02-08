@@ -25,6 +25,7 @@ class LocationAdmin(VersionAdmin):
     )
     search_fields = ['name', 'location']
     readonly_fields = ['operational_since']
+    ordering = ('name',)
     inlines = [LocationCustomFieldInline]
 
     def has_delete_permission(self, request, obj=None):
