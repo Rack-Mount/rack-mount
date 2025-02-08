@@ -16,11 +16,11 @@ class Asset(models.Model):
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name='assets')
     state = models.ForeignKey(
-        AssetState, on_delete=models.CASCADE, related_name='assets')
+        AssetState, on_delete=models.CASCADE, related_name='assets', default=(AssetState.objects.get(name='New')))
     decommissioned_date = models.DateField(null=True, blank=True)
     warranty_expiration = models.DateField(null=True, blank=True)
     support_expiration = models.DateField(null=True, blank=True)
-    power_supplies = models.PositiveIntegerField(default=1, null=False)
+    power_supplies = models.PositiveIntegerField(default=2, null=False)
     power_cosumption_watt = models.PositiveIntegerField(default=0, null=False)
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
