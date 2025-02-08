@@ -8,3 +8,7 @@ class AssetTypeAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_filter = ('name',)
     ordering = ('name',)
+
+    def has_delete_permission(self, request, obj=None):
+        # Disable delete
+        return False

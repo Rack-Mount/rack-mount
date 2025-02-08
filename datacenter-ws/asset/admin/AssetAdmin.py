@@ -11,3 +11,7 @@ class AssetAdmin(admin.ModelAdmin):
     list_filter = ('asset_type',)
     ordering = ('-purchase_date',)
     inlines = [AssetCustomFieldInline]
+
+    def has_delete_permission(self, request, obj=None):
+        # Disable delete
+        return False

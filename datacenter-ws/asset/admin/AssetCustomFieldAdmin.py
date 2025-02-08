@@ -22,3 +22,7 @@ class AssetCustomFieldAdmin(admin.ModelAdmin):
         'field_value'
     )
     search_fields = ['asset__name', 'field_name']
+
+    def has_delete_permission(self, request, obj=None):
+        # Disable delete
+        return False

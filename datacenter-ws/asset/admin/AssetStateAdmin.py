@@ -9,3 +9,7 @@ class AssetStateAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description')
     list_filter = ('created_at', 'updated_at')
     ordering = ('name',)
+
+    def has_delete_permission(self, request, obj=None):
+        # Disable delete
+        return False
