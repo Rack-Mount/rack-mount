@@ -11,7 +11,7 @@ class AssetAdmin(VersionAdmin):
     save_as = True
 
     list_display = ('hostname', 'model__type', 'model__name', 'model__vendor',
-                    'model__rack_units', 'location', 'state', 'purchase_date')
+                    'serial_number', 'sap_id', 'model__rack_units', 'power_cosumption_watt', 'location', 'state', 'purchase_date')
     search_fields = ('hostname', 'model__type__name', 'model',)
     list_filter = ('model__type__name',)
     ordering = ('hostname',)
@@ -20,4 +20,4 @@ class AssetAdmin(VersionAdmin):
 
     def has_delete_permission(self, request, obj=None):
         # Disable delete
-        return False
+        return True
