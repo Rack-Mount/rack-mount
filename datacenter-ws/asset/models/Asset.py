@@ -20,6 +20,7 @@ class Asset(models.Model):
         'AssetState', on_delete=models.CASCADE, related_name='assets')
     power_connections = models.PositiveIntegerField(default=1, null=False)
     power_cosumption_watt = models.PositiveIntegerField(default=0, null=False)
+    note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
