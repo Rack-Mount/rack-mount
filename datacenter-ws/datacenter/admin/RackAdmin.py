@@ -9,5 +9,5 @@ class RackAdmin(admin.ModelAdmin):
     list_filter = ('location',)
 
     save_on_top = True
-    ordering = ('name',)
+    ordering = ('location', 'name',)
     save_as = True
