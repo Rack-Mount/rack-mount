@@ -1,5 +1,5 @@
 from django.db import models
-from datacenter.models import Location
+from datacenter.models import Location, Rack
 from asset.models import AssetModel, AssetState
 import reversion
 from django.utils.html import mark_safe
@@ -17,6 +17,8 @@ class Asset(models.Model):
     purchase_date = models.DateField(null=True, blank=True)
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name='assets')
+    rack = models.ForeignKey(
+        Rack, on_delete=models.CASCADE, related_name='racks', null=True)
     state = models.ForeignKey(
         AssetState, on_delete=models.CASCADE, related_name='assets')
     decommissioned_date = models.DateField(null=True, blank=True)

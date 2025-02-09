@@ -12,7 +12,7 @@ class Rack(models.Model):
     occupied_units = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.name
+        return f"{self.location.name} - {self.name}"
 
     class Meta:
         verbose_name = "Rack"
