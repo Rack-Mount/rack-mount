@@ -15,8 +15,8 @@ class Asset(models.Model):
     sap_id = models.CharField(blank=True, max_length=50, unique=True)
     order_id = models.CharField(blank=True, max_length=50)
     purchase_date = models.DateField(null=True, blank=True)
-    location = models.ForeignKey(
-        Location, on_delete=models.CASCADE, related_name='assets')
+    # location = models.ForeignKey(
+    #     Location, on_delete=models.CASCADE, related_name='assets')
     rack = models.ForeignKey(
         Rack, on_delete=models.CASCADE, related_name='racks', null=True)
     state = models.ForeignKey(

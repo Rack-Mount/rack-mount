@@ -12,7 +12,8 @@ class AssetModel(models.Model):
         Vendor, on_delete=models.CASCADE, related_name='asset_vendor')
     type = models.ForeignKey(
         AssetType, on_delete=models.CASCADE, related_name='asset_type')
-    rack_units = models.PositiveIntegerField(default=1, null=False)
+    rack_units = models.PositiveIntegerField(
+        default=1, null=False, name='rack_units')
     front_image = models.ImageField(null=True)
     rear_image = models.ImageField(null=True)
     note = models.TextField(blank=True)
