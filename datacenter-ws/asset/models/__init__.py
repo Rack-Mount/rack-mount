@@ -1,5 +1,7 @@
 from .Field import Field
 from .Vendor import Vendor
+from .RackType import RackType
+from .Rack import Rack
 from .AssetState import AssetState
 from .AssetType import AssetType
 from .AssetModel import AssetModel

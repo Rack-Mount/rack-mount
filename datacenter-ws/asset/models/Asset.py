@@ -1,6 +1,6 @@
 from django.db import models
-from datacenter.models import Location, Rack
-from asset.models import AssetModel, AssetState
+from datacenter.models import Location
+from asset.models import AssetModel, AssetState, Rack
 import reversion
 from django.utils.html import mark_safe
 from django.conf import settings

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from datacenter.models import RackType
+from asset.models import RackType
 
 
 @admin.register(RackType)

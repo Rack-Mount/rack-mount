@@ -1,3 +1,5 @@
+from .RackTypeAdmin import RackTypeAdmin
+from .RackAdmin import RackAdmin
 from .FieldAdmin import FieldAdmin
 from .AssetStateAdmin import AssetStateAdmin
 from .VendorAdmin import VendorAdmin
