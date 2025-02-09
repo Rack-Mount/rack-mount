@@ -1,4 +1,4 @@
-from .Field import Field
+from .CustomFieldName import CustomFieldName
 from .Vendor import Vendor
 from .RackType import RackType
 from .Rack import Rack

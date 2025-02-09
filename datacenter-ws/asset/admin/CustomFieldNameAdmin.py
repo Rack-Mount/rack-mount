@@ -1,9 +1,9 @@
 from django.contrib import admin
-from asset.models import Field
+from asset.models import CustomFieldName
 
 
-@admin.register(Field)
-class FieldAdmin(admin.ModelAdmin):
+@admin.register(CustomFieldName)
+class CustomFieldNameAdmin(admin.ModelAdmin):
     save_on_top = True
 
     list_display = ('name',)

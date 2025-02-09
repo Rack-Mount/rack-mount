@@ -1,6 +1,6 @@
 from .RackTypeAdmin import RackTypeAdmin
 from .RackAdmin import RackAdmin
-from .FieldAdmin import FieldAdmin
+from .CustomFieldNameAdmin import CustomFieldNameAdmin
 from .AssetStateAdmin import AssetStateAdmin
 from .VendorAdmin import VendorAdmin
 from .AssetTypeAdmin import AssetTypeAdmin
