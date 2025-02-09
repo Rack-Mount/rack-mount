@@ -7,3 +7,4 @@ from .AssetType import AssetType
 from .AssetModel import AssetModel
 from .Asset import Asset
 from .AssetCustomField import AssetCustomField
+from .RackUnit import RackUnit

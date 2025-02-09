@@ -1,7 +1,6 @@
 from django.contrib import admin
-from asset.models import Asset, AssetState, Rack
+from asset.models import Asset, AssetState, RackUnit
 from asset.admin import AssetCustomFieldInline
-from datacenter.models import Location
 from reversion.admin import VersionAdmin
 from import_export.admin import ExportActionModelAdmin
 from import_export import resources
@@ -14,6 +13,15 @@ class AssetResource(resources.ModelResource):
         fields = ('hostname', 'rack__location__name', 'rack__name', 'model__type__name', 'model__name', 'model__vendor__name',
                   'serial_number', 'sap_id', 'order_id', 'model__rack_units', 'power_cosumption_watt')
         name = "Export/Import assets"
+
+
+class RackUnitInline(admin.TabularInline):
+    model = RackUnit
+    fields = ['rack', 'unit', 'front', 'device', 'image_preview']
+    readonly_fields = ['rack', 'unit', 'front', 'device', 'image_preview']
+    can_delete = False
+    show_change_link = False
+    extra = 0
 
 
 @admin.register(Asset)
@@ -33,7 +41,7 @@ class AssetAdmin(ExportActionModelAdmin, VersionAdmin):
     readonly_fields = ['front_image_preview',
                        'rear_image_preview', 'created_at', 'updated_at']
 
-    inlines = [AssetCustomFieldInline]
+    inlines = [RackUnitInline, AssetCustomFieldInline]
     autocomplete_fields = ['model', 'rack']
 
     def has_delete_permission(self, request, obj=None):

@@ -29,10 +29,6 @@ admin.site.site_header = "Rack-Mount Data Center Admin"
 admin.site.site_title = "Rack-Mount Data Center Admin Portal"
 admin.site.index_title = "Welcome to Rack-Mount Data Center Portal"
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-]
-
 schema_url_patterns = [
     path('datacenter/', include(dc_urls.urlpatterns)),
     path('asset/', include(asset_urls.urlpatterns)),
