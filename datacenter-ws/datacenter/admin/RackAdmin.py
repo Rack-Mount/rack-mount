@@ -4,9 +4,9 @@ from datacenter.models import Rack
 
 @admin.register(Rack)
 class RackAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'capacity')
+    list_display = ('name', 'location', 'model')
     search_fields = ('name', 'location__name')
-    list_filter = ('location',)
+    list_filter = ('location', 'model')
 
     save_on_top = True
     ordering = ('location', 'name',)
