@@ -25,6 +25,10 @@ from django.urls import path, include
 from django.contrib import admin
 from django.urls import path
 
+admin.site.site_header = "Rack-Mount Data Center Admin"
+admin.site.site_title = "Rack-Mount Data Center Admin Portal"
+admin.site.index_title = "Welcome to Rack-Mount Data Center Portal"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
