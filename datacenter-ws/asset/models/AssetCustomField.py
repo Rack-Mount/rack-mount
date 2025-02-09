@@ -15,3 +15,4 @@ class AssetCustomField(models.Model):
 
     class Meta:
         unique_together = ('asset', 'field_name')
+        db_table = 'asset_custom_field'

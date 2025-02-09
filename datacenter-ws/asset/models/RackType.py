@@ -9,3 +9,8 @@ class RackType(models.Model):
 
     def __str__(self):
         return f"{self.model} ({self.width}x{self.height})"
+
+    class Meta:
+        db_table = 'rack_type'
+        verbose_name = 'Rack Type'
+        verbose_name_plural = 'Rack Types'

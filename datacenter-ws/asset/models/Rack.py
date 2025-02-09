@@ -20,3 +20,4 @@ class Rack(models.Model):
         verbose_name_plural = "Racks"
         ordering = ['name']
         unique_together = ('name', 'location')
+        db_table = 'rack'

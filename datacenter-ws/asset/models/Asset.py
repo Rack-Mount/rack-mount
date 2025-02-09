@@ -43,3 +43,4 @@ class Asset(models.Model):
         ordering = ['hostname']
         verbose_name = 'Asset'
         verbose_name_plural = 'Assets'
+        db_table = 'asset'

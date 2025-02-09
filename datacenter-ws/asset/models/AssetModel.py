@@ -30,3 +30,4 @@ class AssetModel(models.Model):
 
     class Meta:
         unique_together = ('name', 'vendor', 'type')
+        db_table = 'asset_model'
