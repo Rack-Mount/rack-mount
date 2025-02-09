@@ -1,6 +1,6 @@
 from django.db import models
 from datacenter.models import Location
-from asset.models import AssetModel, AssetState, Rack
+from asset.models import AssetModel, AssetState
 import reversion
 from django.utils.html import mark_safe
 from django.conf import settings
@@ -15,8 +15,8 @@ class Asset(models.Model):
     sap_id = models.CharField(blank=True, max_length=50, unique=True)
     order_id = models.CharField(blank=True, max_length=50)
     purchase_date = models.DateField(null=True, blank=True)
-    rack = models.ForeignKey(
-        Rack, on_delete=models.CASCADE, related_name='racks', null=True)
+    # rack = models.OneToOneField(
+    #     RackUnit, on_delete=models.CASCADE, null=True)
     state = models.ForeignKey(
         AssetState, on_delete=models.CASCADE, related_name='assets')
     decommissioned_date = models.DateField(null=True, blank=True)
@@ -35,7 +35,7 @@ class Asset(models.Model):
         return mark_safe('<img src="/%s/%s" width="300" />' % (settings.MEDIA_ROOT, self.model.rear_image)) if self.model.rear_image else ''
 
     def __str__(self):
-        return f"{self.hostname} - {self.model.vendor} - {self.model.name}"
+        return f"{self.hostname} ({self.serial_number}) - {self.model.vendor} - {self.model.name}"
 
     class Meta:
         ordering = ['hostname']

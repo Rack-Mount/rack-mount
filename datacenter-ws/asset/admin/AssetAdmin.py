@@ -10,15 +10,16 @@ class AssetResource(resources.ModelResource):
 
     class Meta:
         model = Asset
-        fields = ('hostname', 'rack__location__name', 'rack__name', 'model__type__name', 'model__name', 'model__vendor__name',
+        fields = ('hostname',  'model__type__name', 'model__name', 'model__vendor__name',
                   'serial_number', 'sap_id', 'order_id', 'model__rack_units', 'power_cosumption_watt')
         name = "Export/Import assets"
 
 
 class RackUnitInline(admin.TabularInline):
     model = RackUnit
-    fields = ['rack', 'unit', 'front', 'device', 'image_preview']
-    readonly_fields = ['rack', 'unit', 'front', 'device', 'image_preview']
+    fields = ['rack', 'unit', 'front', 'device']
+    readonly_fields = ['image_preview']
+    autocomplete_fields = ['rack']
     can_delete = False
     show_change_link = False
     extra = 0
@@ -31,18 +32,18 @@ class AssetAdmin(ExportActionModelAdmin, VersionAdmin):
 
     resource_classes = [AssetResource]
 
-    list_display = ('hostname', 'rack__location', 'rack__name', 'model__type', 'model__name', 'model__vendor',
+    list_display = ('hostname',  'model__type', 'model__name', 'model__vendor',
                     'serial_number', 'sap_id', 'order_id', 'model__rack_units', 'power_cosumption_watt', 'state')
     search_fields = ('hostname', 'model__type__name',
                      'model__name', 'serial_number', 'sap_id', 'order_id')
     list_filter = ('model__type__name', 'model__vendor',
-                   'rack__location', 'state')
+                   'state')
     ordering = ('hostname',)
     readonly_fields = ['front_image_preview',
                        'rear_image_preview', 'created_at', 'updated_at']
 
     inlines = [RackUnitInline, AssetCustomFieldInline]
-    autocomplete_fields = ['model', 'rack']
+    autocomplete_fields = ['model']
 
     def has_delete_permission(self, request, obj=None):
         # Disable delete

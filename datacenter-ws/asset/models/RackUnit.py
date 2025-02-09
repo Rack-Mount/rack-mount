@@ -24,4 +24,4 @@ class RackUnit(models.Model):
     class Meta:
         unique_together = ('rack', 'unit', 'front')
         ordering = ['rack', '-unit']
-        db_table = 'rack_units'
+        db_table = 'rack_unit'
