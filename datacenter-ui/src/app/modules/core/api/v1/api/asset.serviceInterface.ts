@@ -12,7 +12,15 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { Asset } from '../model/models';
+import { AssetModel } from '../model/models';
+import { AssetState } from '../model/models';
+import { AssetType } from '../model/models';
+import { ListAssetModels200Response } from '../model/models';
+import { ListAssetStates200Response } from '../model/models';
+import { ListAssetTypes200Response } from '../model/models';
 import { ListAssets200Response } from '../model/models';
+import { ListVendors200Response } from '../model/models';
+import { Vendor } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -20,6 +28,22 @@ import { Configuration }                                     from '../configurat
 
 export interface CreateAssetRequestParams {
     asset?: Asset;
+}
+
+export interface CreateAssetModelRequestParams {
+    assetModel?: AssetModel;
+}
+
+export interface CreateAssetStateRequestParams {
+    assetState?: AssetState;
+}
+
+export interface CreateAssetTypeRequestParams {
+    assetType?: AssetType;
+}
+
+export interface CreateVendorRequestParams {
+    vendor?: Vendor;
 }
 
 export interface DestroyAssetRequestParams {
@@ -30,6 +54,52 @@ export interface DestroyAssetRequestParams {
     sapId?: string;
     serialNumber?: string;
     orderId?: string;
+}
+
+export interface DestroyAssetModelRequestParams {
+    id: string;
+    ordering?: string;
+    search?: string;
+    name?: string;
+    vendor?: string;
+    type?: string;
+}
+
+export interface DestroyAssetStateRequestParams {
+    id: string;
+    name?: string;
+}
+
+export interface DestroyAssetTypeRequestParams {
+    id: string;
+    name?: string;
+}
+
+export interface DestroyVendorRequestParams {
+    id: string;
+    name?: string;
+}
+
+export interface ListAssetModelsRequestParams {
+    page?: number;
+    pageSize?: number;
+    ordering?: string;
+    search?: string;
+    name?: string;
+    vendor?: string;
+    type?: string;
+}
+
+export interface ListAssetStatesRequestParams {
+    page?: number;
+    pageSize?: number;
+    name?: string;
+}
+
+export interface ListAssetTypesRequestParams {
+    page?: number;
+    pageSize?: number;
+    name?: string;
 }
 
 export interface ListAssetsRequestParams {
@@ -43,6 +113,12 @@ export interface ListAssetsRequestParams {
     orderId?: string;
 }
 
+export interface ListVendorsRequestParams {
+    page?: number;
+    pageSize?: number;
+    name?: string;
+}
+
 export interface PartialUpdateAssetRequestParams {
     id: string;
     ordering?: string;
@@ -52,6 +128,34 @@ export interface PartialUpdateAssetRequestParams {
     serialNumber?: string;
     orderId?: string;
     asset?: Asset;
+}
+
+export interface PartialUpdateAssetModelRequestParams {
+    id: string;
+    ordering?: string;
+    search?: string;
+    name?: string;
+    vendor?: string;
+    type?: string;
+    assetModel?: AssetModel;
+}
+
+export interface PartialUpdateAssetStateRequestParams {
+    id: string;
+    name?: string;
+    assetState?: AssetState;
+}
+
+export interface PartialUpdateAssetTypeRequestParams {
+    id: string;
+    name?: string;
+    assetType?: AssetType;
+}
+
+export interface PartialUpdateVendorRequestParams {
+    id: string;
+    name?: string;
+    vendor?: Vendor;
 }
 
 export interface RetrieveAssetRequestParams {
@@ -64,6 +168,30 @@ export interface RetrieveAssetRequestParams {
     orderId?: string;
 }
 
+export interface RetrieveAssetModelRequestParams {
+    id: string;
+    ordering?: string;
+    search?: string;
+    name?: string;
+    vendor?: string;
+    type?: string;
+}
+
+export interface RetrieveAssetStateRequestParams {
+    id: string;
+    name?: string;
+}
+
+export interface RetrieveAssetTypeRequestParams {
+    id: string;
+    name?: string;
+}
+
+export interface RetrieveVendorRequestParams {
+    id: string;
+    name?: string;
+}
+
 export interface UpdateAssetRequestParams {
     id: string;
     ordering?: string;
@@ -73,6 +201,34 @@ export interface UpdateAssetRequestParams {
     serialNumber?: string;
     orderId?: string;
     asset?: Asset;
+}
+
+export interface UpdateAssetModelRequestParams {
+    id: string;
+    ordering?: string;
+    search?: string;
+    name?: string;
+    vendor?: string;
+    type?: string;
+    assetModel?: AssetModel;
+}
+
+export interface UpdateAssetStateRequestParams {
+    id: string;
+    name?: string;
+    assetState?: AssetState;
+}
+
+export interface UpdateAssetTypeRequestParams {
+    id: string;
+    name?: string;
+    assetType?: AssetType;
+}
+
+export interface UpdateVendorRequestParams {
+    id: string;
+    name?: string;
+    vendor?: Vendor;
 }
 
 
@@ -92,7 +248,84 @@ export interface AssetServiceInterface {
      * 
 * @param requestParameters
      */
+    createAssetModel(requestParameters: CreateAssetModelRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    createAssetState(requestParameters: CreateAssetStateRequestParams, extraHttpRequestParams?: any): Observable<AssetState>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    createAssetType(requestParameters: CreateAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    createVendor(requestParameters: CreateVendorRequestParams, extraHttpRequestParams?: any): Observable<Vendor>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
     destroyAsset(requestParameters: DestroyAssetRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    destroyAssetModel(requestParameters: DestroyAssetModelRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    destroyAssetState(requestParameters: DestroyAssetStateRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    destroyAssetType(requestParameters: DestroyAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    destroyVendor(requestParameters: DestroyVendorRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    listAssetModels(requestParameters: ListAssetModelsRequestParams, extraHttpRequestParams?: any): Observable<ListAssetModels200Response>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    listAssetStates(requestParameters: ListAssetStatesRequestParams, extraHttpRequestParams?: any): Observable<ListAssetStates200Response>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    listAssetTypes(requestParameters: ListAssetTypesRequestParams, extraHttpRequestParams?: any): Observable<ListAssetTypes200Response>;
 
     /**
      * 
@@ -106,7 +339,42 @@ export interface AssetServiceInterface {
      * 
 * @param requestParameters
      */
+    listVendors(requestParameters: ListVendorsRequestParams, extraHttpRequestParams?: any): Observable<ListVendors200Response>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
     partialUpdateAsset(requestParameters: PartialUpdateAssetRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    partialUpdateAssetModel(requestParameters: PartialUpdateAssetModelRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    partialUpdateAssetState(requestParameters: PartialUpdateAssetStateRequestParams, extraHttpRequestParams?: any): Observable<AssetState>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    partialUpdateAssetType(requestParameters: PartialUpdateAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    partialUpdateVendor(requestParameters: PartialUpdateVendorRequestParams, extraHttpRequestParams?: any): Observable<Vendor>;
 
     /**
      * 
@@ -120,6 +388,62 @@ export interface AssetServiceInterface {
      * 
 * @param requestParameters
      */
+    retrieveAssetModel(requestParameters: RetrieveAssetModelRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    retrieveAssetState(requestParameters: RetrieveAssetStateRequestParams, extraHttpRequestParams?: any): Observable<AssetState>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    retrieveAssetType(requestParameters: RetrieveAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    retrieveVendor(requestParameters: RetrieveVendorRequestParams, extraHttpRequestParams?: any): Observable<Vendor>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
     updateAsset(requestParameters: UpdateAssetRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    updateAssetModel(requestParameters: UpdateAssetModelRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    updateAssetState(requestParameters: UpdateAssetStateRequestParams, extraHttpRequestParams?: any): Observable<AssetState>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    updateAssetType(requestParameters: UpdateAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    updateVendor(requestParameters: UpdateVendorRequestParams, extraHttpRequestParams?: any): Observable<Vendor>;
 
 }

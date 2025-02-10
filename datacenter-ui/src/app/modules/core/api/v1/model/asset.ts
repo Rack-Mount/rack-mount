@@ -7,10 +7,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AssetModelType } from './assetModelType';
+import { AssetModel } from './assetModel';
 
 
 export interface Asset { 
     readonly id?: number;
+    model: AssetModel;
+    state: AssetModelType;
     hostname?: string;
     serial_number?: string;
     sap_id?: string;
@@ -24,7 +28,5 @@ export interface Asset {
     note?: string;
     readonly created_at?: string;
     readonly updated_at?: string;
-    model: number;
-    state: number;
 }
 
