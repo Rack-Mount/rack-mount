@@ -1,3 +1,5 @@
+export * from './asset';
+export * from './listAssets200Response';
 export * from './listLocationCustomFields200Response';
 export * from './listLocations200Response';
 export * from './location';

@@ -2,12 +2,16 @@
 README.md
 api.module.ts
 api/api.ts
+api/asset.service.ts
+api/asset.serviceInterface.ts
 api/datacenter.service.ts
 api/datacenter.serviceInterface.ts
 configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/asset.ts
+model/listAssets200Response.ts
 model/listLocationCustomFields200Response.ts
 model/listLocations200Response.ts
 model/location.ts
