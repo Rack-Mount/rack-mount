@@ -4,6 +4,18 @@ from datacenter.serializers import LocationCustomFieldSerializer
 
 
 class LocationSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    LocationSerializer is a HyperlinkedModelSerializer for the Location model.
+
+    Fields:
+        id (IntegerField): Read-only field for the unique identifier of the location.
+        url (HyperlinkedIdentityField): Read-only field for the URL of the location detail view.
+        custom_fields (LocationCustomFieldSerializer): Read-only field for the custom fields associated with the location.
+
+    Meta:
+        model (Location): The model that is being serialized.
+        fields (str): Specifies that all fields of the model should be included in the serialization.
+    """
     id = serializers.IntegerField(read_only=True)
     url = serializers.HyperlinkedIdentityField(
         read_only=True, view_name='location-detail')
