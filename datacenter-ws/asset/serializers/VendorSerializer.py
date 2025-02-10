@@ -4,7 +4,6 @@ from asset.serializers import VendorSerializer
 
 
 class VendorSerializer(serializers.ModelSerializer):
-    model = Vendor()
 
     class Meta:
         model = Vendor
