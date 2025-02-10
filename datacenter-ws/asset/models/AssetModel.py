@@ -7,6 +7,29 @@ from django.conf import settings
 
 @reversion.register()
 class AssetModel(models.Model):
+    """
+    AssetModel represents an asset in the data center.
+
+    Attributes:
+        name (str): The name of the asset.
+        vendor (Vendor): The vendor associated with the asset.
+        type (AssetType): The type of the asset.
+        rack_units (int): The number of rack units the asset occupies.
+        front_image (ImageField): The front image of the asset.
+        rear_image (ImageField): The rear image of the asset.
+        note (str): Additional notes about the asset.
+        created_at (datetime): The timestamp when the asset was created.
+        updated_at (datetime): The timestamp when the asset was last updated.
+
+    Methods:
+        front_image_preview(): Returns an HTML img tag for the front image preview.
+        rear_image_preview(): Returns an HTML img tag for the rear image preview.
+        __str__(): Returns a string representation of the asset.
+
+    Meta:
+        unique_together (tuple): Ensures that the combination of name, vendor, and type is unique.
+        db_table (str): The name of the database table.
+    """
     name = models.CharField(max_length=100, default='', null=False)
     vendor = models.ForeignKey(
         Vendor, on_delete=models.CASCADE, related_name='asset_vendor')

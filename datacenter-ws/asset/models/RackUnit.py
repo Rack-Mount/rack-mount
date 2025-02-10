@@ -7,6 +7,27 @@ from django.utils.html import mark_safe
 
 @reversion.register()
 class RackUnit(models.Model):
+    """
+    RackUnit model represents a unit within a rack in a data center.
+
+    Attributes:
+        rack (ForeignKey): Foreign key to the Rack model, representing the rack this unit belongs to.
+        unit (PositiveIntegerField): The unit number within the rack.
+        front (BooleanField): Indicates whether the unit is at the front (default is True).
+        device (OneToOneField): One-to-one relationship with the Asset model, representing the device installed in this unit.
+        description (TextField): Optional description of the rack unit.
+        created_at (DateTimeField): Timestamp when the rack unit was created.
+        updated_at (DateTimeField): Timestamp when the rack unit was last updated.
+
+    Methods:
+        __str__(): Returns a string representation of the rack unit, including rack name, unit number, and position (front/rear).
+        image_preview(): Returns an HTML image tag for the device's front image if available.
+
+    Meta:
+        unique_together: Ensures that the combination of rack, unit, and front is unique.
+        ordering: Orders the rack units by rack and unit in descending order.
+        db_table: Specifies the database table name as 'rack_unit'.
+    """
     rack = models.ForeignKey(Rack, on_delete=models.CASCADE)
     unit = models.PositiveIntegerField()
     front = models.BooleanField(default=True)

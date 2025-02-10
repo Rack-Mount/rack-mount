@@ -6,6 +6,27 @@ import reversion
 
 @reversion.register()
 class Rack(models.Model):
+    """
+    Rack model representing a rack in a data center.
+
+    Attributes:
+        name (str): The name of the rack.
+        model (ForeignKey): A foreign key to the RackType model.
+        location (ForeignKey): A foreign key to the Location model, can be null.
+        description (str): A text field for additional description of the rack.
+        created_at (datetime): The date and time when the rack was created.
+        updated_at (datetime): The date and time when the rack was last updated.
+
+    Methods:
+        __str__(): Returns a string representation of the rack, combining location name and rack name.
+
+    Meta:
+        verbose_name (str): The singular name for the model.
+        verbose_name_plural (str): The plural name for the model.
+        ordering (list): Default ordering for the model, by name.
+        unique_together (tuple): Ensures that the combination of name and location is unique.
+        db_table (str): The name of the database table to use for the model.
+    """
     name = models.CharField(max_length=100)
     model = models.ForeignKey(RackType, on_delete=models.CASCADE)
     location = models.ForeignKey(
