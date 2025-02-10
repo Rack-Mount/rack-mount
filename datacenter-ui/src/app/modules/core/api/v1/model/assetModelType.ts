@@ -10,8 +10,6 @@
 
 
 export interface AssetModelType { 
-    readonly id?: number;
     name: string;
-    description?: string;
 }
 

@@ -12,15 +12,12 @@ import { AssetModelType } from './assetModelType';
 
 
 export interface AssetModel { 
-    readonly id?: number;
+    name?: string;
     vendor: AssetModelVendor;
     type: AssetModelType;
-    name?: string;
     rack_units?: number;
     front_image?: Blob | null;
     rear_image?: Blob | null;
     note?: string;
-    readonly created_at?: string;
-    readonly updated_at?: string;
 }
 

@@ -3,7 +3,8 @@ from asset.models import Asset
 from asset.serializers import AssetModelSerializer, AssetStateSerializer
 
 
-class AssetSerializer(serializers.ModelSerializer):
+class AssetSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     model = AssetModelSerializer()
     state = AssetStateSerializer()
 

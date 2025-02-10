@@ -6,4 +6,4 @@ class AssetStateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AssetState
-        fields = '__all__'
+        fields = ['name']

@@ -10,9 +10,6 @@
 
 
 export interface AssetModelVendor { 
-    readonly id?: number;
     name: string;
-    readonly created_at?: string;
-    readonly updated_at?: string;
 }
 

@@ -12,7 +12,8 @@ import { AssetModel } from './assetModel';
 
 
 export interface Asset { 
-    readonly id?: number;
+    readonly url?: string;
+    readonly id?: string;
     model: AssetModel;
     state: AssetModelType;
     hostname?: string;

@@ -6,4 +6,4 @@ class AssetTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AssetType
-        fields = '__all__'
+        fields = ['name']

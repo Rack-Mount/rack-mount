@@ -13,6 +13,8 @@ class RackUnit(models.Model):
     device = models.OneToOneField(
         Asset, on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         position = "front" if self.front else "rear"

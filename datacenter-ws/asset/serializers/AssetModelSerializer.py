@@ -9,4 +9,12 @@ class AssetModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AssetModel
-        fields = '__all__'
+        fields = [
+            'name',
+            'vendor',
+            'type',
+            'rack_units',
+            'front_image',
+            'rear_image',
+            'note'
+        ]
