@@ -81,84 +81,84 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
 * @param requestParameters
      */
     createLocation(requestParameters: CreateLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
 
     /**
      * 
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
 * @param requestParameters
      */
     createLocationCustomField(requestParameters: CreateLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
 * @param requestParameters
      */
     destroyLocation(requestParameters: DestroyLocationRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
 * @param requestParameters
      */
     destroyLocationCustomField(requestParameters: DestroyLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
 * @param requestParameters
      */
     listLocationCustomFields(requestParameters: ListLocationCustomFieldsRequestParams, extraHttpRequestParams?: any): Observable<ListLocationCustomFields200Response>;
 
     /**
      * 
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
 * @param requestParameters
      */
     listLocations(requestParameters: ListLocationsRequestParams, extraHttpRequestParams?: any): Observable<ListLocations200Response>;
 
     /**
      * 
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
 * @param requestParameters
      */
     partialUpdateLocation(requestParameters: PartialUpdateLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
 
     /**
      * 
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
 * @param requestParameters
      */
     partialUpdateLocationCustomField(requestParameters: PartialUpdateLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
 * @param requestParameters
      */
     retrieveLocation(requestParameters: RetrieveLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
 
     /**
      * 
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
 * @param requestParameters
      */
     retrieveLocationCustomField(requestParameters: RetrieveLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
 * @param requestParameters
      */
     updateLocation(requestParameters: UpdateLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
 
     /**
      * 
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
 * @param requestParameters
      */
     updateLocationCustomField(requestParameters: UpdateLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;

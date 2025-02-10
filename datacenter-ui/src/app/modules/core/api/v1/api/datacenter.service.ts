@@ -112,7 +112,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -186,7 +186,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -260,7 +260,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -324,7 +324,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -388,7 +388,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -462,7 +462,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -536,7 +536,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -614,7 +614,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -692,7 +692,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -757,7 +757,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -822,7 +822,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -900,7 +900,7 @@ export class DatacenterService implements DatacenterServiceInterface {
     }
 
     /**
-     * 
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.

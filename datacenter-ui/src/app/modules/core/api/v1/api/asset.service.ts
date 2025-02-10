@@ -142,7 +142,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -216,7 +216,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -290,7 +290,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -364,7 +364,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -438,7 +438,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -512,7 +512,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -609,7 +609,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -701,7 +701,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -773,7 +773,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -845,7 +845,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -917,7 +917,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1016,7 +1016,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1095,7 +1095,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1174,7 +1174,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1278,7 +1278,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1357,7 +1357,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1468,7 +1468,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1574,7 +1574,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1660,7 +1660,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1746,7 +1746,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1832,7 +1832,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1930,7 +1930,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2023,7 +2023,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2096,7 +2096,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2169,7 +2169,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2242,7 +2242,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2353,7 +2353,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2459,7 +2459,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2545,7 +2545,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2631,7 +2631,7 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.

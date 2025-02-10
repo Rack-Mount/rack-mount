@@ -238,210 +238,210 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 * @param requestParameters
      */
     createAsset(requestParameters: CreateAssetRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
 
     /**
      * 
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 * @param requestParameters
      */
     createAssetModel(requestParameters: CreateAssetModelRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
 
     /**
      * 
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
 * @param requestParameters
      */
     createAssetState(requestParameters: CreateAssetStateRequestParams, extraHttpRequestParams?: any): Observable<AssetState>;
 
     /**
      * 
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
 * @param requestParameters
      */
     createAssetType(requestParameters: CreateAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
 
     /**
      * 
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
     createVendor(requestParameters: CreateVendorRequestParams, extraHttpRequestParams?: any): Observable<Vendor>;
 
     /**
      * 
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 * @param requestParameters
      */
     destroyAsset(requestParameters: DestroyAssetRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 * @param requestParameters
      */
     destroyAssetModel(requestParameters: DestroyAssetModelRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
 * @param requestParameters
      */
     destroyAssetState(requestParameters: DestroyAssetStateRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
 * @param requestParameters
      */
     destroyAssetType(requestParameters: DestroyAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
     destroyVendor(requestParameters: DestroyVendorRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 * @param requestParameters
      */
     listAssetModels(requestParameters: ListAssetModelsRequestParams, extraHttpRequestParams?: any): Observable<ListAssetModels200Response>;
 
     /**
      * 
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
 * @param requestParameters
      */
     listAssetStates(requestParameters: ListAssetStatesRequestParams, extraHttpRequestParams?: any): Observable<ListAssetStates200Response>;
 
     /**
      * 
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
 * @param requestParameters
      */
     listAssetTypes(requestParameters: ListAssetTypesRequestParams, extraHttpRequestParams?: any): Observable<ListAssetTypes200Response>;
 
     /**
      * 
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 * @param requestParameters
      */
     listAssets(requestParameters: ListAssetsRequestParams, extraHttpRequestParams?: any): Observable<ListAssets200Response>;
 
     /**
      * 
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
     listVendors(requestParameters: ListVendorsRequestParams, extraHttpRequestParams?: any): Observable<ListVendors200Response>;
 
     /**
      * 
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 * @param requestParameters
      */
     partialUpdateAsset(requestParameters: PartialUpdateAssetRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
 
     /**
      * 
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 * @param requestParameters
      */
     partialUpdateAssetModel(requestParameters: PartialUpdateAssetModelRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
 
     /**
      * 
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
 * @param requestParameters
      */
     partialUpdateAssetState(requestParameters: PartialUpdateAssetStateRequestParams, extraHttpRequestParams?: any): Observable<AssetState>;
 
     /**
      * 
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
 * @param requestParameters
      */
     partialUpdateAssetType(requestParameters: PartialUpdateAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
 
     /**
      * 
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
     partialUpdateVendor(requestParameters: PartialUpdateVendorRequestParams, extraHttpRequestParams?: any): Observable<Vendor>;
 
     /**
      * 
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 * @param requestParameters
      */
     retrieveAsset(requestParameters: RetrieveAssetRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
 
     /**
      * 
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 * @param requestParameters
      */
     retrieveAssetModel(requestParameters: RetrieveAssetModelRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
 
     /**
      * 
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
 * @param requestParameters
      */
     retrieveAssetState(requestParameters: RetrieveAssetStateRequestParams, extraHttpRequestParams?: any): Observable<AssetState>;
 
     /**
      * 
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
 * @param requestParameters
      */
     retrieveAssetType(requestParameters: RetrieveAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
 
     /**
      * 
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
     retrieveVendor(requestParameters: RetrieveVendorRequestParams, extraHttpRequestParams?: any): Observable<Vendor>;
 
     /**
      * 
-     * 
+     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 * @param requestParameters
      */
     updateAsset(requestParameters: UpdateAssetRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
 
     /**
      * 
-     * 
+     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 * @param requestParameters
      */
     updateAssetModel(requestParameters: UpdateAssetModelRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
 
     /**
      * 
-     * 
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.
 * @param requestParameters
      */
     updateAssetState(requestParameters: UpdateAssetStateRequestParams, extraHttpRequestParams?: any): Observable<AssetState>;
 
     /**
      * 
-     * 
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.
 * @param requestParameters
      */
     updateAssetType(requestParameters: UpdateAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
 
     /**
      * 
-     * 
+     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
     updateVendor(requestParameters: UpdateVendorRequestParams, extraHttpRequestParams?: any): Observable<Vendor>;
