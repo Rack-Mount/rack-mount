@@ -29,4 +29,5 @@ class AssetViewSet(viewsets.ModelViewSet):
 
     ordering_fields = '__all__'
     ordering = ['hostname']
-    filterset_fields = ['hostname', 'sap_id', 'serial_number', 'order_id']
+    filterset_fields = ['hostname', 'sap_id',
+                        'serial_number', 'order_id', 'model', 'state', 'model__vendor', 'model__type']
