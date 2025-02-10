@@ -1,3 +1,4 @@
+from .AssetTypeViewSet import AssetTypeViewSet
 from .AssetStateViewSet import AssetStateViewSet
 from .VendorViewSet import VendorViewSet
 from .AssetModelViewSet import AssetModelViewSet

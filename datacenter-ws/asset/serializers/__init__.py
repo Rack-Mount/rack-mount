@@ -1,3 +1,4 @@
+from .AssetTypeSerializer import AssetTypeSerializer
 from .AssetStateSerializer import AssetStateSerializer
 from .VendorSerializer import VendorSerializer
 from .AssetModelSerializer import AssetModelSerializer
