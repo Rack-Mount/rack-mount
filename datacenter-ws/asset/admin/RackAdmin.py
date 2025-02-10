@@ -5,8 +5,7 @@ from asset.models import RackUnit
 
 class RackUnitInline(admin.TabularInline):
     model = RackUnit
-    fields = ['rack', 'unit', 'front', 'device']
-    # readonly_fields = ['rack', 'unit', 'front', 'device', 'image_preview']
+    fields = ['rack', 'unit', 'front', 'device', 'image_preview']
     readonly_fields = ['image_preview']
     autocomplete_fields = ['device']
     can_delete = False

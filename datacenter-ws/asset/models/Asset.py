@@ -15,8 +15,6 @@ class Asset(models.Model):
     sap_id = models.CharField(blank=True, max_length=50, unique=True)
     order_id = models.CharField(blank=True, max_length=50)
     purchase_date = models.DateField(null=True, blank=True)
-    # rack = models.OneToOneField(
-    #     RackUnit, on_delete=models.CASCADE, null=True)
     state = models.ForeignKey(
         AssetState, on_delete=models.CASCADE, related_name='assets')
     decommissioned_date = models.DateField(null=True, blank=True)
