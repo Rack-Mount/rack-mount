@@ -5,3 +5,4 @@ from .AssetModelSerializer import AssetModelSerializer
 from .AssetSerializer import AssetSerializer
 from .RackTypeSerializer import RackTypeSerializer
 from .RackSerializer import RackSerializer
+from .RackUnitSerializer import RackUnitSerializer

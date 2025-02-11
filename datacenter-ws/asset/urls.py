@@ -20,7 +20,7 @@ URL patterns:
 - /asset_type
 """
 from rest_framework.routers import DefaultRouter
-from asset.views import AssetViewSet, AssetModelViewSet, VendorViewSet, AssetStateViewSet, AssetTypeViewSet, RackViewSet, RackTypeViewSet
+from asset.views import AssetViewSet, AssetModelViewSet, VendorViewSet, AssetStateViewSet, AssetTypeViewSet, RackViewSet, RackTypeViewSet, RackUnitViewSet
 
 router = DefaultRouter(trailing_slash=False)
 router.register('asset', AssetViewSet)
@@ -30,6 +30,7 @@ router.register('asset_state', AssetStateViewSet)
 router.register('asset_type', AssetTypeViewSet)
 router.register('rack', RackViewSet)
 router.register('rack_type', RackTypeViewSet)
+router.register('rack_unit', RackUnitViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
