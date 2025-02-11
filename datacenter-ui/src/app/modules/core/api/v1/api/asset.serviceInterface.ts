@@ -12,9 +12,11 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { Asset } from '../model/models';
+import { AssetCustomField } from '../model/models';
 import { AssetModel } from '../model/models';
 import { AssetState } from '../model/models';
 import { AssetType } from '../model/models';
+import { ListAssetCustomFields200Response } from '../model/models';
 import { ListAssetModels200Response } from '../model/models';
 import { ListAssetStates200Response } from '../model/models';
 import { ListAssetTypes200Response } from '../model/models';
@@ -34,6 +36,10 @@ import { Configuration }                                     from '../configurat
 
 export interface CreateAssetRequestParams {
     asset?: Asset;
+}
+
+export interface CreateAssetCustomFieldRequestParams {
+    assetCustomField?: AssetCustomField;
 }
 
 export interface CreateAssetModelRequestParams {
@@ -78,6 +84,11 @@ export interface DestroyAssetRequestParams {
     modelType?: string;
 }
 
+export interface DestroyAssetCustomFieldRequestParams {
+    id: string;
+    ordering?: string;
+}
+
 export interface DestroyAssetModelRequestParams {
     id: string;
     ordering?: string;
@@ -119,6 +130,12 @@ export interface DestroyRackUnitRequestParams {
 export interface DestroyVendorRequestParams {
     id: string;
     name?: string;
+}
+
+export interface ListAssetCustomFieldsRequestParams {
+    page?: number;
+    pageSize?: number;
+    ordering?: string;
 }
 
 export interface ListAssetModelsRequestParams {
@@ -201,6 +218,12 @@ export interface PartialUpdateAssetRequestParams {
     asset?: Asset;
 }
 
+export interface PartialUpdateAssetCustomFieldRequestParams {
+    id: string;
+    ordering?: string;
+    assetCustomField?: AssetCustomField;
+}
+
 export interface PartialUpdateAssetModelRequestParams {
     id: string;
     ordering?: string;
@@ -265,6 +288,11 @@ export interface RetrieveAssetRequestParams {
     modelType?: string;
 }
 
+export interface RetrieveAssetCustomFieldRequestParams {
+    id: string;
+    ordering?: string;
+}
+
 export interface RetrieveAssetModelRequestParams {
     id: string;
     ordering?: string;
@@ -321,6 +349,12 @@ export interface UpdateAssetRequestParams {
     modelVendor?: string;
     modelType?: string;
     asset?: Asset;
+}
+
+export interface UpdateAssetCustomFieldRequestParams {
+    id: string;
+    ordering?: string;
+    assetCustomField?: AssetCustomField;
 }
 
 export interface UpdateAssetModelRequestParams {
@@ -387,6 +421,13 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * 
+* @param requestParameters
+     */
+    createAssetCustomField(requestParameters: CreateAssetCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<AssetCustomField>;
+
+    /**
+     * 
      * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 * @param requestParameters
      */
@@ -422,7 +463,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * 
+     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.
 * @param requestParameters
      */
     createRackUnit(requestParameters: CreateRackUnitRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
@@ -440,6 +481,13 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     destroyAsset(requestParameters: DestroyAssetRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    destroyAssetCustomField(requestParameters: DestroyAssetCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
@@ -478,7 +526,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * 
+     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.
 * @param requestParameters
      */
     destroyRackUnit(requestParameters: DestroyRackUnitRequestParams, extraHttpRequestParams?: any): Observable<{}>;
@@ -489,6 +537,13 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     destroyVendor(requestParameters: DestroyVendorRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    listAssetCustomFields(requestParameters: ListAssetCustomFieldsRequestParams, extraHttpRequestParams?: any): Observable<ListAssetCustomFields200Response>;
 
     /**
      * 
@@ -527,7 +582,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * 
+     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.
 * @param requestParameters
      */
     listRackUnits(requestParameters: ListRackUnitsRequestParams, extraHttpRequestParams?: any): Observable<ListRackUnits200Response>;
@@ -552,6 +607,13 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     partialUpdateAsset(requestParameters: PartialUpdateAssetRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    partialUpdateAssetCustomField(requestParameters: PartialUpdateAssetCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<AssetCustomField>;
 
     /**
      * 
@@ -590,7 +652,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * 
+     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.
 * @param requestParameters
      */
     partialUpdateRackUnit(requestParameters: PartialUpdateRackUnitRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
@@ -608,6 +670,13 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     retrieveAsset(requestParameters: RetrieveAssetRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    retrieveAssetCustomField(requestParameters: RetrieveAssetCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<AssetCustomField>;
 
     /**
      * 
@@ -646,7 +715,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * 
+     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.
 * @param requestParameters
      */
     retrieveRackUnit(requestParameters: RetrieveRackUnitRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
@@ -664,6 +733,13 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     updateAsset(requestParameters: UpdateAssetRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    updateAssetCustomField(requestParameters: UpdateAssetCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<AssetCustomField>;
 
     /**
      * 
@@ -702,7 +778,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * 
+     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.
 * @param requestParameters
      */
     updateRackUnit(requestParameters: UpdateRackUnitRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;

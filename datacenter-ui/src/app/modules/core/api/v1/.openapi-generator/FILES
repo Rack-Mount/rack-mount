@@ -11,11 +11,13 @@ encoder.ts
 git_push.sh
 index.ts
 model/asset.ts
+model/assetCustomField.ts
 model/assetModel.ts
 model/assetModelType.ts
 model/assetModelVendor.ts
 model/assetState.ts
 model/assetType.ts
+model/listAssetCustomFields200Response.ts
 model/listAssetModels200Response.ts
 model/listAssetStates200Response.ts
 model/listAssetTypes200Response.ts
