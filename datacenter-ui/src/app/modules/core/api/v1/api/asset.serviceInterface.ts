@@ -20,10 +20,12 @@ import { ListAssetStates200Response } from '../model/models';
 import { ListAssetTypes200Response } from '../model/models';
 import { ListAssets200Response } from '../model/models';
 import { ListRackTypes200Response } from '../model/models';
+import { ListRackUnits200Response } from '../model/models';
 import { ListRacks200Response } from '../model/models';
 import { ListVendors200Response } from '../model/models';
 import { Rack } from '../model/models';
 import { RackType } from '../model/models';
+import { RackUnit } from '../model/models';
 import { Vendor } from '../model/models';
 
 
@@ -52,6 +54,10 @@ export interface CreateRackRequestParams {
 
 export interface CreateRackTypeRequestParams {
     rackType?: RackType;
+}
+
+export interface CreateRackUnitRequestParams {
+    rackUnit?: RackUnit;
 }
 
 export interface CreateVendorRequestParams {
@@ -101,6 +107,15 @@ export interface DestroyRackTypeRequestParams {
     model?: string;
 }
 
+export interface DestroyRackUnitRequestParams {
+    id: string;
+    ordering?: string;
+    search?: string;
+    rack?: string;
+    deviceHostname?: string;
+    rackLocation?: string;
+}
+
 export interface DestroyVendorRequestParams {
     id: string;
     name?: string;
@@ -147,6 +162,16 @@ export interface ListRackTypesRequestParams {
     page?: number;
     pageSize?: number;
     model?: string;
+}
+
+export interface ListRackUnitsRequestParams {
+    page?: number;
+    pageSize?: number;
+    ordering?: string;
+    search?: string;
+    rack?: string;
+    deviceHostname?: string;
+    rackLocation?: string;
 }
 
 export interface ListRacksRequestParams {
@@ -210,6 +235,16 @@ export interface PartialUpdateRackTypeRequestParams {
     rackType?: RackType;
 }
 
+export interface PartialUpdateRackUnitRequestParams {
+    id: string;
+    ordering?: string;
+    search?: string;
+    rack?: string;
+    deviceHostname?: string;
+    rackLocation?: string;
+    rackUnit?: RackUnit;
+}
+
 export interface PartialUpdateVendorRequestParams {
     id: string;
     name?: string;
@@ -257,6 +292,15 @@ export interface RetrieveRackRequestParams {
 export interface RetrieveRackTypeRequestParams {
     id: string;
     model?: string;
+}
+
+export interface RetrieveRackUnitRequestParams {
+    id: string;
+    ordering?: string;
+    search?: string;
+    rack?: string;
+    deviceHostname?: string;
+    rackLocation?: string;
 }
 
 export interface RetrieveVendorRequestParams {
@@ -311,6 +355,16 @@ export interface UpdateRackTypeRequestParams {
     id: string;
     model?: string;
     rackType?: RackType;
+}
+
+export interface UpdateRackUnitRequestParams {
+    id: string;
+    ordering?: string;
+    search?: string;
+    rack?: string;
+    deviceHostname?: string;
+    rackLocation?: string;
+    rackUnit?: RackUnit;
 }
 
 export interface UpdateVendorRequestParams {
@@ -368,6 +422,13 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * 
+* @param requestParameters
+     */
+    createRackUnit(requestParameters: CreateRackUnitRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
+
+    /**
+     * 
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
@@ -417,6 +478,13 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * 
+* @param requestParameters
+     */
+    destroyRackUnit(requestParameters: DestroyRackUnitRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
@@ -456,6 +524,13 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     listRackTypes(requestParameters: ListRackTypesRequestParams, extraHttpRequestParams?: any): Observable<ListRackTypes200Response>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    listRackUnits(requestParameters: ListRackUnitsRequestParams, extraHttpRequestParams?: any): Observable<ListRackUnits200Response>;
 
     /**
      * 
@@ -515,6 +590,13 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * 
+* @param requestParameters
+     */
+    partialUpdateRackUnit(requestParameters: PartialUpdateRackUnitRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
+
+    /**
+     * 
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
@@ -564,6 +646,13 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * 
+* @param requestParameters
+     */
+    retrieveRackUnit(requestParameters: RetrieveRackUnitRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
+
+    /**
+     * 
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
@@ -610,6 +699,13 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     updateRackType(requestParameters: UpdateRackTypeRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
+
+    /**
+     * 
+     * 
+* @param requestParameters
+     */
+    updateRackUnit(requestParameters: UpdateRackUnitRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
 
     /**
      * 
