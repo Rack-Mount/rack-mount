@@ -17,6 +17,7 @@ class RackSerializer(serializers.HyperlinkedModelSerializer):
         model (Rack): The model that is being serialized.
         fields (list): List of fields to be included in the serialized output.
     """
+
     model = RackTypeSerializer()
     location = serializers.StringRelatedField(
         many=False,

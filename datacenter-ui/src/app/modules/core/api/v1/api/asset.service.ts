@@ -33,7 +33,15 @@ import { ListAssetTypes200Response } from '../model/listAssetTypes200Response';
 // @ts-ignore
 import { ListAssets200Response } from '../model/listAssets200Response';
 // @ts-ignore
+import { ListRackTypes200Response } from '../model/listRackTypes200Response';
+// @ts-ignore
+import { ListRacks200Response } from '../model/listRacks200Response';
+// @ts-ignore
 import { ListVendors200Response } from '../model/listVendors200Response';
+// @ts-ignore
+import { Rack } from '../model/rack';
+// @ts-ignore
+import { RackType } from '../model/rackType';
 // @ts-ignore
 import { Vendor } from '../model/vendor';
 
@@ -46,31 +54,43 @@ import {
     CreateAssetModelRequestParams,
     CreateAssetStateRequestParams,
     CreateAssetTypeRequestParams,
+    CreateRackRequestParams,
+    CreateRackTypeRequestParams,
     CreateVendorRequestParams,
     DestroyAssetRequestParams,
     DestroyAssetModelRequestParams,
     DestroyAssetStateRequestParams,
     DestroyAssetTypeRequestParams,
+    DestroyRackRequestParams,
+    DestroyRackTypeRequestParams,
     DestroyVendorRequestParams,
     ListAssetModelsRequestParams,
     ListAssetStatesRequestParams,
     ListAssetTypesRequestParams,
     ListAssetsRequestParams,
+    ListRackTypesRequestParams,
+    ListRacksRequestParams,
     ListVendorsRequestParams,
     PartialUpdateAssetRequestParams,
     PartialUpdateAssetModelRequestParams,
     PartialUpdateAssetStateRequestParams,
     PartialUpdateAssetTypeRequestParams,
+    PartialUpdateRackRequestParams,
+    PartialUpdateRackTypeRequestParams,
     PartialUpdateVendorRequestParams,
     RetrieveAssetRequestParams,
     RetrieveAssetModelRequestParams,
     RetrieveAssetStateRequestParams,
     RetrieveAssetTypeRequestParams,
+    RetrieveRackRequestParams,
+    RetrieveRackTypeRequestParams,
     RetrieveVendorRequestParams,
     UpdateAssetRequestParams,
     UpdateAssetModelRequestParams,
     UpdateAssetStateRequestParams,
     UpdateAssetTypeRequestParams,
+    UpdateRackRequestParams,
+    UpdateRackTypeRequestParams,
     UpdateVendorRequestParams
 } from './asset.serviceInterface';
 
@@ -438,6 +458,154 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public createRack(requestParameters?: CreateRackRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Rack>;
+    public createRack(requestParameters?: CreateRackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Rack>>;
+    public createRack(requestParameters?: CreateRackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Rack>>;
+    public createRack(requestParameters?: CreateRackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const rack = requestParameters?.rack;
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack`;
+        return this.httpClient.request<Rack>('post', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: rack,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public createRackType(requestParameters?: CreateRackTypeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RackType>;
+    public createRackType(requestParameters?: CreateRackTypeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RackType>>;
+    public createRackType(requestParameters?: CreateRackTypeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RackType>>;
+    public createRackType(requestParameters?: CreateRackTypeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const rackType = requestParameters?.rackType;
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack_type`;
+        return this.httpClient.request<RackType>('post', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: rackType,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -531,6 +699,10 @@ export class AssetService implements AssetServiceInterface {
         const sapId = requestParameters?.sapId;
         const serialNumber = requestParameters?.serialNumber;
         const orderId = requestParameters?.orderId;
+        const model = requestParameters?.model;
+        const state = requestParameters?.state;
+        const modelVendor = requestParameters?.modelVendor;
+        const modelType = requestParameters?.modelType;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (ordering !== undefined && ordering !== null) {
@@ -556,6 +728,22 @@ export class AssetService implements AssetServiceInterface {
         if (orderId !== undefined && orderId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>orderId, 'order_id');
+        }
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+        if (state !== undefined && state !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>state, 'state');
+        }
+        if (modelVendor !== undefined && modelVendor !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelVendor, 'model__vendor');
+        }
+        if (modelType !== undefined && modelType !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelType, 'model__type');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -830,6 +1018,150 @@ export class AssetService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public destroyRack(requestParameters: DestroyRackRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public destroyRack(requestParameters: DestroyRackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public destroyRack(requestParameters: DestroyRackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public destroyRack(requestParameters: DestroyRackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling destroyRack.');
+        }
+        const name = requestParameters?.name;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (name !== undefined && name !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>name, 'name');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public destroyRackType(requestParameters: DestroyRackTypeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public destroyRackType(requestParameters: DestroyRackTypeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public destroyRackType(requestParameters: DestroyRackTypeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public destroyRackType(requestParameters: DestroyRackTypeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling destroyRackType.');
+        }
+        const model = requestParameters?.model;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -1191,6 +1523,10 @@ export class AssetService implements AssetServiceInterface {
         const sapId = requestParameters?.sapId;
         const serialNumber = requestParameters?.serialNumber;
         const orderId = requestParameters?.orderId;
+        const model = requestParameters?.model;
+        const state = requestParameters?.state;
+        const modelVendor = requestParameters?.modelVendor;
+        const modelType = requestParameters?.modelType;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (page !== undefined && page !== null) {
@@ -1224,6 +1560,22 @@ export class AssetService implements AssetServiceInterface {
         if (orderId !== undefined && orderId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>orderId, 'order_id');
+        }
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+        if (state !== undefined && state !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>state, 'state');
+        }
+        if (modelVendor !== undefined && modelVendor !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelVendor, 'model__vendor');
+        }
+        if (modelType !== undefined && modelType !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelType, 'model__type');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1264,6 +1616,164 @@ export class AssetService implements AssetServiceInterface {
 
         let localVarPath = `/asset/asset`;
         return this.httpClient.request<ListAssets200Response>('get', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public listRackTypes(requestParameters?: ListRackTypesRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ListRackTypes200Response>;
+    public listRackTypes(requestParameters?: ListRackTypesRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ListRackTypes200Response>>;
+    public listRackTypes(requestParameters?: ListRackTypesRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ListRackTypes200Response>>;
+    public listRackTypes(requestParameters?: ListRackTypesRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const page = requestParameters?.page;
+        const pageSize = requestParameters?.pageSize;
+        const model = requestParameters?.model;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (page !== undefined && page !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>page, 'page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'page_size');
+        }
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack_type`;
+        return this.httpClient.request<ListRackTypes200Response>('get', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public listRacks(requestParameters?: ListRacksRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ListRacks200Response>;
+    public listRacks(requestParameters?: ListRacksRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ListRacks200Response>>;
+    public listRacks(requestParameters?: ListRacksRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ListRacks200Response>>;
+    public listRacks(requestParameters?: ListRacksRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const page = requestParameters?.page;
+        const pageSize = requestParameters?.pageSize;
+        const name = requestParameters?.name;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (page !== undefined && page !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>page, 'page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'page_size');
+        }
+        if (name !== undefined && name !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>name, 'name');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack`;
+        return this.httpClient.request<ListRacks200Response>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -1376,6 +1886,10 @@ export class AssetService implements AssetServiceInterface {
         const sapId = requestParameters?.sapId;
         const serialNumber = requestParameters?.serialNumber;
         const orderId = requestParameters?.orderId;
+        const model = requestParameters?.model;
+        const state = requestParameters?.state;
+        const modelVendor = requestParameters?.modelVendor;
+        const modelType = requestParameters?.modelType;
         const asset = requestParameters?.asset;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -1402,6 +1916,22 @@ export class AssetService implements AssetServiceInterface {
         if (orderId !== undefined && orderId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>orderId, 'order_id');
+        }
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+        if (state !== undefined && state !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>state, 'state');
+        }
+        if (modelVendor !== undefined && modelVendor !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelVendor, 'model__vendor');
+        }
+        if (modelType !== undefined && modelType !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelType, 'model__type');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1746,6 +2276,178 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public partialUpdateRack(requestParameters: PartialUpdateRackRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Rack>;
+    public partialUpdateRack(requestParameters: PartialUpdateRackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Rack>>;
+    public partialUpdateRack(requestParameters: PartialUpdateRackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Rack>>;
+    public partialUpdateRack(requestParameters: PartialUpdateRackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling partialUpdateRack.');
+        }
+        const name = requestParameters?.name;
+        const rack = requestParameters?.rack;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (name !== undefined && name !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>name, 'name');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<Rack>('patch', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: rack,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public partialUpdateRackType(requestParameters: PartialUpdateRackTypeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RackType>;
+    public partialUpdateRackType(requestParameters: PartialUpdateRackTypeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RackType>>;
+    public partialUpdateRackType(requestParameters: PartialUpdateRackTypeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RackType>>;
+    public partialUpdateRackType(requestParameters: PartialUpdateRackTypeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling partialUpdateRackType.');
+        }
+        const model = requestParameters?.model;
+        const rackType = requestParameters?.rackType;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<RackType>('patch', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: rackType,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -1851,6 +2553,10 @@ export class AssetService implements AssetServiceInterface {
         const sapId = requestParameters?.sapId;
         const serialNumber = requestParameters?.serialNumber;
         const orderId = requestParameters?.orderId;
+        const model = requestParameters?.model;
+        const state = requestParameters?.state;
+        const modelVendor = requestParameters?.modelVendor;
+        const modelType = requestParameters?.modelType;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (ordering !== undefined && ordering !== null) {
@@ -1876,6 +2582,22 @@ export class AssetService implements AssetServiceInterface {
         if (orderId !== undefined && orderId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>orderId, 'order_id');
+        }
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+        if (state !== undefined && state !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>state, 'state');
+        }
+        if (modelVendor !== undefined && modelVendor !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelVendor, 'model__vendor');
+        }
+        if (modelType !== undefined && modelType !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelType, 'model__type');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -2169,6 +2891,152 @@ export class AssetService implements AssetServiceInterface {
     }
 
     /**
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public retrieveRack(requestParameters: RetrieveRackRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Rack>;
+    public retrieveRack(requestParameters: RetrieveRackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Rack>>;
+    public retrieveRack(requestParameters: RetrieveRackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Rack>>;
+    public retrieveRack(requestParameters: RetrieveRackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling retrieveRack.');
+        }
+        const name = requestParameters?.name;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (name !== undefined && name !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>name, 'name');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<Rack>('get', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public retrieveRackType(requestParameters: RetrieveRackTypeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RackType>;
+    public retrieveRackType(requestParameters: RetrieveRackTypeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RackType>>;
+    public retrieveRackType(requestParameters: RetrieveRackTypeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RackType>>;
+    public retrieveRackType(requestParameters: RetrieveRackTypeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling retrieveRackType.');
+        }
+        const model = requestParameters?.model;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<RackType>('get', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2261,6 +3129,10 @@ export class AssetService implements AssetServiceInterface {
         const sapId = requestParameters?.sapId;
         const serialNumber = requestParameters?.serialNumber;
         const orderId = requestParameters?.orderId;
+        const model = requestParameters?.model;
+        const state = requestParameters?.state;
+        const modelVendor = requestParameters?.modelVendor;
+        const modelType = requestParameters?.modelType;
         const asset = requestParameters?.asset;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -2287,6 +3159,22 @@ export class AssetService implements AssetServiceInterface {
         if (orderId !== undefined && orderId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>orderId, 'order_id');
+        }
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+        if (state !== undefined && state !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>state, 'state');
+        }
+        if (modelVendor !== undefined && modelVendor !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelVendor, 'model__vendor');
+        }
+        if (modelType !== undefined && modelType !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>modelType, 'model__type');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -2619,6 +3507,178 @@ export class AssetService implements AssetServiceInterface {
             {
                 context: localVarHttpContext,
                 body: assetType,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public updateRack(requestParameters: UpdateRackRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Rack>;
+    public updateRack(requestParameters: UpdateRackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Rack>>;
+    public updateRack(requestParameters: UpdateRackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Rack>>;
+    public updateRack(requestParameters: UpdateRackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling updateRack.');
+        }
+        const name = requestParameters?.name;
+        const rack = requestParameters?.rack;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (name !== undefined && name !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>name, 'name');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<Rack>('put', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: rack,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public updateRackType(requestParameters: UpdateRackTypeRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RackType>;
+    public updateRackType(requestParameters: UpdateRackTypeRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RackType>>;
+    public updateRackType(requestParameters: UpdateRackTypeRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RackType>>;
+    public updateRackType(requestParameters: UpdateRackTypeRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling updateRackType.');
+        }
+        const model = requestParameters?.model;
+        const rackType = requestParameters?.rackType;
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (model !== undefined && model !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>model, 'model');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<RackType>('put', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: rackType,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,

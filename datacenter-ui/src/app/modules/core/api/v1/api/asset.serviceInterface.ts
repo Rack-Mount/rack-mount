@@ -19,7 +19,11 @@ import { ListAssetModels200Response } from '../model/models';
 import { ListAssetStates200Response } from '../model/models';
 import { ListAssetTypes200Response } from '../model/models';
 import { ListAssets200Response } from '../model/models';
+import { ListRackTypes200Response } from '../model/models';
+import { ListRacks200Response } from '../model/models';
 import { ListVendors200Response } from '../model/models';
+import { Rack } from '../model/models';
+import { RackType } from '../model/models';
 import { Vendor } from '../model/models';
 
 
@@ -42,6 +46,14 @@ export interface CreateAssetTypeRequestParams {
     assetType?: AssetType;
 }
 
+export interface CreateRackRequestParams {
+    rack?: Rack;
+}
+
+export interface CreateRackTypeRequestParams {
+    rackType?: RackType;
+}
+
 export interface CreateVendorRequestParams {
     vendor?: Vendor;
 }
@@ -54,6 +66,10 @@ export interface DestroyAssetRequestParams {
     sapId?: string;
     serialNumber?: string;
     orderId?: string;
+    model?: string;
+    state?: string;
+    modelVendor?: string;
+    modelType?: string;
 }
 
 export interface DestroyAssetModelRequestParams {
@@ -73,6 +89,16 @@ export interface DestroyAssetStateRequestParams {
 export interface DestroyAssetTypeRequestParams {
     id: string;
     name?: string;
+}
+
+export interface DestroyRackRequestParams {
+    id: string;
+    name?: string;
+}
+
+export interface DestroyRackTypeRequestParams {
+    id: string;
+    model?: string;
 }
 
 export interface DestroyVendorRequestParams {
@@ -111,6 +137,22 @@ export interface ListAssetsRequestParams {
     sapId?: string;
     serialNumber?: string;
     orderId?: string;
+    model?: string;
+    state?: string;
+    modelVendor?: string;
+    modelType?: string;
+}
+
+export interface ListRackTypesRequestParams {
+    page?: number;
+    pageSize?: number;
+    model?: string;
+}
+
+export interface ListRacksRequestParams {
+    page?: number;
+    pageSize?: number;
+    name?: string;
 }
 
 export interface ListVendorsRequestParams {
@@ -127,6 +169,10 @@ export interface PartialUpdateAssetRequestParams {
     sapId?: string;
     serialNumber?: string;
     orderId?: string;
+    model?: string;
+    state?: string;
+    modelVendor?: string;
+    modelType?: string;
     asset?: Asset;
 }
 
@@ -152,6 +198,18 @@ export interface PartialUpdateAssetTypeRequestParams {
     assetType?: AssetType;
 }
 
+export interface PartialUpdateRackRequestParams {
+    id: string;
+    name?: string;
+    rack?: Rack;
+}
+
+export interface PartialUpdateRackTypeRequestParams {
+    id: string;
+    model?: string;
+    rackType?: RackType;
+}
+
 export interface PartialUpdateVendorRequestParams {
     id: string;
     name?: string;
@@ -166,6 +224,10 @@ export interface RetrieveAssetRequestParams {
     sapId?: string;
     serialNumber?: string;
     orderId?: string;
+    model?: string;
+    state?: string;
+    modelVendor?: string;
+    modelType?: string;
 }
 
 export interface RetrieveAssetModelRequestParams {
@@ -187,6 +249,16 @@ export interface RetrieveAssetTypeRequestParams {
     name?: string;
 }
 
+export interface RetrieveRackRequestParams {
+    id: string;
+    name?: string;
+}
+
+export interface RetrieveRackTypeRequestParams {
+    id: string;
+    model?: string;
+}
+
 export interface RetrieveVendorRequestParams {
     id: string;
     name?: string;
@@ -200,6 +272,10 @@ export interface UpdateAssetRequestParams {
     sapId?: string;
     serialNumber?: string;
     orderId?: string;
+    model?: string;
+    state?: string;
+    modelVendor?: string;
+    modelType?: string;
     asset?: Asset;
 }
 
@@ -223,6 +299,18 @@ export interface UpdateAssetTypeRequestParams {
     id: string;
     name?: string;
     assetType?: AssetType;
+}
+
+export interface UpdateRackRequestParams {
+    id: string;
+    name?: string;
+    rack?: Rack;
+}
+
+export interface UpdateRackTypeRequestParams {
+    id: string;
+    model?: string;
+    rackType?: RackType;
 }
 
 export interface UpdateVendorRequestParams {
@@ -266,6 +354,20 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+* @param requestParameters
+     */
+    createRack(requestParameters: CreateRackRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
+
+    /**
+     * 
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+* @param requestParameters
+     */
+    createRackType(requestParameters: CreateRackTypeRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
+
+    /**
+     * 
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
@@ -298,6 +400,20 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     destroyAssetType(requestParameters: DestroyAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+* @param requestParameters
+     */
+    destroyRack(requestParameters: DestroyRackRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+* @param requestParameters
+     */
+    destroyRackType(requestParameters: DestroyRackTypeRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
@@ -336,6 +452,20 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+* @param requestParameters
+     */
+    listRackTypes(requestParameters: ListRackTypesRequestParams, extraHttpRequestParams?: any): Observable<ListRackTypes200Response>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+* @param requestParameters
+     */
+    listRacks(requestParameters: ListRacksRequestParams, extraHttpRequestParams?: any): Observable<ListRacks200Response>;
+
+    /**
+     * 
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
@@ -368,6 +498,20 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     partialUpdateAssetType(requestParameters: PartialUpdateAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+* @param requestParameters
+     */
+    partialUpdateRack(requestParameters: PartialUpdateRackRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
+
+    /**
+     * 
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+* @param requestParameters
+     */
+    partialUpdateRackType(requestParameters: PartialUpdateRackTypeRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
 
     /**
      * 
@@ -406,6 +550,20 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+* @param requestParameters
+     */
+    retrieveRack(requestParameters: RetrieveRackRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
+
+    /**
+     * 
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+* @param requestParameters
+     */
+    retrieveRackType(requestParameters: RetrieveRackTypeRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
+
+    /**
+     * 
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.
 * @param requestParameters
      */
@@ -438,6 +596,20 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     updateAssetType(requestParameters: UpdateAssetTypeRequestParams, extraHttpRequestParams?: any): Observable<AssetType>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+* @param requestParameters
+     */
+    updateRack(requestParameters: UpdateRackRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
+
+    /**
+     * 
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.
+* @param requestParameters
+     */
+    updateRackType(requestParameters: UpdateRackTypeRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
 
     /**
      * 
