@@ -13,11 +13,13 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         many=False,
         read_only=True
     )
+
     location_id = serializers.StringRelatedField(
         source='rack.location.id',
         many=False,
         read_only=True
     )
+
     location_name = serializers.StringRelatedField(
         source='rack.location.name',
         many=False,
