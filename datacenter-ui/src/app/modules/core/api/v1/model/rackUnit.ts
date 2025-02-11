@@ -15,6 +15,7 @@ export interface RackUnit {
     readonly rack_name?: string;
     readonly location_id?: string;
     readonly location_name?: string;
+    readonly location_short_name?: string;
     readonly device_id?: string;
     readonly device_hostname?: string;
     readonly device_model?: string;
