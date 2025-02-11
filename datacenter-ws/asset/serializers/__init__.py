@@ -3,3 +3,5 @@ from .AssetStateSerializer import AssetStateSerializer
 from .VendorSerializer import VendorSerializer
 from .AssetModelSerializer import AssetModelSerializer
 from .AssetSerializer import AssetSerializer
+from .RackTypeSerializer import RackTypeSerializer
+from .RackSerializer import RackSerializer
