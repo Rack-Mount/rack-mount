@@ -109,8 +109,8 @@ export interface DestroyAssetTypeRequestParams {
 }
 
 export interface DestroyRackRequestParams {
-    id: string;
-    name?: string;
+    name: string;
+    name2?: string;
 }
 
 export interface DestroyRackTypeRequestParams {
@@ -247,8 +247,8 @@ export interface PartialUpdateAssetTypeRequestParams {
 }
 
 export interface PartialUpdateRackRequestParams {
-    id: string;
-    name?: string;
+    name: string;
+    name2?: string;
     rack?: Rack;
 }
 
@@ -313,8 +313,8 @@ export interface RetrieveAssetTypeRequestParams {
 }
 
 export interface RetrieveRackRequestParams {
-    id: string;
-    name?: string;
+    name: string;
+    name2?: string;
 }
 
 export interface RetrieveRackTypeRequestParams {
@@ -380,8 +380,8 @@ export interface UpdateAssetTypeRequestParams {
 }
 
 export interface UpdateRackRequestParams {
-    id: string;
-    name?: string;
+    name: string;
+    name2?: string;
     rack?: Rack;
 }
 

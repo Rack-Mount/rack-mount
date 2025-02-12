@@ -1282,16 +1282,16 @@ export class AssetService implements AssetServiceInterface {
     public destroyRack(requestParameters: DestroyRackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
     public destroyRack(requestParameters: DestroyRackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
     public destroyRack(requestParameters: DestroyRackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        const id = requestParameters?.id;
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling destroyRack.');
-        }
         const name = requestParameters?.name;
+        if (name === null || name === undefined) {
+            throw new Error('Required parameter name was null or undefined when calling destroyRack.');
+        }
+        const name2 = requestParameters?.name2;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (name !== undefined && name !== null) {
+        if (name2 !== undefined && name2 !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>name, 'name');
+            <any>name2, 'name');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1329,7 +1329,7 @@ export class AssetService implements AssetServiceInterface {
             }
         }
 
-        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "name", value: name, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -2881,17 +2881,17 @@ export class AssetService implements AssetServiceInterface {
     public partialUpdateRack(requestParameters: PartialUpdateRackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Rack>>;
     public partialUpdateRack(requestParameters: PartialUpdateRackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Rack>>;
     public partialUpdateRack(requestParameters: PartialUpdateRackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        const id = requestParameters?.id;
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling partialUpdateRack.');
-        }
         const name = requestParameters?.name;
+        if (name === null || name === undefined) {
+            throw new Error('Required parameter name was null or undefined when calling partialUpdateRack.');
+        }
+        const name2 = requestParameters?.name2;
         const rack = requestParameters?.rack;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (name !== undefined && name !== null) {
+        if (name2 !== undefined && name2 !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>name, 'name');
+            <any>name2, 'name');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -2941,7 +2941,7 @@ export class AssetService implements AssetServiceInterface {
             }
         }
 
-        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "name", value: name, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<Rack>('patch', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -3675,16 +3675,16 @@ export class AssetService implements AssetServiceInterface {
     public retrieveRack(requestParameters: RetrieveRackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Rack>>;
     public retrieveRack(requestParameters: RetrieveRackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Rack>>;
     public retrieveRack(requestParameters: RetrieveRackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        const id = requestParameters?.id;
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling retrieveRack.');
-        }
         const name = requestParameters?.name;
+        if (name === null || name === undefined) {
+            throw new Error('Required parameter name was null or undefined when calling retrieveRack.');
+        }
+        const name2 = requestParameters?.name2;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (name !== undefined && name !== null) {
+        if (name2 !== undefined && name2 !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>name, 'name');
+            <any>name2, 'name');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -3723,7 +3723,7 @@ export class AssetService implements AssetServiceInterface {
             }
         }
 
-        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "name", value: name, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<Rack>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -4482,17 +4482,17 @@ export class AssetService implements AssetServiceInterface {
     public updateRack(requestParameters: UpdateRackRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Rack>>;
     public updateRack(requestParameters: UpdateRackRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Rack>>;
     public updateRack(requestParameters: UpdateRackRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        const id = requestParameters?.id;
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling updateRack.');
-        }
         const name = requestParameters?.name;
+        if (name === null || name === undefined) {
+            throw new Error('Required parameter name was null or undefined when calling updateRack.');
+        }
+        const name2 = requestParameters?.name2;
         const rack = requestParameters?.rack;
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (name !== undefined && name !== null) {
+        if (name2 !== undefined && name2 !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>name, 'name');
+            <any>name2, 'name');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -4542,7 +4542,7 @@ export class AssetService implements AssetServiceInterface {
             }
         }
 
-        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "name", value: name, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<Rack>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
