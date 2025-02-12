@@ -28,7 +28,7 @@ class Rack(models.Model):
         db_table (str): The name of the database table to use for the model.
     """
     name = models.CharField(max_length=100)
-    model = models.ForeignKey(RackType, on_delete=models.CASCADE)
+    model = models.ForeignKey(RackType, on_delete=models.CASCADE, null=False)
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name='locations', null=True)
     description = models.TextField(blank=True)

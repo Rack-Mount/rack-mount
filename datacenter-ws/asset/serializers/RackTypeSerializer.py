@@ -16,6 +16,7 @@ class RackTypeSerializer(serializers.HyperlinkedModelSerializer):
         model: The RackType model that is being serialized.
         fields: A list of fields to be included in the serialized representation.
     """
+    capacity = serializers.IntegerField(required=True)
 
     class Meta:
         model = RackType
