@@ -1,1 +1,12 @@
-<p>rack works!</p>
+<div class="rack">
+  <table>
+    <thead>
+      <th><strong>Rack: </strong>{{ rack?.name }} - {{ rack?.location }}</th>
+    </thead>
+    <tr *ngFor="let module of rack_module">
+      <td>
+        {{ module }}
+      </td>
+    </tr>
+  </table>
+</div>

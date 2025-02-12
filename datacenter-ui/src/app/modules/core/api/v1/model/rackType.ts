@@ -13,6 +13,6 @@ export interface RackType {
     model: string;
     width: number;
     height: number;
-    capacity?: number;
+    capacity: number;
 }
 

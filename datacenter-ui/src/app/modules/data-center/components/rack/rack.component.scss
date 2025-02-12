@@ -1,0 +1,28 @@
+.rack {
+  text-align: center;
+  width: calc(17.1in / 10);
+}
+
+.rack table {
+  border: 1px solid white;
+  width: calc(17.1in / 10);
+  height: calc(1.75in / 10);
+  border-collapse: collapse;
+}
+
+.rack th {
+  border: 1px solid black;
+  width: calc(17.1in / 10);
+  height: calc(1.75in / 10);
+  background-color: #f2f2f2;
+  border-collapse: collapse;
+}
+
+.rack td {
+  border: 1px solid white;
+  border-collapse: collapse;
+  width: calc(17.1in / 10);
+  height: calc(1.75in / 10);
+  background-color: #000;
+  color: white;
+}
