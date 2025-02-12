@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from asset.serializers import RackTypeSerializer
 from asset.models import RackType
 from asset.paginations import StandardResultsSetPagination
+from rest_framework import permissions
 
 
 class RackTypeViewSet(viewsets.ModelViewSet):
@@ -21,3 +22,4 @@ class RackTypeViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     ordering = ['model']
     filterset_fields = ['model']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

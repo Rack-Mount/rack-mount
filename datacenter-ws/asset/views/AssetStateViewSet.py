@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from asset.serializers import AssetStateSerializer
 from asset.models import AssetState
 from asset.paginations import StandardResultsSetPagination
+from rest_framework import permissions
 
 
 class AssetStateViewSet(viewsets.ModelViewSet):
@@ -20,3 +21,4 @@ class AssetStateViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     ordering = ['name']
     filterset_fields = ['name']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

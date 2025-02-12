@@ -4,6 +4,7 @@ from asset.models import Asset
 from rest_framework import filters
 import django_filters.rest_framework
 from asset.paginations import StandardResultsSetPagination
+from rest_framework import permissions
 
 
 class AssetViewSet(viewsets.ModelViewSet):
@@ -31,3 +32,4 @@ class AssetViewSet(viewsets.ModelViewSet):
     ordering = ['hostname']
     filterset_fields = ['hostname', 'sap_id',
                         'serial_number', 'order_id', 'model', 'state', 'model__vendor', 'model__type']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

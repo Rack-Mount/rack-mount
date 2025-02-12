@@ -4,6 +4,7 @@ from asset.models import RackUnit
 from asset.paginations import StandardResultsSetPagination
 from rest_framework import filters
 import django_filters.rest_framework
+from rest_framework import permissions
 
 
 class RackUnitViewSet(viewsets.ModelViewSet):
@@ -26,3 +27,4 @@ class RackUnitViewSet(viewsets.ModelViewSet):
                        django_filters.rest_framework.DjangoFilterBackend)
     filterset_fields = ['rack', 'device__hostname', 'rack__location']
     search_fields = ['rack__name', 'device__hostname']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

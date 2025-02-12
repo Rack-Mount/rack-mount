@@ -4,6 +4,7 @@ from asset.models import Vendor
 from rest_framework import filters
 import django_filters.rest_framework
 from asset.paginations import StandardResultsSetPagination
+from rest_framework import permissions
 
 
 class VendorViewSet(viewsets.ModelViewSet):
@@ -20,5 +21,6 @@ class VendorViewSet(viewsets.ModelViewSet):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     ordering = ['name']
     filterset_fields = ['name']

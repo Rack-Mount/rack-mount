@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from asset.serializers import RackSerializer
 from asset.models import Rack
 from asset.paginations import StandardResultsSetPagination
+from rest_framework import permissions
 
 
 class RackViewSet(viewsets.ModelViewSet):
@@ -17,7 +18,9 @@ class RackViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Rack.objects.all()
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = RackSerializer
     pagination_class = StandardResultsSetPagination
     ordering = ['name']
     filterset_fields = ['name']
+    lookup_field = 'name'
