@@ -22,7 +22,7 @@ export class RackComponent implements OnChanges {
   constructor(private readonly assetService: AssetService) {}
   ngOnChanges(changes: SimpleChanges): void {
     if (this.rack) {
-      for (let i = 0; i < this.rack.model.capacity || 0; i++) {
+      for (let i = 0; i < this.rack.model.capacity; i++) {
         this.rackRender.push({
           rack_unit: 1,
           position: this.rack.model.capacity - i,
@@ -31,7 +31,7 @@ export class RackComponent implements OnChanges {
       }
 
       const params: ListRackUnitsRequestParams = {
-        rackName: this.rack?.name ?? '',
+        rackName: this.rack.name,
         pageSize: this.rack.model.capacity,
       };
 
