@@ -32,7 +32,8 @@ class RackUnit(models.Model):
     unit = models.PositiveIntegerField()
     front = models.BooleanField(default=True)
     device = models.OneToOneField(
-        Asset, on_delete=models.CASCADE, null=True, blank=True)
+        Asset, on_delete=models.CASCADE, null=True, blank=True
+    )
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
