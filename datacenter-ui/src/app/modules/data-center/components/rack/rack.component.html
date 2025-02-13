@@ -8,10 +8,13 @@
         *ngIf="rackElem.visible"
         [attr.rowspan]="rackElem.device ? rackElem.device.device_rack_units : 1"
       >
-        <span *ngIf="!rackElem.device">
+        <div class="ru ru1" *ngIf="!rackElem.device">
           {{ rackElem.position }}
-        </span>
+        </div>
         <img
+          class="ru ru{{
+            rackElem.device ? rackElem.device.device_rack_units : 1
+          }}"
           *ngIf="rackElem.device"
           src="http://localhost:8000/files/{{ rackElem.device.device_image }}"
           alt="{{ rackElem.device.device_hostname }}"
