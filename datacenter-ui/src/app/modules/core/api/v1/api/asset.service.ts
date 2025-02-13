@@ -1432,7 +1432,7 @@ export class AssetService implements AssetServiceInterface {
         }
         const ordering = requestParameters?.ordering;
         const search = requestParameters?.search;
-        const rack = requestParameters?.rack;
+        const rackName = requestParameters?.rackName;
         const deviceHostname = requestParameters?.deviceHostname;
         const rackLocation = requestParameters?.rackLocation;
 
@@ -1445,9 +1445,9 @@ export class AssetService implements AssetServiceInterface {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>search, 'search');
         }
-        if (rack !== undefined && rack !== null) {
+        if (rackName !== undefined && rackName !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>rack, 'rack');
+            <any>rackName, 'rack__name');
         }
         if (deviceHostname !== undefined && deviceHostname !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -2133,7 +2133,7 @@ export class AssetService implements AssetServiceInterface {
         const pageSize = requestParameters?.pageSize;
         const ordering = requestParameters?.ordering;
         const search = requestParameters?.search;
-        const rack = requestParameters?.rack;
+        const rackName = requestParameters?.rackName;
         const deviceHostname = requestParameters?.deviceHostname;
         const rackLocation = requestParameters?.rackLocation;
 
@@ -2154,9 +2154,9 @@ export class AssetService implements AssetServiceInterface {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>search, 'search');
         }
-        if (rack !== undefined && rack !== null) {
+        if (rackName !== undefined && rackName !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>rack, 'rack');
+            <any>rackName, 'rack__name');
         }
         if (deviceHostname !== undefined && deviceHostname !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -3059,7 +3059,7 @@ export class AssetService implements AssetServiceInterface {
         }
         const ordering = requestParameters?.ordering;
         const search = requestParameters?.search;
-        const rack = requestParameters?.rack;
+        const rackName = requestParameters?.rackName;
         const deviceHostname = requestParameters?.deviceHostname;
         const rackLocation = requestParameters?.rackLocation;
         const rackUnit = requestParameters?.rackUnit;
@@ -3073,9 +3073,9 @@ export class AssetService implements AssetServiceInterface {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>search, 'search');
         }
-        if (rack !== undefined && rack !== null) {
+        if (rackName !== undefined && rackName !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>rack, 'rack');
+            <any>rackName, 'rack__name');
         }
         if (deviceHostname !== undefined && deviceHostname !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -3827,7 +3827,7 @@ export class AssetService implements AssetServiceInterface {
         }
         const ordering = requestParameters?.ordering;
         const search = requestParameters?.search;
-        const rack = requestParameters?.rack;
+        const rackName = requestParameters?.rackName;
         const deviceHostname = requestParameters?.deviceHostname;
         const rackLocation = requestParameters?.rackLocation;
 
@@ -3840,9 +3840,9 @@ export class AssetService implements AssetServiceInterface {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>search, 'search');
         }
-        if (rack !== undefined && rack !== null) {
+        if (rackName !== undefined && rackName !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>rack, 'rack');
+            <any>rackName, 'rack__name');
         }
         if (deviceHostname !== undefined && deviceHostname !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
@@ -4660,7 +4660,7 @@ export class AssetService implements AssetServiceInterface {
         }
         const ordering = requestParameters?.ordering;
         const search = requestParameters?.search;
-        const rack = requestParameters?.rack;
+        const rackName = requestParameters?.rackName;
         const deviceHostname = requestParameters?.deviceHostname;
         const rackLocation = requestParameters?.rackLocation;
         const rackUnit = requestParameters?.rackUnit;
@@ -4674,9 +4674,9 @@ export class AssetService implements AssetServiceInterface {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>search, 'search');
         }
-        if (rack !== undefined && rack !== null) {
+        if (rackName !== undefined && rackName !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>rack, 'rack');
+            <any>rackName, 'rack__name');
         }
         if (deviceHostname !== undefined && deviceHostname !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,

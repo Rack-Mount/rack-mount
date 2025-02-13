@@ -21,6 +21,7 @@ export interface RackUnit {
     readonly device_model?: string;
     readonly device_vendor?: string;
     readonly device_type?: string;
+    readonly device_image?: string;
     readonly rack_installation_front?: boolean;
 }
 

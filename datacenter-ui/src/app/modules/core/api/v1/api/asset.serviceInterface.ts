@@ -122,7 +122,7 @@ export interface DestroyRackUnitRequestParams {
     id: string;
     ordering?: string;
     search?: string;
-    rack?: string;
+    rackName?: string;
     deviceHostname?: string;
     rackLocation?: string;
 }
@@ -186,7 +186,7 @@ export interface ListRackUnitsRequestParams {
     pageSize?: number;
     ordering?: string;
     search?: string;
-    rack?: string;
+    rackName?: string;
     deviceHostname?: string;
     rackLocation?: string;
 }
@@ -262,7 +262,7 @@ export interface PartialUpdateRackUnitRequestParams {
     id: string;
     ordering?: string;
     search?: string;
-    rack?: string;
+    rackName?: string;
     deviceHostname?: string;
     rackLocation?: string;
     rackUnit?: RackUnit;
@@ -326,7 +326,7 @@ export interface RetrieveRackUnitRequestParams {
     id: string;
     ordering?: string;
     search?: string;
-    rack?: string;
+    rackName?: string;
     deviceHostname?: string;
     rackLocation?: string;
 }
@@ -395,7 +395,7 @@ export interface UpdateRackUnitRequestParams {
     id: string;
     ordering?: string;
     search?: string;
-    rack?: string;
+    rackName?: string;
     deviceHostname?: string;
     rackLocation?: string;
     rackUnit?: RackUnit;
