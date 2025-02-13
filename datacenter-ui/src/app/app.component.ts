@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     });
 
     const rack_params: RetrieveRackRequestParams = {
-      name: 'SED24',
+      name: '19',
     };
 
     this.assetService.retrieveRack(rack_params).subscribe((rack) => {
