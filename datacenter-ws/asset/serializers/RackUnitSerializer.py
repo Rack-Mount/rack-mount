@@ -67,6 +67,11 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True
     )
 
+    device_rack_units = serializers.IntegerField(
+        source='device.model.rack_units',
+        required=True
+    )
+
     device_vendor = serializers.StringRelatedField(
         source='device.model.vendor.name',
         many=False,
@@ -93,4 +98,4 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RackUnit
         fields = ['id', 'rack_id', 'rack_name', 'location_id', 'location_name', 'location_short_name', 'device_id', 'device_hostname',
-                  'device_model', 'device_vendor', 'device_type', 'device_image', 'rack_installation_front']
+                  'device_model', 'device_vendor', 'device_type', 'device_image', 'rack_installation_front', 'device_rack_units', 'position']

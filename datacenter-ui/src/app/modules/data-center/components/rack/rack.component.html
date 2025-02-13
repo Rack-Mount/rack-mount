@@ -3,9 +3,19 @@
     <thead>
       <th><strong>Rack: </strong>{{ rack?.name }} - {{ rack?.location }}</th>
     </thead>
-    <tr *ngFor="let module of rack_module">
-      <td>
-        {{ module }}
+    <tr *ngFor="let rackElem of rackRender">
+      <td
+        *ngIf="rackElem.visible"
+        [attr.rowspan]="rackElem.device ? rackElem.device.device_rack_units : 1"
+      >
+        <span *ngIf="!rackElem.device">
+          {{ rackElem.position }}
+        </span>
+        <img
+          *ngIf="rackElem.device"
+          src="http://localhost:8000/files/{{ rackElem.device.device_image }}"
+          alt="{{ rackElem.device.device_hostname }}"
+        />
       </td>
     </tr>
   </table>

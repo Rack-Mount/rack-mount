@@ -29,7 +29,7 @@ class RackUnit(models.Model):
         db_table: Specifies the database table name as 'rack_unit'.
     """
     rack = models.ForeignKey(Rack, on_delete=models.CASCADE)
-    unit = models.PositiveIntegerField()
+    position = models.PositiveIntegerField()
     front = models.BooleanField(default=True)
     device = models.OneToOneField(
         Asset, on_delete=models.CASCADE, null=True, blank=True
@@ -40,12 +40,12 @@ class RackUnit(models.Model):
 
     def __str__(self):
         position = "front" if self.front else "rear"
-        return f"{self.rack.name} - {self.unit} ({position})"
+        return f"{self.rack.name} - {self.position} ({position})"
 
     def image_preview(self):
         return mark_safe('<img src="/%s/%s" width="300" />' % (settings.MEDIA_ROOT, self.device.model.front_image)) if self.device.model.front_image else ''
 
     class Meta:
-        unique_together = ('rack', 'unit', 'front')
-        ordering = ['rack', '-unit']
+        unique_together = ('rack', 'position', 'front')
+        ordering = ['rack', '-position']
         db_table = 'rack_unit'

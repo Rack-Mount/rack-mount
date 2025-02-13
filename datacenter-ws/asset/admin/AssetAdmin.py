@@ -17,7 +17,7 @@ class AssetResource(resources.ModelResource):
 
 class RackUnitInline(admin.TabularInline):
     model = RackUnit
-    fields = ['rack', 'unit', 'front', 'device']
+    fields = ['rack', 'position', 'front', 'device']
     readonly_fields = ['image_preview']
     autocomplete_fields = ['rack']
     can_delete = False
