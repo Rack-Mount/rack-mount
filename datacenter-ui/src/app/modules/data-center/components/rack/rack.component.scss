@@ -2,7 +2,7 @@
   text-align: center;
   width: calc(17.5in / 5);
   background-color: black;
-  padding: 30px;
+  padding: 30px 30px 30px 30px;
 }
 
 .rack table {
@@ -27,11 +27,12 @@
   height: calc(1.75in / 5);
   background-color: #555;
   color: white;
-  vertical-align: middle;
   font-weight: bold;
 }
 
 .rack img {
   margin: auto;
+  vertical-align: middle;
+
   width: calc(17.5in / 5);
 }

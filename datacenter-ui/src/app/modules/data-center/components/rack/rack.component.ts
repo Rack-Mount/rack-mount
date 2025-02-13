@@ -32,7 +32,7 @@ export class RackComponent implements OnChanges {
 
       const params: ListRackUnitsRequestParams = {
         rackName: this.rack?.name ?? '',
-        pageSize: 100,
+        pageSize: this.rack.model.capacity,
       };
 
       this.assetService.listRackUnits(params).subscribe((assets) => {
