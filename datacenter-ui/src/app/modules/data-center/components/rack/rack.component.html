@@ -11,15 +11,11 @@
         <div class="ru ru1" *ngIf="!rackElem.device">
           {{ rackElem.position }}
         </div>
-        <div class="ru ru1" *ngIf="rackElem.device">
-          <img
-            class="ru ru{{ rackElem.device.device_rack_units }}"
-            *ngIf="rackElem.device"
-            src="http://localhost:8000/files/{{ rackElem.device.device_image }}"
-            alt="{{ rackElem.device.device_hostname }}"
-          />
-          <span class="ru-text">{{ rackElem.device.device_hostname }}</span>
-        </div>
+        <app-device
+          *ngIf="rackElem.device"
+          [device]="rackElem.device"
+          [position]="rackElem.position"
+        ></app-device>
       </td>
     </tr>
   </table>
