@@ -42,6 +42,16 @@
   vertical-align: middle;
 }
 
+.ru-text {
+  width: calc(17.5in / 5);
+  text-align: center;
+  color: white;
+  position: absolute;
+  display: block;
+  margin: -18px auto;
+  background: rgba(0, 0, 0, 0.7);
+}
+
 .ru1 {
   width: calc(17.5in / 5);
   height: calc(1.75in / 5);
