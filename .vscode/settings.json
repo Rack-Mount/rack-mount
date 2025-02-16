@@ -1,0 +1,5 @@
+{
+  "python.testing.pytestArgs": ["datacenter-ws"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
+}
