@@ -5,6 +5,7 @@ from .AssetStateAdmin import AssetStateAdmin
 from .VendorAdmin import VendorAdmin
 from .AssetTypeAdmin import AssetTypeAdmin
 from .AssetModelAdmin import AssetModelAdmin
+from .NetworkSwitchAssetModelAdmin import NetworkSwitchAssetModelAdmin
 from .AssetCustomFieldAdmin import AssetCustomFieldAdmin, AssetCustomFieldInline
 from .AssetAdmin import AssetAdmin
 from .RackUnitAdmin import RackUnitAdmin

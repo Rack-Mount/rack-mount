@@ -1,5 +1,6 @@
 from django.db import models
-from . AssetModel import AssetModel
+from .AssetModel import AssetModel
+from .AssetType import AssetType
 
 
 class NetworkSwitchAssetModel(AssetModel):
