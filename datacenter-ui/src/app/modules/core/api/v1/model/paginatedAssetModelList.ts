@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Asset } from './asset';
+import { AssetModel } from './assetModel';
 
 
-export interface ListAssets200Response { 
+export interface PaginatedAssetModelList { 
     count: number;
-    next?: string | null;
-    previous?: string | null;
-    results: Array<Asset>;
+    next?: string;
+    previous?: string;
+    results: Array<AssetModel>;
 }
 

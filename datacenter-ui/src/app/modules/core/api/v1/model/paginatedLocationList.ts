@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { RackType } from './rackType';
+import { Location } from './location';
 
 
-export interface ListRackTypes200Response { 
+export interface PaginatedLocationList { 
     count: number;
-    next?: string | null;
-    previous?: string | null;
-    results: Array<RackType>;
+    next?: string;
+    previous?: string;
+    results: Array<Location>;
 }
 

@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { RackType } from './rackType';
 
 
-export interface LocationCustomFieldsInner { 
-    readonly url?: string;
-    readonly id?: number;
-    field_name: string;
-    field_value?: string;
-    location: string;
+export interface PaginatedRackTypeList { 
+    count: number;
+    next?: string;
+    previous?: string;
+    results: Array<RackType>;
 }
 

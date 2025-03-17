@@ -1,4 +1,4 @@
-import { HttpParameterCodec } from '@angular/common/http';
+import { HttpHeaders, HttpParams, HttpParameterCodec } from '@angular/common/http';
 import { Param } from './param';
 
 export interface ConfigurationParameters {
@@ -86,6 +86,26 @@ export class Configuration {
         else {
             this.credentials = {};
         }
+
+        // init default basicAuth credential
+        if (!this.credentials['basicAuth']) {
+            this.credentials['basicAuth'] = () => {
+                return (this.username || this.password)
+                    ? btoa(this.username + ':' + this.password)
+                    : undefined;
+            };
+        }
+
+        // init default cookieAuth credential
+        if (!this.credentials['cookieAuth']) {
+            this.credentials['cookieAuth'] = () => {
+                if (this.apiKeys === null || this.apiKeys === undefined) {
+                    return undefined;
+                } else {
+                    return this.apiKeys['cookieAuth'] || this.apiKeys['sessionid'];
+                }
+            };
+        }
     }
 
     /**
@@ -146,6 +166,20 @@ export class Configuration {
         return typeof value === 'function'
             ? value()
             : value;
+    }
+
+    public addCredentialToHeaders(credentialKey: string, headerName: string, headers: HttpHeaders, prefix?: string): HttpHeaders {
+        const value = this.lookupCredential(credentialKey);
+        return value
+            ? headers.set(headerName, (prefix ?? '') + value)
+            : headers;
+    }
+
+    public addCredentialToQuery(credentialKey: string, paramName: string, query: HttpParams): HttpParams {
+        const value = this.lookupCredential(credentialKey);
+        return value
+            ? query.set(paramName, value)
+            : query;
     }
 
     private defaultEncodeParam(param: Param): string {

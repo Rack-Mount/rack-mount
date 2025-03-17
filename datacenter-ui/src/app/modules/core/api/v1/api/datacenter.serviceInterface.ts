@@ -11,67 +11,67 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ListLocationCustomFields200Response } from '../model/models';
-import { ListLocations200Response } from '../model/models';
 import { Location } from '../model/models';
 import { LocationCustomField } from '../model/models';
+import { PaginatedLocationCustomFieldList } from '../model/models';
+import { PaginatedLocationList } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
 
 
-export interface CreateLocationRequestParams {
-    location?: Location;
+export interface DatacenterLocationCreateRequestParams {
+    location: Location;
 }
 
-export interface CreateLocationCustomFieldRequestParams {
-    locationCustomField?: LocationCustomField;
+export interface DatacenterLocationDestroyRequestParams {
+    id: number;
 }
 
-export interface DestroyLocationRequestParams {
-    id: string;
-}
-
-export interface DestroyLocationCustomFieldRequestParams {
-    id: string;
-}
-
-export interface ListLocationCustomFieldsRequestParams {
+export interface DatacenterLocationListRequestParams {
     limit?: number;
     offset?: number;
 }
 
-export interface ListLocationsRequestParams {
+export interface DatacenterLocationPartialUpdateRequestParams {
+    id: number;
+    location: Location;
+}
+
+export interface DatacenterLocationRetrieveRequestParams {
+    id: number;
+}
+
+export interface DatacenterLocationUpdateRequestParams {
+    id: number;
+    location: Location;
+}
+
+export interface DatacenterLocationcustomfiledCreateRequestParams {
+    locationCustomField: LocationCustomField;
+}
+
+export interface DatacenterLocationcustomfiledDestroyRequestParams {
+    id: number;
+}
+
+export interface DatacenterLocationcustomfiledListRequestParams {
     limit?: number;
     offset?: number;
 }
 
-export interface PartialUpdateLocationRequestParams {
-    id: string;
-    location?: Location;
+export interface DatacenterLocationcustomfiledPartialUpdateRequestParams {
+    id: number;
+    locationCustomField: LocationCustomField;
 }
 
-export interface PartialUpdateLocationCustomFieldRequestParams {
-    id: string;
-    locationCustomField?: LocationCustomField;
+export interface DatacenterLocationcustomfiledRetrieveRequestParams {
+    id: number;
 }
 
-export interface RetrieveLocationRequestParams {
-    id: string;
-}
-
-export interface RetrieveLocationCustomFieldRequestParams {
-    id: string;
-}
-
-export interface UpdateLocationRequestParams {
-    id: string;
-    location?: Location;
-}
-
-export interface UpdateLocationCustomFieldRequestParams {
-    id: string;
-    locationCustomField?: LocationCustomField;
+export interface DatacenterLocationcustomfiledUpdateRequestParams {
+    id: number;
+    locationCustomField: LocationCustomField;
 }
 
 
@@ -81,86 +81,86 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
 * @param requestParameters
      */
-    createLocation(requestParameters: CreateLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
+    datacenterLocationCreate(requestParameters: DatacenterLocationCreateRequestParams, extraHttpRequestParams?: any): Observable<Location>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
 * @param requestParameters
      */
-    createLocationCustomField(requestParameters: CreateLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+    datacenterLocationDestroy(requestParameters: DatacenterLocationDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
 * @param requestParameters
      */
-    destroyLocation(requestParameters: DestroyLocationRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+    datacenterLocationList(requestParameters: DatacenterLocationListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedLocationList>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
 * @param requestParameters
      */
-    destroyLocationCustomField(requestParameters: DestroyLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+    datacenterLocationPartialUpdate(requestParameters: DatacenterLocationPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<Location>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
 * @param requestParameters
      */
-    listLocationCustomFields(requestParameters: ListLocationCustomFieldsRequestParams, extraHttpRequestParams?: any): Observable<ListLocationCustomFields200Response>;
+    datacenterLocationRetrieve(requestParameters: DatacenterLocationRetrieveRequestParams, extraHttpRequestParams?: any): Observable<Location>;
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
 * @param requestParameters
      */
-    listLocations(requestParameters: ListLocationsRequestParams, extraHttpRequestParams?: any): Observable<ListLocations200Response>;
+    datacenterLocationUpdate(requestParameters: DatacenterLocationUpdateRequestParams, extraHttpRequestParams?: any): Observable<Location>;
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
 * @param requestParameters
      */
-    partialUpdateLocation(requestParameters: PartialUpdateLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
+    datacenterLocationcustomfiledCreate(requestParameters: DatacenterLocationcustomfiledCreateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
 * @param requestParameters
      */
-    partialUpdateLocationCustomField(requestParameters: PartialUpdateLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+    datacenterLocationcustomfiledDestroy(requestParameters: DatacenterLocationcustomfiledDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
 * @param requestParameters
      */
-    retrieveLocation(requestParameters: RetrieveLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
+    datacenterLocationcustomfiledList(requestParameters: DatacenterLocationcustomfiledListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedLocationCustomFieldList>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
 * @param requestParameters
      */
-    retrieveLocationCustomField(requestParameters: RetrieveLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+    datacenterLocationcustomfiledPartialUpdate(requestParameters: DatacenterLocationcustomfiledPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
 * @param requestParameters
      */
-    updateLocation(requestParameters: UpdateLocationRequestParams, extraHttpRequestParams?: any): Observable<Location>;
+    datacenterLocationcustomfiledRetrieve(requestParameters: DatacenterLocationcustomfiledRetrieveRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.
+     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
 * @param requestParameters
      */
-    updateLocationCustomField(requestParameters: UpdateLocationCustomFieldRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+    datacenterLocationcustomfiledUpdate(requestParameters: DatacenterLocationcustomfiledUpdateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
 }

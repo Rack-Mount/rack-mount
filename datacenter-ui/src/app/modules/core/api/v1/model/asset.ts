@@ -7,15 +7,18 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AssetModelType } from './assetModelType';
 import { AssetModel } from './assetModel';
+import { AssetState } from './assetState';
 
 
+/**
+ * Serializer for the Asset model.  This serializer uses HyperlinkedModelSerializer to serialize the Asset model with the following fields: - id: Read-only field representing the unique identifier of the asset. - model: Nested serializer for the asset model. - state: Nested serializer for the asset state.  Meta:     model: The model class that is being serialized.     fields: Specifies that all fields in the model should be included in the serialization.
+ */
 export interface Asset { 
-    readonly url?: string;
-    readonly id?: string;
+    readonly url: string;
+    readonly id: number;
     model: AssetModel;
-    state: AssetModelType;
+    state: AssetState;
     hostname?: string;
     serial_number?: string;
     sap_id?: string;
@@ -27,7 +30,7 @@ export interface Asset {
     power_supplies?: number;
     power_cosumption_watt?: number;
     note?: string;
-    readonly created_at?: string;
-    readonly updated_at?: string;
+    readonly created_at: string;
+    readonly updated_at: string;
 }
 

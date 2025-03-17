@@ -3,8 +3,8 @@ from asset.serializers import RackUnitSerializer
 from asset.models import RackUnit
 from asset.paginations import StandardResultsSetPagination
 from rest_framework import filters
-import django_filters.rest_framework
 from rest_framework import permissions
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class RackUnitViewSet(viewsets.ModelViewSet):
@@ -24,7 +24,7 @@ class RackUnitViewSet(viewsets.ModelViewSet):
     serializer_class = RackUnitSerializer
     pagination_class = StandardResultsSetPagination
     filter_backends = (filters.OrderingFilter, filters.SearchFilter,
-                       django_filters.rest_framework.DjangoFilterBackend)
+                       DjangoFilterBackend)
     filterset_fields = ['rack__name', 'device__hostname', 'rack__location']
     search_fields = ['rack__name', 'device__hostname']
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]

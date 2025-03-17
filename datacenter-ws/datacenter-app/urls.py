@@ -24,6 +24,7 @@ from rest_framework.schemas import get_schema_view
 from django.urls import path, include
 from django.contrib import admin
 from django.urls import path
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 admin.site.site_header = "Rack-Mount Data Center Admin"
 admin.site.site_title = "Rack-Mount Data Center Admin Portal"
@@ -38,15 +39,18 @@ urlpatterns = [
     path("datacenter/", include(dc_urls.urlpatterns)),
     path("asset/", include(asset_urls.urlpatterns)),
     path('admin/', admin.site.urls),
-    path('', get_schema_view(
-         title="Datacenter API",
-         description="API app Datacenter",
-         version="1.0.0",
-         patterns=schema_url_patterns,
-         public=True,
-         permission_classes=[AccessListPermission |
-                             permissions.IsAuthenticated]
-         ), name='openapi-schema'),
+    # path('', get_schema_view(
+    #      title="Datacenter API",
+    #      description="API app Datacenter",
+    #      version="1.0.0",
+    #      patterns=schema_url_patterns,
+    #      public=True,
+    #      permission_classes=[AccessListPermission |
+    #                          permissions.IsAuthenticated]
+    #      ), name='openapi-schema'),
+    path('openapi', SpectacularAPIView().as_view(), name='schema'),
+    path('',
+         SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 

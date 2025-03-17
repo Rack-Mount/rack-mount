@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {
+  AssetRackRetrieveRequestParams,
   AssetService,
   DatacenterService,
   Rack,
-  RetrieveRackRequestParams,
 } from './modules/core/api/v1';
 import { RackComponent } from './modules/data-center/components/rack/rack.component';
 
@@ -24,15 +24,15 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.datacenterService.listLocations().subscribe((data) => {
+    this.datacenterService.datacenterLocationList().subscribe((data) => {
       console.log(data);
     });
 
-    const rack_params: RetrieveRackRequestParams = {
+    const rack_params: AssetRackRetrieveRequestParams = {
       name: '19',
     };
 
-    this.assetService.retrieveRack(rack_params).subscribe((rack) => {
+    this.assetService.assetRackRetrieve(rack_params).subscribe((rack) => {
       this.rack = rack;
     });
   }

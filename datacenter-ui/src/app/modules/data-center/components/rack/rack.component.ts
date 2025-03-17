@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import {
+  AssetRackUnitListRequestParams,
   AssetService,
-  ListRackUnitsRequestParams,
   Rack,
   RackUnit,
 } from '../../../core/api/v1';
@@ -31,12 +31,12 @@ export class RackComponent implements OnChanges {
         });
       }
 
-      const params: ListRackUnitsRequestParams = {
+      const params: AssetRackUnitListRequestParams = {
         rackName: this.rack.name,
         pageSize: this.rack.model.capacity,
       };
 
-      this.assetService.listRackUnits(params).subscribe((assets) => {
+      this.assetService.assetRackUnitList(params).subscribe((assets) => {
         this.assets = assets.results;
         this.assets.forEach((asset) => {
           console.log(asset.position);

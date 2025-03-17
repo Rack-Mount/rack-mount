@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Rack } from './rack';
+import { Asset } from './asset';
 
 
-export interface ListRacks200Response { 
+export interface PaginatedAssetList { 
     count: number;
-    next?: string | null;
-    previous?: string | null;
-    results: Array<Rack>;
+    next?: string;
+    previous?: string;
+    results: Array<Asset>;
 }
 

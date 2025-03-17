@@ -10,10 +10,10 @@
 
 
 export interface AssetCustomField { 
-    readonly id?: number;
-    readonly asset_id?: string;
-    readonly asset_hostname?: string;
-    readonly field_name?: string;
+    readonly id: number;
+    readonly asset_id: string;
+    readonly asset_hostname: string;
+    readonly field_name: string;
     field_value?: string;
 }
 

@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Vendor } from './vendor';
+import { Rack } from './rack';
 
 
-export interface ListVendors200Response { 
+export interface PaginatedRackList { 
     count: number;
-    next?: string | null;
-    previous?: string | null;
-    results: Array<Vendor>;
+    next?: string;
+    previous?: string;
+    results: Array<Rack>;
 }
 

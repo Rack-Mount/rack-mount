@@ -7,13 +7,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { RackModel } from './rackModel';
+import { RackType } from './rackType';
 
 
+/**
+ * RackSerializer is a serializer for the Rack model, utilizing HyperlinkedModelSerializer.  Attributes:     model (RackTypeSerializer): Serializer for the RackType model.     location (serializers.StringRelatedField): Read-only field representing the location of the rack.     location_short (serializers.StringRelatedField): Read-only field representing the short name of the location.  Meta:     model (Rack): The model that is being serialized.     fields (list): List of fields to be included in the serialized output.
+ */
 export interface Rack { 
     name: string;
-    model: RackModel;
-    readonly location?: string;
-    readonly location_short?: string;
+    model: RackType;
+    readonly location: string;
+    readonly location_short: string;
 }
 

@@ -7,18 +7,21 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { LocationCustomFieldsInner } from './locationCustomFieldsInner';
+import { LocationCustomField } from './locationCustomField';
 
 
+/**
+ * LocationSerializer is a HyperlinkedModelSerializer for the Location model.  Fields:     id (IntegerField): Read-only field for the unique identifier of the location.     url (HyperlinkedIdentityField): Read-only field for the URL of the location detail view.     custom_fields (LocationCustomFieldSerializer): Read-only field for the custom fields associated with the location.  Meta:     model (Location): The model that is being serialized.     fields (str): Specifies that all fields of the model should be included in the serialization.
+ */
 export interface Location { 
-    readonly url?: string;
-    readonly id?: number;
-    readonly custom_fields?: Array<LocationCustomFieldsInner>;
+    readonly url: string;
+    readonly id: number;
+    custom_fields: Array<LocationCustomField>;
     name: string;
     short_name: string;
     location: string;
     capacity?: number;
-    readonly operational_since?: string;
+    readonly operational_since: string;
     manager?: string;
     manager_mail?: string | null;
 }

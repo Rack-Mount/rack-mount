@@ -10,10 +10,10 @@
 import { LocationCustomField } from './locationCustomField';
 
 
-export interface ListLocationCustomFields200Response { 
+export interface PaginatedLocationCustomFieldList { 
     count: number;
-    next?: string | null;
-    previous?: string | null;
+    next?: string;
+    previous?: string;
     results: Array<LocationCustomField>;
 }
 

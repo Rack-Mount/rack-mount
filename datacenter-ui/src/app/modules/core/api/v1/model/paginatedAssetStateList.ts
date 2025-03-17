@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AssetCustomField } from './assetCustomField';
+import { AssetState } from './assetState';
 
 
-export interface ListAssetCustomFields200Response { 
+export interface PaginatedAssetStateList { 
     count: number;
-    next?: string | null;
-    previous?: string | null;
-    results: Array<AssetCustomField>;
+    next?: string;
+    previous?: string;
+    results: Array<AssetState>;
 }
 

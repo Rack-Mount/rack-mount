@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AssetState } from './assetState';
+import { RackUnit } from './rackUnit';
 
 
-export interface ListAssetStates200Response { 
+export interface PaginatedRackUnitList { 
     count: number;
-    next?: string | null;
-    previous?: string | null;
-    results: Array<AssetState>;
+    next?: string;
+    previous?: string;
+    results: Array<RackUnit>;
 }
 
