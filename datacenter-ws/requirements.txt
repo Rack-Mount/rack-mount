@@ -21,7 +21,7 @@ pluggy==1.6.0
 pytest==8.3.5
 PyYAML==6.0.2
 referencing==0.36.2
-rpds-py==0.25.0
+rpds-py==0.25.1
 sqlparse==0.5.3
 tablib==3.8.0
 uritemplate==4.1.1
