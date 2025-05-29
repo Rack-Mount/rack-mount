@@ -2,16 +2,21 @@
   class="asset"
   (mouseenter)="hostname_visible = true"
   (mouseleave)="hostname_visible = false"
->
-  <div class="ru ru1" *ngIf="device">
-    <img
-      class="ru ru{{ device.device_rack_units }}"
-      *ngIf="device"
-      src="http://localhost:8000/files/{{ device.device_image }}"
-      alt="{{ device.device_hostname }}"
-    />
-    <span *ngIf="hostname_visible" class="ru1 ru-text">{{
-      device.device_hostname
-    }}</span>
-  </div>
+  >
+  @if (device) {
+    <div class="ru ru1">
+      @if (device) {
+        <img
+          class="ru ru{{ device.device_rack_units }}"
+          src="http://localhost:8000/files/{{ device.device_image }}"
+          alt="{{ device.device_hostname }}"
+          />
+      }
+      @if (hostname_visible) {
+        <span class="ru1 ru-text">{{
+          device.device_hostname
+        }}</span>
+      }
+    </div>
+  }
 </div>

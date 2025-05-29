@@ -3,20 +3,26 @@
     <thead>
       <th><strong>Rack: </strong>{{ rack?.name }} - {{ rack?.location }}</th>
     </thead>
-    <tr *ngFor="let rackElem of rackRender">
-      <td
-        *ngIf="rackElem.visible"
-        [attr.rowspan]="rackElem.device ? rackElem.device.device_rack_units : 1"
-      >
-        <div class="ru ru1" *ngIf="!rackElem.device">
-          {{ rackElem.position }}
-        </div>
-        <app-device
-          *ngIf="rackElem.device"
-          [device]="rackElem.device"
-          [position]="rackElem.position"
-        ></app-device>
-      </td>
-    </tr>
+    @for (rackElem of rackRender; track rackElem) {
+      <tr>
+        @if (rackElem.visible) {
+          <td
+            [attr.rowspan]="rackElem.device ? rackElem.device.device_rack_units : 1"
+            >
+            @if (!rackElem.device) {
+              <div class="ru ru1">
+                {{ rackElem.position }}
+              </div>
+            }
+            @if (rackElem.device) {
+              <app-device
+                [device]="rackElem.device"
+                [position]="rackElem.position"
+              ></app-device>
+            }
+          </td>
+        }
+      </tr>
+    }
   </table>
 </div>

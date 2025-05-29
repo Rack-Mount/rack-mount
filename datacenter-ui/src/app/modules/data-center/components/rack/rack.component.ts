@@ -6,12 +6,12 @@ import {
   RackUnit,
 } from '../../../core/api/v1';
 import { RackRender } from '../../models/RackRender';
-import { NgFor, NgIf } from '@angular/common';
+
 import { DeviceComponent } from '../device/device.component';
 
 @Component({
   selector: 'app-rack',
-  imports: [NgFor, NgIf, DeviceComponent],
+  imports: [DeviceComponent],
   templateUrl: './rack.component.html',
   styleUrl: './rack.component.scss',
 })
