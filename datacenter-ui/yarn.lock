@@ -16,6 +16,7 @@
   integrity sha512-adJYWJWuyXFtCOg2lZTV/7CImf4ifxd6c//VXuq5kx7AiSGTIH5Nf2xTQe8ZAZqytUmDgnoNMDhGRQ9b3C5TnA==
   dependencies:
     "@angular-devkit/core" "20.0.2"
+    "@angular-devkit/core" "20.0.2"
     rxjs "7.8.2"
 
 "@angular-devkit/core@20.0.2":
@@ -36,6 +37,7 @@
   integrity sha512-r1aSZhcadLtUMhzUUfy+pkJdZW93z8WQtpGR24y88yFpPgDL5kY85VSlOzjGgo1vEs8Dd7ADcOcsVsUW8MxQ3A==
   dependencies:
     "@angular-devkit/core" "20.0.2"
+    "@angular-devkit/core" "20.0.2"
     jsonc-parser "3.3.1"
     magic-string "0.30.17"
     ora "8.2.0"
@@ -54,6 +56,7 @@
   integrity sha512-nxha/dncAwEbY0nkgDWeiWSi+MSCJBuQbFf5bjTZ+pu0fS+5SOQllZKzZE9H+dms/JsLHm2YmPiScIYVvUenDw==
   dependencies:
     "@ampproject/remapping" "2.3.0"
+    "@angular-devkit/architect" "0.2000.2"
     "@angular-devkit/architect" "0.2000.2"
     "@babel/core" "7.27.1"
     "@babel/helper-annotate-as-pure" "7.27.1"
@@ -90,8 +93,12 @@
     "@angular-devkit/architect" "0.2000.2"
     "@angular-devkit/core" "20.0.2"
     "@angular-devkit/schematics" "20.0.2"
+    "@angular-devkit/architect" "0.2000.2"
+    "@angular-devkit/core" "20.0.2"
+    "@angular-devkit/schematics" "20.0.2"
     "@inquirer/prompts" "7.5.1"
     "@listr2/prompt-adapter-inquirer" "2.0.22"
+    "@schematics/angular" "20.0.2"
     "@schematics/angular" "20.0.2"
     "@yarnpkg/lockfile" "1.1.0"
     ini "5.0.0"
@@ -1194,6 +1201,8 @@
   resolved "https://registry.npmjs.org/@schematics/angular/-/angular-20.0.2.tgz"
   integrity sha512-TyF+/hV+8flAa/Vu8xOQF241Syg9rdbZD1dARdm6edbLo8nwxmHdRsIulRektb7oD5CpTnxpvrcNJjX77nhv6A==
   dependencies:
+    "@angular-devkit/core" "20.0.2"
+    "@angular-devkit/schematics" "20.0.2"
     "@angular-devkit/core" "20.0.2"
     "@angular-devkit/schematics" "20.0.2"
     jsonc-parser "3.3.1"
