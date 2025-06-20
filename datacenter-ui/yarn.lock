@@ -10,14 +10,6 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@angular-devkit/architect@0.2000.2":
-  version "0.2000.2"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/architect/-/architect-0.2000.2.tgz#26848f120949a7ff3ee18b2d6e8bf1d389fa92ff"
-  integrity sha512-adJYWJWuyXFtCOg2lZTV/7CImf4ifxd6c//VXuq5kx7AiSGTIH5Nf2xTQe8ZAZqytUmDgnoNMDhGRQ9b3C5TnA==
-  dependencies:
-    "@angular-devkit/core" "20.0.2"
-    rxjs "7.8.2"
-
 "@angular-devkit/architect@0.2000.3":
   version "0.2000.3"
   resolved "https://registry.yarnpkg.com/@angular-devkit/architect/-/architect-0.2000.3.tgz#f97a65f6b8c3e5f86ba87ece142cc4b908152772"
@@ -25,18 +17,6 @@
   dependencies:
     "@angular-devkit/core" "20.0.3"
     rxjs "7.8.2"
-
-"@angular-devkit/core@20.0.2":
-  version "20.0.2"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-20.0.2.tgz#23335cc4836590c35dba96ff619289c3d69c0b21"
-  integrity sha512-qqTSpcIw+TqJ6u/tkQzqgpwVelHsHr8Jhws1Vlx6E0L6E+cRILBK48i9ttE+oYkQlcopQ3VZAmzcZodXJ1SQ9Q==
-  dependencies:
-    ajv "8.17.1"
-    ajv-formats "3.0.1"
-    jsonc-parser "3.3.1"
-    picomatch "4.0.2"
-    rxjs "7.8.2"
-    source-map "0.7.4"
 
 "@angular-devkit/core@20.0.3":
   version "20.0.3"
@@ -68,13 +48,13 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/build@^20.0.2":
-  version "20.0.2"
-  resolved "https://registry.yarnpkg.com/@angular/build/-/build-20.0.2.tgz#0089408c198c575cd9bcc5bd683ce6fc1c4bd8b4"
-  integrity sha512-nxha/dncAwEbY0nkgDWeiWSi+MSCJBuQbFf5bjTZ+pu0fS+5SOQllZKzZE9H+dms/JsLHm2YmPiScIYVvUenDw==
+"@angular/build@^20.0.3":
+  version "20.0.3"
+  resolved "https://registry.yarnpkg.com/@angular/build/-/build-20.0.3.tgz#6c985c202e8955c9502fc725402da6ca8dc686b3"
+  integrity sha512-xA5eTGop85SI/+hfiOSJR/xI1w1NK3qylpEZ277YRaw8Ikh7r1DKPJOMGBfXNd8QsZYBSWGHA8SXvCmOh/hvLQ==
   dependencies:
     "@ampproject/remapping" "2.3.0"
-    "@angular-devkit/architect" "0.2000.2"
+    "@angular-devkit/architect" "0.2000.3"
     "@babel/core" "7.27.1"
     "@babel/helper-annotate-as-pure" "7.27.1"
     "@babel/helper-split-export-declaration" "7.24.7"
