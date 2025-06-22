@@ -18,8 +18,8 @@ openpyxl==3.1.5
 packaging==25.0
 pillow==11.2.1
 pluggy==1.6.0
-Pygments==2.19.1
-pytest==8.4.0
+Pygments==2.19.2
+pytest==8.4.1
 PyYAML==6.0.2
 referencing==0.36.2
 rpds-py==0.25.1
