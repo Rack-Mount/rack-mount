@@ -27,7 +27,7 @@
     "@angular/build": "^20.0.3",
     "@angular/cli": "^20.0.3",
     "@angular/compiler-cli": "^20.0.4",
-    "@openapitools/openapi-generator-cli": "^2.20.2",
+    "@openapitools/openapi-generator-cli": "^2.20.5",
     "@types/jasmine": "~5.1.8",
     "jasmine-core": "~5.8.0",
     "karma": "~6.4.4",
