@@ -18,10 +18,30 @@
     "@angular-devkit/core" "20.0.3"
     rxjs "7.8.2"
 
+"@angular-devkit/architect@0.2000.4":
+  version "0.2000.4"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/architect/-/architect-0.2000.4.tgz#ac21b6278daa4f101339c2921418c7677ae46998"
+  integrity sha512-pg+EPv/j17ybCoYiKjeRCebkE5CeD009xC6XJfugBmui6CcCQ5UAN82ibBhL869PXR7xCboylcRxlFfcBmvCpA==
+  dependencies:
+    "@angular-devkit/core" "20.0.4"
+    rxjs "7.8.2"
+
 "@angular-devkit/core@20.0.3":
   version "20.0.3"
   resolved "https://registry.npmjs.org/@angular-devkit/core/-/core-20.0.3.tgz"
   integrity sha512-XgEIbIky0pMtJSomHRaf16BT1jzJNQCm2geNZ642n3cj8fYLm4jHJX/r738kIfbHWoWXT/hlTmVgIH9TdQPicA==
+  dependencies:
+    ajv "8.17.1"
+    ajv-formats "3.0.1"
+    jsonc-parser "3.3.1"
+    picomatch "4.0.2"
+    rxjs "7.8.2"
+    source-map "0.7.4"
+
+"@angular-devkit/core@20.0.4":
+  version "20.0.4"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-20.0.4.tgz#7f81183b2ce6654f600f8a8417a7f76fe27cc7ed"
+  integrity sha512-GmHBOEhdZn0Xh8JAdmnbSXtEMoAEqakEFy1JZmwuUo5e6uuuEp5xQY4O3MO0UQBVjYT+Wz8KNfonTvY91t/lNQ==
   dependencies:
     ajv "8.17.1"
     ajv-formats "3.0.1"
@@ -48,13 +68,13 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/build@^20.0.3":
-  version "20.0.3"
-  resolved "https://registry.npmjs.org/@angular/build/-/build-20.0.3.tgz"
-  integrity sha512-xA5eTGop85SI/+hfiOSJR/xI1w1NK3qylpEZ277YRaw8Ikh7r1DKPJOMGBfXNd8QsZYBSWGHA8SXvCmOh/hvLQ==
+"@angular/build@^20.0.4":
+  version "20.0.4"
+  resolved "https://registry.yarnpkg.com/@angular/build/-/build-20.0.4.tgz#75f5ab78a446fe0e4e2d982db82cd06f5784a9b8"
+  integrity sha512-SIYLg2st05Q5hgFrxwj6L4i9j2j2JNWYoYgacXp+mw9YVhFiC02Ymbakc9fq+3+sWlm0XTX5JgrupV2ac1ytNQ==
   dependencies:
     "@ampproject/remapping" "2.3.0"
-    "@angular-devkit/architect" "0.2000.3"
+    "@angular-devkit/architect" "0.2000.4"
     "@babel/core" "7.27.1"
     "@babel/helper-annotate-as-pure" "7.27.1"
     "@babel/helper-split-export-declaration" "7.24.7"
@@ -71,7 +91,7 @@
     mrmime "2.0.1"
     parse5-html-rewriting-stream "7.1.0"
     picomatch "4.0.2"
-    piscina "5.0.0"
+    piscina "5.1.1"
     rollup "4.40.2"
     sass "1.88.0"
     semver "7.7.2"
@@ -181,7 +201,7 @@
   resolved "https://registry.npmjs.org/@babel/compat-data/-/compat-data-7.27.5.tgz"
   integrity sha512-KiRAp/VoJaWkkte84TvUd9qjdbZAdiqyvMxrGl1N6vzFogKmaLgoM3L1kgtLicp2HP5fBJS8JrZKLVIZGVJAVg==
 
-"@babel/core@7.27.1", "@babel/core@^7.12.3", "@babel/core@^7.23.9":
+"@babel/core@7.27.1":
   version "7.27.1"
   resolved "https://registry.npmjs.org/@babel/core/-/core-7.27.1.tgz"
   integrity sha512-IaaGWsQqfsQWVLqMn9OB92MNN7zukfVA4s7KKAI0KfrrDsZ0yhi5uV4baBuLuN7n3vsZpwP8asPPcVwApxvjBQ==
@@ -202,7 +222,7 @@
     json5 "^2.2.3"
     semver "^6.3.1"
 
-"@babel/core@7.27.4":
+"@babel/core@7.27.4", "@babel/core@^7.12.3", "@babel/core@^7.23.9":
   version "7.27.4"
   resolved "https://registry.npmjs.org/@babel/core/-/core-7.27.4.tgz"
   integrity sha512-bXYxrXFubeYdvB0NhD/NBB3Qi6aZeV20GOWVI47t2dkecCEoneR4NPVcb7abpXDEvejgrUfFtG6vG/zxAKmg+g==
@@ -3632,10 +3652,10 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
-piscina@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/piscina/-/piscina-5.0.0.tgz"
-  integrity sha512-R+arufwL7sZvGjAhSMK3TfH55YdGOqhpKXkcwQJr432AAnJX/xxX19PA4QisrmJ+BTTfZVggaz6HexbkQq1l1Q==
+piscina@5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/piscina/-/piscina-5.1.1.tgz#7a34e080d0500b3b7a56d0b3f37d8a00ec4d60fe"
+  integrity sha512-9rPDIPsCwOivatEZGM8+apgM7AiTDLSnpwMmLaSmdm2PeND8bFJzZLZZxyrJjLH8Xx/MpKoVaKf+vZOWALNHbw==
   optionalDependencies:
     "@napi-rs/nice" "^1.0.1"
 
