@@ -16,7 +16,7 @@ jsonschema-specifications==2025.4.1
 mysqlclient==2.2.7
 openpyxl==3.1.5
 packaging==25.0
-pillow==11.2.1
+pillow==11.3.0
 pluggy==1.6.0
 Pygments==2.19.2
 pytest==8.4.1
