@@ -1,7 +1,7 @@
-asgiref==3.8.1
+asgiref==3.9.0
 attrs==25.3.0
 diff-match-patch==20241021
-Django==5.2.3
+Django==5.2.4
 django-cors-headers==4.7.0
 django-filter==25.1
 django-import-export==4.3.8
@@ -16,13 +16,13 @@ jsonschema-specifications==2025.4.1
 mysqlclient==2.2.7
 openpyxl==3.1.5
 packaging==25.0
-pillow==11.2.1
+pillow==11.3.0
 pluggy==1.6.0
 Pygments==2.19.2
 pytest==8.4.1
 PyYAML==6.0.2
 referencing==0.36.2
-rpds-py==0.25.1
+rpds-py==0.26.0
 sqlparse==0.5.3
 tablib==3.8.0
 uritemplate==4.2.0
