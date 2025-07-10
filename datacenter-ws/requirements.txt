@@ -1,4 +1,4 @@
-asgiref==3.9.0
+asgiref==3.9.1
 attrs==25.3.0
 diff-match-patch==20241021
 Django==5.2.4
