@@ -1,6 +1,6 @@
 # Rack Mount
 
-# Migrate databse
+# Migrate database
 
 1. python manage.py dumpdata > datadump.json
 2. Change settings.py to your mysql Make sure you can connect on your mysql (permissions,etc)
