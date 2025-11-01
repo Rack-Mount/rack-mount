@@ -4,7 +4,7 @@ diff-match-patch==20241021
 Django==5.2.7
 django-cors-headers==4.9.0
 django-filter==25.2
-django-import-export==4.3.12
+django-import-export==4.3.13
 django-reversion==6.0.0
 djangorestframework==3.16.1
 drf-spectacular==0.28.0
