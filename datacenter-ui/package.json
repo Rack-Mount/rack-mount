@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@angular/build": "^20.3.9",
-    "@angular/cli": "^20.3.9",
+    "@angular/cli": "^20.3.10",
     "@angular/compiler-cli": "^20.3.10",
     "@openapitools/openapi-generator-cli": "^2.25.0",
     "@types/jasmine": "~5.1.12",
