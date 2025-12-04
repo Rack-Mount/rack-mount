@@ -128,6 +128,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint post /asset/asset
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -183,21 +184,23 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset`;
-        return this.httpClient.request<Asset>('post', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Asset>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: asset,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
     }
 
     /**
+     * @endpoint post /asset/asset_custom_field
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -250,21 +253,23 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_custom_field`;
-        return this.httpClient.request<AssetCustomField>('post', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetCustomField>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetCustomField,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
     }
 
     /**
+     * @endpoint delete /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -308,20 +313,22 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_custom_field/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
     }
 
     /**
+     * @endpoint get /asset/asset_custom_field
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -373,21 +380,23 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_custom_field`;
-        return this.httpClient.request<PaginatedAssetCustomFieldList>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedAssetCustomFieldList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
     }
 
     /**
+     * @endpoint patch /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -444,21 +453,23 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_custom_field/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetCustomField>('patch', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetCustomField>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetCustomField,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
     }
 
     /**
+     * @endpoint get /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -503,20 +514,22 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_custom_field/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetCustomField>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetCustomField>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
     }
 
     /**
+     * @endpoint put /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -573,15 +586,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_custom_field/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetCustomField>('put', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetCustomField>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetCustomField,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -589,6 +603,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint delete /asset/asset/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -632,14 +647,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -647,6 +663,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint get /asset/asset
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -725,15 +742,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset`;
-        return this.httpClient.request<PaginatedAssetList>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedAssetList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -741,6 +759,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint post /asset/asset_model
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -796,15 +815,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_model`;
-        return this.httpClient.request<AssetModel>('post', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetModel>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetModel,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -812,6 +832,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint delete /asset/asset_model/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -855,14 +876,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_model/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -870,6 +892,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint get /asset/asset_model
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -933,15 +956,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_model`;
-        return this.httpClient.request<PaginatedAssetModelList>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedAssetModelList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -949,6 +973,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint patch /asset/asset_model/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1008,15 +1033,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_model/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetModel>('patch', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetModel>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetModel,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1024,6 +1050,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint get /asset/asset_model/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1068,14 +1095,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_model/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetModel>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetModel>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1083,6 +1111,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint put /asset/asset_model/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1142,15 +1171,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_model/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetModel>('put', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetModel>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetModel,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1158,6 +1188,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint patch /asset/asset/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1217,15 +1248,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<Asset>('patch', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Asset>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: asset,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1233,6 +1265,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint get /asset/asset/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1277,14 +1310,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<Asset>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Asset>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1292,6 +1326,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint post /asset/asset_state
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1347,15 +1382,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_state`;
-        return this.httpClient.request<AssetState>('post', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetState>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetState,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1363,6 +1399,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint delete /asset/asset_state/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1406,14 +1443,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_state/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1421,6 +1459,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint get /asset/asset_state
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1472,15 +1511,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_state`;
-        return this.httpClient.request<PaginatedAssetStateList>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedAssetStateList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1488,6 +1528,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint patch /asset/asset_state/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1547,15 +1588,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_state/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetState>('patch', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetState>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetState,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1563,6 +1605,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint get /asset/asset_state/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1607,14 +1650,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_state/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetState>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetState>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1622,6 +1666,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint put /asset/asset_state/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1681,15 +1726,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_state/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetState>('put', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetState>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetState,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1697,6 +1743,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint post /asset/asset_type
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1752,15 +1799,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_type`;
-        return this.httpClient.request<AssetType>('post', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetType>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetType,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1768,6 +1816,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint delete /asset/asset_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1811,14 +1860,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1826,6 +1876,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint get /asset/asset_type
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1877,15 +1928,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_type`;
-        return this.httpClient.request<PaginatedAssetTypeList>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedAssetTypeList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1893,6 +1945,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint patch /asset/asset_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1952,15 +2005,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetType>('patch', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetType>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetType,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -1968,6 +2022,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint get /asset/asset_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2012,14 +2067,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetType>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetType>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2027,6 +2083,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * @endpoint put /asset/asset_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2086,15 +2143,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<AssetType>('put', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetType>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: assetType,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2102,6 +2160,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * @endpoint put /asset/asset/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2161,15 +2220,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<Asset>('put', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Asset>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: asset,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2177,6 +2237,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint post /asset/rack
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2232,15 +2293,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack`;
-        return this.httpClient.request<Rack>('post', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Rack>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: rack,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2248,6 +2310,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint delete /asset/rack/{name}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2291,14 +2354,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "name", value: name, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2306,6 +2370,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint get /asset/rack
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2357,15 +2422,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack`;
-        return this.httpClient.request<PaginatedRackList>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedRackList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2373,6 +2439,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint patch /asset/rack/{name}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2432,15 +2499,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "name", value: name, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Rack>('patch', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Rack>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: rack,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2448,6 +2516,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint get /asset/rack/{name}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2492,14 +2561,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "name", value: name, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Rack>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Rack>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2507,6 +2577,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * @endpoint post /asset/rack_type
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2562,15 +2633,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_type`;
-        return this.httpClient.request<RackType>('post', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RackType>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: rackType,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2578,6 +2650,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * @endpoint delete /asset/rack_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2621,14 +2694,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2636,6 +2710,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * @endpoint get /asset/rack_type
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2687,15 +2762,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_type`;
-        return this.httpClient.request<PaginatedRackTypeList>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedRackTypeList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2703,6 +2779,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * @endpoint patch /asset/rack_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2762,15 +2839,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<RackType>('patch', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RackType>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: rackType,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2778,6 +2856,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * @endpoint get /asset/rack_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2822,14 +2901,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<RackType>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RackType>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2837,6 +2917,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * @endpoint put /asset/rack_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2896,15 +2977,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_type/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<RackType>('put', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RackType>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: rackType,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2912,6 +2994,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * @endpoint post /asset/rack_unit
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -2967,15 +3050,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_unit`;
-        return this.httpClient.request<RackUnit>('post', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RackUnit>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: rackUnit,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -2983,6 +3067,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * @endpoint delete /asset/rack_unit/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3026,14 +3111,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_unit/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3041,6 +3127,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * @endpoint get /asset/rack_unit
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3104,15 +3191,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_unit`;
-        return this.httpClient.request<PaginatedRackUnitList>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedRackUnitList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3120,6 +3208,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * @endpoint patch /asset/rack_unit/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3179,15 +3268,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_unit/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<RackUnit>('patch', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RackUnit>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: rackUnit,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3195,6 +3285,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * @endpoint get /asset/rack_unit/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3239,14 +3330,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_unit/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<RackUnit>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RackUnit>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3254,6 +3346,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * @endpoint put /asset/rack_unit/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3313,15 +3406,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack_unit/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<RackUnit>('put', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RackUnit>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: rackUnit,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3329,6 +3423,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint put /asset/rack/{name}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3388,15 +3483,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/rack/${this.configuration.encodeParam({name: "name", value: name, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Rack>('put', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Rack>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: rack,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3404,6 +3500,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint post /asset/vendor
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3459,15 +3556,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/vendor`;
-        return this.httpClient.request<Vendor>('post', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Vendor>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: vendor,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3475,6 +3573,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint delete /asset/vendor/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3518,14 +3617,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/vendor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3533,6 +3633,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint get /asset/vendor
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3584,15 +3685,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/vendor`;
-        return this.httpClient.request<PaginatedVendorList>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedVendorList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3600,6 +3702,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint patch /asset/vendor/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3659,15 +3762,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/vendor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<Vendor>('patch', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Vendor>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: vendor,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3675,6 +3779,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint get /asset/vendor/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3719,14 +3824,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/vendor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<Vendor>('get', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Vendor>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );
@@ -3734,6 +3840,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     /**
      * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * @endpoint put /asset/vendor/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -3793,15 +3900,16 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/vendor/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
-        return this.httpClient.request<Vendor>('put', `${this.configuration.basePath}${localVarPath}`,
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Vendor>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: vendor,
                 responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
+                ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
                 reportProgress: reportProgress
             }
         );

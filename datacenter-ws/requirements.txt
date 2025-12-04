@@ -1,7 +1,7 @@
 asgiref==3.11.0
 attrs==25.4.0
 diff-match-patch==20241021
-Django==5.2.8
+Django==6.0
 django-cors-headers==4.9.0
 django-filter==25.2
 django-import-export==4.3.14
@@ -22,7 +22,7 @@ Pygments==2.19.2
 pytest==9.0.1
 PyYAML==6.0.3
 referencing==0.37.0
-rpds-py==0.29.0
-sqlparse==0.5.3
+rpds-py==0.30.0
+sqlparse==0.5.4
 tablib==3.9.0
 uritemplate==4.2.0
