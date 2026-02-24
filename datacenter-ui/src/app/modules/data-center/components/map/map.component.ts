@@ -86,7 +86,12 @@ export class MapComponent implements AfterViewInit {
   }
 
   // Adaptive grid: base step 10cm, doubles/halves to keep visual size in 15–150px
-  get gridPattern(): { size: number; offsetX: number; offsetY: number; step: number } {
+  get gridPattern(): {
+    size: number;
+    offsetX: number;
+    offsetY: number;
+    step: number;
+  } {
     let step = 10; // 10cm base
     const MIN_PX = 15;
     const MAX_PX = 150;
