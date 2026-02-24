@@ -11,10 +11,10 @@
 
 import { Inject, Injectable, Optional }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec, HttpContext 
+         HttpResponse, HttpEvent, HttpContext 
         }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { Location } from '../model/location';
@@ -62,6 +62,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationCreate(requestParameters: DatacenterLocationCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
     public datacenterLocationCreate(requestParameters: DatacenterLocationCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
@@ -135,6 +136,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationDestroy(requestParameters: DatacenterLocationDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
     public datacenterLocationDestroy(requestParameters: DatacenterLocationDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
@@ -195,6 +197,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationList(requestParameters?: DatacenterLocationListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedLocationList>;
     public datacenterLocationList(requestParameters?: DatacenterLocationListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedLocationList>>;
@@ -203,11 +206,25 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
         const limit = requestParameters?.limit;
         const offset = requestParameters?.offset;
 
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>limit, 'limit');
-        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>offset, 'offset');
+        let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'limit',
+            <any>limit,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'offset',
+            <any>offset,
+            QueryParamStyle.Form,
+            true,
+        );
+
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -244,7 +261,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
         return this.httpClient.request<PaginatedLocationList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                params: localVarQueryParameters,
+                params: localVarQueryParameters.toHttpParams(),
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -261,6 +278,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationPartialUpdate(requestParameters: DatacenterLocationPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
     public datacenterLocationPartialUpdate(requestParameters: DatacenterLocationPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
@@ -338,6 +356,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationRetrieve(requestParameters: DatacenterLocationRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
     public datacenterLocationRetrieve(requestParameters: DatacenterLocationRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
@@ -399,6 +418,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationUpdate(requestParameters: DatacenterLocationUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
     public datacenterLocationUpdate(requestParameters: DatacenterLocationUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
@@ -476,6 +496,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationcustomfiledCreate(requestParameters: DatacenterLocationcustomfiledCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
     public datacenterLocationcustomfiledCreate(requestParameters: DatacenterLocationcustomfiledCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
@@ -549,6 +570,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationcustomfiledDestroy(requestParameters: DatacenterLocationcustomfiledDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
     public datacenterLocationcustomfiledDestroy(requestParameters: DatacenterLocationcustomfiledDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
@@ -609,6 +631,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationcustomfiledList(requestParameters?: DatacenterLocationcustomfiledListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedLocationCustomFieldList>;
     public datacenterLocationcustomfiledList(requestParameters?: DatacenterLocationcustomfiledListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedLocationCustomFieldList>>;
@@ -617,11 +640,25 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
         const limit = requestParameters?.limit;
         const offset = requestParameters?.offset;
 
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>limit, 'limit');
-        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>offset, 'offset');
+        let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'limit',
+            <any>limit,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'offset',
+            <any>offset,
+            QueryParamStyle.Form,
+            true,
+        );
+
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -658,7 +695,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
         return this.httpClient.request<PaginatedLocationCustomFieldList>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                params: localVarQueryParameters,
+                params: localVarQueryParameters.toHttpParams(),
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -675,6 +712,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationcustomfiledPartialUpdate(requestParameters: DatacenterLocationcustomfiledPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
     public datacenterLocationcustomfiledPartialUpdate(requestParameters: DatacenterLocationcustomfiledPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
@@ -752,6 +790,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationcustomfiledRetrieve(requestParameters: DatacenterLocationcustomfiledRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
     public datacenterLocationcustomfiledRetrieve(requestParameters: DatacenterLocationcustomfiledRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
@@ -813,6 +852,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
+     * @param options additional options
      */
     public datacenterLocationcustomfiledUpdate(requestParameters: DatacenterLocationcustomfiledUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
     public datacenterLocationcustomfiledUpdate(requestParameters: DatacenterLocationcustomfiledUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
