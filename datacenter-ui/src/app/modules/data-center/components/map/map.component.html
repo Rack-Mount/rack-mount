@@ -38,7 +38,7 @@
                     <!-- Distance Text -->
                     <text
                       [attr.x]="seg.x"
-                      [attr.y]="seg.y - 5"
+                      [attr.y]="seg.y - 5 / zoom"
                       text-anchor="middle"
                       fill="#666"
                       [attr.font-size]="10 / zoom + 'px'"
@@ -53,18 +53,18 @@
                 <!-- Closed Wall Area -->
                 @if (el.area !== undefined) {
                   <rect
-                    [attr.x]="(el.centroidX ?? 0) - 30"
-                    [attr.y]="(el.centroidY ?? 0) - 12"
-                    width="60"
-                    height="22"
+                    [attr.x]="(el.centroidX ?? 0) - 30 / zoom"
+                    [attr.y]="(el.centroidY ?? 0) - 12 / zoom"
+                    [attr.width]="60 / zoom"
+                    [attr.height]="22 / zoom"
                     fill="white"
                     fill-opacity="0.75"
-                    rx="4"
+                    [attr.rx]="4 / zoom"
                     pointer-events="none"
                   />
                   <text
                     [attr.x]="el.centroidX ?? 0"
-                    [attr.y]="(el.centroidY ?? 0) + 5"
+                    [attr.y]="(el.centroidY ?? 0) + 5 / zoom"
                     text-anchor="middle"
                     fill="#0066cc"
                     [attr.font-size]="11 / zoom + 'px'"
@@ -264,17 +264,17 @@
                       <ng-container>
                         <!-- Length Text Background -->
                         <rect
-                          [attr.x]="segment.x - 20"
-                          [attr.y]="segment.y - 10"
-                          width="40"
-                          height="20"
+                          [attr.x]="segment.x - 20 / zoom"
+                          [attr.y]="segment.y - 10 / zoom"
+                          [attr.width]="40 / zoom"
+                          [attr.height]="20 / zoom"
                           fill="white"
                           fill-opacity="0.8"
-                          rx="4"
+                          [attr.rx]="4 / zoom"
                         />
                         <text
                           [attr.x]="segment.x"
-                          [attr.y]="segment.y + 4"
+                          [attr.y]="segment.y + 4 / zoom"
                           text-anchor="middle"
                           fill="#333"
                           [attr.font-size]="12 / zoom + 'px'"
@@ -304,20 +304,20 @@
                           .x +
                           cursorPosition.x) /
                           2 -
-                        20
+                        20 / zoom
                       "
                       [attr.y]="
                         (activePolylinePoints[activePolylinePoints.length - 1]
                           .y +
                           cursorPosition.y) /
                           2 -
-                        10
+                        10 / zoom
                       "
-                      width="40"
-                      height="20"
+                      [attr.width]="40 / zoom"
+                      [attr.height]="20 / zoom"
                       fill="white"
                       fill-opacity="0.8"
-                      rx="4"
+                      [attr.rx]="4 / zoom"
                     />
                     <!-- Length Text -->
                     <text
@@ -332,7 +332,7 @@
                           .y +
                           cursorPosition.y) /
                           2 +
-                        4
+                        4 / zoom
                       "
                       text-anchor="middle"
                       fill="#333"
@@ -439,10 +439,8 @@
     </svg>
     <!-- Zoom Controls -->
     <div class="zoom-controls">
-      <button class="zoom-btn" (click)="fitToView()" title="Adatta alla vista">
-        ⊡
-      </button>
       <button class="zoom-btn" (click)="zoomIn()" title="Zoom in">+</button>
+      <button class="zoom-btn" (click)="fitToView()" title="Adatta alla vista">⊡</button>
       <button
         class="zoom-btn zoom-reset"
         (click)="resetZoom()"

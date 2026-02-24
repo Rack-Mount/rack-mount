@@ -164,7 +164,7 @@ export class MapComponent implements AfterViewInit {
 
     if (fullPoints.length < 3) return [];
 
-    const LABEL_DIST = 18;
+    const LABEL_DIST = 18 / this.zoom;
     const result = [];
     for (let i = 1; i < fullPoints.length - 1; i++) {
       const p1 = fullPoints[i - 1];
@@ -513,6 +513,7 @@ export class MapComponent implements AfterViewInit {
     this.zoom = 1;
     this.panX = 0;
     this.panY = 0;
+    this.rederiveAllWalls();
   }
 
   fitToView(): void {
@@ -562,6 +563,7 @@ export class MapComponent implements AfterViewInit {
     this.zoom = newZoom;
     this.panX = (svgW - contentW * newZoom) / 2 - minX * newZoom;
     this.panY = (svgH - contentH * newZoom) / 2 - minY * newZoom;
+    this.rederiveAllWalls();
   }
 
   private applyZoom(factor: number, pivotX?: number, pivotY?: number): void {
@@ -572,6 +574,13 @@ export class MapComponent implements AfterViewInit {
     this.panX = cx - (cx - this.panX) * (newZoom / this.zoom);
     this.panY = cy - (cy - this.panY) * (newZoom / this.zoom);
     this.zoom = newZoom;
+    this.rederiveAllWalls();
+  }
+
+  private rederiveAllWalls(): void {
+    for (const el of this.elements) {
+      if (el.type === 'wall') this.updateWallDerived(el);
+    }
   }
 
   onToolChange(toolId: string) {
