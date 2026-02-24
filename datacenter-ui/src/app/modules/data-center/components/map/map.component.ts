@@ -1,4 +1,10 @@
-import { Component, HostListener, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 
@@ -18,7 +24,13 @@ interface MapElement {
   centroidX?: number;
   centroidY?: number;
   segments?: { x: number; y: number; length: number }[];
-  angles?: { x: number; y: number; angle: number; labelX: number; labelY: number }[];
+  angles?: {
+    x: number;
+    y: number;
+    angle: number;
+    labelX: number;
+    labelY: number;
+  }[];
 }
 
 @Component({
@@ -41,7 +53,13 @@ export class MapComponent implements AfterViewInit {
   // Polyline drawing state
   activePolylinePoints: { x: number; y: number }[] = [];
   activeWallSegments: { x: number; y: number; length: number }[] = [];
-  previewAngles: { x: number; y: number; angle: number; labelX: number; labelY: number }[] = [];
+  previewAngles: {
+    x: number;
+    y: number;
+    angle: number;
+    labelX: number;
+    labelY: number;
+  }[] = [];
   cursorPosition: { x: number; y: number } = { x: 0, y: 0 };
   currentSegmentLength: number = 0;
   intersectionPoint: { x: number; y: number } | null = null;
@@ -54,7 +72,12 @@ export class MapComponent implements AfterViewInit {
 
   // Pan drag state
   isPanning = false;
-  panDragStart: { screenX: number; screenY: number; panX: number; panY: number } | null = null;
+  panDragStart: {
+    screenX: number;
+    screenY: number;
+    panX: number;
+    panY: number;
+  } | null = null;
 
   get svgTransform(): string {
     return `translate(${this.panX},${this.panY}) scale(${this.zoom})`;
@@ -64,16 +87,24 @@ export class MapComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // Must use passive:false to call preventDefault() on wheel
-    this.svgContainer.nativeElement.addEventListener('wheel', (e: WheelEvent) => {
-      e.preventDefault();
-      const factor = e.deltaY < 0 ? 1.1 : 1 / 1.1;
-      this.applyZoom(factor, e.offsetX, e.offsetY);
-    }, { passive: false });
+    this.svgContainer.nativeElement.addEventListener(
+      'wheel',
+      (e: WheelEvent) => {
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.1 : 1 / 1.1;
+        this.applyZoom(factor, e.offsetX, e.offsetY);
+      },
+      { passive: false },
+    );
 
     // Prevent browser middle-click autoscroll cursor
-    this.svgContainer.nativeElement.addEventListener('mousedown', (e: MouseEvent) => {
-      if (e.button === 1) e.preventDefault();
-    }, { passive: false });
+    this.svgContainer.nativeElement.addEventListener(
+      'mousedown',
+      (e: MouseEvent) => {
+        if (e.button === 1) e.preventDefault();
+      },
+      { passive: false },
+    );
   }
 
   get polylinePreviewPoints(): string {
@@ -143,27 +174,45 @@ export class MapComponent implements AfterViewInit {
       const angle = this.getAngle(p1, p2, p3);
 
       // Compute inward bisector for label placement
-      const u1x = p1.x - p2.x, u1y = p1.y - p2.y;
-      const u2x = p3.x - p2.x, u2y = p3.y - p2.y;
+      const u1x = p1.x - p2.x,
+        u1y = p1.y - p2.y;
+      const u2x = p3.x - p2.x,
+        u2y = p3.y - p2.y;
       const l1 = Math.sqrt(u1x * u1x + u1y * u1y);
       const l2 = Math.sqrt(u2x * u2x + u2y * u2y);
-      let bx = 0, by = 0;
+      let bx = 0,
+        by = 0;
       if (l1 > 0 && l2 > 0) {
-        const n1x = u1x / l1, n1y = u1y / l1;
-        const n2x = u2x / l2, n2y = u2y / l2;
-        bx = n1x + n2x; by = n1y + n2y;
+        const n1x = u1x / l1,
+          n1y = u1y / l1;
+        const n2x = u2x / l2,
+          n2y = u2y / l2;
+        bx = n1x + n2x;
+        by = n1y + n2y;
         const bl = Math.sqrt(bx * bx + by * by);
-        if (bl < 0.001) { bx = -n1y; by = n1x; } // degenerate (180°): use perp
-        else { bx /= bl; by /= bl; }
+        if (bl < 0.001) {
+          bx = -n1y;
+          by = n1x;
+        } // degenerate (180°): use perp
+        else {
+          bx /= bl;
+          by /= bl;
+        }
         // If centroid provided, ensure bisector points inward
         if (centroidX !== undefined && centroidY !== undefined) {
-          const toCx = centroidX - p2.x, toCy = centroidY - p2.y;
-          if (bx * toCx + by * toCy < 0) { bx = -bx; by = -by; }
+          const toCx = centroidX - p2.x,
+            toCy = centroidY - p2.y;
+          if (bx * toCx + by * toCy < 0) {
+            bx = -bx;
+            by = -by;
+          }
         }
       }
 
       result.push({
-        x: p2.x, y: p2.y, angle,
+        x: p2.x,
+        y: p2.y,
+        angle,
         labelX: p2.x + bx * LABEL_DIST,
         labelY: p2.y + by * LABEL_DIST,
       });
@@ -366,7 +415,9 @@ export class MapComponent implements AfterViewInit {
     if (pts.length >= 4 && this.getDistance(pts[0], pts[pts.length - 1]) <= 2) {
       const poly = pts.slice(0, pts.length - 1);
       const n = poly.length;
-      let sa = 0, cx = 0, cy = 0;
+      let sa = 0,
+        cx = 0,
+        cy = 0;
       for (let i = 0; i < n; i++) {
         const j = (i + 1) % n;
         const cross = poly[i].x * poly[j].y - poly[j].x * poly[i].y;
@@ -383,10 +434,14 @@ export class MapComponent implements AfterViewInit {
         el.centroidX = computedCx;
         el.centroidY = computedCy;
       } else {
-        el.area = undefined; el.centroidX = undefined; el.centroidY = undefined;
+        el.area = undefined;
+        el.centroidX = undefined;
+        el.centroidY = undefined;
       }
     } else {
-      el.area = undefined; el.centroidX = undefined; el.centroidY = undefined;
+      el.area = undefined;
+      el.centroidX = undefined;
+      el.centroidY = undefined;
     }
 
     // Angles (computed after centroid so we can pass it for inward orientation)
@@ -399,9 +454,17 @@ export class MapComponent implements AfterViewInit {
     return points.map((p) => `${p.x},${p.y}`).join(' ');
   }
 
-  zoomIn(): void { this.applyZoom(1.25); }
-  zoomOut(): void { this.applyZoom(1 / 1.25); }
-  resetZoom(): void { this.zoom = 1; this.panX = 0; this.panY = 0; }
+  zoomIn(): void {
+    this.applyZoom(1.25);
+  }
+  zoomOut(): void {
+    this.applyZoom(1 / 1.25);
+  }
+  resetZoom(): void {
+    this.zoom = 1;
+    this.panX = 0;
+    this.panY = 0;
+  }
 
   private applyZoom(factor: number, pivotX?: number, pivotY?: number): void {
     const svg = this.svgContainer.nativeElement;
@@ -483,11 +546,19 @@ export class MapComponent implements AfterViewInit {
   onMouseDown(event: MouseEvent) {
     // Middle mouse button OR left button in select mode on empty background → pan
     const isMiddle = event.button === 1;
-    const isSelectBackground = event.button === 0 && this.selectedTool === 'select' && event.target === event.currentTarget;
+    const isSelectBackground =
+      event.button === 0 &&
+      this.selectedTool === 'select' &&
+      event.target === event.currentTarget;
     if (isMiddle || isSelectBackground) {
       event.preventDefault();
       this.isPanning = true;
-      this.panDragStart = { screenX: event.clientX, screenY: event.clientY, panX: this.panX, panY: this.panY };
+      this.panDragStart = {
+        screenX: event.clientX,
+        screenY: event.clientY,
+        panX: this.panX,
+        panY: this.panY,
+      };
       return;
     }
 
@@ -612,8 +683,10 @@ export class MapComponent implements AfterViewInit {
   onMouseMove(event: MouseEvent) {
     // Pan takes highest priority
     if (this.isPanning && this.panDragStart) {
-      this.panX = this.panDragStart.panX + (event.clientX - this.panDragStart.screenX);
-      this.panY = this.panDragStart.panY + (event.clientY - this.panDragStart.screenY);
+      this.panX =
+        this.panDragStart.panX + (event.clientX - this.panDragStart.screenX);
+      this.panY =
+        this.panDragStart.panY + (event.clientY - this.panDragStart.screenY);
       return;
     }
 
