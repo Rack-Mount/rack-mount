@@ -4,6 +4,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
@@ -41,6 +42,7 @@ interface MapElement {
   styleUrl: './map.component.scss',
 })
 export class MapComponent implements AfterViewInit {
+  constructor(private cdr: ChangeDetectorRef) {}
   selectedTool: string = 'select';
 
   elements: MapElement[] = [];
@@ -83,6 +85,57 @@ export class MapComponent implements AfterViewInit {
     return `translate(${this.panX},${this.panY}) scale(${this.zoom})`;
   }
 
+  // Adaptive grid: base step 10cm, doubles/halves to keep visual size in 15–150px
+  get gridPattern(): { size: number; offsetX: number; offsetY: number; step: number } {
+    let step = 10; // 10cm base
+    const MIN_PX = 15;
+    const MAX_PX = 150;
+    while (step * this.zoom < MIN_PX) step *= 10;
+    while (step * this.zoom > MAX_PX) step /= 10;
+    const size = step * this.zoom;
+    const offsetX = ((this.panX % size) + size) % size;
+    const offsetY = ((this.panY % size) + size) % size;
+    return { size, offsetX, offsetY, step };
+  }
+
+  // Pre-computed grid path string for SVG (screen-space lines), updated on zoom/pan
+  gridPath = '';
+  private gridRafId: number | null = null;
+
+  // Debounced grid update: at most once per animation frame
+  private scheduleUpdateGrid(): void {
+    if (this.gridRafId !== null) return;
+    this.gridRafId = requestAnimationFrame(() => {
+      this.gridRafId = null;
+      this.updateGrid();
+    });
+  }
+
+  private updateGrid(): void {
+    const svg = this.svgContainer?.nativeElement;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const W = rect.width || svg.clientWidth || 1200;
+    const H = rect.height || svg.clientHeight || 800;
+    let step = 10;
+    const MIN_PX = 15;
+    const MAX_PX = 150;
+    while (step * this.zoom < MIN_PX) step *= 10;
+    while (step * this.zoom > MAX_PX) step /= 10;
+    const size = step * this.zoom;
+    const offsetX = ((this.panX % size) + size) % size;
+    const offsetY = ((this.panY % size) + size) % size;
+    let d = '';
+    for (let x = offsetX; x <= W + size; x += size) {
+      d += `M${x},0 L${x},${H} `;
+    }
+    for (let y = offsetY; y <= H + size; y += size) {
+      d += `M0,${y} L${W},${y} `;
+    }
+    this.gridPath = d;
+    this.cdr.markForCheck();
+  }
+
   @ViewChild('svgContainer') svgContainer!: ElementRef<SVGSVGElement>;
 
   ngAfterViewInit(): void {
@@ -105,6 +158,12 @@ export class MapComponent implements AfterViewInit {
       },
       { passive: false },
     );
+
+    // Initial grid render
+    setTimeout(() => this.updateGrid(), 0);
+
+    // Update grid on window resize
+    window.addEventListener('resize', () => this.scheduleUpdateGrid());
   }
 
   get polylinePreviewPoints(): string {
@@ -581,6 +640,7 @@ export class MapComponent implements AfterViewInit {
     for (const el of this.elements) {
       if (el.type === 'wall') this.updateWallDerived(el);
     }
+    this.scheduleUpdateGrid();
   }
 
   onToolChange(toolId: string) {
@@ -611,9 +671,9 @@ export class MapComponent implements AfterViewInit {
     const contentX = (svgP.x - this.panX) / this.zoom;
     const contentY = (svgP.y - this.panY) / this.zoom;
 
-    // Grid Snap (Alt key)
+    // Grid Snap (Alt key) — 10cm = 10 SVG units
     if (event.altKey) {
-      const gridSize = 20;
+      const gridSize = 10;
       return {
         x: Math.round(contentX / gridSize) * gridSize,
         y: Math.round(contentY / gridSize) * gridSize,
@@ -802,6 +862,7 @@ export class MapComponent implements AfterViewInit {
         this.panDragStart.panX + (event.clientX - this.panDragStart.screenX);
       this.panY =
         this.panDragStart.panY + (event.clientY - this.panDragStart.screenY);
+      this.scheduleUpdateGrid();
       return;
     }
 

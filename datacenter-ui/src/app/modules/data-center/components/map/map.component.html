@@ -18,6 +18,15 @@
       (mouseleave)="onMouseUp($event)"
       (dblclick)="onDoubleClick($event)"
     >
+      <!-- Grid (screen-space path, outside transform) -->
+      <path
+        [attr.d]="gridPath"
+        fill="none"
+        stroke="#d4d4d4"
+        stroke-width="0.5"
+        pointer-events="none"
+      />
+
       <g [attr.transform]="svgTransform">
         @for (el of elements; track el.id) {
           <ng-container>
