@@ -221,6 +221,27 @@
           </ng-container>
         }
 
+        <!-- Snap-to-vertex indicator (green ring when dragging a vertex near another wall's vertex) -->
+        @if (snapTargetVertex) {
+          <circle
+            [attr.cx]="snapTargetVertex.x"
+            [attr.cy]="snapTargetVertex.y"
+            [attr.r]="14 / zoom"
+            fill="none"
+            stroke="#00cc44"
+            [attr.stroke-width]="2.5 / zoom"
+            stroke-dasharray="4,2"
+            pointer-events="none"
+          />
+          <circle
+            [attr.cx]="snapTargetVertex.x"
+            [attr.cy]="snapTargetVertex.y"
+            [attr.r]="3 / zoom"
+            fill="#00cc44"
+            pointer-events="none"
+          />
+        }
+
         <!-- Current drawing element preview -->
         @if (isDrawing) {
           <ng-container>

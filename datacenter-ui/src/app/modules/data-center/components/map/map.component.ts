@@ -448,6 +448,53 @@ export class MapComponent implements AfterViewInit {
     el.angles = this.getWallAngles(pts, undefined, computedCx, computedCy);
   }
 
+  // Merge two walls: elA vertex idxA is joined to elB vertex idxB
+  // Both walls must be open (not closed loops) and the joined vertex must be an endpoint
+  private mergeWalls(
+    elA: MapElement, idxA: number,
+    elB: MapElement, idxB: number
+  ): void {
+    const ptsA = elA.points!;
+    const ptsB = elB.points!;
+    if (ptsA.length < 2 || ptsB.length < 2) return;
+
+    // Check if walls are closed (loops)
+    const closedA = this.getDistance(ptsA[0], ptsA[ptsA.length - 1]) < 2;
+    const closedB = this.getDistance(ptsB[0], ptsB[ptsB.length - 1]) < 2;
+    if (closedA || closedB) return; // don't merge closed polygons
+
+    const lastA = ptsA.length - 1;
+    const lastB = ptsB.length - 1;
+    const aIsFirst = idxA === 0;
+    const aIsLast = idxA === lastA;
+    const bIsFirst = idxB === 0;
+    const bIsLast = idxB === lastB;
+
+    if (!(aIsFirst || aIsLast) || !(bIsFirst || bIsLast)) return;
+
+    let merged: { x: number; y: number }[];
+
+    if (aIsLast && bIsFirst) {
+      // A-end → B-start: A + B
+      merged = [...ptsA, ...ptsB.slice(1)];
+    } else if (aIsFirst && bIsLast) {
+      // A-start → B-end: B + A
+      merged = [...ptsB, ...ptsA.slice(1)];
+    } else if (aIsFirst && bIsFirst) {
+      // A-start → B-start: reverse(A) + B
+      merged = [...[...ptsA].reverse(), ...ptsB.slice(1)];
+    } else if (aIsLast && bIsLast) {
+      // A-end → B-end: A + reverse(B)
+      merged = [...ptsA, ...[...ptsB].reverse().slice(1)];
+    } else {
+      return;
+    }
+
+    elA.points = merged;
+    this.updateWallDerived(elA);
+    this.elements = this.elements.filter(e => e.id !== elB.id);
+  }
+
   // Format points array to SVG points string
   getPointsString(points: { x: number; y: number }[] | undefined): string {
     if (!points || points.length === 0) return '';
@@ -528,6 +575,9 @@ export class MapComponent implements AfterViewInit {
   // Selected whole wall for moving
   movingElementId: string | null = null;
   lastMousePosition: { x: number; y: number } | null = null;
+
+  // Snap-to-vertex target (other wall) while dragging a vertex
+  snapTargetVertex: { elementId: string; pointIndex: number; x: number; y: number } | null = null;
 
   // Minimal distance from point p to line segment v-w
   private getDistanceToSegment(
@@ -692,6 +742,11 @@ export class MapComponent implements AfterViewInit {
 
     let point = this.getSvgPoint(event);
 
+    // Clear snap indicator when not dragging a vertex
+    if (!(this.selectedTool === 'move' && this.isDrawing && this.selectedVertex)) {
+      this.snapTargetVertex = null;
+    }
+
     // Hover detection in move mode (when not dragging)
     if (this.selectedTool === 'move' && !this.isDrawing) {
       let found: {
@@ -786,6 +841,25 @@ export class MapComponent implements AfterViewInit {
             const dy = Math.abs(point.y - ref.y);
             point =
               dx > dy ? { x: point.x, y: ref.y } : { x: ref.x, y: point.y };
+          }
+        }
+
+        // Snap to vertices of other walls
+        this.snapTargetVertex = null;
+        const SNAP_RADIUS = 15 / this.zoom;
+        outer: for (const other of this.elements) {
+          if (other.id === el.id || !other.points) continue;
+          for (let j = 0; j < other.points.length; j++) {
+            if (this.getDistance(point, other.points[j]) < SNAP_RADIUS) {
+              this.snapTargetVertex = {
+                elementId: other.id,
+                pointIndex: j,
+                x: other.points[j].x,
+                y: other.points[j].y,
+              };
+              point = { x: other.points[j].x, y: other.points[j].y };
+              break outer;
+            }
           }
         }
 
@@ -896,10 +970,19 @@ export class MapComponent implements AfterViewInit {
     }
 
     if (this.selectedTool === 'move') {
+      // Attempt merge if vertex was snapped onto another wall
+      if (this.selectedVertex && this.snapTargetVertex) {
+        const elA = this.elements.find(e => e.id === this.selectedVertex!.elementId);
+        const elB = this.elements.find(e => e.id === this.snapTargetVertex!.elementId);
+        if (elA && elB) {
+          this.mergeWalls(elA, this.selectedVertex.pointIndex, elB, this.snapTargetVertex.pointIndex);
+        }
+      }
       this.isDrawing = false;
       this.selectedVertex = null;
       this.movingElementId = null;
       this.lastMousePosition = null;
+      this.snapTargetVertex = null;
       return;
     }
 
