@@ -521,13 +521,19 @@ export class MapComponent implements AfterViewInit {
     const ys: number[] = [];
     for (const el of this.elements) {
       if (el.points && el.points.length > 0) {
-        for (const p of el.points) { xs.push(p.x); ys.push(p.y); }
+        for (const p of el.points) {
+          xs.push(p.x);
+          ys.push(p.y);
+        }
       } else {
         xs.push(el.x, el.x + (el.width ?? 0), el.x2 ?? el.x);
         ys.push(el.y, el.y + (el.height ?? 0), el.y2 ?? el.y);
       }
     }
-    if (xs.length === 0) { this.resetZoom(); return; }
+    if (xs.length === 0) {
+      this.resetZoom();
+      return;
+    }
 
     const PADDING = 60; // px margin around content
     const minX = Math.min(...xs);
@@ -543,10 +549,13 @@ export class MapComponent implements AfterViewInit {
 
     const newZoom = Math.min(
       20,
-      Math.max(0.1, Math.min(
-        (svgW - PADDING * 2) / contentW,
-        (svgH - PADDING * 2) / contentH,
-      ))
+      Math.max(
+        0.1,
+        Math.min(
+          (svgW - PADDING * 2) / contentW,
+          (svgH - PADDING * 2) / contentH,
+        ),
+      ),
     );
 
     // Center the bounding box in the viewport
