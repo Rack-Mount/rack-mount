@@ -1,0 +1,420 @@
+<div class="map-container">
+  <app-map-sidebar
+    [activeTool]="selectedTool"
+    (toolChange)="onToolChange($event)"
+  >
+  </app-map-sidebar>
+  <div class="map-content">
+    <svg
+      #svgContainer
+      class="drawing-area"
+      [class.tool-select]="selectedTool === 'select'"
+      [style.cursor]="isPanning ? 'grabbing' : (selectedTool === 'select' ? 'grab' : '')"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp($event)"
+      (mouseleave)="onMouseUp($event)"
+      (dblclick)="onDoubleClick($event)"
+    >
+      <g [attr.transform]="svgTransform">
+      @for (el of elements; track el.id) {
+        <ng-container>
+          <!-- Wall (Polyline) -->
+          @if (el.type === "wall" && el.points) {
+            <ng-container>
+              <polyline
+                [attr.points]="getPointsString(el.points)"
+                stroke="black"
+                stroke-width="4"
+                fill="none"
+                [class.selected]="selectedElementId === el.id"
+                (click)="onElementClick($event, el)"
+              />
+              <!-- Wall Measurements -->
+              @for (seg of el.segments ?? []; track $index) {
+                <g>
+                  <!-- Distance Text -->
+                  <text
+                    [attr.x]="seg.x"
+                    [attr.y]="seg.y - 5"
+                    text-anchor="middle"
+                    fill="#666"
+                    [attr.font-size]="10 / zoom + 'px'"
+                    font-family="monospace"
+                    pointer-events="none"
+                    style="user-select: none"
+                  >
+                    {{ seg.length / 100 | number: "1.0-2" }} m
+                  </text>
+                </g>
+              }
+              <!-- Closed Wall Area -->
+              @if (el.area !== undefined) {
+                <rect
+                  [attr.x]="(el.centroidX ?? 0) - 30"
+                  [attr.y]="(el.centroidY ?? 0) - 12"
+                  width="60"
+                  height="22"
+                  fill="white"
+                  fill-opacity="0.75"
+                  rx="4"
+                  pointer-events="none"
+                />
+                <text
+                  [attr.x]="el.centroidX ?? 0"
+                  [attr.y]="(el.centroidY ?? 0) + 5"
+                  text-anchor="middle"
+                  fill="#0066cc"
+                  [attr.font-size]="11 / zoom + 'px'"
+                  font-family="monospace"
+                  font-weight="bold"
+                  pointer-events="none"
+                  style="user-select: none"
+                >
+                  {{ el.area / 10000 | number: "1.0-2" }} m²
+                </text>
+              }
+              <!-- Wall Angles -->
+              @for (angleData of el.angles ?? []; track $index) {
+                <g>
+                  <text
+                    [attr.x]="angleData.labelX"
+                    [attr.y]="angleData.labelY"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    fill="purple"
+                    [attr.font-size]="9 / zoom + 'px'"
+                    font-family="monospace"
+                    pointer-events="none"
+                    style="user-select: none"
+                  >
+                    {{ angleData.angle | number: "1.0-0" }}°
+                  </text>
+                  <!-- Small Arc for Angle -->
+                  <circle
+                    [attr.cx]="angleData.x"
+                    [attr.cy]="angleData.y"
+                    r="12"
+                    fill="none"
+                    stroke="purple"
+                    stroke-width="1"
+                    stroke-dasharray="2,2"
+                    opacity="0.3"
+                    pointer-events="none"
+                  />
+                </g>
+              }
+            </ng-container>
+          }
+          <!-- Legacy Wall (Line) backup -->
+          @if (el.type === "wall" && !el.points) {
+            <ng-container>
+              <line
+                [attr.x1]="el.x"
+                [attr.y1]="el.y"
+                [attr.x2]="el.x2"
+                [attr.y2]="el.y2"
+                stroke="black"
+                stroke-width="4"
+                [class.selected]="selectedElementId === el.id"
+                (click)="onElementClick($event, el)"
+              />
+            </ng-container>
+          }
+          <!-- Door -->
+          @if (el.type === "door") {
+            <ng-container>
+              <line
+                [attr.x1]="el.x"
+                [attr.y1]="el.y"
+                [attr.x2]="el.x2"
+                [attr.y2]="el.y2"
+                stroke="brown"
+                stroke-width="4"
+                stroke-dasharray="5,5"
+                [class.selected]="selectedElementId === el.id"
+                (click)="onElementClick($event, el)"
+              />
+            </ng-container>
+          }
+          <!-- Rack -->
+          @if (el.type === "rack") {
+            <g
+              (click)="onElementClick($event, el)"
+              class="rack-group"
+              [class.selected]="selectedElementId === el.id"
+            >
+              <rect
+                [attr.x]="el.x"
+                [attr.y]="el.y"
+                [attr.width]="el.width"
+                [attr.height]="el.height"
+                fill="#e0e0e0"
+                stroke="#333"
+                stroke-width="1"
+              />
+              <!-- Rack decorative lines (X) -->
+              <line
+                [attr.x1]="el.x"
+                [attr.y1]="el.y"
+                [attr.x2]="el.x + (el.width || 0)"
+                [attr.y2]="el.y + (el.height || 0)"
+                stroke="#ccc"
+                stroke-width="1"
+                pointer-events="none"
+              />
+              <line
+                [attr.x1]="el.x + (el.width || 0)"
+                [attr.y1]="el.y"
+                [attr.x2]="el.x"
+                [attr.y2]="el.y + (el.height || 0)"
+                stroke="#ccc"
+                stroke-width="1"
+                pointer-events="none"
+              />
+            </g>
+          }
+        </ng-container>
+      }
+
+      <!-- Move Tool Indicators: Show all vertices as manipulatable dots when tool is active -->
+      @if (selectedTool === "move") {
+        <ng-container>
+          @for (el of elements; track el.id) {
+            <ng-container>
+              @if (el.type === "wall" && el.points) {
+                <ng-container>
+                  <!-- Highlight wall body to signal it's moveable -->
+                  <polyline
+                    [attr.points]="getPointsString(el.points)"
+                    stroke="rgba(255,140,0,0.3)"
+                    stroke-width="10"
+                    fill="none"
+                    style="cursor: grab"
+                    pointer-events="none"
+                  />
+                  <!-- Vertex handles -->
+                  @for (p of el.points; track $index; let i = $index) {
+                    <circle
+                      [attr.cx]="p.x"
+                      [attr.cy]="p.y"
+                      r="6"
+                      [attr.fill]="
+                        hoveredVertex &&
+                        hoveredVertex.elementId === el.id &&
+                        hoveredVertex.pointIndex === i
+                          ? 'red'
+                          : 'orange'
+                      "
+                      stroke="white"
+                      stroke-width="2"
+                      style="cursor: grab"
+                      pointer-events="none"
+                    />
+                  }
+                </ng-container>
+              }
+            </ng-container>
+          }
+        </ng-container>
+      }
+
+      <!-- Current drawing element preview -->
+      @if (isDrawing) {
+        <ng-container>
+          <!-- Polyline Preview -->
+          @if (selectedTool === "wall" && activePolylinePoints.length > 0) {
+            <ng-container>
+              <polyline
+                [attr.points]="polylinePreviewPoints"
+                stroke="black"
+                stroke-width="4"
+                fill="none"
+                opacity="0.6"
+                pointer-events="none"
+              />
+              <!-- Dimension Line and Text -->
+              @if (activePolylinePoints.length > 0) {
+                <g pointer-events="none">
+                  <!-- Dimensions for already drawn segments of the current polyline -->
+                  @for (segment of activeWallSegments; track $index) {
+                    <ng-container>
+                      <!-- Length Text Background -->
+                      <rect
+                        [attr.x]="segment.x - 20"
+                        [attr.y]="segment.y - 10"
+                        width="40"
+                        height="20"
+                        fill="white"
+                        fill-opacity="0.8"
+                        rx="4"
+                      />
+                      <text
+                        [attr.x]="segment.x"
+                        [attr.y]="segment.y + 4"
+                        text-anchor="middle"
+                        fill="#333"
+                        [attr.font-size]="12 / zoom + 'px'"
+                      >
+                        {{ segment.length / 100 | number: "1.0-2" }} m
+                      </text>
+                    </ng-container>
+                  }
+                  <!-- Dashed line for current segment (cursor) -->
+                  <line
+                    [attr.x1]="
+                      activePolylinePoints[activePolylinePoints.length - 1].x
+                    "
+                    [attr.y1]="
+                      activePolylinePoints[activePolylinePoints.length - 1].y
+                    "
+                    [attr.x2]="cursorPosition.x"
+                    [attr.y2]="cursorPosition.y"
+                    stroke="#666"
+                    stroke-width="1"
+                    stroke-dasharray="4,4"
+                  />
+                  <!-- Length Text Background -->
+                  <rect
+                    [attr.x]="
+                      (activePolylinePoints[activePolylinePoints.length - 1].x +
+                        cursorPosition.x) /
+                        2 -
+                      20
+                    "
+                    [attr.y]="
+                      (activePolylinePoints[activePolylinePoints.length - 1].y +
+                        cursorPosition.y) /
+                        2 -
+                      10
+                    "
+                    width="40"
+                    height="20"
+                    fill="white"
+                    fill-opacity="0.8"
+                    rx="4"
+                  />
+                  <!-- Length Text -->
+                  <text
+                    [attr.x]="
+                      (activePolylinePoints[activePolylinePoints.length - 1].x +
+                        cursorPosition.x) /
+                      2
+                    "
+                    [attr.y]="
+                      (activePolylinePoints[activePolylinePoints.length - 1].y +
+                        cursorPosition.y) /
+                        2 +
+                      4
+                    "
+                    text-anchor="middle"
+                    fill="#333"
+                    [attr.font-size]="12 / zoom + 'px'"
+                    font-weight="bold"
+                  >
+                    {{ currentSegmentLength / 100 | number: "1.0-2" }} m
+                  </text>
+                  <!-- Angle Text at Vertices -->
+                  @for (angleData of previewAngles; track $index) {
+                    <ng-container>
+                      <text
+                        [attr.x]="angleData.labelX"
+                        [attr.y]="angleData.labelY"
+                        text-anchor="middle"
+                        dominant-baseline="middle"
+                        fill="purple"
+                        [attr.font-size]="11 / zoom + 'px'"
+                        font-weight="bold"
+                      >
+                        {{ angleData.angle | number: "1.0-0" }}°
+                      </text>
+                      <!-- Short Arc Helper (Optional) -->
+                      <circle
+                        [attr.cx]="angleData.x"
+                        [attr.cy]="angleData.y"
+                        r="15"
+                        fill="none"
+                        stroke="purple"
+                        stroke-width="1"
+                        stroke-dasharray="2,2"
+                        opacity="0.5"
+                      />
+                    </ng-container>
+                  }
+                </g>
+              }
+              <!-- Intersection Indicator (Red Dot) -->
+              @if (intersectionPoint) {
+                <circle
+                  [attr.cx]="intersectionPoint.x"
+                  [attr.cy]="intersectionPoint.y"
+                  r="6"
+                  fill="red"
+                  stroke="white"
+                  stroke-width="2"
+                  pointer-events="none"
+                />
+              }
+              <!-- Vertex Snap Indicator (Blue Dot) -->
+              @if (vertexSnapPoint) {
+                <circle
+                  [attr.cx]="vertexSnapPoint.x"
+                  [attr.cy]="vertexSnapPoint.y"
+                  r="8"
+                  fill="#007bff"
+                  stroke="white"
+                  stroke-width="2"
+                  pointer-events="none"
+                />
+              }
+              <!-- Start point indicator for closing -->
+              <circle
+                [attr.cx]="activePolylinePoints[0].x"
+                [attr.cy]="activePolylinePoints[0].y"
+                r="5"
+                fill="green"
+                opacity="0.5"
+                pointer-events="none"
+              />
+            </ng-container>
+          }
+          @if (currentElement && currentElement.type !== "wall") {
+            <ng-container>
+              @if (currentElement.type === "door") {
+                <line
+                  [attr.x1]="currentElement.x"
+                  [attr.y1]="currentElement.y"
+                  [attr.x2]="currentElement.x2"
+                  [attr.y2]="currentElement.y2"
+                  stroke="brown"
+                  stroke-width="4"
+                  stroke-dasharray="5,5"
+                  opacity="0.5"
+                />
+              }
+              @if (currentElement.type === "rack") {
+                <rect
+                  [attr.x]="currentElement.x"
+                  [attr.y]="currentElement.y"
+                  [attr.width]="currentElement.width"
+                  [attr.height]="currentElement.height"
+                  fill="#e0e0e0"
+                  stroke="#333"
+                  stroke-width="1"
+                  opacity="0.5"
+                />
+              }
+            </ng-container>
+          }
+        </ng-container>
+      }
+      </g>
+    </svg>
+    <!-- Zoom Controls -->
+    <div class="zoom-controls">
+      <button class="zoom-btn" (click)="zoomIn()" title="Zoom in">+</button>
+      <button class="zoom-btn zoom-reset" (click)="resetZoom()" title="Reset zoom">{{ (zoom * 100) | number:'1.0-0' }}%</button>
+      <button class="zoom-btn" (click)="zoomOut()" title="Zoom out">−</button>
+    </div>
+  </div>
+</div>

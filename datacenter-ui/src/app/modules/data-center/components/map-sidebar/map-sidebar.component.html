@@ -1,0 +1,16 @@
+<div class="sidebar">
+  <div class="title">Strumenti Mappa</div>
+  <div class="tools-container">
+    @for (tool of tools; track tool.id) {
+      <div
+        class="tool-item"
+        [class.active]="activeTool === tool.id"
+        (click)="selectTool(tool.id)"
+        title="{{ tool.label }}"
+      >
+        <div class="tool-icon">{{ tool.icon }}</div>
+        <div class="tool-label">{{ tool.label }}</div>
+      </div>
+    }
+  </div>
+</div>
