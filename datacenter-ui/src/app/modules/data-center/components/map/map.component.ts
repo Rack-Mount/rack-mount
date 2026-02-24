@@ -122,12 +122,7 @@ export class MapComponent implements AfterViewInit {
     const rect = svg.getBoundingClientRect();
     const W = rect.width || svg.clientWidth || 1200;
     const H = rect.height || svg.clientHeight || 800;
-    let step = 10;
-    const MIN_PX = 15;
-    const MAX_PX = 150;
-    while (step * this.zoom < MIN_PX) step *= 10;
-    while (step * this.zoom > MAX_PX) step /= 10;
-    const size = step * this.zoom;
+    const size = 40; // fixed screen-space size, independent of zoom
     const offsetX = ((this.panX % size) + size) % size;
     const offsetY = ((this.panY % size) + size) % size;
     let d = '';
