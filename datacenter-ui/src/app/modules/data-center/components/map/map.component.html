@@ -27,7 +27,7 @@
                 <polyline
                   [attr.points]="getPointsString(el.points)"
                   stroke="black"
-                  stroke-width="4"
+                  [attr.stroke-width]="4 / zoom"
                   fill="none"
                   [class.selected]="selectedElementId === el.id"
                   (click)="onElementClick($event, el)"
@@ -96,10 +96,10 @@
                     <circle
                       [attr.cx]="angleData.x"
                       [attr.cy]="angleData.y"
-                      r="12"
+                      [attr.r]="12 / zoom"
                       fill="none"
                       stroke="purple"
-                      stroke-width="1"
+                      [attr.stroke-width]="1 / zoom"
                       stroke-dasharray="2,2"
                       opacity="0.3"
                       pointer-events="none"
@@ -117,7 +117,7 @@
                   [attr.x2]="el.x2"
                   [attr.y2]="el.y2"
                   stroke="black"
-                  stroke-width="4"
+                  [attr.stroke-width]="4 / zoom"
                   [class.selected]="selectedElementId === el.id"
                   (click)="onElementClick($event, el)"
                 />
@@ -132,7 +132,7 @@
                   [attr.x2]="el.x2"
                   [attr.y2]="el.y2"
                   stroke="brown"
-                  stroke-width="4"
+                  [attr.stroke-width]="4 / zoom"
                   stroke-dasharray="5,5"
                   [class.selected]="selectedElementId === el.id"
                   (click)="onElementClick($event, el)"
@@ -153,7 +153,7 @@
                   [attr.height]="el.height"
                   fill="#e0e0e0"
                   stroke="#333"
-                  stroke-width="1"
+                  [attr.stroke-width]="1 / zoom"
                 />
                 <!-- Rack decorative lines (X) -->
                 <line
@@ -162,7 +162,7 @@
                   [attr.x2]="el.x + (el.width || 0)"
                   [attr.y2]="el.y + (el.height || 0)"
                   stroke="#ccc"
-                  stroke-width="1"
+                  [attr.stroke-width]="1 / zoom"
                   pointer-events="none"
                 />
                 <line
@@ -171,7 +171,7 @@
                   [attr.x2]="el.x"
                   [attr.y2]="el.y + (el.height || 0)"
                   stroke="#ccc"
-                  stroke-width="1"
+                  [attr.stroke-width]="1 / zoom"
                   pointer-events="none"
                 />
               </g>
@@ -190,7 +190,7 @@
                     <polyline
                       [attr.points]="getPointsString(el.points)"
                       stroke="rgba(255,140,0,0.3)"
-                      stroke-width="10"
+                      [attr.stroke-width]="10 / zoom"
                       fill="none"
                       style="cursor: grab"
                       pointer-events="none"
@@ -200,7 +200,7 @@
                       <circle
                         [attr.cx]="p.x"
                         [attr.cy]="p.y"
-                        r="6"
+                        [attr.r]="6 / zoom"
                         [attr.fill]="
                           hoveredVertex &&
                           hoveredVertex.elementId === el.id &&
@@ -209,7 +209,7 @@
                             : 'orange'
                         "
                         stroke="white"
-                        stroke-width="2"
+                        [attr.stroke-width]="2 / zoom"
                         style="cursor: grab"
                         pointer-events="none"
                       />
@@ -251,7 +251,7 @@
                 <polyline
                   [attr.points]="polylinePreviewPoints"
                   stroke="black"
-                  stroke-width="4"
+                  [attr.stroke-width]="4 / zoom"
                   fill="none"
                   opacity="0.6"
                   pointer-events="none"
@@ -294,7 +294,7 @@
                       [attr.x2]="cursorPosition.x"
                       [attr.y2]="cursorPosition.y"
                       stroke="#666"
-                      stroke-width="1"
+                    [attr.stroke-width]="1 / zoom"
                       stroke-dasharray="4,4"
                     />
                     <!-- Length Text Background -->
@@ -359,10 +359,10 @@
                         <circle
                           [attr.cx]="angleData.x"
                           [attr.cy]="angleData.y"
-                          r="15"
+                          [attr.r]="15 / zoom"
                           fill="none"
                           stroke="purple"
-                          stroke-width="1"
+                          [attr.stroke-width]="1 / zoom"
                           stroke-dasharray="2,2"
                           opacity="0.5"
                         />
@@ -375,10 +375,10 @@
                   <circle
                     [attr.cx]="intersectionPoint.x"
                     [attr.cy]="intersectionPoint.y"
-                    r="6"
+                    [attr.r]="6 / zoom"
                     fill="red"
                     stroke="white"
-                    stroke-width="2"
+                    [attr.stroke-width]="2 / zoom"
                     pointer-events="none"
                   />
                 }
@@ -387,10 +387,10 @@
                   <circle
                     [attr.cx]="vertexSnapPoint.x"
                     [attr.cy]="vertexSnapPoint.y"
-                    r="8"
+                    [attr.r]="8 / zoom"
                     fill="#007bff"
                     stroke="white"
-                    stroke-width="2"
+                    [attr.stroke-width]="2 / zoom"
                     pointer-events="none"
                   />
                 }
@@ -398,7 +398,7 @@
                 <circle
                   [attr.cx]="activePolylinePoints[0].x"
                   [attr.cy]="activePolylinePoints[0].y"
-                  r="5"
+                  [attr.r]="5 / zoom"
                   fill="green"
                   opacity="0.5"
                   pointer-events="none"
@@ -414,7 +414,7 @@
                     [attr.x2]="currentElement.x2"
                     [attr.y2]="currentElement.y2"
                     stroke="brown"
-                    stroke-width="4"
+                    [attr.stroke-width]="4 / zoom"
                     stroke-dasharray="5,5"
                     opacity="0.5"
                   />
@@ -427,7 +427,7 @@
                     [attr.height]="currentElement.height"
                     fill="#e0e0e0"
                     stroke="#333"
-                    stroke-width="1"
+                    [attr.stroke-width]="1 / zoom"
                     opacity="0.5"
                   />
                 }
@@ -439,6 +439,7 @@
     </svg>
     <!-- Zoom Controls -->
     <div class="zoom-controls">
+      <button class="zoom-btn" (click)="fitToView()" title="Adatta alla vista">⊡</button>
       <button class="zoom-btn" (click)="zoomIn()" title="Zoom in">+</button>
       <button
         class="zoom-btn zoom-reset"

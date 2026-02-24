@@ -451,8 +451,10 @@ export class MapComponent implements AfterViewInit {
   // Merge two walls: elA vertex idxA is joined to elB vertex idxB
   // Both walls must be open (not closed loops) and the joined vertex must be an endpoint
   private mergeWalls(
-    elA: MapElement, idxA: number,
-    elB: MapElement, idxB: number
+    elA: MapElement,
+    idxA: number,
+    elB: MapElement,
+    idxB: number,
   ): void {
     const ptsA = elA.points!;
     const ptsB = elB.points!;
@@ -492,7 +494,7 @@ export class MapComponent implements AfterViewInit {
 
     elA.points = merged;
     this.updateWallDerived(elA);
-    this.elements = this.elements.filter(e => e.id !== elB.id);
+    this.elements = this.elements.filter((e) => e.id !== elB.id);
   }
 
   // Format points array to SVG points string
@@ -511,6 +513,46 @@ export class MapComponent implements AfterViewInit {
     this.zoom = 1;
     this.panX = 0;
     this.panY = 0;
+  }
+
+  fitToView(): void {
+    // Collect all content points
+    const xs: number[] = [];
+    const ys: number[] = [];
+    for (const el of this.elements) {
+      if (el.points && el.points.length > 0) {
+        for (const p of el.points) { xs.push(p.x); ys.push(p.y); }
+      } else {
+        xs.push(el.x, el.x + (el.width ?? 0), el.x2 ?? el.x);
+        ys.push(el.y, el.y + (el.height ?? 0), el.y2 ?? el.y);
+      }
+    }
+    if (xs.length === 0) { this.resetZoom(); return; }
+
+    const PADDING = 60; // px margin around content
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+    const contentW = maxX - minX || 1;
+    const contentH = maxY - minY || 1;
+
+    const svg = this.svgContainer.nativeElement;
+    const svgW = svg.clientWidth;
+    const svgH = svg.clientHeight;
+
+    const newZoom = Math.min(
+      20,
+      Math.max(0.1, Math.min(
+        (svgW - PADDING * 2) / contentW,
+        (svgH - PADDING * 2) / contentH,
+      ))
+    );
+
+    // Center the bounding box in the viewport
+    this.zoom = newZoom;
+    this.panX = (svgW - contentW * newZoom) / 2 - minX * newZoom;
+    this.panY = (svgH - contentH * newZoom) / 2 - minY * newZoom;
   }
 
   private applyZoom(factor: number, pivotX?: number, pivotY?: number): void {
@@ -577,7 +619,12 @@ export class MapComponent implements AfterViewInit {
   lastMousePosition: { x: number; y: number } | null = null;
 
   // Snap-to-vertex target (other wall) while dragging a vertex
-  snapTargetVertex: { elementId: string; pointIndex: number; x: number; y: number } | null = null;
+  snapTargetVertex: {
+    elementId: string;
+    pointIndex: number;
+    x: number;
+    y: number;
+  } | null = null;
 
   // Minimal distance from point p to line segment v-w
   private getDistanceToSegment(
@@ -743,7 +790,9 @@ export class MapComponent implements AfterViewInit {
     let point = this.getSvgPoint(event);
 
     // Clear snap indicator when not dragging a vertex
-    if (!(this.selectedTool === 'move' && this.isDrawing && this.selectedVertex)) {
+    if (
+      !(this.selectedTool === 'move' && this.isDrawing && this.selectedVertex)
+    ) {
       this.snapTargetVertex = null;
     }
 
@@ -972,10 +1021,19 @@ export class MapComponent implements AfterViewInit {
     if (this.selectedTool === 'move') {
       // Attempt merge if vertex was snapped onto another wall
       if (this.selectedVertex && this.snapTargetVertex) {
-        const elA = this.elements.find(e => e.id === this.selectedVertex!.elementId);
-        const elB = this.elements.find(e => e.id === this.snapTargetVertex!.elementId);
+        const elA = this.elements.find(
+          (e) => e.id === this.selectedVertex!.elementId,
+        );
+        const elB = this.elements.find(
+          (e) => e.id === this.snapTargetVertex!.elementId,
+        );
         if (elA && elB) {
-          this.mergeWalls(elA, this.selectedVertex.pointIndex, elB, this.snapTargetVertex.pointIndex);
+          this.mergeWalls(
+            elA,
+            this.selectedVertex.pointIndex,
+            elB,
+            this.snapTargetVertex.pointIndex,
+          );
         }
       }
       this.isDrawing = false;
