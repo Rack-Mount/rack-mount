@@ -21,4 +21,4 @@ class AssetStateViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     ordering = ['name']
     filterset_fields = ['name']
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]

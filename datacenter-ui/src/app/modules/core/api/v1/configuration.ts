@@ -100,17 +100,6 @@ constructor({ accessToken, apiKeys, basePath, credentials, encodeParam, encoder,
                     : undefined;
             };
         }
-
-        // init default cookieAuth credential
-        if (!this.credentials['cookieAuth']) {
-            this.credentials['cookieAuth'] = () => {
-                if (this.apiKeys === null || this.apiKeys === undefined) {
-                    return undefined;
-                } else {
-                    return this.apiKeys['cookieAuth'] || this.apiKeys['sessionid'];
-                }
-            };
-        }
     }
 
     /**

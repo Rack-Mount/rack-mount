@@ -45,6 +45,24 @@ import { PaginatedRackUnitList } from '../model/paginatedRackUnitList';
 // @ts-ignore
 import { PaginatedVendorList } from '../model/paginatedVendorList';
 // @ts-ignore
+import { PatchedAsset } from '../model/patchedAsset';
+// @ts-ignore
+import { PatchedAssetCustomField } from '../model/patchedAssetCustomField';
+// @ts-ignore
+import { PatchedAssetModel } from '../model/patchedAssetModel';
+// @ts-ignore
+import { PatchedAssetState } from '../model/patchedAssetState';
+// @ts-ignore
+import { PatchedAssetType } from '../model/patchedAssetType';
+// @ts-ignore
+import { PatchedRack } from '../model/patchedRack';
+// @ts-ignore
+import { PatchedRackType } from '../model/patchedRackType';
+// @ts-ignore
+import { PatchedRackUnit } from '../model/patchedRackUnit';
+// @ts-ignore
+import { PatchedVendor } from '../model/patchedVendor';
+// @ts-ignore
 import { Rack } from '../model/rack';
 // @ts-ignore
 import { RackType } from '../model/rackType';
@@ -148,8 +166,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -217,8 +233,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -290,8 +304,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
@@ -379,8 +391,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -435,14 +445,12 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling assetAssetCustomFieldPartialUpdate.');
         }
-        const assetCustomField = requestParameters?.assetCustomField;
+        const patchedAssetCustomField = requestParameters?.patchedAssetCustomField;
 
         let localVarHeaders = this.defaultHeaders;
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -483,7 +491,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<AssetCustomField>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: assetCustomField,
+                body: patchedAssetCustomField,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -514,8 +522,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -576,8 +582,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -650,8 +654,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
@@ -830,8 +832,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -892,8 +892,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -966,8 +964,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
@@ -1096,8 +1092,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -1153,17 +1147,12 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling assetAssetModelPartialUpdate.');
         }
-        const assetModel = requestParameters?.assetModel;
-        if (assetModel === null || assetModel === undefined) {
-            throw new Error('Required parameter assetModel was null or undefined when calling assetAssetModelPartialUpdate.');
-        }
+        const patchedAssetModel = requestParameters?.patchedAssetModel;
 
         let localVarHeaders = this.defaultHeaders;
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -1204,7 +1193,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<AssetModel>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: assetModel,
+                body: patchedAssetModel,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -1236,8 +1225,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -1302,8 +1289,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -1371,17 +1356,12 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling assetAssetPartialUpdate.');
         }
-        const asset = requestParameters?.asset;
-        if (asset === null || asset === undefined) {
-            throw new Error('Required parameter asset was null or undefined when calling assetAssetPartialUpdate.');
-        }
+        const patchedAsset = requestParameters?.patchedAsset;
 
         let localVarHeaders = this.defaultHeaders;
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -1422,7 +1402,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<Asset>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: asset,
+                body: patchedAsset,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -1454,8 +1434,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -1516,8 +1494,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -1590,8 +1566,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
@@ -1680,8 +1654,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -1737,17 +1709,12 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling assetAssetStatePartialUpdate.');
         }
-        const assetState = requestParameters?.assetState;
-        if (assetState === null || assetState === undefined) {
-            throw new Error('Required parameter assetState was null or undefined when calling assetAssetStatePartialUpdate.');
-        }
+        const patchedAssetState = requestParameters?.patchedAssetState;
 
         let localVarHeaders = this.defaultHeaders;
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -1788,7 +1755,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<AssetState>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: assetState,
+                body: patchedAssetState,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -1820,8 +1787,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -1886,8 +1851,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -1961,8 +1924,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -2034,8 +1995,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
@@ -2124,8 +2083,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -2181,17 +2138,12 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling assetAssetTypePartialUpdate.');
         }
-        const assetType = requestParameters?.assetType;
-        if (assetType === null || assetType === undefined) {
-            throw new Error('Required parameter assetType was null or undefined when calling assetAssetTypePartialUpdate.');
-        }
+        const patchedAssetType = requestParameters?.patchedAssetType;
 
         let localVarHeaders = this.defaultHeaders;
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -2232,7 +2184,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<AssetType>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: assetType,
+                body: patchedAssetType,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -2264,8 +2216,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -2330,8 +2280,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -2409,8 +2357,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -2483,8 +2429,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -2556,8 +2500,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
@@ -2646,8 +2588,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -2703,17 +2643,12 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         if (name === null || name === undefined) {
             throw new Error('Required parameter name was null or undefined when calling assetRackPartialUpdate.');
         }
-        const rack = requestParameters?.rack;
-        if (rack === null || rack === undefined) {
-            throw new Error('Required parameter rack was null or undefined when calling assetRackPartialUpdate.');
-        }
+        const patchedRack = requestParameters?.patchedRack;
 
         let localVarHeaders = this.defaultHeaders;
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -2754,7 +2689,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<Rack>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: rack,
+                body: patchedRack,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -2786,8 +2721,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -2848,8 +2781,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -2922,8 +2853,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
@@ -3012,8 +2941,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -3069,17 +2996,12 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling assetRackTypePartialUpdate.');
         }
-        const rackType = requestParameters?.rackType;
-        if (rackType === null || rackType === undefined) {
-            throw new Error('Required parameter rackType was null or undefined when calling assetRackTypePartialUpdate.');
-        }
+        const patchedRackType = requestParameters?.patchedRackType;
 
         let localVarHeaders = this.defaultHeaders;
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -3120,7 +3042,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<RackType>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: rackType,
+                body: patchedRackType,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -3152,8 +3074,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -3218,8 +3138,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -3293,8 +3211,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -3367,8 +3283,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -3422,8 +3336,8 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const ordering = requestParameters?.ordering;
         const page = requestParameters?.page;
         const pageSize = requestParameters?.pageSize;
-        const rackLocation = requestParameters?.rackLocation;
         const rackName = requestParameters?.rackName;
+        const rackRoom = requestParameters?.rackRoom;
         const search = requestParameters?.search;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
@@ -3466,8 +3380,8 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         localVarQueryParameters = this.addToHttpParams(
             localVarQueryParameters,
-            'rack__location',
-            <any>rackLocation,
+            'rack__name',
+            <any>rackName,
             QueryParamStyle.Form,
             true,
         );
@@ -3475,8 +3389,8 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         localVarQueryParameters = this.addToHttpParams(
             localVarQueryParameters,
-            'rack__name',
-            <any>rackName,
+            'rack__room',
+            <any>rackRoom,
             QueryParamStyle.Form,
             true,
         );
@@ -3495,8 +3409,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -3553,17 +3465,12 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling assetRackUnitPartialUpdate.');
         }
-        const rackUnit = requestParameters?.rackUnit;
-        if (rackUnit === null || rackUnit === undefined) {
-            throw new Error('Required parameter rackUnit was null or undefined when calling assetRackUnitPartialUpdate.');
-        }
+        const patchedRackUnit = requestParameters?.patchedRackUnit;
 
         let localVarHeaders = this.defaultHeaders;
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -3604,7 +3511,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<RackUnit>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: rackUnit,
+                body: patchedRackUnit,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -3636,8 +3543,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -3702,8 +3607,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -3781,8 +3684,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -3855,8 +3756,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -3928,8 +3827,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
@@ -4018,8 +3915,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
 
-        // authentication (cookieAuth) required
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -4075,17 +3970,12 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling assetVendorPartialUpdate.');
         }
-        const vendor = requestParameters?.vendor;
-        if (vendor === null || vendor === undefined) {
-            throw new Error('Required parameter vendor was null or undefined when calling assetVendorPartialUpdate.');
-        }
+        const patchedVendor = requestParameters?.patchedVendor;
 
         let localVarHeaders = this.defaultHeaders;
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -4126,7 +4016,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<Vendor>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: vendor,
+                body: patchedVendor,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -4158,8 +4048,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
@@ -4224,8 +4112,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         // authentication (basicAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        // authentication (cookieAuth) required
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'

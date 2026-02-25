@@ -37,6 +37,7 @@ schema_url_patterns = [
 
 urlpatterns = [
     path("datacenter/", include(dc_urls.urlpatterns)),
+    path("location/", include(dc_urls.urlpatterns)),
     path("asset/", include(asset_urls.urlpatterns)),
     path('admin/', admin.site.urls),
     # path('', get_schema_view(

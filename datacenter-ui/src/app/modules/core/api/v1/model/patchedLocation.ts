@@ -14,14 +14,14 @@ import { Room } from './room';
 /**
  * LocationSerializer is a HyperlinkedModelSerializer for the Location model.  Fields:     id (IntegerField): Read-only field for the unique identifier of the location.     url (HyperlinkedIdentityField): Read-only field for the URL of the location detail view.     custom_fields (LocationCustomFieldSerializer): Read-only field for the custom fields associated with the location.     rooms (RoomSerializer): Read-only nested list of rooms belonging to this location.  Meta:     model (Location): The model that is being serialized.     fields (str): Specifies that all fields of the model should be included in the serialization.
  */
-export interface Location { 
-    readonly url: string;
-    readonly id: number;
-    custom_fields: Array<LocationCustomField>;
-    rooms: Array<Room>;
-    name: string;
-    short_name: string;
-    location: string;
-    readonly operational_since: string;
+export interface PatchedLocation { 
+    readonly url?: string;
+    readonly id?: number;
+    custom_fields?: Array<LocationCustomField>;
+    rooms?: Array<Room>;
+    name?: string;
+    short_name?: string;
+    location?: string;
+    readonly operational_since?: string;
 }
 

@@ -21,6 +21,6 @@ class VendorViewSet(viewsets.ModelViewSet):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     ordering = ['name']
     filterset_fields = ['name']

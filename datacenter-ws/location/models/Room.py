@@ -20,6 +20,8 @@ class Room(models.Model):
         manager (str): The name of the manager responsible for the room.
         manager_mail (str): The email address of the manager.
         floor_plan (ImageField): An optional image of the room's floor plan (planimetria).
+        floor_plan_data (JSONField): JSON representation of the interactive floor plan elements
+                                     (walls, racks, doors) drawn in the Angular editor.
         created_at (datetime): The date and time when the record was created.
         updated_at (datetime): The date and time when the record was last updated.
 
@@ -48,6 +50,11 @@ class Room(models.Model):
         upload_to='rooms/floor_plans/',
         null=True,
         blank=True,
+    )
+    floor_plan_data = models.JSONField(
+        null=True,
+        blank=True,
+        help_text='Interactive floor plan elements (walls, racks, doors) from the Angular editor.',
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

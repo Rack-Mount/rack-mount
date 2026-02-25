@@ -27,4 +27,4 @@ class RackUnitViewSet(viewsets.ModelViewSet):
                        DjangoFilterBackend)
     filterset_fields = ['rack__name', 'device__hostname', 'rack__room']
     search_fields = ['rack__name', 'device__hostname']
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]

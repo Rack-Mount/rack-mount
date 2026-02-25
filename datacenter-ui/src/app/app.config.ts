@@ -17,6 +17,8 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 export function apiConfigFactory(): Configuration {
   const params: ConfigurationParameters = {
     basePath: environment.service_url,
+    username: environment.api_username,
+    password: environment.api_password,
   };
   return new Configuration(params);
 }

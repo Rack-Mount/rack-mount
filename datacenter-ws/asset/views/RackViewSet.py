@@ -18,7 +18,7 @@ class RackViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Rack.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = RackSerializer
     pagination_class = StandardResultsSetPagination
     ordering = ['name']

@@ -22,4 +22,4 @@ class RackTypeViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     ordering = ['model']
     filterset_fields = ['model']
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]

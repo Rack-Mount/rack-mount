@@ -1,3 +1,5 @@
 export const environment = {
   service_url: 'http://127.0.0.1:8000',
+  api_username: 'your_django_username',
+  api_password: 'your_django_password',
 };

@@ -13,10 +13,10 @@ import { RackType } from './rackType';
 /**
  * RackSerializer is a serializer for the Rack model, utilizing HyperlinkedModelSerializer.  Attributes:     model (RackTypeSerializer): Serializer for the RackType model.     room (serializers.StringRelatedField): Read-only field representing the room of the rack.     location_name (serializers.StringRelatedField): Read-only field representing the location name.  Meta:     model (Rack): The model that is being serialized.     fields (list): List of fields to be included in the serialized output.
  */
-export interface Rack { 
-    name: string;
-    model: RackType;
-    readonly room: string;
-    readonly location_name: string;
+export interface PatchedRack { 
+    name?: string;
+    model?: RackType;
+    readonly room?: string;
+    readonly location_name?: string;
 }
 

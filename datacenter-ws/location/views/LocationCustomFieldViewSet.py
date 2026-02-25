@@ -18,4 +18,4 @@ class LocationCustomFieldViewSet(viewsets.ModelViewSet):
     queryset = LocationCustomField.objects.all()
     serializer_class = LocationCustomFieldSerializer
 
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]

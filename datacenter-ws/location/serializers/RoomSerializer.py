@@ -1,5 +1,18 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from location.models import Room
+
+
+@extend_schema_field(
+    field={
+        'type': 'array',
+        'items': {'type': 'object', 'additionalProperties': True},
+        'nullable': True,
+    }
+)
+class FloorPlanDataField(serializers.JSONField):
+    """JSONField with an explicit OpenAPI schema so the generator emits Array<object>."""
+    pass
 
 
 class RoomSerializer(serializers.HyperlinkedModelSerializer):
@@ -19,12 +32,14 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         read_only=True, view_name='room-detail')
     floor_plan_url = serializers.SerializerMethodField()
+    floor_plan_data = FloorPlanDataField(allow_null=True, required=False)
 
     class Meta:
         model = Room
         fields = '__all__'
 
-    def get_floor_plan_url(self, obj):
+    @extend_schema_field(serializers.CharField(allow_null=True))
+    def get_floor_plan_url(self, obj) -> str | None:
         request = self.context.get('request')
         if obj.floor_plan and request:
             return request.build_absolute_uri(obj.floor_plan.url)

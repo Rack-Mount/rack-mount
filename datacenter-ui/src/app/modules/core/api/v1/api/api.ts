@@ -4,4 +4,7 @@ export * from './asset.serviceInterface';
 export * from './datacenter.service';
 import { DatacenterService } from './datacenter.service';
 export * from './datacenter.serviceInterface';
-export const APIS = [AssetService, DatacenterService];
+export * from './location.service';
+import { LocationService } from './location.service';
+export * from './location.serviceInterface';
+export const APIS = [AssetService, DatacenterService, LocationService];

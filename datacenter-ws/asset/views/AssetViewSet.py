@@ -32,4 +32,4 @@ class AssetViewSet(viewsets.ModelViewSet):
     ordering = ['hostname']
     filterset_fields = ['hostname', 'sap_id',
                         'serial_number', 'order_id', 'model', 'state', 'model__vendor', 'model__type']
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]

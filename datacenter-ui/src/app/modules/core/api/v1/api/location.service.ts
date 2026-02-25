@@ -40,33 +40,33 @@ import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables'
 import { Configuration }                                     from '../configuration';
 import { BaseService } from '../api.base.service';
 import {
-    DatacenterServiceInterface,
-    DatacenterLocationCreateRequestParams,
-    DatacenterLocationDestroyRequestParams,
-    DatacenterLocationListRequestParams,
-    DatacenterLocationPartialUpdateRequestParams,
-    DatacenterLocationRetrieveRequestParams,
-    DatacenterLocationUpdateRequestParams,
-    DatacenterLocationcustomfiledCreateRequestParams,
-    DatacenterLocationcustomfiledDestroyRequestParams,
-    DatacenterLocationcustomfiledListRequestParams,
-    DatacenterLocationcustomfiledPartialUpdateRequestParams,
-    DatacenterLocationcustomfiledRetrieveRequestParams,
-    DatacenterLocationcustomfiledUpdateRequestParams,
-    DatacenterRoomCreateRequestParams,
-    DatacenterRoomDestroyRequestParams,
-    DatacenterRoomListRequestParams,
-    DatacenterRoomPartialUpdateRequestParams,
-    DatacenterRoomRetrieveRequestParams,
-    DatacenterRoomUpdateRequestParams
-} from './datacenter.serviceInterface';
+    LocationServiceInterface,
+    LocationLocationCreateRequestParams,
+    LocationLocationDestroyRequestParams,
+    LocationLocationListRequestParams,
+    LocationLocationPartialUpdateRequestParams,
+    LocationLocationRetrieveRequestParams,
+    LocationLocationUpdateRequestParams,
+    LocationLocationcustomfiledCreateRequestParams,
+    LocationLocationcustomfiledDestroyRequestParams,
+    LocationLocationcustomfiledListRequestParams,
+    LocationLocationcustomfiledPartialUpdateRequestParams,
+    LocationLocationcustomfiledRetrieveRequestParams,
+    LocationLocationcustomfiledUpdateRequestParams,
+    LocationRoomCreateRequestParams,
+    LocationRoomDestroyRequestParams,
+    LocationRoomListRequestParams,
+    LocationRoomPartialUpdateRequestParams,
+    LocationRoomRetrieveRequestParams,
+    LocationRoomUpdateRequestParams
+} from './location.serviceInterface';
 
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class DatacenterService extends BaseService implements DatacenterServiceInterface {
+export class LocationService extends BaseService implements LocationServiceInterface {
 
     constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string|string[], @Optional() configuration?: Configuration) {
         super(basePath, configuration);
@@ -74,19 +74,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
-     * @endpoint post /datacenter/location
+     * @endpoint post /location/location
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationCreate(requestParameters: DatacenterLocationCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
-    public datacenterLocationCreate(requestParameters: DatacenterLocationCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
-    public datacenterLocationCreate(requestParameters: DatacenterLocationCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Location>>;
-    public datacenterLocationCreate(requestParameters: DatacenterLocationCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationCreate(requestParameters: LocationLocationCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
+    public locationLocationCreate(requestParameters: LocationLocationCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
+    public locationLocationCreate(requestParameters: LocationLocationCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Location>>;
+    public locationLocationCreate(requestParameters: LocationLocationCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const location = requestParameters?.location;
         if (location === null || location === undefined) {
-            throw new Error('Required parameter location was null or undefined when calling datacenterLocationCreate.');
+            throw new Error('Required parameter location was null or undefined when calling locationLocationCreate.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -128,7 +128,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/location`;
+        let localVarPath = `/location/location`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Location>('post', `${basePath}${localVarPath}`,
             {
@@ -146,19 +146,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
-     * @endpoint delete /datacenter/location/{id}
+     * @endpoint delete /location/location/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationDestroy(requestParameters: DatacenterLocationDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public datacenterLocationDestroy(requestParameters: DatacenterLocationDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public datacenterLocationDestroy(requestParameters: DatacenterLocationDestroyRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public datacenterLocationDestroy(requestParameters: DatacenterLocationDestroyRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationDestroy(requestParameters: LocationLocationDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public locationLocationDestroy(requestParameters: LocationLocationDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public locationLocationDestroy(requestParameters: LocationLocationDestroyRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public locationLocationDestroy(requestParameters: LocationLocationDestroyRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterLocationDestroy.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationDestroy.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -188,7 +188,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/location/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/location/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
@@ -205,16 +205,16 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
-     * @endpoint get /datacenter/location
+     * @endpoint get /location/location
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationList(requestParameters?: DatacenterLocationListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedLocationList>;
-    public datacenterLocationList(requestParameters?: DatacenterLocationListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedLocationList>>;
-    public datacenterLocationList(requestParameters?: DatacenterLocationListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedLocationList>>;
-    public datacenterLocationList(requestParameters?: DatacenterLocationListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationList(requestParameters?: LocationLocationListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedLocationList>;
+    public locationLocationList(requestParameters?: LocationLocationListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedLocationList>>;
+    public locationLocationList(requestParameters?: LocationLocationListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedLocationList>>;
+    public locationLocationList(requestParameters?: LocationLocationListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const limit = requestParameters?.limit;
         const offset = requestParameters?.offset;
 
@@ -266,7 +266,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/location`;
+        let localVarPath = `/location/location`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<PaginatedLocationList>('get', `${basePath}${localVarPath}`,
             {
@@ -284,19 +284,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
-     * @endpoint patch /datacenter/location/{id}
+     * @endpoint patch /location/location/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationPartialUpdate(requestParameters: DatacenterLocationPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
-    public datacenterLocationPartialUpdate(requestParameters: DatacenterLocationPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
-    public datacenterLocationPartialUpdate(requestParameters: DatacenterLocationPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Location>>;
-    public datacenterLocationPartialUpdate(requestParameters: DatacenterLocationPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationPartialUpdate(requestParameters: LocationLocationPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
+    public locationLocationPartialUpdate(requestParameters: LocationLocationPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
+    public locationLocationPartialUpdate(requestParameters: LocationLocationPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Location>>;
+    public locationLocationPartialUpdate(requestParameters: LocationLocationPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterLocationPartialUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationPartialUpdate.');
         }
         const patchedLocation = requestParameters?.patchedLocation;
 
@@ -339,7 +339,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/location/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/location/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Location>('patch', `${basePath}${localVarPath}`,
             {
@@ -357,19 +357,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
-     * @endpoint get /datacenter/location/{id}
+     * @endpoint get /location/location/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationRetrieve(requestParameters: DatacenterLocationRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
-    public datacenterLocationRetrieve(requestParameters: DatacenterLocationRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
-    public datacenterLocationRetrieve(requestParameters: DatacenterLocationRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Location>>;
-    public datacenterLocationRetrieve(requestParameters: DatacenterLocationRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationRetrieve(requestParameters: LocationLocationRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
+    public locationLocationRetrieve(requestParameters: LocationLocationRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
+    public locationLocationRetrieve(requestParameters: LocationLocationRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Location>>;
+    public locationLocationRetrieve(requestParameters: LocationLocationRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterLocationRetrieve.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationRetrieve.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -400,7 +400,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/location/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/location/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Location>('get', `${basePath}${localVarPath}`,
             {
@@ -417,23 +417,23 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
-     * @endpoint put /datacenter/location/{id}
+     * @endpoint put /location/location/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationUpdate(requestParameters: DatacenterLocationUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
-    public datacenterLocationUpdate(requestParameters: DatacenterLocationUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
-    public datacenterLocationUpdate(requestParameters: DatacenterLocationUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Location>>;
-    public datacenterLocationUpdate(requestParameters: DatacenterLocationUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationUpdate(requestParameters: LocationLocationUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Location>;
+    public locationLocationUpdate(requestParameters: LocationLocationUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Location>>;
+    public locationLocationUpdate(requestParameters: LocationLocationUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Location>>;
+    public locationLocationUpdate(requestParameters: LocationLocationUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterLocationUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationUpdate.');
         }
         const location = requestParameters?.location;
         if (location === null || location === undefined) {
-            throw new Error('Required parameter location was null or undefined when calling datacenterLocationUpdate.');
+            throw new Error('Required parameter location was null or undefined when calling locationLocationUpdate.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -475,7 +475,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/location/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/location/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Location>('put', `${basePath}${localVarPath}`,
             {
@@ -493,19 +493,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint post /datacenter/locationcustomfiled
+     * @endpoint post /location/locationcustomfiled
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationcustomfiledCreate(requestParameters: DatacenterLocationcustomfiledCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
-    public datacenterLocationcustomfiledCreate(requestParameters: DatacenterLocationcustomfiledCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
-    public datacenterLocationcustomfiledCreate(requestParameters: DatacenterLocationcustomfiledCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
-    public datacenterLocationcustomfiledCreate(requestParameters: DatacenterLocationcustomfiledCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfiledCreate(requestParameters: LocationLocationcustomfiledCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
+    public locationLocationcustomfiledCreate(requestParameters: LocationLocationcustomfiledCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
+    public locationLocationcustomfiledCreate(requestParameters: LocationLocationcustomfiledCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
+    public locationLocationcustomfiledCreate(requestParameters: LocationLocationcustomfiledCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const locationCustomField = requestParameters?.locationCustomField;
         if (locationCustomField === null || locationCustomField === undefined) {
-            throw new Error('Required parameter locationCustomField was null or undefined when calling datacenterLocationcustomfiledCreate.');
+            throw new Error('Required parameter locationCustomField was null or undefined when calling locationLocationcustomfiledCreate.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -547,7 +547,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/locationcustomfiled`;
+        let localVarPath = `/location/locationcustomfiled`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<LocationCustomField>('post', `${basePath}${localVarPath}`,
             {
@@ -565,19 +565,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint delete /datacenter/locationcustomfiled/{id}
+     * @endpoint delete /location/locationcustomfiled/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationcustomfiledDestroy(requestParameters: DatacenterLocationcustomfiledDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public datacenterLocationcustomfiledDestroy(requestParameters: DatacenterLocationcustomfiledDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public datacenterLocationcustomfiledDestroy(requestParameters: DatacenterLocationcustomfiledDestroyRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public datacenterLocationcustomfiledDestroy(requestParameters: DatacenterLocationcustomfiledDestroyRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfiledDestroy(requestParameters: LocationLocationcustomfiledDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public locationLocationcustomfiledDestroy(requestParameters: LocationLocationcustomfiledDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public locationLocationcustomfiledDestroy(requestParameters: LocationLocationcustomfiledDestroyRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public locationLocationcustomfiledDestroy(requestParameters: LocationLocationcustomfiledDestroyRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterLocationcustomfiledDestroy.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfiledDestroy.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -607,7 +607,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
@@ -624,16 +624,16 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint get /datacenter/locationcustomfiled
+     * @endpoint get /location/locationcustomfiled
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationcustomfiledList(requestParameters?: DatacenterLocationcustomfiledListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedLocationCustomFieldList>;
-    public datacenterLocationcustomfiledList(requestParameters?: DatacenterLocationcustomfiledListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedLocationCustomFieldList>>;
-    public datacenterLocationcustomfiledList(requestParameters?: DatacenterLocationcustomfiledListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedLocationCustomFieldList>>;
-    public datacenterLocationcustomfiledList(requestParameters?: DatacenterLocationcustomfiledListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfiledList(requestParameters?: LocationLocationcustomfiledListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedLocationCustomFieldList>;
+    public locationLocationcustomfiledList(requestParameters?: LocationLocationcustomfiledListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedLocationCustomFieldList>>;
+    public locationLocationcustomfiledList(requestParameters?: LocationLocationcustomfiledListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedLocationCustomFieldList>>;
+    public locationLocationcustomfiledList(requestParameters?: LocationLocationcustomfiledListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const limit = requestParameters?.limit;
         const offset = requestParameters?.offset;
 
@@ -685,7 +685,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/locationcustomfiled`;
+        let localVarPath = `/location/locationcustomfiled`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<PaginatedLocationCustomFieldList>('get', `${basePath}${localVarPath}`,
             {
@@ -703,19 +703,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint patch /datacenter/locationcustomfiled/{id}
+     * @endpoint patch /location/locationcustomfiled/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationcustomfiledPartialUpdate(requestParameters: DatacenterLocationcustomfiledPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
-    public datacenterLocationcustomfiledPartialUpdate(requestParameters: DatacenterLocationcustomfiledPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
-    public datacenterLocationcustomfiledPartialUpdate(requestParameters: DatacenterLocationcustomfiledPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
-    public datacenterLocationcustomfiledPartialUpdate(requestParameters: DatacenterLocationcustomfiledPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfiledPartialUpdate(requestParameters: LocationLocationcustomfiledPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
+    public locationLocationcustomfiledPartialUpdate(requestParameters: LocationLocationcustomfiledPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
+    public locationLocationcustomfiledPartialUpdate(requestParameters: LocationLocationcustomfiledPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
+    public locationLocationcustomfiledPartialUpdate(requestParameters: LocationLocationcustomfiledPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterLocationcustomfiledPartialUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfiledPartialUpdate.');
         }
         const patchedLocationCustomField = requestParameters?.patchedLocationCustomField;
 
@@ -758,7 +758,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<LocationCustomField>('patch', `${basePath}${localVarPath}`,
             {
@@ -776,19 +776,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint get /datacenter/locationcustomfiled/{id}
+     * @endpoint get /location/locationcustomfiled/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationcustomfiledRetrieve(requestParameters: DatacenterLocationcustomfiledRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
-    public datacenterLocationcustomfiledRetrieve(requestParameters: DatacenterLocationcustomfiledRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
-    public datacenterLocationcustomfiledRetrieve(requestParameters: DatacenterLocationcustomfiledRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
-    public datacenterLocationcustomfiledRetrieve(requestParameters: DatacenterLocationcustomfiledRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfiledRetrieve(requestParameters: LocationLocationcustomfiledRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
+    public locationLocationcustomfiledRetrieve(requestParameters: LocationLocationcustomfiledRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
+    public locationLocationcustomfiledRetrieve(requestParameters: LocationLocationcustomfiledRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
+    public locationLocationcustomfiledRetrieve(requestParameters: LocationLocationcustomfiledRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterLocationcustomfiledRetrieve.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfiledRetrieve.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -819,7 +819,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<LocationCustomField>('get', `${basePath}${localVarPath}`,
             {
@@ -836,23 +836,23 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint put /datacenter/locationcustomfiled/{id}
+     * @endpoint put /location/locationcustomfiled/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterLocationcustomfiledUpdate(requestParameters: DatacenterLocationcustomfiledUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
-    public datacenterLocationcustomfiledUpdate(requestParameters: DatacenterLocationcustomfiledUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
-    public datacenterLocationcustomfiledUpdate(requestParameters: DatacenterLocationcustomfiledUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
-    public datacenterLocationcustomfiledUpdate(requestParameters: DatacenterLocationcustomfiledUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfiledUpdate(requestParameters: LocationLocationcustomfiledUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
+    public locationLocationcustomfiledUpdate(requestParameters: LocationLocationcustomfiledUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
+    public locationLocationcustomfiledUpdate(requestParameters: LocationLocationcustomfiledUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
+    public locationLocationcustomfiledUpdate(requestParameters: LocationLocationcustomfiledUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterLocationcustomfiledUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfiledUpdate.');
         }
         const locationCustomField = requestParameters?.locationCustomField;
         if (locationCustomField === null || locationCustomField === undefined) {
-            throw new Error('Required parameter locationCustomField was null or undefined when calling datacenterLocationcustomfiledUpdate.');
+            throw new Error('Required parameter locationCustomField was null or undefined when calling locationLocationcustomfiledUpdate.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -894,7 +894,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<LocationCustomField>('put', `${basePath}${localVarPath}`,
             {
@@ -912,19 +912,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
-     * @endpoint post /datacenter/room
+     * @endpoint post /location/room
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterRoomCreate(requestParameters: DatacenterRoomCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Room>;
-    public datacenterRoomCreate(requestParameters: DatacenterRoomCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Room>>;
-    public datacenterRoomCreate(requestParameters: DatacenterRoomCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Room>>;
-    public datacenterRoomCreate(requestParameters: DatacenterRoomCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationRoomCreate(requestParameters: LocationRoomCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Room>;
+    public locationRoomCreate(requestParameters: LocationRoomCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Room>>;
+    public locationRoomCreate(requestParameters: LocationRoomCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Room>>;
+    public locationRoomCreate(requestParameters: LocationRoomCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const room = requestParameters?.room;
         if (room === null || room === undefined) {
-            throw new Error('Required parameter room was null or undefined when calling datacenterRoomCreate.');
+            throw new Error('Required parameter room was null or undefined when calling locationRoomCreate.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -966,7 +966,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/room`;
+        let localVarPath = `/location/room`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Room>('post', `${basePath}${localVarPath}`,
             {
@@ -984,19 +984,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
-     * @endpoint delete /datacenter/room/{id}
+     * @endpoint delete /location/room/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterRoomDestroy(requestParameters: DatacenterRoomDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public datacenterRoomDestroy(requestParameters: DatacenterRoomDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public datacenterRoomDestroy(requestParameters: DatacenterRoomDestroyRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public datacenterRoomDestroy(requestParameters: DatacenterRoomDestroyRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationRoomDestroy(requestParameters: LocationRoomDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public locationRoomDestroy(requestParameters: LocationRoomDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public locationRoomDestroy(requestParameters: LocationRoomDestroyRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public locationRoomDestroy(requestParameters: LocationRoomDestroyRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterRoomDestroy.');
+            throw new Error('Required parameter id was null or undefined when calling locationRoomDestroy.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1026,7 +1026,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/room/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/room/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
@@ -1043,16 +1043,16 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
-     * @endpoint get /datacenter/room
+     * @endpoint get /location/room
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterRoomList(requestParameters?: DatacenterRoomListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedRoomList>;
-    public datacenterRoomList(requestParameters?: DatacenterRoomListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedRoomList>>;
-    public datacenterRoomList(requestParameters?: DatacenterRoomListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedRoomList>>;
-    public datacenterRoomList(requestParameters?: DatacenterRoomListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationRoomList(requestParameters?: LocationRoomListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedRoomList>;
+    public locationRoomList(requestParameters?: LocationRoomListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedRoomList>>;
+    public locationRoomList(requestParameters?: LocationRoomListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedRoomList>>;
+    public locationRoomList(requestParameters?: LocationRoomListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const limit = requestParameters?.limit;
         const location = requestParameters?.location;
         const offset = requestParameters?.offset;
@@ -1114,7 +1114,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/room`;
+        let localVarPath = `/location/room`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<PaginatedRoomList>('get', `${basePath}${localVarPath}`,
             {
@@ -1132,19 +1132,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
-     * @endpoint patch /datacenter/room/{id}
+     * @endpoint patch /location/room/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterRoomPartialUpdate(requestParameters: DatacenterRoomPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Room>;
-    public datacenterRoomPartialUpdate(requestParameters: DatacenterRoomPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Room>>;
-    public datacenterRoomPartialUpdate(requestParameters: DatacenterRoomPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Room>>;
-    public datacenterRoomPartialUpdate(requestParameters: DatacenterRoomPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationRoomPartialUpdate(requestParameters: LocationRoomPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Room>;
+    public locationRoomPartialUpdate(requestParameters: LocationRoomPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Room>>;
+    public locationRoomPartialUpdate(requestParameters: LocationRoomPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Room>>;
+    public locationRoomPartialUpdate(requestParameters: LocationRoomPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterRoomPartialUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling locationRoomPartialUpdate.');
         }
         const patchedRoom = requestParameters?.patchedRoom;
 
@@ -1187,7 +1187,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/room/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/room/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Room>('patch', `${basePath}${localVarPath}`,
             {
@@ -1205,19 +1205,19 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
-     * @endpoint get /datacenter/room/{id}
+     * @endpoint get /location/room/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterRoomRetrieve(requestParameters: DatacenterRoomRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Room>;
-    public datacenterRoomRetrieve(requestParameters: DatacenterRoomRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Room>>;
-    public datacenterRoomRetrieve(requestParameters: DatacenterRoomRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Room>>;
-    public datacenterRoomRetrieve(requestParameters: DatacenterRoomRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationRoomRetrieve(requestParameters: LocationRoomRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Room>;
+    public locationRoomRetrieve(requestParameters: LocationRoomRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Room>>;
+    public locationRoomRetrieve(requestParameters: LocationRoomRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Room>>;
+    public locationRoomRetrieve(requestParameters: LocationRoomRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterRoomRetrieve.');
+            throw new Error('Required parameter id was null or undefined when calling locationRoomRetrieve.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1248,7 +1248,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/room/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/room/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Room>('get', `${basePath}${localVarPath}`,
             {
@@ -1265,23 +1265,23 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
 
     /**
      * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
-     * @endpoint put /datacenter/room/{id}
+     * @endpoint put /location/room/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public datacenterRoomUpdate(requestParameters: DatacenterRoomUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Room>;
-    public datacenterRoomUpdate(requestParameters: DatacenterRoomUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Room>>;
-    public datacenterRoomUpdate(requestParameters: DatacenterRoomUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Room>>;
-    public datacenterRoomUpdate(requestParameters: DatacenterRoomUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationRoomUpdate(requestParameters: LocationRoomUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Room>;
+    public locationRoomUpdate(requestParameters: LocationRoomUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Room>>;
+    public locationRoomUpdate(requestParameters: LocationRoomUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Room>>;
+    public locationRoomUpdate(requestParameters: LocationRoomUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datacenterRoomUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling locationRoomUpdate.');
         }
         const room = requestParameters?.room;
         if (room === null || room === undefined) {
-            throw new Error('Required parameter room was null or undefined when calling datacenterRoomUpdate.');
+            throw new Error('Required parameter room was null or undefined when calling locationRoomUpdate.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1323,7 +1323,7 @@ export class DatacenterService extends BaseService implements DatacenterServiceI
             }
         }
 
-        let localVarPath = `/datacenter/room/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/room/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Room>('put', `${basePath}${localVarPath}`,
             {

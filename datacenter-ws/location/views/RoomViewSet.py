@@ -18,7 +18,6 @@ class RoomViewSet(viewsets.ModelViewSet):
     """
     queryset = Room.objects.select_related('location').all()
     serializer_class = RoomSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    parser_classes = [parsers.MultiPartParser,
-                      parsers.FormParser, parsers.JSONParser]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = [parsers.JSONParser, parsers.MultiPartParser, parsers.FormParser]
     filterset_fields = ['location']

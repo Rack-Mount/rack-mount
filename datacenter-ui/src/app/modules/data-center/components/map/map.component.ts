@@ -7,8 +7,11 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
+import { LocationService } from '../../../core/api/v1/api/location.service';
+import { Room as DjRoom } from '../../../core/api/v1/model/room';
 import { dist, distToSegment } from './map-geometry.utils';
 import {
   updateWallDerived as _deriveWall,
@@ -30,15 +33,24 @@ import {
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [CommonModule, MapSidebarComponent],
+  imports: [CommonModule, FormsModule, MapSidebarComponent],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
 export class MapComponent implements AfterViewInit {
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private locationService: LocationService,
+  ) {}
   selectedTool: string = 'select';
 
   elements: MapElement[] = [];
+
+  // Floor plan persistence
+  availableRooms: DjRoom[] = [];
+  selectedRoomId: number | null = null;
+  saveStatus: 'idle' | 'saving' | 'saved' | 'error' = 'idle';
+  private saveStatusTimer: ReturnType<typeof setTimeout> | null = null;
 
   isDrawing = false;
   currentElement: MapElement | null = null;
@@ -177,6 +189,66 @@ export class MapComponent implements AfterViewInit {
 
     // Update grid on window resize
     window.addEventListener('resize', () => this.scheduleUpdateGrid());
+
+    // Load available rooms for floor plan selector
+    this.loadRooms();
+  }
+
+  loadRooms(): void {
+    this.locationService.locationRoomList().subscribe({
+      next: (data) => {
+        this.availableRooms = data.results ?? [];
+        this.cdr.markForCheck();
+      },
+      error: (err) => console.error('Failed to load rooms', err),
+    });
+  }
+
+  onRoomSelect(id: number): void {
+    if (!id) {
+      this.selectedRoomId = null;
+      this.elements = [];
+      this.rederiveAllWalls();
+      return;
+    }
+    this.selectedRoomId = id;
+    this.locationService.locationRoomRetrieve({ id }).subscribe({
+      next: (room) => {
+        this.elements = room.floor_plan_data ? (room.floor_plan_data as MapElement[]) : [];
+        this.rederiveAllWalls();
+        this.cdr.markForCheck();
+      },
+      error: (err) => console.error('Failed to load floor plan', err),
+    });
+  }
+
+  saveFloorPlan(): void {
+    if (this.selectedRoomId == null) return;
+    this.saveStatus = 'saving';
+    this.locationService
+      .locationRoomPartialUpdate({
+        id: this.selectedRoomId,
+        patchedRoom: { floor_plan_data: this.elements },
+      })
+      .subscribe({
+        next: () => {
+          this.saveStatus = 'saved';
+          this.resetSaveStatusAfterDelay();
+        },
+        error: (err) => {
+          console.error('Failed to save floor plan', err);
+          this.saveStatus = 'error';
+          this.resetSaveStatusAfterDelay();
+        },
+      });
+  }
+
+  private resetSaveStatusAfterDelay(): void {
+    if (this.saveStatusTimer) clearTimeout(this.saveStatusTimer);
+    this.saveStatusTimer = setTimeout(() => {
+      this.saveStatus = 'idle';
+      this.cdr.markForCheck();
+    }, 3000);
   }
 
   get polylinePreviewPoints(): string {

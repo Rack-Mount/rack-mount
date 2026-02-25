@@ -25,6 +25,15 @@ import { PaginatedRackList } from '../model/models';
 import { PaginatedRackTypeList } from '../model/models';
 import { PaginatedRackUnitList } from '../model/models';
 import { PaginatedVendorList } from '../model/models';
+import { PatchedAsset } from '../model/models';
+import { PatchedAssetCustomField } from '../model/models';
+import { PatchedAssetModel } from '../model/models';
+import { PatchedAssetState } from '../model/models';
+import { PatchedAssetType } from '../model/models';
+import { PatchedRack } from '../model/models';
+import { PatchedRackType } from '../model/models';
+import { PatchedRackUnit } from '../model/models';
+import { PatchedVendor } from '../model/models';
 import { Rack } from '../model/models';
 import { RackType } from '../model/models';
 import { RackUnit } from '../model/models';
@@ -54,7 +63,7 @@ export interface AssetAssetCustomFieldListRequestParams {
 
 export interface AssetAssetCustomFieldPartialUpdateRequestParams {
     id: number;
-    assetCustomField?: AssetCustomField;
+    patchedAssetCustomField?: PatchedAssetCustomField;
 }
 
 export interface AssetAssetCustomFieldRetrieveRequestParams {
@@ -105,7 +114,7 @@ export interface AssetAssetModelListRequestParams {
 
 export interface AssetAssetModelPartialUpdateRequestParams {
     id: number;
-    assetModel: AssetModel;
+    patchedAssetModel?: PatchedAssetModel;
 }
 
 export interface AssetAssetModelRetrieveRequestParams {
@@ -119,7 +128,7 @@ export interface AssetAssetModelUpdateRequestParams {
 
 export interface AssetAssetPartialUpdateRequestParams {
     id: number;
-    asset: Asset;
+    patchedAsset?: PatchedAsset;
 }
 
 export interface AssetAssetRetrieveRequestParams {
@@ -142,7 +151,7 @@ export interface AssetAssetStateListRequestParams {
 
 export interface AssetAssetStatePartialUpdateRequestParams {
     id: number;
-    assetState: AssetState;
+    patchedAssetState?: PatchedAssetState;
 }
 
 export interface AssetAssetStateRetrieveRequestParams {
@@ -170,7 +179,7 @@ export interface AssetAssetTypeListRequestParams {
 
 export interface AssetAssetTypePartialUpdateRequestParams {
     id: number;
-    assetType: AssetType;
+    patchedAssetType?: PatchedAssetType;
 }
 
 export interface AssetAssetTypeRetrieveRequestParams {
@@ -203,7 +212,7 @@ export interface AssetRackListRequestParams {
 
 export interface AssetRackPartialUpdateRequestParams {
     name: string;
-    rack: Rack;
+    patchedRack?: PatchedRack;
 }
 
 export interface AssetRackRetrieveRequestParams {
@@ -226,7 +235,7 @@ export interface AssetRackTypeListRequestParams {
 
 export interface AssetRackTypePartialUpdateRequestParams {
     id: number;
-    rackType: RackType;
+    patchedRackType?: PatchedRackType;
 }
 
 export interface AssetRackTypeRetrieveRequestParams {
@@ -251,14 +260,14 @@ export interface AssetRackUnitListRequestParams {
     ordering?: string;
     page?: number;
     pageSize?: number;
-    rackLocation?: number;
     rackName?: string;
+    rackRoom?: number;
     search?: string;
 }
 
 export interface AssetRackUnitPartialUpdateRequestParams {
     id: number;
-    rackUnit: RackUnit;
+    patchedRackUnit?: PatchedRackUnit;
 }
 
 export interface AssetRackUnitRetrieveRequestParams {
@@ -291,7 +300,7 @@ export interface AssetVendorListRequestParams {
 
 export interface AssetVendorPartialUpdateRequestParams {
     id: number;
-    vendor: Vendor;
+    patchedVendor?: PatchedVendor;
 }
 
 export interface AssetVendorRetrieveRequestParams {
