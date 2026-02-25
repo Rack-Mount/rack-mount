@@ -20,7 +20,7 @@ class AssetModelViewSet(viewsets.ModelViewSet):
         ordering (list): The default ordering for the results.
         filterset_fields (list): The fields that can be used for filtering the results.
     """
-    queryset = AssetModel.objects.all()
+    queryset = AssetModel.objects.select_related('vendor', 'type').all()
     serializer_class = AssetModelSerializer
     pagination_class = StandardResultsSetPagination
     search_fields = ['name', 'vendor__name', 'type__name']

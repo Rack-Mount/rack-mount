@@ -23,7 +23,7 @@ class AssetCustomFieldAdmin(VersionAdmin):
         'field_name',
         'field_value'
     )
-    search_fields = ['asset__name', 'field_name']
+    search_fields = ['asset__hostname', 'field_name__name']
     ordering = ('asset', 'field_name')
 
     def has_delete_permission(self, request, obj=None):

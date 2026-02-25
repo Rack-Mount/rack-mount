@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-map-sidebar',
@@ -6,6 +6,7 @@ import { Component, EventEmitter, Output, Input } from '@angular/core';
   styleUrls: ['./map-sidebar.component.scss'],
   standalone: true,
   imports: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapSidebarComponent {
   @Input() activeTool: string = 'select';
@@ -21,9 +22,8 @@ export class MapSidebarComponent {
     { id: 'rack', label: 'Aggiungi Rack', icon: '🖥️' },
   ];
 
-  selectTool(toolId: string) {
+  selectTool(toolId: string): void {
     if (this.disabled) return;
-    this.activeTool = toolId;
     this.toolChange.emit(toolId);
   }
 }

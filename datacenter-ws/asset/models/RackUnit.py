@@ -43,7 +43,7 @@ class RackUnit(models.Model):
         return f"{self.rack.name} - {self.position} ({position})"
 
     def image_preview(self):
-        return mark_safe('<img src="/%s/%s" width="300" />' % (settings.MEDIA_ROOT, self.device.model.front_image)) if self.device.model.front_image else ''
+        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.device.model.front_image)) if self.device and self.device.model.front_image else ''
 
     class Meta:
         unique_together = ('rack', 'position', 'front')

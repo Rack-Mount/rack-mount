@@ -5,7 +5,7 @@ from asset.models import RackUnit
 @admin.register(RackUnit)
 class RackUnitAdmin(admin.ModelAdmin):
     list_display = ('rack', 'position', 'front', 'device')
-    search_fields = ('rack', 'device')
+    search_fields = ('rack__name', 'device__hostname')
     list_filter = ('rack__room', 'device__model')
     autocomplete_fields = ('rack', 'device')
 

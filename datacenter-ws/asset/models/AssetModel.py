@@ -44,10 +44,10 @@ class AssetModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def front_image_preview(self):
-        return mark_safe('<img src="/%s/%s" width="300" />' % (settings.MEDIA_ROOT, self.front_image)) if self.front_image else ''
+        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.front_image)) if self.front_image else ''
 
     def rear_image_preview(self):
-        return mark_safe('<img src="/%s/%s" width="300" />' % (settings.MEDIA_ROOT, self.rear_image)) if self.rear_image else ''
+        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.rear_image)) if self.rear_image else ''
 
     def __str__(self):
         return f"{self.vendor} - {self.name} - {self.type}"

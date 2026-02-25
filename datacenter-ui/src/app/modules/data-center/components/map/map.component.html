@@ -296,38 +296,38 @@
               [attr.pointer-events]="selectedTool === 'move' ? 'all' : 'none'"
               (dblclick)="startEditRoom($index, $event)"
             />
+            <!-- Engraved area (always visible): white highlight + main text -->
+            <text
+              [attr.x]="room.cx + 0.8 / zoom"
+              [attr.y]="room.cy - 6.2 / zoom"
+              text-anchor="middle"
+              dominant-baseline="middle"
+              fill="rgba(255,255,255,0.85)"
+              [attr.font-size]="13 / zoom + 'px'"
+              font-family="sans-serif"
+              font-weight="500"
+              [attr.letter-spacing]="0.5 / zoom"
+              pointer-events="none"
+              style="user-select: none"
+            >
+              {{ room.area / 10000 | number: "1.0-2" }} m²
+            </text>
+            <text
+              [attr.x]="room.cx"
+              [attr.y]="room.cy - 7 / zoom"
+              text-anchor="middle"
+              dominant-baseline="middle"
+              fill="#5a6472"
+              [attr.font-size]="13 / zoom + 'px'"
+              font-family="sans-serif"
+              font-weight="500"
+              [attr.letter-spacing]="0.5 / zoom"
+              pointer-events="none"
+              style="user-select: none"
+            >
+              {{ room.area / 10000 | number: "1.0-2" }} m²
+            </text>
             @if (editingRoomIndex !== $index) {
-              <!-- Engraved area: white highlight offset + main text -->
-              <text
-                [attr.x]="room.cx + 0.8 / zoom"
-                [attr.y]="room.cy - 6.2 / zoom"
-                text-anchor="middle"
-                dominant-baseline="middle"
-                fill="rgba(255,255,255,0.85)"
-                [attr.font-size]="13 / zoom + 'px'"
-                font-family="sans-serif"
-                font-weight="500"
-                [attr.letter-spacing]="0.5 / zoom"
-                pointer-events="none"
-                style="user-select: none"
-              >
-                {{ room.area / 10000 | number: "1.0-2" }} m²
-              </text>
-              <text
-                [attr.x]="room.cx"
-                [attr.y]="room.cy - 7 / zoom"
-                text-anchor="middle"
-                dominant-baseline="middle"
-                fill="#5a6472"
-                [attr.font-size]="13 / zoom + 'px'"
-                font-family="sans-serif"
-                font-weight="500"
-                [attr.letter-spacing]="0.5 / zoom"
-                pointer-events="none"
-                style="user-select: none"
-              >
-                {{ room.area / 10000 | number: "1.0-2" }} m²
-              </text>
               <!-- Engraved name: white highlight offset + main text -->
               <text
                 [attr.x]="room.cx + 0.8 / zoom"
@@ -361,36 +361,6 @@
               </text>
             }
             @if (editingRoomIndex === $index) {
-              <text
-                [attr.x]="room.cx + 0.8 / zoom"
-                [attr.y]="room.cy - 6.2 / zoom"
-                text-anchor="middle"
-                dominant-baseline="middle"
-                fill="rgba(255,255,255,0.85)"
-                [attr.font-size]="13 / zoom + 'px'"
-                font-family="sans-serif"
-                font-weight="500"
-                [attr.letter-spacing]="0.5 / zoom"
-                pointer-events="none"
-                style="user-select: none"
-              >
-                {{ room.area / 10000 | number: "1.0-2" }} m²
-              </text>
-              <text
-                [attr.x]="room.cx"
-                [attr.y]="room.cy - 7 / zoom"
-                text-anchor="middle"
-                dominant-baseline="middle"
-                fill="#5a6472"
-                [attr.font-size]="13 / zoom + 'px'"
-                font-family="sans-serif"
-                font-weight="500"
-                [attr.letter-spacing]="0.5 / zoom"
-                pointer-events="none"
-                style="user-select: none"
-              >
-                {{ room.area / 10000 | number: "1.0-2" }} m²
-              </text>
               <foreignObject
                 [attr.x]="room.cx - 38 / zoom"
                 [attr.y]="room.cy + 1 / zoom"

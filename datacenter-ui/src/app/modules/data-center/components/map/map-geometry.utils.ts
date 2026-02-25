@@ -38,9 +38,6 @@ export function projectOnSegment(
 }
 
 /**
- * Interior angle (0–180°) at vertex `p2` formed by the path p1 → p2 → p3.
- */
-/**
  * Interior angle at p2 between arms p2→p1 and p2→p3, in degrees [0°, 180°].
  * Uses dot and cross products — no atan2 subtraction ambiguity.
  */

@@ -73,7 +73,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint post /location/location
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -145,7 +145,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint delete /location/location/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -204,7 +204,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint get /location/location
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -215,15 +215,19 @@ export class LocationService extends BaseService implements LocationServiceInter
     public locationLocationList(requestParameters?: LocationLocationListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedLocationList>>;
     public locationLocationList(requestParameters?: LocationLocationListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedLocationList>>;
     public locationLocationList(requestParameters?: LocationLocationListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        const limit = requestParameters?.limit;
-        const offset = requestParameters?.offset;
+        const name = requestParameters?.name;
+        const ordering = requestParameters?.ordering;
+        const page = requestParameters?.page;
+        const pageSize = requestParameters?.pageSize;
+        const search = requestParameters?.search;
+        const shortName = requestParameters?.shortName;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
         localVarQueryParameters = this.addToHttpParams(
             localVarQueryParameters,
-            'limit',
-            <any>limit,
+            'name',
+            <any>name,
             QueryParamStyle.Form,
             true,
         );
@@ -231,8 +235,44 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         localVarQueryParameters = this.addToHttpParams(
             localVarQueryParameters,
-            'offset',
-            <any>offset,
+            'ordering',
+            <any>ordering,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page',
+            <any>page,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page_size',
+            <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'search',
+            <any>search,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'short_name',
+            <any>shortName,
             QueryParamStyle.Form,
             true,
         );
@@ -283,7 +323,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint patch /location/location/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -356,7 +396,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint get /location/location/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -416,7 +456,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint put /location/location/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -911,7 +951,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint post /location/room
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -983,7 +1023,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint delete /location/room/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -1042,7 +1082,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint get /location/room
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -1053,20 +1093,13 @@ export class LocationService extends BaseService implements LocationServiceInter
     public locationRoomList(requestParameters?: LocationRoomListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedRoomList>>;
     public locationRoomList(requestParameters?: LocationRoomListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedRoomList>>;
     public locationRoomList(requestParameters?: LocationRoomListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        const limit = requestParameters?.limit;
         const location = requestParameters?.location;
-        const offset = requestParameters?.offset;
+        const ordering = requestParameters?.ordering;
+        const page = requestParameters?.page;
+        const pageSize = requestParameters?.pageSize;
+        const search = requestParameters?.search;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-        localVarQueryParameters = this.addToHttpParams(
-            localVarQueryParameters,
-            'limit',
-            <any>limit,
-            QueryParamStyle.Form,
-            true,
-        );
-
 
         localVarQueryParameters = this.addToHttpParams(
             localVarQueryParameters,
@@ -1079,8 +1112,35 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         localVarQueryParameters = this.addToHttpParams(
             localVarQueryParameters,
-            'offset',
-            <any>offset,
+            'ordering',
+            <any>ordering,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page',
+            <any>page,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page_size',
+            <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'search',
+            <any>search,
             QueryParamStyle.Form,
             true,
         );
@@ -1131,7 +1191,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint patch /location/room/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -1204,7 +1264,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint get /location/room/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -1264,7 +1324,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint put /location/room/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

@@ -65,7 +65,7 @@ class Asset(models.Model):
             str: An HTML string containing an image tag with the front image URL if the front image exists,
                  otherwise an empty string.
         """
-        return mark_safe('<img src="/%s/%s" width="300" />' % (settings.MEDIA_ROOT, self.model.front_image)) if self.model.front_image else ''
+        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.model.front_image)) if self.model.front_image else ''
 
     def rear_image_preview(self):
         """
@@ -75,7 +75,7 @@ class Asset(models.Model):
             str: An HTML string containing an image tag with the rear image if it exists,
                  otherwise an empty string.
         """
-        return mark_safe('<img src="/%s/%s" width="300" />' % (settings.MEDIA_ROOT, self.model.rear_image)) if self.model.rear_image else ''
+        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.model.rear_image)) if self.model.rear_image else ''
 
     def __str__(self):
         return f"{self.hostname} ({self.serial_number}) - {self.model.vendor} - {self.model.name}"

@@ -1,10 +1,15 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   Input,
   OnChanges,
-  SimpleChanges,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import {
   AssetRackUnitListRequestParams,
@@ -13,7 +18,6 @@ import {
   RackUnit,
 } from '../../../core/api/v1';
 import { RackRender } from '../../models/RackRender';
-
 import { DeviceComponent } from '../device/device.component';
 
 @Component({
@@ -21,27 +25,36 @@ import { DeviceComponent } from '../device/device.component';
   imports: [DeviceComponent],
   templateUrl: './rack.component.html',
   styleUrl: './rack.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RackComponent implements OnChanges, OnInit {
   @Input() rack: Rack | undefined;
   assets: RackUnit[] = [];
   rackRender: RackRender[] = [];
 
+  private readonly destroyRef = inject(DestroyRef);
+
   constructor(
     private readonly assetService: AssetService,
     private readonly route: ActivatedRoute,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (id) {
-        this.assetService.assetRackRetrieve({ name: id }).subscribe((rack) => {
-          this.rack = rack;
-          this.renderRack();
-        });
-      }
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const id = params.get('id');
+        if (id) {
+          this.assetService
+            .assetRackRetrieve({ name: id })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((rack) => {
+              this.rack = rack;
+              this.renderRack();
+            });
+        }
+      });
 
     if (this.rack) {
       this.renderRack();
@@ -56,7 +69,7 @@ export class RackComponent implements OnChanges, OnInit {
 
   private renderRack(): void {
     if (!this.rack) return;
-    this.rackRender = []; // Clear previous render
+    this.rackRender = [];
 
     for (let i = 0; i < this.rack.model.capacity; i++) {
       this.rackRender.push({
@@ -71,24 +84,26 @@ export class RackComponent implements OnChanges, OnInit {
       pageSize: this.rack.model.capacity,
     };
 
-    this.assetService.assetRackUnitList(params).subscribe((assets) => {
-      this.assets = assets.results;
-      this.assets.forEach((asset) => {
-        console.log(asset.position);
-        this.rackRender[this.rack!.model.capacity - asset.position - 1] = {
-          device: asset,
-          rack_unit: asset.device_rack_units,
-          visible: true,
-        };
-        if (asset.device_rack_units > 1) {
+    this.assetService
+      .assetRackUnitList(params)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((assets) => {
+        this.assets = assets.results;
+        const capacity = this.rack!.model.capacity;
+        this.assets.forEach((asset) => {
+          const topIndex = capacity - asset.position - 1;
+          const existingPosition = this.rackRender[topIndex].position;
+          this.rackRender[topIndex] = {
+            device: asset,
+            rack_unit: asset.device_rack_units,
+            position: existingPosition,
+            visible: true,
+          };
           for (let i = 1; i < asset.device_rack_units; i++) {
-            this.rackRender[
-              this.rack!.model.capacity - asset.position - i + 1
-            ].visible = false;
+            this.rackRender[topIndex - i].visible = false;
           }
-        }
+        });
+        this.cdr.markForCheck();
       });
-    });
-    console.log(this.rackRender);
   }
 }

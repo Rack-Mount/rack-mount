@@ -1,9 +1,9 @@
 <div class="rack">
   <table>
     <thead>
-      <th><strong>Rack: </strong>{{ rack?.name }} - {{ rack?.location }}</th>
+      <th><strong>Rack: </strong>{{ rack?.name }} - {{ rack?.location_name }}</th>
     </thead>
-    @for (rackElem of rackRender; track rackElem) {
+    @for (rackElem of rackRender; track rackElem.position) {
       <tr>
         @if (rackElem.visible) {
           <td

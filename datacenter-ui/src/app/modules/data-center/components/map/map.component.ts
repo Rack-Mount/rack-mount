@@ -1,11 +1,12 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   HostListener,
   ViewChild,
   ElementRef,
   AfterViewInit,
-  OnInit,
-  ChangeDetectorRef,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,8 +40,9 @@ import {
   imports: [CommonModule, FormsModule, MapSidebarComponent],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MapComponent implements OnInit, AfterViewInit {
+export class MapComponent implements AfterViewInit, OnDestroy {
   constructor(
     private cdr: ChangeDetectorRef,
     private locationService: LocationService,
@@ -125,6 +127,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   editingRoomName = '';
 
   private gridRafId: number | null = null;
+  private readonly resizeListener = (): void => this.scheduleUpdateGrid();
 
   // Debounced grid update: at most once per animation frame
   private scheduleUpdateGrid(): void {
@@ -199,14 +202,17 @@ export class MapComponent implements OnInit, AfterViewInit {
     setTimeout(() => this.updateGrid(), 0);
 
     // Update grid on window resize
-    window.addEventListener('resize', () => this.scheduleUpdateGrid());
+    window.addEventListener('resize', this.resizeListener);
 
     // Load available rooms for floor plan selector
     this.loadLocations();
   }
 
-  ngOnInit(): void {
-    // Handled in ngAfterViewInit after grid/SVG setup
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.resizeListener);
+    if (this.saveStatusTimer) clearTimeout(this.saveStatusTimer);
+    if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
+    if (this.gridRafId !== null) cancelAnimationFrame(this.gridRafId);
   }
 
   loadLocations(): void {

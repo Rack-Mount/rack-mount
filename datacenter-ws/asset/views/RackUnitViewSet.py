@@ -20,7 +20,15 @@ class RackUnitViewSet(viewsets.ModelViewSet):
         search_fields (list): The fields that can be used to search the queryset.
     """
 
-    queryset = RackUnit.objects.all()
+    queryset = RackUnit.objects.select_related(
+        'rack',
+        'rack__room',
+        'rack__room__location',
+        'device',
+        'device__model',
+        'device__model__vendor',
+        'device__model__type',
+    ).all()
     serializer_class = RackUnitSerializer
     pagination_class = StandardResultsSetPagination
     filter_backends = (filters.OrderingFilter, filters.SearchFilter,

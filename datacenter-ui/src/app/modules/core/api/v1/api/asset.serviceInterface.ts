@@ -56,9 +56,11 @@ export interface AssetAssetCustomFieldDestroyRequestParams {
 }
 
 export interface AssetAssetCustomFieldListRequestParams {
+    asset?: number;
     ordering?: string;
     page?: number;
     pageSize?: number;
+    search?: string;
 }
 
 export interface AssetAssetCustomFieldPartialUpdateRequestParams {
@@ -145,8 +147,10 @@ export interface AssetAssetStateDestroyRequestParams {
 
 export interface AssetAssetStateListRequestParams {
     name?: string;
+    ordering?: string;
     page?: number;
     pageSize?: number;
+    search?: string;
 }
 
 export interface AssetAssetStatePartialUpdateRequestParams {
@@ -173,8 +177,10 @@ export interface AssetAssetTypeDestroyRequestParams {
 
 export interface AssetAssetTypeListRequestParams {
     name?: string;
+    ordering?: string;
     page?: number;
     pageSize?: number;
+    search?: string;
 }
 
 export interface AssetAssetTypePartialUpdateRequestParams {
@@ -206,8 +212,11 @@ export interface AssetRackDestroyRequestParams {
 
 export interface AssetRackListRequestParams {
     name?: string;
+    ordering?: string;
     page?: number;
     pageSize?: number;
+    room?: number;
+    search?: string;
 }
 
 export interface AssetRackPartialUpdateRequestParams {
@@ -229,8 +238,10 @@ export interface AssetRackTypeDestroyRequestParams {
 
 export interface AssetRackTypeListRequestParams {
     model?: string;
+    ordering?: string;
     page?: number;
     pageSize?: number;
+    search?: string;
 }
 
 export interface AssetRackTypePartialUpdateRequestParams {
@@ -455,7 +466,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint post /asset/asset_state
 * @param requestParameters
      */
@@ -463,7 +474,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint delete /asset/asset_state/{id}
 * @param requestParameters
      */
@@ -471,7 +482,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint get /asset/asset_state
 * @param requestParameters
      */
@@ -479,7 +490,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint patch /asset/asset_state/{id}
 * @param requestParameters
      */
@@ -487,7 +498,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint get /asset/asset_state/{id}
 * @param requestParameters
      */
@@ -495,7 +506,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint put /asset/asset_state/{id}
 * @param requestParameters
      */
@@ -503,7 +514,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint post /asset/asset_type
 * @param requestParameters
      */
@@ -511,7 +522,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint delete /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -519,7 +530,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint get /asset/asset_type
 * @param requestParameters
      */
@@ -527,7 +538,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint patch /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -535,7 +546,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint get /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -543,7 +554,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.
+     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint put /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -559,7 +570,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
      * @endpoint post /asset/rack
 * @param requestParameters
      */
@@ -567,7 +578,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
      * @endpoint delete /asset/rack/{name}
 * @param requestParameters
      */
@@ -575,7 +586,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
      * @endpoint get /asset/rack
 * @param requestParameters
      */
@@ -583,7 +594,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
      * @endpoint patch /asset/rack/{name}
 * @param requestParameters
      */
@@ -591,7 +602,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
      * @endpoint get /asset/rack/{name}
 * @param requestParameters
      */
@@ -599,7 +610,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint post /asset/rack_type
 * @param requestParameters
      */
@@ -607,7 +618,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint delete /asset/rack_type/{id}
 * @param requestParameters
      */
@@ -615,7 +626,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint get /asset/rack_type
 * @param requestParameters
      */
@@ -623,7 +634,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint patch /asset/rack_type/{id}
 * @param requestParameters
      */
@@ -631,7 +642,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint get /asset/rack_type/{id}
 * @param requestParameters
      */
@@ -639,7 +650,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset, filtered by \&#39;model\&#39;.
+     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
      * @endpoint put /asset/rack_type/{id}
 * @param requestParameters
      */
@@ -695,7 +706,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
      * @endpoint put /asset/rack/{name}
 * @param requestParameters
      */

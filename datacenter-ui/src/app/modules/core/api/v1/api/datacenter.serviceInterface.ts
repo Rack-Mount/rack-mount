@@ -34,8 +34,12 @@ export interface DatacenterLocationDestroyRequestParams {
 }
 
 export interface DatacenterLocationListRequestParams {
-    limit?: number;
-    offset?: number;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    shortName?: string;
 }
 
 export interface DatacenterLocationPartialUpdateRequestParams {
@@ -88,9 +92,11 @@ export interface DatacenterRoomDestroyRequestParams {
 }
 
 export interface DatacenterRoomListRequestParams {
-    limit?: number;
     location?: number;
-    offset?: number;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
 }
 
 export interface DatacenterRoomPartialUpdateRequestParams {
@@ -114,7 +120,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint post /datacenter/location
 * @param requestParameters
      */
@@ -122,7 +128,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint delete /datacenter/location/{id}
 * @param requestParameters
      */
@@ -130,7 +136,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint get /datacenter/location
 * @param requestParameters
      */
@@ -138,7 +144,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint patch /datacenter/location/{id}
 * @param requestParameters
      */
@@ -146,7 +152,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint get /datacenter/location/{id}
 * @param requestParameters
      */
@@ -154,7 +160,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     permission_classes (list): A list of permission classes that determine access control.                                In this case, it allows authenticated users to perform any request                                and unauthenticated users to perform read-only requests.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint put /datacenter/location/{id}
 * @param requestParameters
      */
@@ -210,7 +216,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint post /datacenter/room
 * @param requestParameters
      */
@@ -218,7 +224,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint delete /datacenter/room/{id}
 * @param requestParameters
      */
@@ -226,7 +232,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint get /datacenter/room
 * @param requestParameters
      */
@@ -234,7 +240,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint patch /datacenter/room/{id}
 * @param requestParameters
      */
@@ -242,7 +248,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint get /datacenter/room/{id}
 * @param requestParameters
      */
@@ -250,7 +256,7 @@ export interface DatacenterServiceInterface {
 
     /**
      * 
-     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     permission_classes (list): Allows authenticated users full access and unauthenticated read-only access.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filterset_fields (list): Enables filtering by location.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint put /datacenter/room/{id}
 * @param requestParameters
      */

@@ -261,16 +261,25 @@
 }
 
 /* ── Feature cards ── */
-.feature-grid {
+.feature-grid,
+.location-grid,
+.skeleton-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
 }
 
-.feature-card {
+.feature-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.feature-card,
+.location-card {
   background: #111d35;
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
+}
+
+.feature-card {
   padding: 22px;
   display: flex;
   align-items: flex-start;
@@ -375,15 +384,10 @@
 
 /* ── Location grid ── */
 .location-grid {
-  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
 }
 
 .location-card {
-  background: #111d35;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 14px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -491,9 +495,7 @@
 
 /* ── Skeleton loading ── */
 .skeleton-grid {
-  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
 }
 
 @keyframes shimmer {
@@ -547,13 +549,13 @@
 @media (max-width: 768px) {
   .hero {
     flex-direction: column;
-    padding: 52px 24px 44px;
+    padding: 20px 24px 16px;
 
     .hero-image {
       display: none;
     }
     .hero-title {
-      font-size: 1.9rem;
+      font-size: 1.6rem;
     }
   }
 

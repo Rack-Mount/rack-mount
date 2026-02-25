@@ -64,7 +64,7 @@ export function getClosestEdgeSnap(
       const p2 = el.points[i + 1];
       const d = distToSegment(point, p1, p2);
       if (d >= minDist) continue;
-      const l2 = Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
+      const l2 = (p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2;
       if (l2 === 0) continue;
       const t = Math.min(
         1,
