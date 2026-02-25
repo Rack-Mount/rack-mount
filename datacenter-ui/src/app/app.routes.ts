@@ -22,4 +22,18 @@ export const routes: Routes = [
         (m) => m.MapComponent,
       ),
   },
+  {
+    path: 'not-found',
+    loadComponent: () =>
+      import('./modules/core/components/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent,
+      ),
+  },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./modules/core/components/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent,
+      ),
+  },
 ];
