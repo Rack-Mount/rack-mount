@@ -1,14 +1,18 @@
 <div class="rack">
   <table>
     <thead>
-      <th><strong>Rack: </strong>{{ rack?.name }} - {{ rack?.location_name }}</th>
+      <th>
+        <strong>Rack: </strong>{{ rack?.name }} - {{ rack?.location_name }}
+      </th>
     </thead>
     @for (rackElem of rackRender; track rackElem.position) {
       <tr>
         @if (rackElem.visible) {
           <td
-            [attr.rowspan]="rackElem.device ? rackElem.device.device_rack_units : 1"
-            >
+            [attr.rowspan]="
+              rackElem.device ? rackElem.device.device_rack_units : 1
+            "
+          >
             @if (!rackElem.device) {
               <div class="ru ru1">
                 {{ rackElem.position }}

@@ -23,7 +23,9 @@ class RoomViewSet(viewsets.ModelViewSet):
     queryset = Room.objects.select_related('location').all()
     serializer_class = RoomSerializer
     pagination_class = StandardResultsSetPagination
-    parser_classes = [parsers.JSONParser, parsers.MultiPartParser, parsers.FormParser]
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    parser_classes = [parsers.JSONParser,
+                      parsers.MultiPartParser, parsers.FormParser]
+    filter_backends = (filters.OrderingFilter,
+                       filters.SearchFilter, DjangoFilterBackend)
     filterset_fields = ['location']
     search_fields = ['name', 'description', 'manager']

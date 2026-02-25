@@ -22,7 +22,8 @@ class RackTypeViewSet(viewsets.ModelViewSet):
     queryset = RackType.objects.all()
     serializer_class = RackTypeSerializer
     pagination_class = StandardResultsSetPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    filter_backends = (filters.OrderingFilter,
+                       filters.SearchFilter, DjangoFilterBackend)
     ordering = ['model']
     filterset_fields = ['model']
     search_fields = ['model']

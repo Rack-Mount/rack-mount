@@ -26,7 +26,8 @@ class RackViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = RackSerializer
     pagination_class = StandardResultsSetPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    filter_backends = (filters.OrderingFilter,
+                       filters.SearchFilter, DjangoFilterBackend)
     ordering_fields = '__all__'
     ordering = ['name']
     filterset_fields = ['name', 'room']

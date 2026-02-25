@@ -11,7 +11,8 @@ class AssetCustomFieldViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = AssetCustomFieldSerializer
     pagination_class = StandardResultsSetPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    filter_backends = (filters.OrderingFilter,
+                       filters.SearchFilter, DjangoFilterBackend)
     ordering = ['asset__hostname', 'field_name__name']
     filterset_fields = ['asset']
     search_fields = ['asset__hostname', 'field_name__name']

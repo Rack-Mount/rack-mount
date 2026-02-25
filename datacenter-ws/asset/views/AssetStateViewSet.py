@@ -21,7 +21,8 @@ class AssetStateViewSet(viewsets.ModelViewSet):
     queryset = AssetState.objects.all()
     serializer_class = AssetStateSerializer
     pagination_class = StandardResultsSetPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    filter_backends = (filters.OrderingFilter,
+                       filters.SearchFilter, DjangoFilterBackend)
     ordering = ['name']
     filterset_fields = ['name']
     search_fields = ['name']

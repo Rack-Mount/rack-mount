@@ -22,7 +22,8 @@ class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.prefetch_related('rooms').all()
     serializer_class = LocationSerializer
     pagination_class = StandardResultsSetPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    filter_backends = (filters.OrderingFilter,
+                       filters.SearchFilter, DjangoFilterBackend)
     ordering_fields = '__all__'
     ordering = ['name']
     filterset_fields = ['name', 'short_name']
