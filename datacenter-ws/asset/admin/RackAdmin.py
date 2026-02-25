@@ -5,7 +5,7 @@ from asset.models import RackUnit
 
 class RackUnitInline(admin.TabularInline):
     model = RackUnit
-    fields = ['rack', 'unit', 'front', 'device', 'image_preview']
+    fields = ['rack', 'position', 'front', 'device', 'image_preview']
     readonly_fields = ['image_preview']
     autocomplete_fields = ['device']
     can_delete = False
@@ -15,12 +15,12 @@ class RackUnitInline(admin.TabularInline):
 
 @admin.register(Rack)
 class RackAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'model')
-    search_fields = ('name', 'location__name')
-    list_filter = ('location', 'model')
+    list_display = ('name', 'room', 'model')
+    search_fields = ('name', 'room__name')
+    list_filter = ('room', 'model')
 
     inlines = [RackUnitInline]
 
     save_on_top = True
-    ordering = ('location', 'name',)
+    ordering = ('room', 'name',)
     save_as = True

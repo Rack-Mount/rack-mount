@@ -6,7 +6,7 @@ from asset.models import RackUnit
 class RackUnitAdmin(admin.ModelAdmin):
     list_display = ('rack', 'position', 'front', 'device')
     search_fields = ('rack', 'device')
-    list_filter = ('rack__location', 'device__model')
+    list_filter = ('rack__room', 'device__model')
     autocomplete_fields = ('rack', 'device')
 
     readonly_fields = ['image_preview']

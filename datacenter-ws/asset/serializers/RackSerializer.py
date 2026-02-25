@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from asset.models import Rack
 from asset.serializers import RackTypeSerializer
-from location.serializers import LocationSerializer
 
 
 class RackSerializer(serializers.HyperlinkedModelSerializer):
@@ -10,8 +9,8 @@ class RackSerializer(serializers.HyperlinkedModelSerializer):
 
     Attributes:
         model (RackTypeSerializer): Serializer for the RackType model.
-        location (serializers.StringRelatedField): Read-only field representing the location of the rack.
-        location_short (serializers.StringRelatedField): Read-only field representing the short name of the location.
+        room (serializers.StringRelatedField): Read-only field representing the room of the rack.
+        location_name (serializers.StringRelatedField): Read-only field representing the location name.
 
     Meta:
         model (Rack): The model that is being serialized.
@@ -19,15 +18,15 @@ class RackSerializer(serializers.HyperlinkedModelSerializer):
     """
 
     model = RackTypeSerializer()
-    location = serializers.StringRelatedField(
+    room = serializers.StringRelatedField(
         many=False,
         read_only=True
     )
-    location_short = serializers.StringRelatedField(
-        source='location.short_name',
+    location_name = serializers.StringRelatedField(
+        source='room.location.name',
         read_only=True
     )
 
     class Meta:
         model = Rack
-        fields = ['name', 'model', 'location', 'location_short']
+        fields = ['name', 'model', 'room', 'location_name']

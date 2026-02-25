@@ -25,6 +25,6 @@ class RackUnitViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     filter_backends = (filters.OrderingFilter, filters.SearchFilter,
                        DjangoFilterBackend)
-    filterset_fields = ['rack__name', 'device__hostname', 'rack__location']
+    filterset_fields = ['rack__name', 'device__hostname', 'rack__room']
     search_fields = ['rack__name', 'device__hostname']
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]

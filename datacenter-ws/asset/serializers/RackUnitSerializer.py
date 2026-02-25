@@ -32,19 +32,19 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
     )
 
     location_id = serializers.StringRelatedField(
-        source='rack.location.id',
+        source='rack.room.location.id',
         many=False,
         read_only=True
     )
 
     location_name = serializers.StringRelatedField(
-        source='rack.location.name',
+        source='rack.room.location.name',
         many=False,
         read_only=True
     )
 
     location_short_name = serializers.StringRelatedField(
-        source='rack.location.short_name',
+        source='rack.room.location.short_name',
         many=False,
         read_only=True
     )
