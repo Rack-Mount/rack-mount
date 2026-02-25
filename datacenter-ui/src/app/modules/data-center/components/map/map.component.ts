@@ -538,6 +538,8 @@ export class MapComponent implements AfterViewInit {
       return;
     }
 
+    if (this.selectedRoomId == null) return;
+
     if (this.selectedTool === 'move') {
       const point = this.getSvgPoint(event);
 
@@ -1086,6 +1088,7 @@ export class MapComponent implements AfterViewInit {
 
   onDoubleClick(event: MouseEvent) {
     if (this.selectedTool !== 'move') return;
+    if (this.selectedRoomId == null) return;
     const point = this.getSvgPoint(event);
     const SNAP = 10 / this.zoom;
 

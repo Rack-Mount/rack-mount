@@ -1,6 +1,7 @@
 <div class="map-container">
   <app-map-sidebar
     [activeTool]="selectedTool"
+    [disabled]="!selectedRoomId"
     (toolChange)="onToolChange($event)"
   >
   </app-map-sidebar>
@@ -51,7 +52,13 @@
       class="drawing-area"
       [class.tool-select]="selectedTool === 'select'"
       [style.cursor]="
-        isPanning ? 'grabbing' : selectedTool === 'select' ? 'grab' : ''
+        !selectedRoomId
+          ? 'not-allowed'
+          : isPanning
+            ? 'grabbing'
+            : selectedTool === 'select'
+              ? 'grab'
+              : ''
       "
       (mousedown)="onMouseDown($event)"
       (mousemove)="onMouseMove($event)"

@@ -9,6 +9,7 @@ import { Component, EventEmitter, Output, Input } from '@angular/core';
 })
 export class MapSidebarComponent {
   @Input() activeTool: string = 'select';
+  @Input() disabled: boolean = false;
   @Output() toolChange = new EventEmitter<string>();
 
   tools = [
@@ -21,6 +22,7 @@ export class MapSidebarComponent {
   ];
 
   selectTool(toolId: string) {
+    if (this.disabled) return;
     this.activeTool = toolId;
     this.toolChange.emit(toolId);
   }
