@@ -5,14 +5,14 @@ export const routes: Routes = [
     path: 'rack/:id',
     loadComponent: () =>
       import('./modules/data-center/components/rack/rack.component').then(
-        (m) => m.RackComponent
+        (m) => m.RackComponent,
       ),
   },
   {
     path: 'map',
     loadComponent: () =>
       import('./modules/data-center/components/map/map.component').then(
-        (m) => m.MapComponent
+        (m) => m.MapComponent,
       ),
   },
 ];
