@@ -16,6 +16,10 @@ import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
 import { LocationService } from '../../../core/api/v1/api/location.service';
 import { Location as DjLocation } from '../../../core/api/v1/model/location';
 import { Room as DjRoom } from '../../../core/api/v1/model/room';
+import { forkJoin } from 'rxjs';
+import { AssetService } from '../../../core/api/v1/api/asset.service';
+import { Rack } from '../../../core/api/v1/model/rack';
+import { RackType } from '../../../core/api/v1/model/rackType';
 import { dist, distToSegment } from './map-geometry.utils';
 import {
   updateWallDerived as _deriveWall,
@@ -47,6 +51,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   constructor(
     private cdr: ChangeDetectorRef,
     private locationService: LocationService,
+    private assetService: AssetService,
     private route: ActivatedRoute,
     private router: Router,
   ) {}
@@ -59,6 +64,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly RACK_SNAP_RADIUS = 20;
   /** Last known valid (non-overlapping) position while moving a rack */
   private lastValidRackPos: { x: number; y: number } = { x: 0, y: 0 };
+
+  // RackType models for the toolbar (loaded once from API)
+  availableRackTypes: RackType[] = [];
+  selectedRackType: RackType | null = null;
 
   // Free-rotation drag state
   rotatingElementId: string | null = null;
@@ -235,6 +244,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.locationService.locationLocationList({}).subscribe({
       next: (data) => {
         this.availableLocations = data.results ?? [];
+        this.loadRackTypes();
         if (roomIdFromRoute) {
           const roomId = +roomIdFromRoute;
           this.loadRoomFromRoute(roomId);
@@ -282,11 +292,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
     this.selectedRoomId = id;
     this.router.navigate(['/map', id]);
-    this.locationService.locationRoomRetrieve({ id }).subscribe({
-      next: (room) => {
-        this.elements = room.floor_plan_data
+    forkJoin({
+      room: this.locationService.locationRoomRetrieve({ id }),
+      racks: this.assetService.assetRackList({ room: id, pageSize: 200 }),
+    }).subscribe({
+      next: ({ room, racks }) => {
+        const existing: MapElement[] = room.floor_plan_data
           ? (room.floor_plan_data as MapElement[])
           : [];
+        this.elements = this.injectUnplacedRacks(existing, racks.results ?? []);
         this.rederiveAllWalls();
         this.cdr.markForCheck();
       },
@@ -294,8 +308,86 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  saveFloorPlan(): void {
-    if (this.selectedRoomId == null) return;
+  /**
+   * Returns the floor plan elements with any backend racks that are not yet
+   * placed on the map added at random positions.
+   */
+  private injectUnplacedRacks(
+    elements: MapElement[],
+    backendRacks: Rack[],
+  ): MapElement[] {
+    const placedNames = new Set(
+      elements
+        .filter((el) => el.type === 'rack' && el.rackName)
+        .map((el) => el.rackName as string),
+    );
+    const unplaced = backendRacks.filter((r) => !placedNames.has(r.name));
+    if (unplaced.length === 0) return elements;
+
+    // Spread unplaced racks in a row starting at (20, 20), spaced 10cm apart
+    const result = [...elements];
+    let offsetX = 20;
+    const baseY = 20;
+    for (const rack of unplaced) {
+      const w = Math.max(10, rack.model.width);
+      const h = Math.max(10, rack.model.height);
+      result.push({
+        id: `rack-${rack.name}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        type: 'rack',
+        x: offsetX,
+        y: baseY,
+        width: w,
+        height: h,
+        rackName: rack.name,
+      });
+      offsetX += w + 10;
+    }
+    return result;
+  }
+
+  /** Loads all RackType models from the API for the toolbar picker. */
+  private loadRackTypes(): void {
+    this.assetService.assetRackTypeList({ pageSize: 100 }).subscribe({
+      next: (data) => {
+        this.availableRackTypes = data.results ?? [];
+        if (this.availableRackTypes.length > 0 && !this.selectedRackType) {
+          this.selectedRackType = this.availableRackTypes[0];
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err) => console.error('Failed to load rack types', err),
+    });
+  }
+
+  /**
+   * Returns SVG dimensions (cm units) for the currently selected rack.
+   * RackType.width / height are in cm; 1 SVG unit = 1 cm, so values are used directly.
+   * Falls back to 60×100 if no rack is selected.
+   */
+  private getSelectedRackDimensions(): { w: number; h: number } {
+    if (this.selectedRackType) {
+      return {
+        w: Math.max(10, this.selectedRackType.width),
+        h: Math.max(10, this.selectedRackType.height),
+      };
+    }
+    return { w: 60, h: 100 };
+  }
+
+  /** Generates a unique rack name within the current room floor plan. */
+  private generateRackName(): string {
+    const prefix = this.selectedRackType?.model ?? 'Rack';
+    const existingNames = new Set(
+      this.elements
+        .filter((el) => el.type === 'rack' && el.rackName)
+        .map((el) => el.rackName as string),
+    );
+    let n = 1;
+    while (existingNames.has(`${prefix}-${n}`)) n++;
+    return `${prefix}-${n}`;
+  }
+
+  saveFloorPlan(): void {    if (this.selectedRoomId == null) return;
     this.saveStatus = 'saving';
     this.locationService
       .locationRoomPartialUpdate({
@@ -832,13 +924,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         y2: point.y,
       };
     } else if (this.selectedTool === 'rack') {
+      const dims = this.getSelectedRackDimensions();
       this.currentElement = {
         id: Date.now().toString(),
         type: 'rack',
-        x: point.x,
-        y: point.y,
-        width: 0,
-        height: 0,
+        x: point.x - dims.w / 2,
+        y: point.y - dims.h / 2,
+        width: dims.w,
+        height: dims.h,
       };
     }
   }
@@ -1177,25 +1270,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.currentElement.x2 = point.x;
       this.currentElement.y2 = point.y;
     } else if (this.currentElement.type === 'rack') {
-      const width = point.x - this.startPoint.x;
-      const height = point.y - this.startPoint.y;
-      const rawX = width < 0 ? point.x : this.startPoint.x;
-      const rawY = height < 0 ? point.y : this.startPoint.y;
-      const rawW = Math.abs(width);
-      const rawH = Math.abs(height);
+      // Translate rack centered on cursor (dimensions are preset; no drag-resize)
+      const w = this.currentElement.width ?? 0;
+      const h = this.currentElement.height ?? 0;
+      const rawX = point.x - w / 2;
+      const rawY = point.y - h / 2;
 
       // Apply magnetic snap (Shift) and collision check
       const others = this.getRackRects();
       const snapRadius = event.shiftKey ? this.RACK_SNAP_RADIUS / this.zoom : 0;
       const snapResult = getRackSnapResult(
-        { x: rawX, y: rawY, width: rawW, height: rawH },
+        { x: rawX, y: rawY, width: w, height: h },
         others,
         snapRadius,
       );
       this.currentElement.x = snapResult.x;
       this.currentElement.y = snapResult.y;
-      this.currentElement.width = rawW;
-      this.currentElement.height = rawH;
       this.rackSnapActive = snapResult.snapped;
       this.rackCreationBlocked = snapResult.blocked;
     }
@@ -1256,34 +1346,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // For other tools (drag to create)
     if (this.currentElement) {
       if (this.currentElement.type === 'rack') {
-        // Enforce minimum size (default if drag was too tiny)
-        if (
-          (this.currentElement.width || 0) < 10 ||
-          (this.currentElement.height || 0) < 10
-        ) {
-          this.currentElement.width = 60;
-          this.currentElement.height = 100;
-          this.currentElement.x = this.startPoint!.x - 30;
-          this.currentElement.y = this.startPoint!.y - 50;
-          // Re-run snap on the default-size rect
-          const others = this.getRackRects();
-          const snapRadius = event.shiftKey
-            ? this.RACK_SNAP_RADIUS / this.zoom
-            : 0;
-          const snapResult = getRackSnapResult(
-            {
-              x: this.currentElement.x,
-              y: this.currentElement.y,
-              width: this.currentElement.width,
-              height: this.currentElement.height,
-            },
-            others,
-            snapRadius,
-          );
-          this.currentElement.x = snapResult.x;
-          this.currentElement.y = snapResult.y;
-          this.rackCreationBlocked = snapResult.blocked;
-        }
         // Abort placement if overlapping another rack
         if (this.rackCreationBlocked) {
           this.isDrawing = false;
@@ -1292,6 +1354,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           this.rackCreationBlocked = false;
           this.rackSnapActive = false;
           return;
+        }
+        // Assign a unique name and create rack entry in backend
+        const rackName = this.generateRackName();
+        this.currentElement.rackName = rackName;
+        if (this.selectedRackType && this.selectedRoomId != null) {
+          this.assetService
+            .assetRackCreate({
+              rack: {
+                name: rackName,
+                model_id: this.selectedRackType.id,
+                room_id: this.selectedRoomId,
+              } as any,
+            })
+            .subscribe({
+              next: () => this.cdr.markForCheck(),
+              error: (err) =>
+                console.error('Failed to create rack in backend', err),
+            });
         }
       }
       this.elements.push(this.currentElement);

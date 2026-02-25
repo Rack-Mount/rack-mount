@@ -51,6 +51,25 @@
         </span>
         <span class="switch-label">Autosalvataggio</span>
       </label>
+      @if (selectedTool === 'rack') {
+        <span class="rack-picker-sep"></span>
+        <label for="rack-select" class="rack-picker-label">🖥️ Modello rack:</label>
+        @if (availableRackTypes.length === 0) {
+          <span class="rack-picker-empty">Nessun modello rack disponibile</span>
+        } @else {
+          <select
+            id="rack-select"
+            class="rack-picker-select"
+            [(ngModel)]="selectedRackType"
+          >
+            @for (rackType of availableRackTypes; track rackType.id) {
+              <option [ngValue]="rackType">
+                {{ rackType.model }} ({{ rackType.width }}×{{ rackType.height }} cm, {{ rackType.capacity }}U)
+              </option>
+            }
+          </select>
+        }
+      }
     </div>
     <svg
       #svgContainer
@@ -307,6 +326,22 @@
                     [attr.stroke-width]="1.5 / zoom"
                     (mousedown)="onRotateHandleMouseDown($event, el)"
                   />
+                }
+                <!-- Rack name label -->
+                @if (el.rackName) {
+                  <text
+                    [attr.x]="el.x + (el.width || 0) / 2"
+                    [attr.y]="el.y + (el.height || 0) / 2"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    [attr.font-size]="11 / zoom + 'px'"
+                    fill="#333"
+                    pointer-events="none"
+                    font-weight="bold"
+                    style="user-select: none"
+                  >
+                    {{ el.rackName }}
+                  </text>
                 }
               </g>
             }

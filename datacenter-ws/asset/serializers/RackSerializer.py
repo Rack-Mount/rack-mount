@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from asset.models import Rack
+from asset.models import Rack, RackType
+from location.models.Room import Room
 from asset.serializers import RackTypeSerializer
 
 
@@ -8,8 +9,10 @@ class RackSerializer(serializers.HyperlinkedModelSerializer):
     RackSerializer is a serializer for the Rack model, utilizing HyperlinkedModelSerializer.
 
     Attributes:
-        model (RackTypeSerializer): Serializer for the RackType model.
+        model (RackTypeSerializer): Serializer for the RackType model (read).
+        model_id (PrimaryKeyRelatedField): Write-only FK to RackType for creation/update.
         room (serializers.StringRelatedField): Read-only field representing the room of the rack.
+        room_id (PrimaryKeyRelatedField): Write-only FK to Room for creation/update.
         location_name (serializers.StringRelatedField): Read-only field representing the location name.
 
     Meta:
@@ -17,10 +20,22 @@ class RackSerializer(serializers.HyperlinkedModelSerializer):
         fields (list): List of fields to be included in the serialized output.
     """
 
-    model = RackTypeSerializer()
+    model = RackTypeSerializer(read_only=True)
+    model_id = serializers.PrimaryKeyRelatedField(
+        queryset=RackType.objects.all(),
+        source='model',
+        write_only=True,
+    )
     room = serializers.StringRelatedField(
         many=False,
         read_only=True
+    )
+    room_id = serializers.PrimaryKeyRelatedField(
+        queryset=Room.objects.all(),
+        source='room',
+        write_only=True,
+        allow_null=True,
+        required=False,
     )
     location_name = serializers.StringRelatedField(
         source='room.location.name',
@@ -29,4 +44,4 @@ class RackSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Rack
-        fields = ['name', 'model', 'room', 'location_name']
+        fields = ['name', 'model', 'model_id', 'room', 'room_id', 'location_name']

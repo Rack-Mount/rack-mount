@@ -54,6 +54,8 @@ export interface MapElement {
   y2?: number;
   /** Rotation in degrees (0 / 90 / 180 / 270). Only used for racks. */
   rotation?: number;
+  /** Backend rack name this floor-plan element is linked to */
+  rackName?: string;
   /** Polyline vertices (walls only) */
   points?: Point[];
   text?: string;
