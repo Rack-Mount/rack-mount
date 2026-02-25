@@ -6,7 +6,8 @@ from location.models import Room
 class RoomInline(admin.TabularInline):
     model = Room
     extra = 0
-    fields = ['name', 'floor', 'capacity', 'manager', 'manager_mail', 'description', 'floor_plan']
+    fields = ['name', 'floor', 'capacity', 'manager',
+              'manager_mail', 'description', 'floor_plan']
     show_change_link = True
 
 
