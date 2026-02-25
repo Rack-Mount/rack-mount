@@ -8,38 +8,10 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
-
-interface MapElement {
-  id: string;
-  type: 'wall' | 'rack' | 'door' | 'text';
-  x: number;
-  y: number;
-  width?: number;
-  height?: number;
-  x2?: number;
-  y2?: number;
-  points?: { x: number; y: number }[]; // For polylines (walls)
-  text?: string;
-  // Pre-computed display data (walls only, updated by updateWallDerived)
-  area?: number;
-  centroidX?: number;
-  centroidY?: number;
-  segments?: {
-    x: number;
-    y: number;
-    length: number;
-    angle: number;
-    labelX: number;
-    labelY: number;
-  }[];
-  angles?: {
-    x: number;
-    y: number;
-    angle: number;
-    labelX: number;
-    labelY: number;
-  }[];
-}
+import { MapElement, Point, Room, AngleLabel, WallSegment } from './map.types';
+import { dist, distToSegment, projectOnSegment, lineSegmentIntersection } from './map-geometry.utils';
+import { updateWallDerived as _deriveWall, computeWallSegments, computeWallAngles } from './wall-display.utils';
+import { computeRooms as _computeRooms, mergeWalls as _mergeWalls } from './wall-graph.utils';
 
 @Component({
   selector: 'app-map',
@@ -60,26 +32,13 @@ export class MapComponent implements AfterViewInit {
   selectedElementId: string | null = null;
 
   // Polyline drawing state
-  activePolylinePoints: { x: number; y: number }[] = [];
-  activeWallSegments: {
-    x: number;
-    y: number;
-    length: number;
-    angle: number;
-    labelX: number;
-    labelY: number;
-  }[] = [];
-  previewAngles: {
-    x: number;
-    y: number;
-    angle: number;
-    labelX: number;
-    labelY: number;
-  }[] = [];
-  cursorPosition: { x: number; y: number } = { x: 0, y: 0 };
-  currentSegmentLength: number = 0;
-  intersectionPoint: { x: number; y: number } | null = null;
-  vertexSnapPoint: { x: number; y: number } | null = null;
+  activePolylinePoints: Point[] = [];
+  activeWallSegments: WallSegment[] = [];
+  previewAngles: AngleLabel[] = [];
+  cursorPosition: Point = { x: 0, y: 0 };
+  currentSegmentLength = 0;
+  intersectionPoint: Point | null = null;
+  vertexSnapPoint: Point | null = null;
 
   // Zoom & pan state
   zoom = 1;
@@ -122,7 +81,7 @@ export class MapComponent implements AfterViewInit {
   gridPathMajor = ''; // 1m major grid
 
   // Detected rooms (enclosed faces in the wall planar graph)
-  rooms: { area: number; cx: number; cy: number }[] = [];
+  rooms: Room[] = [];
 
   private gridRafId: number | null = null;
 
@@ -206,150 +165,30 @@ export class MapComponent implements AfterViewInit {
     return this.activePolylinePoints.map((p) => `${p.x},${p.y}`).join(' ');
   }
 
-  // Calculate distance between two points
-  private getDistance(
-    p1: { x: number; y: number },
-    p2: { x: number; y: number },
-  ): number {
-    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-  }
+  private getDistance(p1: Point, p2: Point): number { return dist(p1, p2); }
 
-  // Calculate angle at vertex p2 formed by p1-p2-p3
-  private getAngle(
-    p1: { x: number; y: number },
-    p2: { x: number; y: number },
-    p3: { x: number; y: number },
-  ): number {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private getAngle(p1: Point, p2: Point, p3: Point): number {
     const a1 = Math.atan2(p1.y - p2.y, p1.x - p2.x);
     const a2 = Math.atan2(p3.y - p2.y, p3.x - p2.x);
     let angle = (a2 - a1) * (180 / Math.PI);
-
-    // Normalize to 0-360
     if (angle < 0) angle += 360;
-
-    // We usually want the inner angle, but without winding order it's ambiguous.
-    // Returning the smaller angle (0-180) is often safer for generic polylines
-    // or returning the raw CCW angle. Let's return the raw angle (0-360) for now.
-    // Or simply the difference.
-    // If we want the angle "between lines", it's usually <= 180.
     if (angle > 180) angle = 360 - angle;
-
     return angle;
   }
 
-  // Get angles for all vertices in the polyline (including the cursor as the last point)
+  // Delegate to util (note: param order differs — cursor was 2nd here, last in util)
   getWallAngles(
-    points: { x: number; y: number }[],
-    cursor?: { x: number; y: number },
+    points: Point[],
+    cursor?: Point,
     centroidX?: number,
     centroidY?: number,
-  ): { x: number; y: number; angle: number; labelX: number; labelY: number }[] {
-    let fullPoints = cursor ? [...points, cursor] : [...points];
-
-    // Check if closed loop (first point == last point)
-    if (
-      fullPoints.length > 2 &&
-      fullPoints[0].x === fullPoints[fullPoints.length - 1].x &&
-      fullPoints[0].y === fullPoints[fullPoints.length - 1].y
-    ) {
-      fullPoints.push(fullPoints[1]);
-    }
-
-    if (fullPoints.length < 3) return [];
-
-    const LABEL_DIST = 18 / this.zoom;
-    const result = [];
-    for (let i = 1; i < fullPoints.length - 1; i++) {
-      const p1 = fullPoints[i - 1];
-      const p2 = fullPoints[i];
-      const p3 = fullPoints[i + 1];
-
-      const angle = this.getAngle(p1, p2, p3);
-
-      // Compute inward bisector for label placement
-      const u1x = p1.x - p2.x,
-        u1y = p1.y - p2.y;
-      const u2x = p3.x - p2.x,
-        u2y = p3.y - p2.y;
-      const l1 = Math.sqrt(u1x * u1x + u1y * u1y);
-      const l2 = Math.sqrt(u2x * u2x + u2y * u2y);
-      let bx = 0,
-        by = 0;
-      if (l1 > 0 && l2 > 0) {
-        const n1x = u1x / l1,
-          n1y = u1y / l1;
-        const n2x = u2x / l2,
-          n2y = u2y / l2;
-        bx = n1x + n2x;
-        by = n1y + n2y;
-        const bl = Math.sqrt(bx * bx + by * by);
-        if (bl < 0.001) {
-          bx = -n1y;
-          by = n1x;
-        } // degenerate (180°): use perp
-        else {
-          bx /= bl;
-          by /= bl;
-        }
-        // If centroid provided, ensure bisector points inward
-        if (centroidX !== undefined && centroidY !== undefined) {
-          const toCx = centroidX - p2.x,
-            toCy = centroidY - p2.y;
-          if (bx * toCx + by * toCy < 0) {
-            bx = -bx;
-            by = -by;
-          }
-        }
-      }
-
-      result.push({
-        x: p2.x,
-        y: p2.y,
-        angle,
-        labelX: p2.x + bx * LABEL_DIST,
-        labelY: p2.y + by * LABEL_DIST,
-      });
-    }
-    return result;
+  ): AngleLabel[] {
+    return computeWallAngles(points, this.zoom, centroidX, centroidY, cursor);
   }
 
-  // Calculate intersection between two line segments p1-p2 and p3-p4
-  private getLineIntersection(
-    p1: { x: number; y: number },
-    p2: { x: number; y: number },
-    p3: { x: number; y: number },
-    p4: { x: number; y: number },
-  ): { x: number; y: number } | null {
-    const x1 = p1.x,
-      y1 = p1.y,
-      x2 = p2.x,
-      y2 = p2.y;
-    const x3 = p3.x,
-      y3 = p3.y,
-      x4 = p4.x,
-      y4 = p4.y;
-
-    const denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-    if (denom === 0) return null; // Parallel lines
-
-    const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denom;
-    const ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denom;
-
-    // Check if intersection is within the segments
-    // Using a small epsilon for floating point inaccuracies
-    const epsilon = 0.001;
-    if (
-      ua >= 0 - epsilon &&
-      ua <= 1 + epsilon &&
-      ub >= 0 - epsilon &&
-      ub <= 1 + epsilon
-    ) {
-      return {
-        x: x1 + ua * (x2 - x1),
-        y: y1 + ua * (y2 - y1),
-      };
-    }
-    return null;
+  private getLineIntersection(p1: Point, p2: Point, p3: Point, p4: Point): Point | null {
+    return lineSegmentIntersection(p1, p2, p3, p4);
   }
 
   // Check for intersections with existing walls and current polyline
@@ -460,188 +299,20 @@ export class MapComponent implements AfterViewInit {
     return closestVertex;
   }
 
-  // Get midpoints and lengths for wall segments (used for preview during drawing, no centroid available)
-  getWallSegments(points: { x: number; y: number }[] | undefined): {
-    x: number;
-    y: number;
-    length: number;
-    angle: number;
-    labelX: number;
-    labelY: number;
-  }[] {
+  getWallSegments(points: Point[] | undefined): WallSegment[] {
     if (!points || points.length < 2) return [];
-    const LABEL_DIST = 16 / this.zoom;
-    const segments = [];
-    for (let i = 0; i < points.length - 1; i++) {
-      const p1 = points[i];
-      const p2 = points[i + 1];
-      const rdx = p2.x - p1.x,
-        rdy = p2.y - p1.y;
-      const rdlen = Math.sqrt(rdx * rdx + rdy * rdy) || 1;
-      const length = this.getDistance(p1, p2);
-      const midX = (p1.x + p2.x) / 2;
-      const midY = (p1.y + p2.y) / 2;
-      let angle = (Math.atan2(rdy, rdx) * 180) / Math.PI;
-      if (angle > 90) angle -= 180;
-      if (angle < -90) angle += 180;
-      // Left normal (consistent direction for open polylines)
-      const nx = -rdy / rdlen;
-      const ny = rdx / rdlen;
-      segments.push({
-        x: midX,
-        y: midY,
-        length,
-        angle,
-        labelX: midX + nx * LABEL_DIST,
-        labelY: midY + ny * LABEL_DIST,
-      });
-    }
-    return segments;
+    return computeWallSegments(points, this.zoom);
   }
 
-  // Pre-compute all display data onto the element so the template reads stable properties (avoids NG0100/NG0956)
+  // Delegates to wall-display.utils; zoom is required by the util
   private updateWallDerived(el: MapElement): void {
-    if (el.type !== 'wall' || !el.points) {
-      el.segments = [];
-      el.angles = [];
-      el.area = undefined;
-      el.centroidX = undefined;
-      el.centroidY = undefined;
-      return;
-    }
-
-    const pts = el.points;
-    const LABEL_DIST = 16 / this.zoom;
-
-    // Centroid first (needed to determine outward normal for segment labels)
-    let computedCx: number | undefined;
-    let computedCy: number | undefined;
-    if (pts.length >= 4 && this.getDistance(pts[0], pts[pts.length - 1]) <= 2) {
-      const poly = pts.slice(0, pts.length - 1);
-      const n = poly.length;
-      let sa = 0,
-        cx = 0,
-        cy = 0;
-      for (let i = 0; i < n; i++) {
-        const j = (i + 1) % n;
-        const cross = poly[i].x * poly[j].y - poly[j].x * poly[i].y;
-        sa += cross;
-        cx += (poly[i].x + poly[j].x) * cross;
-        cy += (poly[i].y + poly[j].y) * cross;
-      }
-      sa /= 2;
-      const absArea = Math.abs(sa);
-      if (absArea > 0) {
-        el.area = absArea;
-        computedCx = cx / (6 * sa);
-        computedCy = cy / (6 * sa);
-        el.centroidX = computedCx;
-        el.centroidY = computedCy;
-      } else {
-        el.area = undefined;
-        el.centroidX = undefined;
-        el.centroidY = undefined;
-      }
-    } else {
-      el.area = undefined;
-      el.centroidX = undefined;
-      el.centroidY = undefined;
-    }
-
-    // Segments: outward normal determined using centroid
-    const segs: {
-      x: number;
-      y: number;
-      length: number;
-      angle: number;
-      labelX: number;
-      labelY: number;
-    }[] = [];
-    for (let i = 0; i < pts.length - 1; i++) {
-      const p1 = pts[i],
-        p2 = pts[i + 1];
-      const rdx = p2.x - p1.x,
-        rdy = p2.y - p1.y;
-      const rdlen = Math.sqrt(rdx * rdx + rdy * rdy) || 1;
-      const midX = (p1.x + p2.x) / 2;
-      const midY = (p1.y + p2.y) / 2;
-      let angle = (Math.atan2(rdy, rdx) * 180) / Math.PI;
-      if (angle > 90) angle -= 180;
-      if (angle < -90) angle += 180;
-      // Left normal as default outward direction
-      let nx = -rdy / rdlen;
-      let ny = rdx / rdlen;
-      // For closed polygons: flip if normal points toward centroid (we want outward)
-      if (computedCx !== undefined && computedCy !== undefined) {
-        const toCx = computedCx - midX,
-          toCy = computedCy - midY;
-        if (nx * toCx + ny * toCy > 0) {
-          nx = -nx;
-          ny = -ny;
-        }
-      }
-      segs.push({
-        x: midX,
-        y: midY,
-        length: this.getDistance(p1, p2),
-        angle,
-        labelX: midX + nx * LABEL_DIST,
-        labelY: midY + ny * LABEL_DIST,
-      });
-    }
-    el.segments = segs;
-
-    // Angles: inward bisector (computed after centroid)
-    el.angles = this.getWallAngles(pts, undefined, computedCx, computedCy);
+    _deriveWall(el, this.zoom);
   }
 
-  // Merge two walls: elA vertex idxA is joined to elB vertex idxB
-  // Both walls must be open (not closed loops) and the joined vertex must be an endpoint
-  private mergeWalls(
-    elA: MapElement,
-    idxA: number,
-    elB: MapElement,
-    idxB: number,
-  ): void {
-    const ptsA = elA.points!;
-    const ptsB = elB.points!;
-    if (ptsA.length < 2 || ptsB.length < 2) return;
-
-    // Check if walls are closed (loops)
-    const closedA = this.getDistance(ptsA[0], ptsA[ptsA.length - 1]) < 2;
-    const closedB = this.getDistance(ptsB[0], ptsB[ptsB.length - 1]) < 2;
-    if (closedA || closedB) return; // don't merge closed polygons
-
-    const lastA = ptsA.length - 1;
-    const lastB = ptsB.length - 1;
-    const aIsFirst = idxA === 0;
-    const aIsLast = idxA === lastA;
-    const bIsFirst = idxB === 0;
-    const bIsLast = idxB === lastB;
-
-    if (!(aIsFirst || aIsLast) || !(bIsFirst || bIsLast)) return;
-
-    let merged: { x: number; y: number }[];
-
-    if (aIsLast && bIsFirst) {
-      // A-end → B-start: A + B
-      merged = [...ptsA, ...ptsB.slice(1)];
-    } else if (aIsFirst && bIsLast) {
-      // A-start → B-end: B + A
-      merged = [...ptsB, ...ptsA.slice(1)];
-    } else if (aIsFirst && bIsFirst) {
-      // A-start → B-start: reverse(A) + B
-      merged = [...[...ptsA].reverse(), ...ptsB.slice(1)];
-    } else if (aIsLast && bIsLast) {
-      // A-end → B-end: A + reverse(B)
-      merged = [...ptsA, ...[...ptsB].reverse().slice(1)];
-    } else {
-      return;
-    }
-
-    elA.points = merged;
+  // Delegates to wall-graph.utils; mutates elA.points and returns filtered elements array
+  private mergeWalls(elA: MapElement, idxA: number, elB: MapElement, idxB: number): void {
+    this.elements = _mergeWalls(this.elements, elA, idxA, elB, idxB);
     this.updateWallDerived(elA);
-    this.elements = this.elements.filter((e) => e.id !== elB.id);
   }
 
   // Format points array to SVG points string
@@ -732,232 +403,9 @@ export class MapComponent implements AfterViewInit {
     this.scheduleUpdateGrid();
   }
 
-  // Detect all enclosed rooms using planar graph face traversal on the wall network
-  private computeRooms(): { area: number; cx: number; cy: number }[] {
-    const EPS = 3;
-    type Pt = { x: number; y: number };
-    const pts: Pt[] = [];
-    const findOrAdd = (p: Pt): number => {
-      for (let i = 0; i < pts.length; i++) {
-        if (Math.abs(pts[i].x - p.x) < EPS && Math.abs(pts[i].y - p.y) < EPS)
-          return i;
-      }
-      pts.push({ x: p.x, y: p.y });
-      return pts.length - 1;
-    };
-    const edgeSet = new Set<string>();
-    const edgeList: [number, number][] = [];
-    const addEdge = (a: number, b: number) => {
-      if (a === b) return;
-      const key = a < b ? `${a}|${b}` : `${b}|${a}`;
-      if (edgeSet.has(key)) return;
-      edgeSet.add(key);
-      edgeList.push([a, b]);
-    };
-    for (const el of this.elements) {
-      if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
-      for (let i = 0; i < el.points.length - 1; i++) {
-        addEdge(findOrAdd(el.points[i]), findOrAdd(el.points[i + 1]));
-      }
-    }
-    if (pts.length < 3 || edgeList.length < 3) return [];
-    const adj: number[][] = Array.from({ length: pts.length }, () => []);
-    for (const [a, b] of edgeList) {
-      adj[a].push(b);
-      adj[b].push(a);
-    }
-    for (let v = 0; v < pts.length; v++) {
-      adj[v].sort((a, b) => {
-        const aa = Math.atan2(pts[a].y - pts[v].y, pts[a].x - pts[v].x);
-        const ba = Math.atan2(pts[b].y - pts[v].y, pts[b].x - pts[v].x);
-        return aa - ba;
-      });
-    }
-    const nextHE = (u: number, v: number): number => {
-      const inAng = Math.atan2(pts[u].y - pts[v].y, pts[u].x - pts[v].x);
-      let best = -1,
-        bestDelta = -Infinity;
-      for (const w of adj[v]) {
-        if (w === u) continue;
-        const outAng = Math.atan2(pts[w].y - pts[v].y, pts[w].x - pts[v].x);
-        let d = outAng - inAng;
-        if (d <= 0) d += 2 * Math.PI;
-        if (d > bestDelta) {
-          bestDelta = d;
-          best = w;
-        }
-      }
-      return best;
-    };
-    // Signed distance from point to face boundary (positive = inside, negative = outside)
-    const signedDistToFace = (
-      px: number,
-      py: number,
-      face: number[],
-    ): number => {
-      let inside = false;
-      let minD = Infinity;
-      for (let i = 0, j = face.length - 1; i < face.length; j = i++) {
-        const ax = pts[face[j]].x,
-          ay = pts[face[j]].y;
-        const bx = pts[face[i]].x,
-          by = pts[face[i]].y;
-        // ray-cast for inside test
-        if (
-          by > py !== ay > py &&
-          px < ((ax - bx) * (py - by)) / (ay - by) + bx
-        )
-          inside = !inside;
-        // distance to edge
-        const dx = bx - ax,
-          dy = by - ay;
-        const lenSq = dx * dx + dy * dy;
-        const t =
-          lenSq === 0
-            ? 0
-            : Math.max(
-                0,
-                Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq),
-              );
-        const ex = px - ax - t * dx,
-          ey = py - ay - t * dy;
-        const d = Math.sqrt(ex * ex + ey * ey);
-        if (d < minD) minD = d;
-      }
-      return inside ? minD : -minD;
-    };
-
-    // Polylabel: iterative cell-refinement to find the point farthest from all edges
-    const polylabel = (face: number[]): { cx: number; cy: number } => {
-      let minX = Infinity,
-        maxX = -Infinity,
-        minY = Infinity,
-        maxY = -Infinity;
-      for (const vi of face) {
-        if (pts[vi].x < minX) minX = pts[vi].x;
-        if (pts[vi].x > maxX) maxX = pts[vi].x;
-        if (pts[vi].y < minY) minY = pts[vi].y;
-        if (pts[vi].y > maxY) maxY = pts[vi].y;
-      }
-      const width = maxX - minX,
-        height = maxY - minY;
-      const cellSize = Math.max(width, height);
-      if (cellSize === 0) return { cx: minX, cy: minY };
-
-      // Each cell: [cx, cy, h, d, maxD]  h = half-size
-      // maxD = d + h*sqrt(2)  — upper bound on best achievable dist inside cell
-      type Cell = [number, number, number, number, number];
-      const SQRT2 = 1.4142135623730951;
-      const makeCell = (cx: number, cy: number, h: number): Cell => {
-        const d = signedDistToFace(cx, cy, face);
-        return [cx, cy, h, d, d + h * SQRT2];
-      };
-
-      // Max-heap by maxD (index 4)
-      const heap: Cell[] = [];
-      const heapPush = (c: Cell) => {
-        heap.push(c);
-        let i = heap.length - 1;
-        while (i > 0) {
-          const parent = (i - 1) >> 1;
-          if (heap[parent][4] >= heap[i][4]) break;
-          [heap[parent], heap[i]] = [heap[i], heap[parent]];
-          i = parent;
-        }
-      };
-      const heapPop = (): Cell => {
-        const top = heap[0];
-        const last = heap.pop()!;
-        if (heap.length > 0) {
-          heap[0] = last;
-          let i = 0;
-          for (;;) {
-            const l = 2 * i + 1,
-              r = 2 * i + 2;
-            let best = i;
-            if (l < heap.length && heap[l][4] > heap[best][4]) best = l;
-            if (r < heap.length && heap[r][4] > heap[best][4]) best = r;
-            if (best === i) break;
-            [heap[i], heap[best]] = [heap[best], heap[i]];
-            i = best;
-          }
-        }
-        return top;
-      };
-
-      // Seed coarse grid
-      let h = cellSize / 2;
-      for (let x = minX; x < maxX; x += cellSize) {
-        for (let y = minY; y < maxY; y += cellSize) {
-          heapPush(makeCell(x + h, y + h, h));
-        }
-      }
-
-      // Centroid cell as initial best candidate
-      let bestD = -Infinity,
-        bestCx = minX + width / 2,
-        bestCy = minY + height / 2;
-      const centCell = makeCell(bestCx, bestCy, 0);
-      if (centCell[3] > bestD) {
-        bestD = centCell[3];
-        bestCx = centCell[0];
-        bestCy = centCell[1];
-      }
-
-      const PRECISION = 1.0; // stop when gain < 1px
-      while (heap.length > 0) {
-        const cell = heapPop();
-        if (cell[3] > bestD) {
-          bestD = cell[3];
-          bestCx = cell[0];
-          bestCy = cell[1];
-        }
-        // Skip if this cell can't improve over bestD + precision
-        if (cell[4] - bestD <= PRECISION) continue;
-        const ch = cell[2] / 2;
-        heapPush(makeCell(cell[0] - ch, cell[1] - ch, ch));
-        heapPush(makeCell(cell[0] + ch, cell[1] - ch, ch));
-        heapPush(makeCell(cell[0] - ch, cell[1] + ch, ch));
-        heapPush(makeCell(cell[0] + ch, cell[1] + ch, ch));
-      }
-      return { cx: bestCx, cy: bestCy };
-    };
-
-    const visited = new Set<string>();
-    const rooms: { area: number; cx: number; cy: number }[] = [];
-    for (const [ea, eb] of edgeList) {
-      for (const [u0, v0] of [
-        [ea, eb],
-        [eb, ea],
-      ] as [number, number][]) {
-        if (visited.has(`${u0}|${v0}`)) continue;
-        const face: number[] = [];
-        let u = u0,
-          v = v0;
-        for (let step = 0; step < edgeList.length * 2 + 4; step++) {
-          const key = `${u}|${v}`;
-          if (visited.has(key)) break;
-          visited.add(key);
-          face.push(v);
-          const w = nextHE(u, v);
-          if (w === -1) break;
-          u = v;
-          v = w;
-        }
-        if (face.length < 3) continue;
-        let sa = 0;
-        for (let i = 0; i < face.length; i++) {
-          const j = (i + 1) % face.length;
-          sa +=
-            pts[face[i]].x * pts[face[j]].y - pts[face[j]].x * pts[face[i]].y;
-        }
-        sa /= 2;
-        if (sa <= 0) continue; // outer face
-        const { cx, cy } = polylabel(face);
-        rooms.push({ area: sa, cx, cy });
-      }
-    }
-    return rooms;
+  // Delegates to wall-graph.utils
+  private computeRooms(): Room[] {
+    return _computeRooms(this.elements);
   }
 
   onToolChange(toolId: string) {
@@ -1033,19 +481,7 @@ export class MapComponent implements AfterViewInit {
     segIndex: number;
   } | null = null;
 
-  // Minimal distance from point p to line segment v-w
-  private getDistanceToSegment(
-    p: { x: number; y: number },
-    v: { x: number; y: number },
-    w: { x: number; y: number },
-  ): number {
-    const l2 = Math.pow(w.x - v.x, 2) + Math.pow(w.y - v.y, 2);
-    if (l2 === 0) return this.getDistance(p, v);
-    let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
-    t = Math.max(0, Math.min(1, t));
-    const proj = { x: v.x + t * (w.x - v.x), y: v.y + t * (w.y - v.y) };
-    return this.getDistance(p, proj);
-  }
+  private getDistanceToSegment(p: Point, v: Point, w: Point): number { return distToSegment(p, v, w); }
 
   // Find closest point on any wall segment to `point`, within `tolerance` SVG units.
   // Returns null if nothing is close enough, or if snap would land on an existing vertex.
@@ -1183,11 +619,9 @@ export class MapComponent implements AfterViewInit {
     // Polyline logic for walls
     if (this.selectedTool === 'wall') {
       let point = this.getSvgPoint(event);
-      console.log('Wall click at', point);
 
       // If drawing hasn't started, start it
       if (this.activePolylinePoints.length === 0) {
-        console.log('Starting wall drawing');
         // Snap start point to edge if applicable
         const startVert = this.getClosestVertex(point, 20);
         if (startVert) {
@@ -1223,14 +657,12 @@ export class MapComponent implements AfterViewInit {
           }
         }
 
-        console.log('Adding point to wall');
         // Check for closing loop (click near start point)
         const distToStart = this.getDistance(point, startPoint);
 
         // Allow closing the loop if we have enough points (triangle at least)
         if (this.activePolylinePoints.length > 2 && distToStart < 15) {
           // Snapping tolerance
-          console.log('Closing loop');
           // Close the loop
           this.finishPolyline([...this.activePolylinePoints, startPoint]);
           return;
