@@ -13,11 +13,11 @@ export class MapSidebarComponent {
 
   tools = [
     { id: 'select', label: 'Sposta', icon: '✥' },
-    { id: 'move', label: 'Modifica', icon: '✏️' },
-    { id: 'rack', label: 'Aggiungi Rack', icon: '🖥️' },
+    { id: 'move', label: 'Modifica', icon: '📝' },
     { id: 'wall', label: 'Aggiungi Muro', icon: '🧱' },
     { id: 'door', label: 'Aggiungi Porta', icon: '🚪' },
-    { id: 'text', label: 'Aggiungi Testo', icon: '📝' },
+    { id: 'text', label: 'Aggiungi Testo', icon: '🔤' },
+    { id: 'rack', label: 'Aggiungi Rack', icon: '🖥️' },
   ];
 
   selectTool(toolId: string) {
