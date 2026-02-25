@@ -26,7 +26,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='rack',
             name='room',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='racks', to='location.room'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='racks', to='location.room'),
         ),
         # 3. Remove old 'location' field
         migrations.RemoveField(
