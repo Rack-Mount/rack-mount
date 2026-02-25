@@ -51,7 +51,17 @@
                 />
                 <!-- Wall Measurements (outside perimeter, rotated along segment) -->
                 @for (seg of el.segments ?? []; track $index) {
-                  <g [attr.transform]="'rotate(' + seg.angle + ',' + seg.labelX + ',' + seg.labelY + ')'">
+                  <g
+                    [attr.transform]="
+                      'rotate(' +
+                      seg.angle +
+                      ',' +
+                      seg.labelX +
+                      ',' +
+                      seg.labelY +
+                      ')'
+                    "
+                  >
                     <text
                       [attr.x]="seg.labelX"
                       [attr.y]="seg.labelY"
@@ -278,7 +288,17 @@
                   <g pointer-events="none">
                     <!-- Dimensions for already drawn segments of the current polyline -->
                     @for (segment of activeWallSegments; track $index) {
-                      <g [attr.transform]="'rotate(' + segment.angle + ',' + segment.labelX + ',' + segment.labelY + ')'">
+                      <g
+                        [attr.transform]="
+                          'rotate(' +
+                          segment.angle +
+                          ',' +
+                          segment.labelX +
+                          ',' +
+                          segment.labelY +
+                          ')'
+                        "
+                      >
                         <!-- Length Text Background -->
                         <rect
                           [attr.x]="segment.labelX - 20 / zoom"
