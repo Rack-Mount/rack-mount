@@ -938,6 +938,21 @@ export class MapComponent implements AfterViewInit {
       return;
     }
 
+    // Snap preview when wall tool is selected but drawing hasn't started yet
+    if (this.selectedTool === 'wall' && !this.isDrawing) {
+      this.vertexSnapPoint = null;
+      this.edgeSnapPoint = null;
+      const vertex = this.getClosestVertex(point, 20);
+      if (vertex) {
+        this.vertexSnapPoint = vertex;
+      } else {
+        const edge = this.getClosestEdgeSnap(point, 15);
+        if (edge) {
+          this.edgeSnapPoint = edge;
+        }
+      }
+    }
+
     // Polyline preview logic
     if (
       this.selectedTool === 'wall' &&

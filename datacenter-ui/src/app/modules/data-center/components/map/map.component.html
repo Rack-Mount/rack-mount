@@ -288,6 +288,38 @@
           />
         }
 
+        <!-- Vertex Snap Indicator (Blue Dot) — visible also before drawing starts -->
+        @if (selectedTool === "wall" && vertexSnapPoint) {
+          <circle
+            [attr.cx]="vertexSnapPoint.x"
+            [attr.cy]="vertexSnapPoint.y"
+            [attr.r]="8 / zoom"
+            fill="#007bff"
+            stroke="white"
+            [attr.stroke-width]="2 / zoom"
+            pointer-events="none"
+          />
+        }
+        <!-- Edge Snap Indicator (Orange ring + dot) — visible also before drawing starts -->
+        @if (selectedTool === "wall" && edgeSnapPoint) {
+          <circle
+            [attr.cx]="edgeSnapPoint.x"
+            [attr.cy]="edgeSnapPoint.y"
+            [attr.r]="7 / zoom"
+            fill="none"
+            stroke="#ff8c00"
+            [attr.stroke-width]="2 / zoom"
+            pointer-events="none"
+          />
+          <circle
+            [attr.cx]="edgeSnapPoint.x"
+            [attr.cy]="edgeSnapPoint.y"
+            [attr.r]="3 / zoom"
+            fill="#ff8c00"
+            pointer-events="none"
+          />
+        }
+
         <!-- Current drawing element preview -->
         @if (isDrawing) {
           <ng-container>
@@ -436,37 +468,6 @@
                     fill="red"
                     stroke="white"
                     [attr.stroke-width]="2 / zoom"
-                    pointer-events="none"
-                  />
-                }
-                <!-- Vertex Snap Indicator (Blue Dot) -->
-                @if (vertexSnapPoint) {
-                  <circle
-                    [attr.cx]="vertexSnapPoint.x"
-                    [attr.cy]="vertexSnapPoint.y"
-                    [attr.r]="8 / zoom"
-                    fill="#007bff"
-                    stroke="white"
-                    [attr.stroke-width]="2 / zoom"
-                    pointer-events="none"
-                  />
-                }
-                <!-- Edge Snap Indicator (Orange Diamond) -->
-                @if (edgeSnapPoint) {
-                  <circle
-                    [attr.cx]="edgeSnapPoint.x"
-                    [attr.cy]="edgeSnapPoint.y"
-                    [attr.r]="7 / zoom"
-                    fill="none"
-                    stroke="#ff8c00"
-                    [attr.stroke-width]="2 / zoom"
-                    pointer-events="none"
-                  />
-                  <circle
-                    [attr.cx]="edgeSnapPoint.x"
-                    [attr.cy]="edgeSnapPoint.y"
-                    [attr.r]="3 / zoom"
-                    fill="#ff8c00"
                     pointer-events="none"
                   />
                 }
