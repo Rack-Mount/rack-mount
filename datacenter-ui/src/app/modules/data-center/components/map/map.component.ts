@@ -150,6 +150,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   editingRoomIndex: number | null = null;
   editingRoomName = '';
 
+  // Rack name inline editing
+  editingRackId: string | null = null;
+  editingRackName = '';
+
   private gridRafId: number | null = null;
   private readonly resizeListener = (): void => this.scheduleUpdateGrid();
 
@@ -200,6 +204,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   @ViewChild('svgContainer') svgContainer!: ElementRef<SVGSVGElement>;
   @ViewChild('activeRoomInput')
   activeRoomInputRef?: ElementRef<HTMLInputElement>;
+  @ViewChild('activeRackInput')
+  activeRackInputRef?: ElementRef<HTMLInputElement>;
 
   ngAfterViewInit(): void {
     // Must use passive:false to call preventDefault() on wheel
@@ -573,10 +579,56 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.editingRoomIndex = null;
   }
 
+  startEditRack(el: MapElement, event: MouseEvent): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.editingRackId = el.id;
+    this.editingRackName = el.rackName ?? '';
+    setTimeout(() => {
+      this.activeRackInputRef?.nativeElement.focus();
+      this.activeRackInputRef?.nativeElement.select();
+    }, 0);
+  }
+
+  confirmEditRack(): void {
+    if (!this.editingRackId) return;
+    const el = this.elements.find((e) => e.id === this.editingRackId);
+    const newName = this.editingRackName.trim();
+    if (el && newName && newName !== el.rackName) {
+      const oldName = el.rackName;
+      el.rackName = newName;
+      if (oldName) {
+        this.assetService
+          .assetRackPartialUpdate({
+            name: oldName,
+            patchedRack: { name: newName },
+          })
+          .subscribe({
+            error: (err) => {
+              console.error('Failed to rename rack in backend', err);
+              // Revert on failure
+              if (el) el.rackName = oldName;
+              this.cdr.markForCheck();
+            },
+          });
+      }
+      this.elements = [...this.elements];
+      this.scheduleAutosave();
+    }
+    this.editingRackId = null;
+    this.editingRackName = '';
+  }
+
+  cancelEditRack(): void {
+    this.editingRackId = null;
+    this.editingRackName = '';
+  }
+
   onToolChange(toolId: string) {
     this.selectedTool = toolId;
     this.selectedElementId = null;
     this.selectedSegment = null;
+    this.cancelEditRack();
     this.cancelDrawing();
   }
 

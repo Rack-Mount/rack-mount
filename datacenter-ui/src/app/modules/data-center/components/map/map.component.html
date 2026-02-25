@@ -334,19 +334,58 @@
                 }
                 <!-- Rack name label -->
                 @if (el.rackName) {
-                  <text
-                    [attr.x]="el.x + (el.width || 0) / 2"
-                    [attr.y]="el.y + (el.height || 0) / 2"
-                    text-anchor="middle"
-                    dominant-baseline="middle"
-                    [attr.font-size]="11 / zoom + 'px'"
-                    fill="#333"
-                    pointer-events="none"
-                    font-weight="bold"
-                    style="user-select: none"
-                  >
-                    {{ el.rackName }}
-                  </text>
+                  @if (editingRackId !== el.id) {
+                    <text
+                      [attr.x]="el.x + (el.width || 0) / 2"
+                      [attr.y]="el.y + (el.height || 0) / 2"
+                      text-anchor="middle"
+                      dominant-baseline="middle"
+                      [attr.font-size]="11 / zoom + 'px'"
+                      fill="#333"
+                      font-weight="bold"
+                      style="user-select: none"
+                      [attr.pointer-events]="selectedTool === 'select' ? 'all' : 'none'"
+                      [style.cursor]="selectedTool === 'select' ? 'text' : 'default'"
+                      (click)="startEditRack(el, $event)"
+                    >
+                      {{ el.rackName }}
+                    </text>
+                  } @else {
+                    <foreignObject
+                      [attr.x]="el.x + (el.width || 0) / 2 - 40 / zoom"
+                      [attr.y]="el.y + (el.height || 0) / 2 - 9 / zoom"
+                      [attr.width]="80 / zoom"
+                      [attr.height]="18 / zoom"
+                    >
+                      <div
+                        xmlns="http://www.w3.org/1999/xhtml"
+                        style="width:100%;height:100%;display:flex;align-items:center;"
+                      >
+                        <input
+                          #activeRackInput
+                          type="text"
+                          [value]="editingRackName"
+                          (input)="editingRackName = $any($event.target).value"
+                          (keydown.enter)="confirmEditRack()"
+                          (keydown.escape)="cancelEditRack()"
+                          (blur)="confirmEditRack()"
+                          style="
+                            width: 100%;
+                            border: none;
+                            border-bottom: 1px solid #333;
+                            outline: none;
+                            text-align: center;
+                            background: rgba(255,255,255,0.85);
+                            color: #333;
+                            font-weight: bold;
+                            font-size: 11px;
+                            padding: 0;
+                            border-radius: 0;
+                          "
+                        />
+                      </div>
+                    </foreignObject>
+                  }
                 }
               </g>
             }
