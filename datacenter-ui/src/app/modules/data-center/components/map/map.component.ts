@@ -62,6 +62,7 @@ export class MapComponent implements AfterViewInit {
   currentElement: MapElement | null = null;
   startPoint: { x: number; y: number } | null = null;
   selectedElementId: string | null = null;
+  selectedSegment: { elementId: string; segIndex: number } | null = null;
 
   // Polyline drawing state
   activePolylinePoints: Point[] = [];
@@ -433,6 +434,7 @@ export class MapComponent implements AfterViewInit {
   onToolChange(toolId: string) {
     this.selectedTool = toolId;
     this.selectedElementId = null;
+    this.selectedSegment = null;
     this.cancelDrawing();
   }
 
@@ -587,11 +589,16 @@ export class MapComponent implements AfterViewInit {
           }
         }
       }
+
+      // Nothing hit → deselect
+      this.selectedSegment = null;
+      this.selectedElementId = null;
     }
 
     if (this.selectedTool === 'select') {
       if (event.target === event.currentTarget) {
         this.selectedElementId = null;
+        this.selectedSegment = null;
       }
       return;
     }
@@ -1175,7 +1182,16 @@ export class MapComponent implements AfterViewInit {
   onElementClick(event: MouseEvent, element: MapElement) {
     if (this.selectedTool === 'select') {
       event.stopPropagation();
+      this.selectedSegment = null;
       this.selectedElementId = element.id;
+    }
+  }
+
+  onSegmentClick(event: MouseEvent, el: MapElement, segIndex: number) {
+    if (this.selectedTool === 'move') {
+      event.stopPropagation();
+      this.selectedElementId = null;
+      this.selectedSegment = { elementId: el.id, segIndex };
     }
   }
 
@@ -1188,6 +1204,7 @@ export class MapComponent implements AfterViewInit {
       } else {
         this.cancelDrawing();
         this.selectedElementId = null;
+        this.selectedSegment = null;
       }
     }
 
@@ -1211,8 +1228,48 @@ export class MapComponent implements AfterViewInit {
         }
         return;
       }
-      // Delete whole element in select mode
+      // Delete selected segment in move mode
+      if (this.selectedTool === 'move' && this.selectedSegment) {
+        const { elementId, segIndex } = this.selectedSegment;
+        const el = this.elements.find((e) => e.id === elementId);
+        if (el && el.points) {
+          if (el.points.length <= 2) {
+            // Single segment: remove whole element
+            this.elements = this.elements.filter((e) => e.id !== elementId);
+          } else if (segIndex === 0) {
+            el.points = el.points.slice(1);
+            this.updateWallDerived(el);
+            this.elements = [...this.elements];
+          } else if (segIndex === el.points.length - 2) {
+            el.points = el.points.slice(0, -1);
+            this.updateWallDerived(el);
+            this.elements = [...this.elements];
+          } else {
+            // Middle segment: split into two walls
+            const pointsA = el.points.slice(0, segIndex + 1);
+            const pointsB = el.points.slice(segIndex + 1);
+            el.points = pointsA;
+            this.updateWallDerived(el);
+            const newEl: MapElement = {
+              id: `wall-${Date.now()}`,
+              type: 'wall',
+              x: 0,
+              y: 0,
+              points: pointsB,
+            };
+            this.updateWallDerived(newEl);
+            this.elements = [...this.elements, newEl];
+          }
+          this.rederiveAllWalls();
+          this.selectedSegment = null;
+          this.scheduleAutosave();
+        }
+        return;
+      }
+      // Delete whole element (walls only in move mode; other elements in select mode)
       if (this.selectedElementId) {
+        const el = this.elements.find((e) => e.id === this.selectedElementId);
+        if (el?.type === 'wall' && this.selectedTool !== 'move') return;
         this.elements = this.elements.filter(
           (e) => e.id !== this.selectedElementId,
         );

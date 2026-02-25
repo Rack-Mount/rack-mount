@@ -89,14 +89,43 @@
             <!-- Wall (Polyline) -->
             @if (el.type === "wall" && el.points) {
               <ng-container>
+                <!-- Per-segment transparent hit zones in move mode -->
+                @if (selectedTool === "move") {
+                  @for (_ of el.points.slice(0, el.points.length - 1); track $index; let i = $index) {
+                    <line
+                      [attr.x1]="el.points[i].x"
+                      [attr.y1]="el.points[i].y"
+                      [attr.x2]="el.points[i + 1].x"
+                      [attr.y2]="el.points[i + 1].y"
+                      stroke="transparent"
+                      [attr.stroke-width]="16 / zoom"
+                      stroke-linecap="round"
+                      style="cursor: pointer"
+                      (click)="onSegmentClick($event, el, i)"
+                    />
+                  }
+                }
+                <!-- Base wall polyline -->
                 <polyline
                   [attr.points]="getPointsString(el.points)"
                   stroke="black"
                   [attr.stroke-width]="4 / zoom"
                   fill="none"
-                  [class.selected]="selectedElementId === el.id"
-                  (click)="onElementClick($event, el)"
+                  pointer-events="none"
                 />
+                <!-- Selected segment highlight -->
+                @if (selectedSegment?.elementId === el.id) {
+                  <line
+                    [attr.x1]="el.points[selectedSegment!.segIndex].x"
+                    [attr.y1]="el.points[selectedSegment!.segIndex].y"
+                    [attr.x2]="el.points[selectedSegment!.segIndex + 1].x"
+                    [attr.y2]="el.points[selectedSegment!.segIndex + 1].y"
+                    stroke="#007bff"
+                    [attr.stroke-width]="6 / zoom"
+                    stroke-linecap="round"
+                    pointer-events="none"
+                  />
+                }
                 <!-- Wall Measurements (outside perimeter, rotated along segment) -->
                 @for (seg of el.segments ?? []; track $index) {
                   <g
@@ -161,15 +190,24 @@
             <!-- Legacy Wall (Line) backup -->
             @if (el.type === "wall" && !el.points) {
               <ng-container>
+                @if (selectedTool === "select") {
+                  <line
+                    [attr.x1]="el.x" [attr.y1]="el.y"
+                    [attr.x2]="el.x2" [attr.y2]="el.y2"
+                    stroke="transparent"
+                    [attr.stroke-width]="16 / zoom"
+                    style="cursor: pointer"
+                    (click)="onElementClick($event, el)"
+                  />
+                }
                 <line
                   [attr.x1]="el.x"
                   [attr.y1]="el.y"
                   [attr.x2]="el.x2"
                   [attr.y2]="el.y2"
-                  stroke="black"
-                  [attr.stroke-width]="4 / zoom"
-                  [class.selected]="selectedElementId === el.id"
-                  (click)="onElementClick($event, el)"
+                  [attr.stroke]="selectedElementId === el.id ? '#007bff' : 'black'"
+                  [attr.stroke-width]="selectedElementId === el.id ? 6 / zoom : 4 / zoom"
+                  pointer-events="none"
                 />
               </ng-container>
             }
