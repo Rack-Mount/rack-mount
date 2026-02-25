@@ -24,7 +24,7 @@ interface MapElement {
   area?: number;
   centroidX?: number;
   centroidY?: number;
-  segments?: { x: number; y: number; length: number }[];
+  segments?: { x: number; y: number; length: number; angle: number; labelX: number; labelY: number }[];
   angles?: {
     x: number;
     y: number;
@@ -54,7 +54,7 @@ export class MapComponent implements AfterViewInit {
 
   // Polyline drawing state
   activePolylinePoints: { x: number; y: number }[] = [];
-  activeWallSegments: { x: number; y: number; length: number }[] = [];
+  activeWallSegments: { x: number; y: number; length: number; angle: number; labelX: number; labelY: number }[] = [];
   previewAngles: {
     x: number;
     y: number;
@@ -104,7 +104,8 @@ export class MapComponent implements AfterViewInit {
   }
 
   // Pre-computed grid path string for SVG (screen-space lines), updated on zoom/pan
-  gridPath = '';
+  gridPath = '';       // 10cm minor grid
+  gridPathMajor = '';  // 1m major grid
   private gridRafId: number | null = null;
 
   // Debounced grid update: at most once per animation frame
@@ -122,17 +123,23 @@ export class MapComponent implements AfterViewInit {
     const rect = svg.getBoundingClientRect();
     const W = rect.width || svg.clientWidth || 1200;
     const H = rect.height || svg.clientHeight || 800;
-    const size = 40; // fixed screen-space size, independent of zoom
-    const offsetX = ((this.panX % size) + size) % size;
-    const offsetY = ((this.panY % size) + size) % size;
-    let d = '';
-    for (let x = offsetX; x <= W + size; x += size) {
-      d += `M${x},0 L${x},${H} `;
-    }
-    for (let y = offsetY; y <= H + size; y += size) {
-      d += `M0,${y} L${W},${y} `;
-    }
-    this.gridPath = d;
+    // Minor grid: 10cm
+    const minor = 10 * this.zoom;
+    if (minor < 2) { this.gridPath = ''; this.gridPathMajor = ''; this.cdr.markForCheck(); return; }
+    const offXm = ((this.panX % minor) + minor) % minor;
+    const offYm = ((this.panY % minor) + minor) % minor;
+    let dMinor = '';
+    for (let x = offXm; x <= W + minor; x += minor) dMinor += `M${x},0 L${x},${H} `;
+    for (let y = offYm; y <= H + minor; y += minor) dMinor += `M0,${y} L${W},${y} `;
+    this.gridPath = dMinor;
+    // Major grid: 100cm = 1m
+    const major = 100 * this.zoom;
+    const offXM = ((this.panX % major) + major) % major;
+    const offYM = ((this.panY % major) + major) % major;
+    let dMajor = '';
+    for (let x = offXM; x <= W + major; x += major) dMajor += `M${x},0 L${x},${H} `;
+    for (let y = offYM; y <= H + major; y += major) dMajor += `M0,${y} L${W},${y} `;
+    this.gridPathMajor = dMajor;
     this.cdr.markForCheck();
   }
 
@@ -426,19 +433,28 @@ export class MapComponent implements AfterViewInit {
     return closestVertex;
   }
 
-  // Get midpoints and lengths for wall segments
+  // Get midpoints and lengths for wall segments (used for preview during drawing, no centroid available)
   getWallSegments(
     points: { x: number; y: number }[] | undefined,
-  ): { x: number; y: number; length: number }[] {
+  ): { x: number; y: number; length: number; angle: number; labelX: number; labelY: number }[] {
     if (!points || points.length < 2) return [];
+    const LABEL_DIST = 16 / this.zoom;
     const segments = [];
     for (let i = 0; i < points.length - 1; i++) {
       const p1 = points[i];
       const p2 = points[i + 1];
+      const rdx = p2.x - p1.x, rdy = p2.y - p1.y;
+      const rdlen = Math.sqrt(rdx * rdx + rdy * rdy) || 1;
       const length = this.getDistance(p1, p2);
       const midX = (p1.x + p2.x) / 2;
       const midY = (p1.y + p2.y) / 2;
-      segments.push({ x: midX, y: midY, length });
+      let angle = Math.atan2(rdy, rdx) * 180 / Math.PI;
+      if (angle > 90) angle -= 180;
+      if (angle < -90) angle += 180;
+      // Left normal (consistent direction for open polylines)
+      const nx = -rdy / rdlen;
+      const ny = rdx / rdlen;
+      segments.push({ x: midX, y: midY, length, angle, labelX: midX + nx * LABEL_DIST, labelY: midY + ny * LABEL_DIST });
     }
     return segments;
   }
@@ -454,21 +470,10 @@ export class MapComponent implements AfterViewInit {
       return;
     }
 
-    // Segments
     const pts = el.points;
-    const segs: { x: number; y: number; length: number }[] = [];
-    for (let i = 0; i < pts.length - 1; i++) {
-      const p1 = pts[i],
-        p2 = pts[i + 1];
-      segs.push({
-        x: (p1.x + p2.x) / 2,
-        y: (p1.y + p2.y) / 2,
-        length: this.getDistance(p1, p2),
-      });
-    }
-    el.segments = segs;
+    const LABEL_DIST = 16 / this.zoom;
 
-    // Area & centroid (only for closed polygons with >= 4 points)
+    // Centroid first (needed to determine outward normal for segment labels)
     let computedCx: number | undefined;
     let computedCy: number | undefined;
     if (pts.length >= 4 && this.getDistance(pts[0], pts[pts.length - 1]) <= 2) {
@@ -503,7 +508,38 @@ export class MapComponent implements AfterViewInit {
       el.centroidY = undefined;
     }
 
-    // Angles (computed after centroid so we can pass it for inward orientation)
+    // Segments: outward normal determined using centroid
+    const segs: { x: number; y: number; length: number; angle: number; labelX: number; labelY: number }[] = [];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p1 = pts[i],
+        p2 = pts[i + 1];
+      const rdx = p2.x - p1.x, rdy = p2.y - p1.y;
+      const rdlen = Math.sqrt(rdx * rdx + rdy * rdy) || 1;
+      const midX = (p1.x + p2.x) / 2;
+      const midY = (p1.y + p2.y) / 2;
+      let angle = Math.atan2(rdy, rdx) * 180 / Math.PI;
+      if (angle > 90) angle -= 180;
+      if (angle < -90) angle += 180;
+      // Left normal as default outward direction
+      let nx = -rdy / rdlen;
+      let ny = rdx / rdlen;
+      // For closed polygons: flip if normal points toward centroid (we want outward)
+      if (computedCx !== undefined && computedCy !== undefined) {
+        const toCx = computedCx - midX, toCy = computedCy - midY;
+        if (nx * toCx + ny * toCy > 0) { nx = -nx; ny = -ny; }
+      }
+      segs.push({
+        x: midX,
+        y: midY,
+        length: this.getDistance(p1, p2),
+        angle,
+        labelX: midX + nx * LABEL_DIST,
+        labelY: midY + ny * LABEL_DIST,
+      });
+    }
+    el.segments = segs;
+
+    // Angles: inward bisector (computed after centroid)
     el.angles = this.getWallAngles(pts, undefined, computedCx, computedCy);
   }
 

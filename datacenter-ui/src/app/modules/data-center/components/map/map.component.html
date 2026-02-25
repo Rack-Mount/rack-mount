@@ -18,12 +18,20 @@
       (mouseleave)="onMouseUp($event)"
       (dblclick)="onDoubleClick($event)"
     >
-      <!-- Grid (screen-space path, outside transform) -->
+      <!-- Grid minor 10cm (screen-space, outside transform) -->
       <path
         [attr.d]="gridPath"
         fill="none"
-        stroke="#d4d4d4"
+        stroke="#e0e0e0"
         stroke-width="0.5"
+        pointer-events="none"
+      />
+      <!-- Grid major 1m -->
+      <path
+        [attr.d]="gridPathMajor"
+        fill="none"
+        stroke="#cdd3db"
+        stroke-width="1"
         pointer-events="none"
       />
 
@@ -41,16 +49,16 @@
                   [class.selected]="selectedElementId === el.id"
                   (click)="onElementClick($event, el)"
                 />
-                <!-- Wall Measurements -->
+                <!-- Wall Measurements (outside perimeter, rotated along segment) -->
                 @for (seg of el.segments ?? []; track $index) {
-                  <g>
-                    <!-- Distance Text -->
+                  <g [attr.transform]="'rotate(' + seg.angle + ',' + seg.labelX + ',' + seg.labelY + ')'">
                     <text
-                      [attr.x]="seg.x"
-                      [attr.y]="seg.y - 5 / zoom"
+                      [attr.x]="seg.labelX"
+                      [attr.y]="seg.labelY"
                       text-anchor="middle"
+                      dominant-baseline="middle"
                       fill="#666"
-                      [attr.font-size]="10 / zoom + 'px'"
+                      [attr.font-size]="14 / zoom + 'px'"
                       font-family="monospace"
                       pointer-events="none"
                       style="user-select: none"
@@ -76,7 +84,7 @@
                     [attr.y]="(el.centroidY ?? 0) + 5 / zoom"
                     text-anchor="middle"
                     fill="#0066cc"
-                    [attr.font-size]="11 / zoom + 'px'"
+                    [attr.font-size]="14 / zoom + 'px'"
                     font-family="monospace"
                     font-weight="bold"
                     pointer-events="none"
@@ -94,7 +102,7 @@
                       text-anchor="middle"
                       dominant-baseline="middle"
                       fill="purple"
-                      [attr.font-size]="9 / zoom + 'px'"
+                      [attr.font-size]="12 / zoom + 'px'"
                       font-family="monospace"
                       pointer-events="none"
                       style="user-select: none"
@@ -270,27 +278,28 @@
                   <g pointer-events="none">
                     <!-- Dimensions for already drawn segments of the current polyline -->
                     @for (segment of activeWallSegments; track $index) {
-                      <ng-container>
+                      <g [attr.transform]="'rotate(' + segment.angle + ',' + segment.labelX + ',' + segment.labelY + ')'">
                         <!-- Length Text Background -->
                         <rect
-                          [attr.x]="segment.x - 20 / zoom"
-                          [attr.y]="segment.y - 10 / zoom"
+                          [attr.x]="segment.labelX - 20 / zoom"
+                          [attr.y]="segment.labelY - 9 / zoom"
                           [attr.width]="40 / zoom"
-                          [attr.height]="20 / zoom"
+                          [attr.height]="18 / zoom"
                           fill="white"
                           fill-opacity="0.8"
-                          [attr.rx]="4 / zoom"
+                          [attr.rx]="3 / zoom"
                         />
                         <text
-                          [attr.x]="segment.x"
-                          [attr.y]="segment.y + 4 / zoom"
+                          [attr.x]="segment.labelX"
+                          [attr.y]="segment.labelY"
                           text-anchor="middle"
+                          dominant-baseline="middle"
                           fill="#333"
                           [attr.font-size]="12 / zoom + 'px'"
                         >
                           {{ segment.length / 100 | number: "1.0-2" }} m
                         </text>
-                      </ng-container>
+                      </g>
                     }
                     <!-- Dashed line for current segment (cursor) -->
                     <line
