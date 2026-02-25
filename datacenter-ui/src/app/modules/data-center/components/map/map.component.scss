@@ -85,7 +85,7 @@
       cursor: pointer;
       margin-left: 8px;
 
-      input[type='checkbox'] {
+      input[type="checkbox"] {
         position: absolute;
         opacity: 0;
         width: 0;
@@ -116,11 +116,11 @@
         transition: transform 0.2s;
       }
 
-      input[type='checkbox']:checked + .switch-track {
+      input[type="checkbox"]:checked + .switch-track {
         background: #28a745;
       }
 
-      input[type='checkbox']:checked + .switch-track .switch-thumb {
+      input[type="checkbox"]:checked + .switch-track .switch-thumb {
         transform: translateX(16px);
       }
 

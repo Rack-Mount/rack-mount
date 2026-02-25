@@ -4,10 +4,12 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  OnInit,
   ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
 import { LocationService } from '../../../core/api/v1/api/location.service';
@@ -38,10 +40,11 @@ import {
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements OnInit, AfterViewInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private locationService: LocationService,
+    private route: ActivatedRoute,
   ) {}
   selectedTool: string = 'select';
 
@@ -201,14 +204,36 @@ export class MapComponent implements AfterViewInit {
     this.loadLocations();
   }
 
+  ngOnInit(): void {
+    // Handled in ngAfterViewInit after grid/SVG setup
+  }
+
   loadLocations(): void {
+    const roomIdFromRoute = this.route.snapshot.paramMap.get('id');
     this.locationService.locationLocationList({}).subscribe({
       next: (data) => {
         this.availableLocations = data.results ?? [];
+        if (roomIdFromRoute) {
+          const roomId = +roomIdFromRoute;
+          this.loadRoomFromRoute(roomId);
+        }
         this.cdr.markForCheck();
       },
       error: (err) => console.error('Failed to load locations', err),
     });
+  }
+
+  private loadRoomFromRoute(roomId: number): void {
+    // Find parent location to populate the dropdowns
+    for (const loc of this.availableLocations) {
+      const match = loc.rooms?.find((r) => r.id === roomId);
+      if (match) {
+        this.selectedLocationId = loc.id ?? null;
+        this.filteredRooms = loc.rooms ?? [];
+        break;
+      }
+    }
+    this.onRoomSelect(roomId);
   }
 
   onLocationSelect(id: number): void {

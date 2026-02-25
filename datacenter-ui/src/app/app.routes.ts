@@ -15,4 +15,11 @@ export const routes: Routes = [
         (m) => m.MapComponent,
       ),
   },
+  {
+    path: 'map/:id',
+    loadComponent: () =>
+      import('./modules/data-center/components/map/map.component').then(
+        (m) => m.MapComponent,
+      ),
+  },
 ];
