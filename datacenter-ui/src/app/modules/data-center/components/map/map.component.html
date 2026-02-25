@@ -22,12 +22,12 @@
         (click)="saveFloorPlan()"
         [disabled]="!selectedRoomId || saveStatus === 'saving'"
       >
-        {{ saveStatus === 'saving' ? 'Salvataggio...' : 'Salva Planimetria' }}
+        {{ saveStatus === "saving" ? "Salvataggio..." : "Salva Planimetria" }}
       </button>
-      @if (saveStatus === 'saved') {
+      @if (saveStatus === "saved") {
         <span class="save-feedback save-ok">✓ Salvato</span>
       }
-      @if (saveStatus === 'error') {
+      @if (saveStatus === "error") {
         <span class="save-feedback save-err">✗ Errore nel salvataggio</span>
       }
     </div>

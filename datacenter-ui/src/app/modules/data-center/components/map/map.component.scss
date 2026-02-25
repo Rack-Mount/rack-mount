@@ -70,8 +70,12 @@
       font-size: 13px;
       font-weight: 500;
     }
-    .save-ok { color: #28a745; }
-    .save-err { color: #dc3545; }
+    .save-ok {
+      color: #28a745;
+    }
+    .save-err {
+      color: #dc3545;
+    }
   }
 
   .drawing-area {

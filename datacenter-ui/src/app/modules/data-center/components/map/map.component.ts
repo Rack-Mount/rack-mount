@@ -214,7 +214,9 @@ export class MapComponent implements AfterViewInit {
     this.selectedRoomId = id;
     this.locationService.locationRoomRetrieve({ id }).subscribe({
       next: (room) => {
-        this.elements = room.floor_plan_data ? (room.floor_plan_data as MapElement[]) : [];
+        this.elements = room.floor_plan_data
+          ? (room.floor_plan_data as MapElement[])
+          : [];
         this.rederiveAllWalls();
         this.cdr.markForCheck();
       },

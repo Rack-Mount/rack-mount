@@ -31,7 +31,7 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({
         anchorScrolling: 'disabled',
         scrollPositionRestoration: 'top',
-      })
+      }),
     ),
     importProvidersFrom(ApiModule.forRoot(apiConfigFactory)),
     provideHttpClient(withFetch()),
