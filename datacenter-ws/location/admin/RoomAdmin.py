@@ -6,7 +6,7 @@ from location.models import Room
 class RoomInline(admin.TabularInline):
     model = Room
     extra = 0
-    fields = ['name', 'floor', 'description', 'floor_plan']
+    fields = ['name', 'floor', 'capacity', 'manager', 'manager_mail', 'description', 'floor_plan']
     show_change_link = True
 
 
@@ -16,6 +16,8 @@ class RoomAdmin(VersionAdmin):
     fields = [
         ('location',),
         ('name', 'floor'),
+        ('capacity',),
+        ('manager', 'manager_mail'),
         ('description',),
         ('floor_plan',),
     ]
@@ -24,6 +26,8 @@ class RoomAdmin(VersionAdmin):
         'name',
         'location',
         'floor',
+        'capacity',
+        'manager',
         'created_at',
         'updated_at',
     )

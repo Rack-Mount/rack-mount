@@ -12,8 +12,6 @@ class LocationAdmin(VersionAdmin):
     fields = [
         ('name', 'short_name'),
         ('location'),
-        ('manager', 'manager_mail'),
-        ('capacity'),
         ('operational_since'),
     ]
 
@@ -21,7 +19,6 @@ class LocationAdmin(VersionAdmin):
         'name',
         'short_name',
         'location',
-        'capacity',
         'operational_since'
     )
     search_fields = ['name', 'location']

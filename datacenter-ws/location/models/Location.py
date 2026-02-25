@@ -13,10 +13,7 @@ class Location(models.Model):
         name (str): The name of the location.
         short_name (str): A unique short name for the location.
         location (str): The physical address or description of the location.
-        capacity (int): The capacity of the location, default is 0.
         operational_since (datetime): The date and time when the location became operational.
-        manager (str): The name of the manager responsible for the location.
-        manager_mail (str): The email address of the manager.
 
     Methods:
         __str__(): Returns the name of the location.
@@ -31,10 +28,7 @@ class Location(models.Model):
         max_length=15, blank=False, null=False, unique=True
     )
     location = models.CharField(max_length=100)
-    capacity = models.PositiveIntegerField(default=0, null=False)
     operational_since = models.DateTimeField(auto_now_add=True, editable=True)
-    manager = models.CharField(max_length=100, blank=True)
-    manager_mail = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return self.name
