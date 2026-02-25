@@ -1256,7 +1256,56 @@ export class MapComponent implements AfterViewInit {
   onDoubleClick(event: MouseEvent) {
     if (this.selectedTool !== 'move') return;
     const point = this.getSvgPoint(event);
+    const SNAP = 10 / this.zoom;
 
+    // ── Priority 1: double-click on an EXISTING VERTEX → split polyline ──
+    for (const el of this.elements) {
+      if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
+      const pts = el.points;
+      for (let i = 0; i < pts.length; i++) {
+        if (this.getDistance(point, pts[i]) >= SNAP) continue;
+
+        const isClosed =
+          pts.length >= 4 &&
+          this.getDistance(pts[0], pts[pts.length - 1]) <= 2;
+
+        if (isClosed) {
+          // Remove the duplicate closing point, then rotate so vertex i is the open end
+          const ring = pts.slice(0, pts.length - 1); // remove last (= first)
+          const n = ring.length;
+          if (n < 2) break;
+          const rotated = [
+            ...ring.slice(i % n),
+            ...ring.slice(0, i % n),
+          ];
+          el.points = rotated;
+        } else {
+          // Open polyline: split into two at vertex i (only if it's an interior vertex)
+          if (i === 0 || i === pts.length - 1) break; // endpoint → nothing to do
+          const partA = pts.slice(0, i + 1);
+          const partB = pts.slice(i);
+          el.points = partA;
+          this.updateWallDerived(el);
+          const newEl: MapElement = {
+            id: `wall-${Date.now()}`,
+            type: 'wall',
+            x: 0, y: 0,
+            points: partB,
+          };
+          this.updateWallDerived(newEl);
+          this.elements = [...this.elements, newEl];
+          event.stopPropagation();
+          return;
+        }
+
+        this.updateWallDerived(el);
+        this.elements = [...this.elements];
+        event.stopPropagation();
+        return;
+      }
+    }
+
+    // ── Priority 2: double-click on a SEGMENT → insert new vertex ──
     for (const el of this.elements) {
       if (el.type === 'wall' && el.points && el.points.length > 1) {
         for (let i = 0; i < el.points.length - 1; i++) {
@@ -1264,7 +1313,6 @@ export class MapComponent implements AfterViewInit {
           const p2 = el.points[i + 1];
           const dist = this.getDistanceToSegment(point, p1, p2);
           if (dist < 10) {
-            // Project point onto segment to get exact position on the wall
             const l2 = Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
             let t =
               ((point.x - p1.x) * (p2.x - p1.x) +
@@ -1275,7 +1323,6 @@ export class MapComponent implements AfterViewInit {
               x: p1.x + t * (p2.x - p1.x),
               y: p1.y + t * (p2.y - p1.y),
             };
-            // Insert the new vertex between i and i+1 (new array ref for change detection)
             const newPoints = [...el.points];
             newPoints.splice(i + 1, 0, projected);
             el.points = newPoints;
