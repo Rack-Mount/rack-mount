@@ -457,9 +457,7 @@ export class MapComponent implements AfterViewInit {
   }
 
   // Get midpoints and lengths for wall segments (used for preview during drawing, no centroid available)
-  getWallSegments(
-    points: { x: number; y: number }[] | undefined,
-  ): {
+  getWallSegments(points: { x: number; y: number }[] | undefined): {
     x: number;
     y: number;
     length: number;
@@ -1266,18 +1264,14 @@ export class MapComponent implements AfterViewInit {
         if (this.getDistance(point, pts[i]) >= SNAP) continue;
 
         const isClosed =
-          pts.length >= 4 &&
-          this.getDistance(pts[0], pts[pts.length - 1]) <= 2;
+          pts.length >= 4 && this.getDistance(pts[0], pts[pts.length - 1]) <= 2;
 
         if (isClosed) {
           // Remove the duplicate closing point, then rotate so vertex i is the open end
           const ring = pts.slice(0, pts.length - 1); // remove last (= first)
           const n = ring.length;
           if (n < 2) break;
-          const rotated = [
-            ...ring.slice(i % n),
-            ...ring.slice(0, i % n),
-          ];
+          const rotated = [...ring.slice(i % n), ...ring.slice(0, i % n)];
           el.points = rotated;
         } else {
           // Open polyline: split into two at vertex i (only if it's an interior vertex)
@@ -1289,7 +1283,8 @@ export class MapComponent implements AfterViewInit {
           const newEl: MapElement = {
             id: `wall-${Date.now()}`,
             type: 'wall',
-            x: 0, y: 0,
+            x: 0,
+            y: 0,
             points: partB,
           };
           this.updateWallDerived(newEl);
