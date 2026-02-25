@@ -126,7 +126,8 @@ export function computeRooms(elements: MapElement[]): Room[] {
       sa /= 2;
       if (sa <= 0) continue; // outer face in screen coords (Y↓)
       // Geometric centroid of the polygon (area-weighted, standard shoelace formula)
-      let cxSum = 0, cySum = 0;
+      let cxSum = 0,
+        cySum = 0;
       for (let i = 0; i < face.length; i++) {
         const j = (i + 1) % face.length;
         const cross =
