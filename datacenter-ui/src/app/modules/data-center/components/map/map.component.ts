@@ -146,7 +146,8 @@ export class MapComponent implements AfterViewInit {
   }
 
   @ViewChild('svgContainer') svgContainer!: ElementRef<SVGSVGElement>;
-  @ViewChild('activeRoomInput') activeRoomInputRef?: ElementRef<HTMLInputElement>;
+  @ViewChild('activeRoomInput')
+  activeRoomInputRef?: ElementRef<HTMLInputElement>;
 
   ngAfterViewInit(): void {
     // Must use passive:false to call preventDefault() on wheel
