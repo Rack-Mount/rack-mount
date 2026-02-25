@@ -5,7 +5,7 @@
 .home {
   min-height: 100vh;
   background: #0b1120;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: "Inter", "Segoe UI", sans-serif;
   color: #e2e8f0;
 }
 
@@ -49,7 +49,9 @@
   text-decoration: none;
   padding: 6px 12px;
   border-radius: 8px;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 
   &:hover {
     background: rgba(255, 255, 255, 0.06);
@@ -69,7 +71,7 @@
   gap: 48px;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background-image:
@@ -164,8 +166,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-12px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
 }
 
 /* ── Stats row ── */
@@ -270,13 +277,18 @@
   gap: 16px;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.12s;
   position: relative;
   overflow: hidden;
 
   &:not(.feature-card--disabled):hover {
     border-color: rgba(0, 212, 255, 0.3);
-    box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.12), 0 10px 28px rgba(0, 0, 0, 0.35);
+    box-shadow:
+      0 0 0 1px rgba(0, 212, 255, 0.12),
+      0 10px 28px rgba(0, 0, 0, 0.35);
     transform: translateY(-2px);
 
     .feature-arrow {
@@ -300,9 +312,18 @@
   justify-content: center;
   flex-shrink: 0;
 
-  &--blue   { background: rgba(0, 212, 255, 0.12); color: #00d4ff; }
-  &--green  { background: rgba(0, 255, 136, 0.1);  color: #00ff88; }
-  &--orange { background: rgba(255, 170, 0, 0.1);  color: #ffaa00; }
+  &--blue {
+    background: rgba(0, 212, 255, 0.12);
+    color: #00d4ff;
+  }
+  &--green {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+  }
+  &--orange {
+    background: rgba(255, 170, 0, 0.1);
+    color: #ffaa00;
+  }
 }
 
 .feature-body {
@@ -333,7 +354,9 @@
   color: #00d4ff;
   opacity: 0;
   transform: translateX(-5px);
-  transition: opacity 0.15s, transform 0.15s;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
   margin-left: auto;
   align-self: center;
   flex-shrink: 0;
@@ -446,15 +469,23 @@
   border-radius: 6px;
   padding: 4px 10px;
   text-decoration: none;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
 
-  svg { opacity: 0.35; transition: opacity 0.15s; }
+  svg {
+    opacity: 0.35;
+    transition: opacity 0.15s;
+  }
 
   &:hover {
     background: rgba(0, 212, 255, 0.1);
     border-color: rgba(0, 212, 255, 0.3);
     color: #00d4ff;
-    svg { opacity: 1; }
+    svg {
+      opacity: 1;
+    }
   }
 }
 
@@ -466,8 +497,12 @@
 }
 
 @keyframes shimmer {
-  from { background-position: -600px 0; }
-  to   { background-position:  600px 0; }
+  from {
+    background-position: -600px 0;
+  }
+  to {
+    background-position: 600px 0;
+  }
 }
 
 .skeleton-card {
@@ -488,7 +523,9 @@
   color: rgba(226, 232, 240, 0.3);
   font-size: 0.88rem;
 
-  p { margin: 0; }
+  p {
+    margin: 0;
+  }
 }
 
 /* ── Footer ── */
@@ -512,17 +549,31 @@
     flex-direction: column;
     padding: 52px 24px 44px;
 
-    .hero-image { display: none; }
-    .hero-title { font-size: 1.9rem; }
+    .hero-image {
+      display: none;
+    }
+    .hero-title {
+      font-size: 1.9rem;
+    }
   }
 
-  .stats-row { padding: 0 24px; }
-  .content   { padding: 36px 20px 64px; }
-  .navbar    { padding: 0 20px; }
-  .footer    { padding: 20px 24px; }
+  .stats-row {
+    padding: 0 24px;
+  }
+  .content {
+    padding: 36px 20px 64px;
+  }
+  .navbar {
+    padding: 0 20px;
+  }
+  .footer {
+    padding: 20px 24px;
+  }
 
-  .stat-item { padding-right: 24px; }
-  .stat-divider { margin-right: 24px; }
+  .stat-item {
+    padding-right: 24px;
+  }
+  .stat-divider {
+    margin-right: 24px;
+  }
 }
-
-

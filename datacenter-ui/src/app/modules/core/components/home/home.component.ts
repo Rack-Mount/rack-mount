@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LocationService } from '../../api/v1/api/location.service';
@@ -36,6 +41,9 @@ export class HomeComponent implements OnInit {
   }
 
   totalRooms(): number {
-    return this.locations.reduce((sum, loc) => sum + (loc.rooms?.length ?? 0), 0);
+    return this.locations.reduce(
+      (sum, loc) => sum + (loc.rooms?.length ?? 0),
+      0,
+    );
   }
 }
