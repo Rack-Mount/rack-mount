@@ -1,4 +1,4 @@
-import { MapElement, Point, Room } from './map.types';
+import { AngleLabel, MapElement, Point, Room } from './map.types';
 
 // ─── Polylabel (pole of inaccessibility) ─────────────────────────────────────
 // Finds the interior point farthest from all polygon edges.
@@ -335,4 +335,128 @@ export function mergeWalls(
 
   elA.points = merged;
   return elements.filter((e) => e.id !== elB.id);
+}
+
+// ─── Junction angles ──────────────────────────────────────────────────────────
+
+/**
+ * After all wall-derived data is computed, find every vertex where 2+ distinct
+ * walls meet and inject the correct inter-wall angles there.
+ * Removes any intra-wall angle previously computed at those junction vertices.
+ * Mutates `el.angles` in-place for each affected wall element.
+ */
+export function computeJunctionAngles(
+  elements: MapElement[],
+  zoom: number,
+): void {
+  const EPS = 3;
+  const walls = elements.filter(
+    (e) => e.type === 'wall' && e.points && e.points.length >= 2,
+  );
+
+  interface Arm {
+    wall: MapElement;
+    neighborPt: Point;
+    azimuth: number;
+  }
+
+  const junctionMap = new Map<string, { jPt: Point; arms: Arm[] }>();
+  const key = (p: Point) => `${Math.round(p.x / EPS)}_${Math.round(p.y / EPS)}`;
+
+  for (const wall of walls) {
+    const pts = wall.points!;
+    for (let i = 0; i < pts.length; i++) {
+      const k = key(pts[i]);
+      if (!junctionMap.has(k)) junctionMap.set(k, { jPt: pts[i], arms: [] });
+      const entry = junctionMap.get(k)!;
+      if (i > 0) {
+        const nb = pts[i - 1];
+        entry.arms.push({
+          wall,
+          neighborPt: nb,
+          azimuth: Math.atan2(nb.y - pts[i].y, nb.x - pts[i].x),
+        });
+      }
+      if (i < pts.length - 1) {
+        const nb = pts[i + 1];
+        entry.arms.push({
+          wall,
+          neighborPt: nb,
+          azimuth: Math.atan2(nb.y - pts[i].y, nb.x - pts[i].x),
+        });
+      }
+    }
+  }
+
+  const LABEL_DIST = 18 / zoom;
+
+  for (const { jPt, arms } of junctionMap.values()) {
+    const wallIds = new Set(arms.map((a) => a.wall.id));
+    if (wallIds.size < 2) continue;
+
+    // Remove intra-wall angles already computed at this vertex
+    for (const id of wallIds) {
+      const wall = walls.find((w) => w.id === id);
+      if (wall?.angles) {
+        wall.angles = wall.angles.filter(
+          (a) => !(Math.abs(a.x - jPt.x) < EPS && Math.abs(a.y - jPt.y) < EPS),
+        );
+      }
+    }
+
+    arms.sort((a, b) => a.azimuth - b.azimuth);
+    const n = arms.length;
+
+    for (let i = 0; i < n; i++) {
+      const a1 = arms[i];
+      const a2 = arms[(i + 1) % n];
+
+      let delta = a2.azimuth - a1.azimuth;
+      if (delta <= 0) delta += 2 * Math.PI;
+      const angleDeg = delta * (180 / Math.PI);
+
+      if (angleDeg < 2 || Math.abs(angleDeg - 180) < 1) continue;
+
+      const midAz = a1.azimuth + delta / 2;
+      const bx = -Math.cos(midAz);
+      const by = -Math.sin(midAz);
+
+      if (!a1.wall.angles) a1.wall.angles = [];
+      a1.wall.angles.push({
+        x: jPt.x,
+        y: jPt.y,
+        angle: Math.round(angleDeg * 10) / 10,
+        labelX: jPt.x + bx * LABEL_DIST,
+        labelY: jPt.y + by * LABEL_DIST,
+      } as AngleLabel);
+    }
+  }
+}
+
+// ─── Room name persistence ────────────────────────────────────────────────────
+
+/**
+ * Transfer names from `previous` rooms to `computed` rooms by nearest-centroid
+ * matching.  A match is accepted when the centroid shift is within ~80% of the
+ * old room's geometric radius (√area).  This keeps names stable across small
+ * vertex moves.
+ */
+export function restoreRoomNames(computed: Room[], previous: Room[]): Room[] {
+  const namedOld = previous.filter((r) => r.name);
+  for (const r of computed) {
+    let bestDist = Infinity;
+    let bestName: string | undefined;
+    for (const old of namedOld) {
+      const dx = r.cx - old.cx;
+      const dy = r.cy - old.cy;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      const threshold = Math.sqrt(old.area) * 0.8;
+      if (d < bestDist && d < threshold) {
+        bestDist = d;
+        bestName = old.name;
+      }
+    }
+    if (bestName !== undefined) r.name = bestName;
+  }
+  return computed;
 }

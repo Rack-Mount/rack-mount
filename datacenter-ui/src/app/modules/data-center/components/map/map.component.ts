@@ -8,14 +8,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
-import { MapElement, Point, Room, AngleLabel, WallSegment } from './map.types';
-import {
-  dist,
-  distToSegment,
-  projectOnSegment,
-  lineSegmentIntersection,
-  angleBetween,
-} from './map-geometry.utils';
+import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
+import { dist, distToSegment } from './map-geometry.utils';
 import {
   updateWallDerived as _deriveWall,
   computeWallSegments,
@@ -24,7 +18,14 @@ import {
 import {
   computeRooms as _computeRooms,
   mergeWalls as _mergeWalls,
+  computeJunctionAngles,
+  restoreRoomNames,
 } from './wall-graph.utils';
+import {
+  checkIntersections,
+  getClosestEdgeSnap,
+  getClosestVertex,
+} from './wall-snap.utils';
 
 @Component({
   selector: 'app-map',
@@ -184,20 +185,6 @@ export class MapComponent implements AfterViewInit {
     return this.activePolylinePoints.map((p) => `${p.x},${p.y}`).join(' ');
   }
 
-  private getDistance(p1: Point, p2: Point): number {
-    return dist(p1, p2);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private getAngle(p1: Point, p2: Point, p3: Point): number {
-    const a1 = Math.atan2(p1.y - p2.y, p1.x - p2.x);
-    const a2 = Math.atan2(p3.y - p2.y, p3.x - p2.x);
-    let angle = (a2 - a1) * (180 / Math.PI);
-    if (angle < 0) angle += 360;
-    if (angle > 180) angle = 360 - angle;
-    return angle;
-  }
-
   // Delegate to util (note: param order differs — cursor was 2nd here, last in util)
   getWallAngles(
     points: Point[],
@@ -206,123 +193,6 @@ export class MapComponent implements AfterViewInit {
     centroidY?: number,
   ): AngleLabel[] {
     return computeWallAngles(points, this.zoom, centroidX, centroidY, cursor);
-  }
-
-  private getLineIntersection(
-    p1: Point,
-    p2: Point,
-    p3: Point,
-    p4: Point,
-  ): Point | null {
-    return lineSegmentIntersection(p1, p2, p3, p4);
-  }
-
-  // Check for intersections with existing walls and current polyline
-  private checkIntersections(currentPoint: {
-    x: number;
-    y: number;
-  }): { x: number; y: number } | null {
-    if (this.activePolylinePoints.length === 0) return null;
-
-    const lastPoint =
-      this.activePolylinePoints[this.activePolylinePoints.length - 1];
-    let closestIntersection: { x: number; y: number } | null = null;
-    let minDistance = Infinity;
-
-    // Helper to check and update closest intersection
-    const checkAndSetClosest = (
-      p1: { x: number; y: number },
-      p2: { x: number; y: number },
-    ) => {
-      // Avoid intersecting with the immediate previous segment (which shares a point)
-      if (
-        (p1.x === lastPoint.x && p1.y === lastPoint.y) ||
-        (p2.x === lastPoint.x && p2.y === lastPoint.y)
-      )
-        return;
-
-      const intersection = this.getLineIntersection(
-        lastPoint,
-        currentPoint,
-        p1,
-        p2,
-      );
-      if (intersection) {
-        const dist = this.getDistance(lastPoint, intersection);
-        // We want the intersection closest to the start of the current segment (optional logic,
-        // usually we care about the one closest to cursor but here we are drawing FROM lastPoint TO cursor)
-        // Actually, visualizing any valid intersection is good. Let's pick the one closest to the last confirmed point
-        if (dist < minDistance && dist > 1) {
-          // >1 to avoid self-intersection at start vertex
-          minDistance = dist;
-          closestIntersection = intersection;
-        }
-      }
-    };
-
-    // 1. Check against existing walls in the elements array
-    for (const element of this.elements) {
-      if (
-        element.type === 'wall' &&
-        element.points &&
-        element.points.length > 1
-      ) {
-        for (let i = 0; i < element.points.length - 1; i++) {
-          checkAndSetClosest(element.points[i], element.points[i + 1]);
-        }
-      }
-    }
-
-    // 2. Check against segments of the currently drawn polyline (excluding the very last one we are drawing from)
-    if (this.activePolylinePoints.length > 2) {
-      // Need at least 2 segments to intersect a previous one
-      for (let i = 0; i < this.activePolylinePoints.length - 2; i++) {
-        checkAndSetClosest(
-          this.activePolylinePoints[i],
-          this.activePolylinePoints[i + 1],
-        );
-      }
-    }
-
-    return closestIntersection;
-  }
-
-  // Find the closest vertex (start or end point) of any wall
-  private getClosestVertex(
-    point: { x: number; y: number },
-    tolerance: number,
-  ): { x: number; y: number } | null {
-    let closestVertex: { x: number; y: number } | null = null;
-    let minDistance = tolerance;
-
-    const checkPoint = (p: { x: number; y: number }) => {
-      const dist = this.getDistance(point, p);
-      if (dist < minDistance) {
-        minDistance = dist;
-        closestVertex = p;
-      }
-    };
-
-    // Check existing walls
-    for (const element of this.elements) {
-      if (element.type === 'wall' && element.points) {
-        for (const p of element.points) {
-          checkPoint(p);
-        }
-      }
-    }
-
-    // Check current polyline vertices (except the very last one we are drawing from)
-    if (this.activePolylinePoints.length > 0) {
-      const len = this.activePolylinePoints.length;
-      // We can snap to start (index 0) to close loop
-      // Don't snap to the last point (index len-1)
-      for (let i = 0; i < len - 1; i++) {
-        checkPoint(this.activePolylinePoints[i]);
-      }
-    }
-
-    return closestVertex;
   }
 
   getWallSegments(points: Point[] | undefined): WallSegment[] {
@@ -430,135 +300,9 @@ export class MapComponent implements AfterViewInit {
     for (const el of this.elements) {
       if (el.type === 'wall') this.updateWallDerived(el);
     }
-    this.computeJunctionAngles();
-    this.rooms = this.computeRooms();
+    computeJunctionAngles(this.elements, this.zoom);
+    this.rooms = restoreRoomNames(_computeRooms(this.elements), this.rooms);
     this.scheduleUpdateGrid();
-  }
-
-  /**
-   * After all wall-derived data is computed, find every vertex where 2+ distinct
-   * walls meet and inject the correct inter-wall angles there.
-   * Removes any intra-wall angle previously computed at those junction vertices.
-   */
-  private computeJunctionAngles(): void {
-    const EPS = 3;
-    const walls = this.elements.filter(
-      (e) => e.type === 'wall' && e.points && e.points.length >= 2,
-    );
-
-    // Build map: rounded position key → all arms meeting there
-    interface Arm {
-      wall: MapElement;
-      neighborPt: Point;
-      azimuth: number;
-    }
-    const junctionMap = new Map<string, { jPt: Point; arms: Arm[] }>();
-
-    const key = (p: Point) =>
-      `${Math.round(p.x / EPS)}_${Math.round(p.y / EPS)}`;
-
-    for (const wall of walls) {
-      const pts = wall.points!;
-      for (let i = 0; i < pts.length; i++) {
-        const k = key(pts[i]);
-        if (!junctionMap.has(k)) junctionMap.set(k, { jPt: pts[i], arms: [] });
-        const entry = junctionMap.get(k)!;
-        // Each vertex contributes one arm per adjacent segment
-        if (i > 0) {
-          const nb = pts[i - 1];
-          entry.arms.push({
-            wall,
-            neighborPt: nb,
-            azimuth: Math.atan2(nb.y - pts[i].y, nb.x - pts[i].x),
-          });
-        }
-        if (i < pts.length - 1) {
-          const nb = pts[i + 1];
-          entry.arms.push({
-            wall,
-            neighborPt: nb,
-            azimuth: Math.atan2(nb.y - pts[i].y, nb.x - pts[i].x),
-          });
-        }
-      }
-    }
-
-    const LABEL_DIST = 18 / this.zoom;
-
-    for (const { jPt, arms } of junctionMap.values()) {
-      // Only process vertices where arms from at least 2 different walls meet
-      const wallIds = new Set(arms.map((a) => a.wall.id));
-      if (wallIds.size < 2) continue;
-
-      // Remove intra-wall angles already computed at this vertex
-      for (const id of wallIds) {
-        const wall = walls.find((w) => w.id === id);
-        if (wall?.angles) {
-          wall.angles = wall.angles.filter(
-            (a) =>
-              !(Math.abs(a.x - jPt.x) < EPS && Math.abs(a.y - jPt.y) < EPS),
-          );
-        }
-      }
-
-      // Sort all arms by azimuth and compute the angle of each consecutive sector
-      arms.sort((a, b) => a.azimuth - b.azimuth);
-      const n = arms.length;
-
-      for (let i = 0; i < n; i++) {
-        const a1 = arms[i];
-        const a2 = arms[(i + 1) % n];
-
-        let delta = a2.azimuth - a1.azimuth;
-        if (delta <= 0) delta += 2 * Math.PI;
-        const angleDeg = delta * (180 / Math.PI);
-
-        // Skip degenerate angles (straight line = 180°, or near-zero)
-        if (angleDeg < 2 || Math.abs(angleDeg - 180) < 1) continue;
-
-        // Bisector direction points into the sector (midway angle + π)
-        const midAz = a1.azimuth + delta / 2;
-        const bx = -Math.cos(midAz); // negate = point inward toward sector center
-        const by = -Math.sin(midAz);
-
-        // Add the angle label to the wall that owns arm a1
-        if (!a1.wall.angles) a1.wall.angles = [];
-        a1.wall.angles.push({
-          x: jPt.x,
-          y: jPt.y,
-          angle: Math.round(angleDeg * 10) / 10,
-          labelX: jPt.x + bx * LABEL_DIST,
-          labelY: jPt.y + by * LABEL_DIST,
-        });
-      }
-    }
-  }
-
-  // Delegates to wall-graph.utils; restores persisted names by matching new rooms to old
-  // by nearest centroid — robust against vertex moves that shift centroids slightly.
-  private computeRooms(): Room[] {
-    const computed = _computeRooms(this.elements);
-    const previous = this.rooms ?? [];
-    const namedOld = previous.filter((r) => r.name);
-
-    for (const r of computed) {
-      // Find the closest old named room by centroid distance
-      let bestDist = Infinity;
-      let bestName: string | undefined;
-      for (const old of namedOld) {
-        const dx = r.cx - old.cx;
-        const dy = r.cy - old.cy;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        // Accept the match if the centroid shift is within ~80% of the old room radius
-        const threshold = Math.sqrt(old.area) * 0.8;
-        if (d < bestDist && d < threshold) {
-          bestDist = d;
-          bestName = old.name;
-        }
-      }
-      if (bestName !== undefined) r.name = bestName;
-    }
-    return computed;
   }
 
   confirmEditRoom(): void {
@@ -657,52 +401,6 @@ export class MapComponent implements AfterViewInit {
     segIndex: number;
   } | null = null;
 
-  private getDistanceToSegment(p: Point, v: Point, w: Point): number {
-    return distToSegment(p, v, w);
-  }
-
-  // Find closest point on any wall segment to `point`, within `tolerance` SVG units.
-  // Returns null if nothing is close enough, or if snap would land on an existing vertex.
-  private getClosestEdgeSnap(
-    point: { x: number; y: number },
-    tolerance: number,
-  ): { x: number; y: number; elementId: string; segIndex: number } | null {
-    let best: {
-      x: number;
-      y: number;
-      elementId: string;
-      segIndex: number;
-    } | null = null;
-    let minDist = tolerance;
-    for (const el of this.elements) {
-      if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
-      for (let i = 0; i < el.points.length - 1; i++) {
-        const p1 = el.points[i];
-        const p2 = el.points[i + 1];
-        const dist = this.getDistanceToSegment(point, p1, p2);
-        if (dist >= minDist) continue;
-        const l2 = Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
-        if (l2 === 0) continue;
-        const t = Math.min(
-          1,
-          Math.max(
-            0,
-            ((point.x - p1.x) * (p2.x - p1.x) +
-              (point.y - p1.y) * (p2.y - p1.y)) /
-              l2,
-          ),
-        );
-        const sx = p1.x + t * (p2.x - p1.x);
-        const sy = p1.y + t * (p2.y - p1.y);
-        // Skip if snap point virtually coincides with an endpoint (vertex snap handles those)
-        if (t < 0.01 || t > 0.99) continue;
-        minDist = dist;
-        best = { x: sx, y: sy, elementId: el.id, segIndex: i };
-      }
-    }
-    return best;
-  }
-
   // Insert a new vertex into a wall at `pt` between points[segIndex] and points[segIndex+1].
   private splitWallAtPoint(
     elementId: string,
@@ -716,7 +414,7 @@ export class MapComponent implements AfterViewInit {
     el.points = newPoints;
     this.updateWallDerived(el);
     this.elements = [...this.elements];
-    this.rooms = this.computeRooms();
+    this.rooms = restoreRoomNames(_computeRooms(this.elements), this.rooms);
   }
 
   onMouseDown(event: MouseEvent) {
@@ -745,7 +443,7 @@ export class MapComponent implements AfterViewInit {
       for (const el of this.elements) {
         if (el.type === 'wall' && el.points) {
           for (let i = 0; i < el.points.length; i++) {
-            if (this.getDistance(point, el.points[i]) < 10) {
+            if (dist(point, el.points[i]) < 10) {
               // Click tolerance
               this.selectedVertex = { elementId: el.id, pointIndex: i };
               // Find all junction peers: other walls with a vertex at the same position
@@ -755,7 +453,7 @@ export class MapComponent implements AfterViewInit {
                 if (other.type !== 'wall' || !other.points) continue;
                 for (let j = 0; j < other.points.length; j++) {
                   if (other.id === el.id && j === i) continue;
-                  if (this.getDistance(clickedPt, other.points[j]) < 2) {
+                  if (dist(clickedPt, other.points[j]) < 2) {
                     this.selectedVertexPeers.push({
                       elementId: other.id,
                       pointIndex: j,
@@ -776,7 +474,7 @@ export class MapComponent implements AfterViewInit {
           for (let i = 0; i < el.points.length - 1; i++) {
             const p1 = el.points[i];
             const p2 = el.points[i + 1];
-            if (this.getDistanceToSegment(point, p1, p2) < 10) {
+            if (distToSegment(point, p1, p2) < 10) {
               this.movingElementId = '__ALL__';
               this.lastMousePosition = point;
               this.isDrawing = true;
@@ -801,11 +499,16 @@ export class MapComponent implements AfterViewInit {
       // If drawing hasn't started, start it
       if (this.activePolylinePoints.length === 0) {
         // Snap start point to edge if applicable
-        const startVert = this.getClosestVertex(point, 20);
+        const startVert = getClosestVertex(
+          point,
+          20,
+          this.elements,
+          this.activePolylinePoints,
+        );
         if (startVert) {
           point = startVert;
         } else {
-          const startEdge = this.getClosestEdgeSnap(point, 15);
+          const startEdge = getClosestEdgeSnap(point, 15, this.elements);
           if (startEdge) {
             point = { x: startEdge.x, y: startEdge.y };
             this.splitWallAtPoint(
@@ -836,7 +539,7 @@ export class MapComponent implements AfterViewInit {
         }
 
         // Check for closing loop (click near start point)
-        const distToStart = this.getDistance(point, startPoint);
+        const distToStart = dist(point, startPoint);
 
         // Allow closing the loop if we have enough points (triangle at least)
         if (this.activePolylinePoints.length > 2 && distToStart < 15) {
@@ -846,11 +549,16 @@ export class MapComponent implements AfterViewInit {
           return;
         } else {
           // Snap to vertex or edge before adding point
-          const addVert = this.getClosestVertex(point, 20);
+          const addVert = getClosestVertex(
+            point,
+            20,
+            this.elements,
+            this.activePolylinePoints,
+          );
           if (addVert) {
             point = addVert;
           } else {
-            const addEdge = this.getClosestEdgeSnap(point, 15);
+            const addEdge = getClosestEdgeSnap(point, 15, this.elements);
             if (addEdge) {
               point = { x: addEdge.x, y: addEdge.y };
               this.splitWallAtPoint(addEdge.elementId, addEdge.segIndex, point);
@@ -924,7 +632,7 @@ export class MapComponent implements AfterViewInit {
       outer: for (const el of this.elements) {
         if (el.type === 'wall' && el.points) {
           for (let i = 0; i < el.points.length; i++) {
-            if (this.getDistance(point, el.points[i]) < 10) {
+            if (dist(point, el.points[i]) < 10) {
               found = {
                 elementId: el.id,
                 pointIndex: i,
@@ -984,7 +692,7 @@ export class MapComponent implements AfterViewInit {
           const idx = this.selectedVertex!.pointIndex;
           const pts = el.points;
           const isClosed =
-            pts.length > 2 && this.getDistance(pts[0], pts[pts.length - 1]) < 2;
+            pts.length > 2 && dist(pts[0], pts[pts.length - 1]) < 2;
 
           // Resolve prev/next neighbor indices
           let prevIdx: number | null = null;
@@ -1005,8 +713,7 @@ export class MapComponent implements AfterViewInit {
           let refIdx: number | null = null;
           if (prevIdx !== null && nextIdx !== null) {
             refIdx =
-              this.getDistance(point, pts[prevIdx]) <
-              this.getDistance(point, pts[nextIdx])
+              dist(point, pts[prevIdx]) < dist(point, pts[nextIdx])
                 ? prevIdx
                 : nextIdx;
           } else {
@@ -1031,7 +738,7 @@ export class MapComponent implements AfterViewInit {
           if (this.selectedVertexPeers.some((p) => p.elementId === other.id))
             continue;
           for (let j = 0; j < other.points.length; j++) {
-            if (this.getDistance(point, other.points[j]) < SNAP_RADIUS) {
+            if (dist(point, other.points[j]) < SNAP_RADIUS) {
               this.snapTargetVertex = {
                 elementId: other.id,
                 pointIndex: j,
@@ -1049,7 +756,7 @@ export class MapComponent implements AfterViewInit {
         if (el.points.length > 2) {
           const first = el.points[0];
           const last = el.points[el.points.length - 1];
-          if (this.getDistance(first, last) < 2) wasClosed = true;
+          if (dist(first, last) < 2) wasClosed = true;
         }
 
         el.points[this.selectedVertex.pointIndex] = point;
@@ -1072,10 +779,8 @@ export class MapComponent implements AfterViewInit {
           let peerWasClosed = false;
           if (peerEl.points.length > 2) {
             peerWasClosed =
-              this.getDistance(
-                peerEl.points[0],
-                peerEl.points[peerEl.points.length - 1],
-              ) < 2;
+              dist(peerEl.points[0], peerEl.points[peerEl.points.length - 1]) <
+              2;
           }
           peerEl.points[peer.pointIndex] = point;
           if (peerWasClosed) {
@@ -1094,11 +799,16 @@ export class MapComponent implements AfterViewInit {
     if (this.selectedTool === 'wall' && !this.isDrawing) {
       this.vertexSnapPoint = null;
       this.edgeSnapPoint = null;
-      const vertex = this.getClosestVertex(point, 20);
+      const vertex = getClosestVertex(
+        point,
+        20,
+        this.elements,
+        this.activePolylinePoints,
+      );
       if (vertex) {
         this.vertexSnapPoint = vertex;
       } else {
-        const edge = this.getClosestEdgeSnap(point, 15);
+        const edge = getClosestEdgeSnap(point, 15, this.elements);
         if (edge) {
           this.edgeSnapPoint = edge;
         }
@@ -1130,13 +840,22 @@ export class MapComponent implements AfterViewInit {
       this.edgeSnapPoint = null;
 
       // First find if there IS an intersection up to the current mouse point
-      const intersection = this.checkIntersections(point);
-      const vertex = this.getClosestVertex(point, 20); // 20px snap radius
+      const intersection = checkIntersections(
+        point,
+        this.activePolylinePoints,
+        this.elements,
+      );
+      const vertex = getClosestVertex(
+        point,
+        20,
+        this.elements,
+        this.activePolylinePoints,
+      ); // 20px snap radius
 
       if (intersection) {
         this.intersectionPoint = intersection;
         point = intersection;
-        if (vertex && this.getDistance(vertex, intersection) < 10) {
+        if (vertex && dist(vertex, intersection) < 10) {
           this.vertexSnapPoint = vertex;
           point = vertex;
         }
@@ -1145,7 +864,7 @@ export class MapComponent implements AfterViewInit {
         point = this.vertexSnapPoint;
       } else {
         // No vertex snap: try edge snap
-        const edge = this.getClosestEdgeSnap(point, 15);
+        const edge = getClosestEdgeSnap(point, 15, this.elements);
         if (edge) {
           this.edgeSnapPoint = edge;
           point = { x: edge.x, y: edge.y };
@@ -1159,10 +878,7 @@ export class MapComponent implements AfterViewInit {
       );
 
       // Calculate length of current segment (from last point to cursor)
-      this.currentSegmentLength = this.getDistance(
-        lastPoint,
-        this.cursorPosition,
-      );
+      this.currentSegmentLength = dist(lastPoint, this.cursorPosition);
       return;
     }
 
@@ -1273,10 +989,10 @@ export class MapComponent implements AfterViewInit {
       if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
       const pts = el.points;
       for (let i = 0; i < pts.length; i++) {
-        if (this.getDistance(point, pts[i]) >= SNAP) continue;
+        if (dist(point, pts[i]) >= SNAP) continue;
 
         const isClosed =
-          pts.length >= 4 && this.getDistance(pts[0], pts[pts.length - 1]) <= 2;
+          pts.length >= 4 && dist(pts[0], pts[pts.length - 1]) <= 2;
 
         if (isClosed) {
           // Remove the duplicate closing point, then rotate so vertex i is the open end
@@ -1320,8 +1036,8 @@ export class MapComponent implements AfterViewInit {
         for (let i = 0; i < el.points.length - 1; i++) {
           const p1 = el.points[i];
           const p2 = el.points[i + 1];
-          const dist = this.getDistanceToSegment(point, p1, p2);
-          if (dist < 10) {
+          const segDist = distToSegment(point, p1, p2);
+          if (segDist < 10) {
             const l2 = Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
             let t =
               ((point.x - p1.x) * (p2.x - p1.x) +
