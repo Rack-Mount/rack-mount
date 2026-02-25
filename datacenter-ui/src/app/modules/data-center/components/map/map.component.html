@@ -51,9 +51,11 @@
         </span>
         <span class="switch-label">Autosalvataggio</span>
       </label>
-      @if (selectedTool === 'rack') {
+      @if (selectedTool === "rack") {
         <span class="rack-picker-sep"></span>
-        <label for="rack-select" class="rack-picker-label">🖥️ Modello rack:</label>
+        <label for="rack-select" class="rack-picker-label"
+          >🖥️ Modello rack:</label
+        >
         @if (availableRackTypes.length === 0) {
           <span class="rack-picker-empty">Nessun modello rack disponibile</span>
         } @else {
@@ -64,7 +66,10 @@
           >
             @for (rackType of availableRackTypes; track rackType.id) {
               <option [ngValue]="rackType">
-                {{ rackType.model }} ({{ rackType.width }}×{{ rackType.height }} cm, {{ rackType.capacity }}U)
+                {{ rackType.model }} ({{ rackType.width }}×{{
+                  rackType.height
+                }}
+                cm, {{ rackType.capacity }}U)
               </option>
             }
           </select>

@@ -387,7 +387,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     return `${prefix}-${n}`;
   }
 
-  saveFloorPlan(): void {    if (this.selectedRoomId == null) return;
+  saveFloorPlan(): void {
+    if (this.selectedRoomId == null) return;
     this.saveStatus = 'saving';
     this.locationService
       .locationRoomPartialUpdate({
