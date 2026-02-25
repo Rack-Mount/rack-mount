@@ -739,7 +739,8 @@ export class MapComponent implements AfterViewInit {
     const pts: Pt[] = [];
     const findOrAdd = (p: Pt): number => {
       for (let i = 0; i < pts.length; i++) {
-        if (Math.abs(pts[i].x - p.x) < EPS && Math.abs(pts[i].y - p.y) < EPS) return i;
+        if (Math.abs(pts[i].x - p.x) < EPS && Math.abs(pts[i].y - p.y) < EPS)
+          return i;
       }
       pts.push({ x: p.x, y: p.y });
       return pts.length - 1;
@@ -761,7 +762,10 @@ export class MapComponent implements AfterViewInit {
     }
     if (pts.length < 3 || edgeList.length < 3) return [];
     const adj: number[][] = Array.from({ length: pts.length }, () => []);
-    for (const [a, b] of edgeList) { adj[a].push(b); adj[b].push(a); }
+    for (const [a, b] of edgeList) {
+      adj[a].push(b);
+      adj[b].push(a);
+    }
     for (let v = 0; v < pts.length; v++) {
       adj[v].sort((a, b) => {
         const aa = Math.atan2(pts[a].y - pts[v].y, pts[a].x - pts[v].x);
@@ -771,31 +775,52 @@ export class MapComponent implements AfterViewInit {
     }
     const nextHE = (u: number, v: number): number => {
       const inAng = Math.atan2(pts[u].y - pts[v].y, pts[u].x - pts[v].x);
-      let best = -1, bestDelta = -Infinity;
+      let best = -1,
+        bestDelta = -Infinity;
       for (const w of adj[v]) {
         if (w === u) continue;
         const outAng = Math.atan2(pts[w].y - pts[v].y, pts[w].x - pts[v].x);
         let d = outAng - inAng;
         if (d <= 0) d += 2 * Math.PI;
-        if (d > bestDelta) { bestDelta = d; best = w; }
+        if (d > bestDelta) {
+          bestDelta = d;
+          best = w;
+        }
       }
       return best;
     };
     // Signed distance from point to face boundary (positive = inside, negative = outside)
-    const signedDistToFace = (px: number, py: number, face: number[]): number => {
+    const signedDistToFace = (
+      px: number,
+      py: number,
+      face: number[],
+    ): number => {
       let inside = false;
       let minD = Infinity;
       for (let i = 0, j = face.length - 1; i < face.length; j = i++) {
-        const ax = pts[face[j]].x, ay = pts[face[j]].y;
-        const bx = pts[face[i]].x, by = pts[face[i]].y;
+        const ax = pts[face[j]].x,
+          ay = pts[face[j]].y;
+        const bx = pts[face[i]].x,
+          by = pts[face[i]].y;
         // ray-cast for inside test
-        if ((by > py) !== (ay > py) && px < ((ax - bx) * (py - by)) / (ay - by) + bx)
+        if (
+          by > py !== ay > py &&
+          px < ((ax - bx) * (py - by)) / (ay - by) + bx
+        )
           inside = !inside;
         // distance to edge
-        const dx = bx - ax, dy = by - ay;
+        const dx = bx - ax,
+          dy = by - ay;
         const lenSq = dx * dx + dy * dy;
-        const t = lenSq === 0 ? 0 : Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq));
-        const ex = px - ax - t * dx, ey = py - ay - t * dy;
+        const t =
+          lenSq === 0
+            ? 0
+            : Math.max(
+                0,
+                Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq),
+              );
+        const ex = px - ax - t * dx,
+          ey = py - ay - t * dy;
         const d = Math.sqrt(ex * ex + ey * ey);
         if (d < minD) minD = d;
       }
@@ -804,14 +829,18 @@ export class MapComponent implements AfterViewInit {
 
     // Polylabel: iterative cell-refinement to find the point farthest from all edges
     const polylabel = (face: number[]): { cx: number; cy: number } => {
-      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      let minX = Infinity,
+        maxX = -Infinity,
+        minY = Infinity,
+        maxY = -Infinity;
       for (const vi of face) {
         if (pts[vi].x < minX) minX = pts[vi].x;
         if (pts[vi].x > maxX) maxX = pts[vi].x;
         if (pts[vi].y < minY) minY = pts[vi].y;
         if (pts[vi].y > maxY) maxY = pts[vi].y;
       }
-      const width = maxX - minX, height = maxY - minY;
+      const width = maxX - minX,
+        height = maxY - minY;
       const cellSize = Math.max(width, height);
       if (cellSize === 0) return { cx: minX, cy: minY };
 
@@ -843,7 +872,8 @@ export class MapComponent implements AfterViewInit {
           heap[0] = last;
           let i = 0;
           for (;;) {
-            const l = 2 * i + 1, r = 2 * i + 2;
+            const l = 2 * i + 1,
+              r = 2 * i + 2;
             let best = i;
             if (l < heap.length && heap[l][4] > heap[best][4]) best = l;
             if (r < heap.length && heap[r][4] > heap[best][4]) best = r;
@@ -864,14 +894,24 @@ export class MapComponent implements AfterViewInit {
       }
 
       // Centroid cell as initial best candidate
-      let bestD = -Infinity, bestCx = minX + width / 2, bestCy = minY + height / 2;
+      let bestD = -Infinity,
+        bestCx = minX + width / 2,
+        bestCy = minY + height / 2;
       const centCell = makeCell(bestCx, bestCy, 0);
-      if (centCell[3] > bestD) { bestD = centCell[3]; bestCx = centCell[0]; bestCy = centCell[1]; }
+      if (centCell[3] > bestD) {
+        bestD = centCell[3];
+        bestCx = centCell[0];
+        bestCy = centCell[1];
+      }
 
       const PRECISION = 1.0; // stop when gain < 1px
       while (heap.length > 0) {
         const cell = heapPop();
-        if (cell[3] > bestD) { bestD = cell[3]; bestCx = cell[0]; bestCy = cell[1]; }
+        if (cell[3] > bestD) {
+          bestD = cell[3];
+          bestCx = cell[0];
+          bestCy = cell[1];
+        }
         // Skip if this cell can't improve over bestD + precision
         if (cell[4] - bestD <= PRECISION) continue;
         const ch = cell[2] / 2;
@@ -883,14 +923,17 @@ export class MapComponent implements AfterViewInit {
       return { cx: bestCx, cy: bestCy };
     };
 
-
     const visited = new Set<string>();
     const rooms: { area: number; cx: number; cy: number }[] = [];
     for (const [ea, eb] of edgeList) {
-      for (const [u0, v0] of [[ea, eb], [eb, ea]] as [number, number][]) {
+      for (const [u0, v0] of [
+        [ea, eb],
+        [eb, ea],
+      ] as [number, number][]) {
         if (visited.has(`${u0}|${v0}`)) continue;
         const face: number[] = [];
-        let u = u0, v = v0;
+        let u = u0,
+          v = v0;
         for (let step = 0; step < edgeList.length * 2 + 4; step++) {
           const key = `${u}|${v}`;
           if (visited.has(key)) break;
@@ -898,13 +941,15 @@ export class MapComponent implements AfterViewInit {
           face.push(v);
           const w = nextHE(u, v);
           if (w === -1) break;
-          u = v; v = w;
+          u = v;
+          v = w;
         }
         if (face.length < 3) continue;
         let sa = 0;
         for (let i = 0; i < face.length; i++) {
           const j = (i + 1) % face.length;
-          sa += pts[face[i]].x * pts[face[j]].y - pts[face[j]].x * pts[face[i]].y;
+          sa +=
+            pts[face[i]].x * pts[face[j]].y - pts[face[j]].x * pts[face[i]].y;
         }
         sa /= 2;
         if (sa <= 0) continue; // outer face
@@ -981,7 +1026,12 @@ export class MapComponent implements AfterViewInit {
   } | null = null;
 
   // Snap-to-edge target while drawing a wall (snaps cursor to a wall segment)
-  edgeSnapPoint: { x: number; y: number; elementId: string; segIndex: number } | null = null;
+  edgeSnapPoint: {
+    x: number;
+    y: number;
+    elementId: string;
+    segIndex: number;
+  } | null = null;
 
   // Minimal distance from point p to line segment v-w
   private getDistanceToSegment(
@@ -1003,7 +1053,12 @@ export class MapComponent implements AfterViewInit {
     point: { x: number; y: number },
     tolerance: number,
   ): { x: number; y: number; elementId: string; segIndex: number } | null {
-    let best: { x: number; y: number; elementId: string; segIndex: number } | null = null;
+    let best: {
+      x: number;
+      y: number;
+      elementId: string;
+      segIndex: number;
+    } | null = null;
     let minDist = tolerance;
     for (const el of this.elements) {
       if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
@@ -1014,7 +1069,15 @@ export class MapComponent implements AfterViewInit {
         if (dist >= minDist) continue;
         const l2 = Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
         if (l2 === 0) continue;
-        const t = Math.min(1, Math.max(0, ((point.x - p1.x) * (p2.x - p1.x) + (point.y - p1.y) * (p2.y - p1.y)) / l2));
+        const t = Math.min(
+          1,
+          Math.max(
+            0,
+            ((point.x - p1.x) * (p2.x - p1.x) +
+              (point.y - p1.y) * (p2.y - p1.y)) /
+              l2,
+          ),
+        );
         const sx = p1.x + t * (p2.x - p1.x);
         const sy = p1.y + t * (p2.y - p1.y);
         // Skip if snap point virtually coincides with an endpoint (vertex snap handles those)
@@ -1027,8 +1090,12 @@ export class MapComponent implements AfterViewInit {
   }
 
   // Insert a new vertex into a wall at `pt` between points[segIndex] and points[segIndex+1].
-  private splitWallAtPoint(elementId: string, segIndex: number, pt: { x: number; y: number }): void {
-    const el = this.elements.find(e => e.id === elementId);
+  private splitWallAtPoint(
+    elementId: string,
+    segIndex: number,
+    pt: { x: number; y: number },
+  ): void {
+    const el = this.elements.find((e) => e.id === elementId);
     if (!el?.points) return;
     const newPoints = [...el.points];
     newPoints.splice(segIndex + 1, 0, { x: pt.x, y: pt.y });
@@ -1075,7 +1142,10 @@ export class MapComponent implements AfterViewInit {
                 for (let j = 0; j < other.points.length; j++) {
                   if (other.id === el.id && j === i) continue;
                   if (this.getDistance(clickedPt, other.points[j]) < 2) {
-                    this.selectedVertexPeers.push({ elementId: other.id, pointIndex: j });
+                    this.selectedVertexPeers.push({
+                      elementId: other.id,
+                      pointIndex: j,
+                    });
                   }
                 }
               }
@@ -1126,7 +1196,11 @@ export class MapComponent implements AfterViewInit {
           const startEdge = this.getClosestEdgeSnap(point, 15);
           if (startEdge) {
             point = { x: startEdge.x, y: startEdge.y };
-            this.splitWallAtPoint(startEdge.elementId, startEdge.segIndex, point);
+            this.splitWallAtPoint(
+              startEdge.elementId,
+              startEdge.segIndex,
+              point,
+            );
           }
         }
         this.isDrawing = true;
@@ -1344,7 +1418,8 @@ export class MapComponent implements AfterViewInit {
         outer: for (const other of this.elements) {
           if (other.id === el.id || !other.points) continue;
           // Skip junction peers — they move with us, not snap targets
-          if (this.selectedVertexPeers.some((p) => p.elementId === other.id)) continue;
+          if (this.selectedVertexPeers.some((p) => p.elementId === other.id))
+            continue;
           for (let j = 0; j < other.points.length; j++) {
             if (this.getDistance(point, other.points[j]) < SNAP_RADIUS) {
               this.snapTargetVertex = {
@@ -1387,12 +1462,17 @@ export class MapComponent implements AfterViewInit {
           let peerWasClosed = false;
           if (peerEl.points.length > 2) {
             peerWasClosed =
-              this.getDistance(peerEl.points[0], peerEl.points[peerEl.points.length - 1]) < 2;
+              this.getDistance(
+                peerEl.points[0],
+                peerEl.points[peerEl.points.length - 1],
+              ) < 2;
           }
           peerEl.points[peer.pointIndex] = point;
           if (peerWasClosed) {
-            if (peer.pointIndex === 0) peerEl.points[peerEl.points.length - 1] = point;
-            else if (peer.pointIndex === peerEl.points.length - 1) peerEl.points[0] = point;
+            if (peer.pointIndex === 0)
+              peerEl.points[peerEl.points.length - 1] = point;
+            else if (peer.pointIndex === peerEl.points.length - 1)
+              peerEl.points[0] = point;
           }
           this.updateWallDerived(peerEl);
         }
