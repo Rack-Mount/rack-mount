@@ -52,6 +52,8 @@ export interface MapElement {
   height?: number;
   x2?: number;
   y2?: number;
+  /** Rotation in degrees (0 / 90 / 180 / 270). Only used for racks. */
+  rotation?: number;
   /** Polyline vertices (walls only) */
   points?: Point[];
   text?: string;

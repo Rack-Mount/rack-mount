@@ -56,6 +56,7 @@
       #svgContainer
       class="drawing-area"
       [class.tool-select]="selectedTool === 'select'"
+      [class.tool-move]="selectedTool === 'move'"
       [style.cursor]="
         !selectedRoomId
           ? 'not-allowed'
@@ -248,6 +249,8 @@
                 (click)="onElementClick($event, el)"
                 class="rack-group"
                 [class.selected]="selectedElementId === el.id"
+                [class.moving-snap]="movingElementId === el.id && rackSnapActive"
+                [attr.transform]="getRackTransform(el) || null"
               >
                 <rect
                   [attr.x]="el.x"
@@ -277,6 +280,29 @@
                   [attr.stroke-width]="1 / zoom"
                   pointer-events="none"
                 />
+                <!-- Rotation handle (drag to rotate freely; Shift snaps to 15°) -->
+                @if (selectedElementId === el.id && (selectedTool === 'select' || selectedTool === 'move')) {
+                  <line
+                    [attr.x1]="el.x + (el.width || 0) / 2"
+                    [attr.y1]="el.y"
+                    [attr.x2]="el.x + (el.width || 0) / 2"
+                    [attr.y2]="el.y - 26 / zoom"
+                    stroke="#007bff"
+                    [attr.stroke-width]="1.5 / zoom"
+                    stroke-dasharray="none"
+                    pointer-events="none"
+                  />
+                  <circle
+                    class="rack-rotate-handle"
+                    [attr.cx]="el.x + (el.width || 0) / 2"
+                    [attr.cy]="el.y - 26 / zoom"
+                    [attr.r]="6 / zoom"
+                    fill="#007bff"
+                    stroke="white"
+                    [attr.stroke-width]="1.5 / zoom"
+                    (mousedown)="onRotateHandleMouseDown($event, el)"
+                  />
+                }
               </g>
             }
           </ng-container>
@@ -682,10 +708,21 @@
                     [attr.y]="currentElement.y"
                     [attr.width]="currentElement.width"
                     [attr.height]="currentElement.height"
-                    fill="#e0e0e0"
-                    stroke="#333"
-                    [attr.stroke-width]="1 / zoom"
-                    opacity="0.5"
+                    [attr.fill]="rackCreationBlocked ? '#ffcccc' : '#e0e0e0'"
+                    [attr.stroke]="
+                      rackCreationBlocked
+                        ? '#cc0000'
+                        : rackSnapActive
+                          ? '#00aacc'
+                          : '#333'
+                    "
+                    [attr.stroke-width]="
+                      (rackCreationBlocked || rackSnapActive ? 2 : 1) / zoom
+                    "
+                    [attr.stroke-dasharray]="
+                      rackCreationBlocked ? 4 / zoom + ',' + 3 / zoom : 'none'
+                    "
+                    opacity="0.6"
                   />
                 }
               </ng-container>

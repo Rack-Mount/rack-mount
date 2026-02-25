@@ -156,6 +156,30 @@
       stroke: #007bff;
       stroke-width: 3px !important;
     }
+
+    /* Rack snap indicator while moving */
+    g.rack-group.moving-snap rect {
+      stroke: #00aacc;
+      stroke-width: 2px !important;
+    }
+
+    /* Rotation handle */
+    g.rack-group .rack-rotate-handle {
+      cursor: crosshair;
+
+      &:hover {
+        fill: #0055cc;
+      }
+    }
+
+    /* Rack cursor in move tool */
+    &.tool-move g.rack-group {
+      cursor: grab;
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
   }
 
   .zoom-controls {

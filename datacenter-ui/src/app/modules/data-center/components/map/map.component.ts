@@ -33,6 +33,7 @@ import {
   getClosestEdgeSnap,
   getClosestVertex,
 } from './wall-snap.utils';
+import { getRackSnapResult, RackRect } from './rack-snap.utils';
 
 @Component({
   selector: 'app-map',
@@ -50,6 +51,20 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     private router: Router,
   ) {}
   selectedTool: string = 'select';
+
+  // Rack snap / collision feedback
+  rackCreationBlocked = false;
+  rackSnapActive = false;
+  /** SVG-unit radius within which magnetic snap activates (scaled by 1/zoom at use-site) */
+  private readonly RACK_SNAP_RADIUS = 20;
+  /** Last known valid (non-overlapping) position while moving a rack */
+  private lastValidRackPos: { x: number; y: number } = { x: 0, y: 0 };
+
+  // Free-rotation drag state
+  rotatingElementId: string | null = null;
+  private rotateDragStartAngle = 0;  // atan2 of cursor relative to rack centre at drag start
+  private rotateDragStartRot = 0;    // el.rotation at drag start (degrees)
+  private rotateDragCenter: { x: number; y: number } | null = null;
 
   elements: MapElement[] = [];
 
@@ -483,6 +498,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.vertexSnapPoint = null;
     this.edgeSnapPoint = null;
     this.hoveredVertex = null;
+    this.rackCreationBlocked = false;
+    this.rackSnapActive = false;
+    this.rotatingElementId = null;
+    this.rotateDragCenter = null;
   }
 
   getSvgPoint(event: MouseEvent): { x: number; y: number } {
@@ -555,6 +574,61 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.rooms = restoreRoomNames(_computeRooms(this.elements), this.rooms);
   }
 
+  /** Returns the axis-aligned bounding box of all rack elements, optionally
+   *  excluding one by id. Handles any rotation angle with the standard
+   *  AABB formula: ew = |w·cos θ| + |h·sin θ|, eh = |w·sin θ| + |h·cos θ|.
+   */
+  private getRackRects(excludeId?: string): RackRect[] {
+    return this.elements
+      .filter((el) => el.type === 'rack' && el.id !== excludeId)
+      .map((el) => {
+        const w = el.width ?? 0;
+        const h = el.height ?? 0;
+        const rad = ((el.rotation ?? 0) * Math.PI) / 180;
+        const cos = Math.abs(Math.cos(rad));
+        const sin = Math.abs(Math.sin(rad));
+        const ew = w * cos + h * sin;
+        const eh = w * sin + h * cos;
+        const cx = el.x + w / 2;
+        const cy = el.y + h / 2;
+        return { x: cx - ew / 2, y: cy - eh / 2, width: ew, height: eh };
+      });
+  }
+
+  /** SVG rotate transform string for a rack element (empty string when rotation is 0). */
+  getRackTransform(el: MapElement): string {
+    const rot = el.rotation ?? 0;
+    if (rot === 0) return '';
+    const cx = el.x + (el.width ?? 0) / 2;
+    const cy = el.y + (el.height ?? 0) / 2;
+    return `rotate(${rot},${cx},${cy})`;
+  }
+
+  /**
+   * Starts a free-rotation drag when the user presses the rotation handle.
+   * Rotation follows the cursor angle relative to the rack centre.
+   * Hold Shift to snap to 15° increments.
+   */
+  onRotateHandleMouseDown(event: MouseEvent, el: MapElement): void {
+    event.stopPropagation();
+    event.preventDefault();
+    const point = this.getSvgPoint(event);
+    const cx = el.x + (el.width ?? 0) / 2;
+    const cy = el.y + (el.height ?? 0) / 2;
+    this.rotatingElementId = el.id;
+    this.rotateDragStartAngle = Math.atan2(point.y - cy, point.x - cx);
+    this.rotateDragStartRot = el.rotation ?? 0;
+    this.rotateDragCenter = { x: cx, y: cy };
+  }
+
+  /** Rotate 90° CW (keyboard shortcut R). */
+  rotateRack(el: MapElement): void {
+    el.rotation = ((el.rotation ?? 0) + 90) % 360;
+    this.elements = [...this.elements];
+    this.scheduleAutosave();
+    this.cdr.markForCheck();
+  }
+
   onMouseDown(event: MouseEvent) {
     // Middle mouse button OR left button in select mode on empty background → pan
     const isMiddle = event.button === 1;
@@ -608,7 +682,30 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
 
-      // 2. Check Wall Body Click (Lower Priority) → move ALL elements together
+      // 2. Check Rack Body Click → move just that rack
+      for (const el of this.elements) {
+        if (el.type === 'rack') {
+          const rx = el.x;
+          const ry = el.y;
+          const rw = el.width ?? 0;
+          const rh = el.height ?? 0;
+          if (
+            point.x >= rx &&
+            point.x <= rx + rw &&
+            point.y >= ry &&
+            point.y <= ry + rh
+          ) {
+            this.movingElementId = el.id;
+            this.lastMousePosition = point;
+            this.lastValidRackPos = { x: el.x, y: el.y };
+            this.rackSnapActive = false;
+            this.isDrawing = true;
+            return;
+          }
+        }
+      }
+
+      // 3. Check Wall Body Click (Lower Priority) → move ALL elements together
       for (const el of this.elements) {
         if (el.type === 'wall' && el.points && el.points.length > 1) {
           for (let i = 0; i < el.points.length - 1; i++) {
@@ -759,6 +856,27 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     let point = this.getSvgPoint(event);
 
+    // Free rotation drag
+    if (this.rotatingElementId && this.rotateDragCenter) {
+      const el = this.elements.find((e) => e.id === this.rotatingElementId);
+      if (el) {
+        const currentAngle = Math.atan2(
+          point.y - this.rotateDragCenter.y,
+          point.x - this.rotateDragCenter.x,
+        );
+        let newRot =
+          this.rotateDragStartRot +
+          ((currentAngle - this.rotateDragStartAngle) * 180) / Math.PI;
+        // Shift: snap to 15° increments
+        if (event.shiftKey) {
+          newRot = Math.round(newRot / 15) * 15;
+        }
+        el.rotation = newRot;
+        this.cdr.markForCheck();
+      }
+      return;
+    }
+
     // Clear snap indicator when not dragging a vertex
     if (
       !(this.selectedTool === 'move' && this.isDrawing && this.selectedVertex)
@@ -818,6 +936,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (el && el.points) {
           el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
           this.updateWallDerived(el);
+        } else if (el && el.type === 'rack') {
+          // Rack movement: apply magnetic snap (Shift) and collision check
+          const proposedX = el.x + dx;
+          const proposedY = el.y + dy;
+          const others = this.getRackRects(el.id);
+          const snapRadius = event.shiftKey ? this.RACK_SNAP_RADIUS / this.zoom : 0;
+          const result = getRackSnapResult(
+            { x: proposedX, y: proposedY, width: el.width ?? 0, height: el.height ?? 0 },
+            others,
+            snapRadius,
+          );
+          if (!result.blocked) {
+            el.x = result.x;
+            el.y = result.y;
+            this.lastValidRackPos = { x: el.x, y: el.y };
+            this.rackSnapActive = result.snapped;
+          }
+          // If blocked, keep rack at last valid position (no-op)
         }
       }
       this.lastMousePosition = point;
@@ -1036,11 +1172,25 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     } else if (this.currentElement.type === 'rack') {
       const width = point.x - this.startPoint.x;
       const height = point.y - this.startPoint.y;
+      const rawX = width < 0 ? point.x : this.startPoint.x;
+      const rawY = height < 0 ? point.y : this.startPoint.y;
+      const rawW = Math.abs(width);
+      const rawH = Math.abs(height);
 
-      this.currentElement.x = width < 0 ? point.x : this.startPoint.x;
-      this.currentElement.y = height < 0 ? point.y : this.startPoint.y;
-      this.currentElement.width = Math.abs(width);
-      this.currentElement.height = Math.abs(height);
+      // Apply magnetic snap (Shift) and collision check
+      const others = this.getRackRects();
+      const snapRadius = event.shiftKey ? this.RACK_SNAP_RADIUS / this.zoom : 0;
+      const snapResult = getRackSnapResult(
+        { x: rawX, y: rawY, width: rawW, height: rawH },
+        others,
+        snapRadius,
+      );
+      this.currentElement.x = snapResult.x;
+      this.currentElement.y = snapResult.y;
+      this.currentElement.width = rawW;
+      this.currentElement.height = rawH;
+      this.rackSnapActive = snapResult.snapped;
+      this.rackCreationBlocked = snapResult.blocked;
     }
   }
 
@@ -1048,6 +1198,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (this.isPanning) {
       this.isPanning = false;
       this.panDragStart = null;
+      return;
+    }
+
+    // Finish free rotation drag
+    if (this.rotatingElementId) {
+      this.rotatingElementId = null;
+      this.rotateDragCenter = null;
+      this.elements = [...this.elements];
+      this.scheduleAutosave();
       return;
     }
 
@@ -1075,6 +1234,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.movingElementId = null;
       this.lastMousePosition = null;
       this.snapTargetVertex = null;
+      this.rackSnapActive = false;
       this.rederiveAllWalls();
       this.scheduleAutosave();
       return;
@@ -1089,6 +1249,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // For other tools (drag to create)
     if (this.currentElement) {
       if (this.currentElement.type === 'rack') {
+        // Enforce minimum size (default if drag was too tiny)
         if (
           (this.currentElement.width || 0) < 10 ||
           (this.currentElement.height || 0) < 10
@@ -1097,6 +1258,31 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           this.currentElement.height = 100;
           this.currentElement.x = this.startPoint!.x - 30;
           this.currentElement.y = this.startPoint!.y - 50;
+          // Re-run snap on the default-size rect
+          const others = this.getRackRects();
+          const snapRadius = event.shiftKey ? this.RACK_SNAP_RADIUS / this.zoom : 0;
+          const snapResult = getRackSnapResult(
+            {
+              x: this.currentElement.x,
+              y: this.currentElement.y,
+              width: this.currentElement.width,
+              height: this.currentElement.height,
+            },
+            others,
+            snapRadius,
+          );
+          this.currentElement.x = snapResult.x;
+          this.currentElement.y = snapResult.y;
+          this.rackCreationBlocked = snapResult.blocked;
+        }
+        // Abort placement if overlapping another rack
+        if (this.rackCreationBlocked) {
+          this.isDrawing = false;
+          this.currentElement = null;
+          this.startPoint = null;
+          this.rackCreationBlocked = false;
+          this.rackSnapActive = false;
+          return;
         }
       }
       this.elements.push(this.currentElement);
@@ -1105,6 +1291,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.isDrawing = false;
     this.currentElement = null;
     this.startPoint = null;
+    this.rackCreationBlocked = false;
+    this.rackSnapActive = false;
     this.scheduleAutosave();
   }
 
@@ -1214,7 +1402,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onElementClick(event: MouseEvent, element: MapElement) {
-    if (this.selectedTool === 'select') {
+    if (
+      this.selectedTool === 'select' ||
+      (this.selectedTool === 'move' && element.type === 'rack')
+    ) {
       event.stopPropagation();
       this.selectedSegment = null;
       this.selectedElementId = element.id;
@@ -1320,6 +1511,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.isDrawing
     ) {
       this.finishPolyline();
+    }
+
+    // R → rotate selected rack 90° CW (works in both select and move mode)
+    if (event.key === 'r' || event.key === 'R') {
+      if (!event.ctrlKey && !event.metaKey && this.selectedElementId) {
+        const el = this.elements.find(
+          (e) => e.id === this.selectedElementId && e.type === 'rack',
+        );
+        if (el) {
+          event.preventDefault();
+          this.rotateRack(el);
+        }
+      }
     }
   }
 }
