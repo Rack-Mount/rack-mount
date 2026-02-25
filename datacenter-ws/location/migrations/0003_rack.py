@@ -14,11 +14,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Rack',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('capacity', models.IntegerField()),
                 ('occupied_units', models.IntegerField(default=0)),
-                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='racks', to='location.location')),
+                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                 related_name='racks', to='location.location')),
             ],
             options={
                 'verbose_name': 'Rack',

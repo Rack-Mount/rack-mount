@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='rack',
             name='model',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='location.racktype'),
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.CASCADE, to='location.racktype'),
             preserve_default=False,
         ),
     ]

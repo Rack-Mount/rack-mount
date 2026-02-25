@@ -15,23 +15,27 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Location',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('short_name', models.CharField(max_length=15, unique=True)),
                 ('location', models.CharField(max_length=100)),
                 ('capacity', models.PositiveIntegerField(default=0)),
                 ('operational_since', models.DateTimeField(auto_now_add=True)),
                 ('manager', models.CharField(blank=True, max_length=100)),
-                ('manager_mail', models.EmailField(blank=True, max_length=254, null=True)),
+                ('manager_mail', models.EmailField(
+                    blank=True, max_length=254, null=True)),
             ],
         ),
         migrations.CreateModel(
             name='LocationCustomField',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('field_name', models.CharField(max_length=100)),
                 ('field_value', models.CharField(blank=True, max_length=255)),
-                ('location', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='custom_fields', to='location.location')),
+                ('location', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='custom_fields', to='location.location')),
             ],
         ),
     ]

@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RackType',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('model', models.CharField(max_length=255)),
                 ('width', models.PositiveIntegerField()),
                 ('height', models.PositiveIntegerField()),
@@ -29,11 +30,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Rack',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('description', models.TextField(blank=True)),
-                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='location.location')),
-                ('model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='asset.racktype')),
+                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                 related_name='locations', to='location.location')),
+                ('model', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='asset.racktype')),
             ],
             options={
                 'verbose_name': 'Rack',

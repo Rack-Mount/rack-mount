@@ -24,11 +24,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='locationcustomfield',
             name='location',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='custom_fields', to='location.location'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='custom_fields', to='location.location'),
         ),
         migrations.AlterField(
             model_name='room',
             name='location',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to='location.location'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to='location.location'),
         ),
     ]
