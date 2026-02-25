@@ -95,6 +95,10 @@ export class MapComponent implements AfterViewInit {
   // Detected rooms (enclosed faces in the wall planar graph)
   rooms: Room[] = [];
 
+  // Room name persistence: key = "${roundedCx}_${roundedCy}"
+  editingRoomIndex: number | null = null;
+  editingRoomName = '';
+
   private gridRafId: number | null = null;
 
   // Debounced grid update: at most once per animation frame
@@ -142,6 +146,7 @@ export class MapComponent implements AfterViewInit {
   }
 
   @ViewChild('svgContainer') svgContainer!: ElementRef<SVGSVGElement>;
+  @ViewChild('activeRoomInput') activeRoomInputRef?: ElementRef<HTMLInputElement>;
 
   ngAfterViewInit(): void {
     // Must use passive:false to call preventDefault() on wheel
@@ -427,9 +432,54 @@ export class MapComponent implements AfterViewInit {
     this.scheduleUpdateGrid();
   }
 
-  // Delegates to wall-graph.utils
+  // Delegates to wall-graph.utils; restores persisted names by matching new rooms to old
+  // by nearest centroid — robust against vertex moves that shift centroids slightly.
   private computeRooms(): Room[] {
-    return _computeRooms(this.elements);
+    const computed = _computeRooms(this.elements);
+    const previous = this.rooms ?? [];
+    const namedOld = previous.filter((r) => r.name);
+
+    for (const r of computed) {
+      // Find the closest old named room by centroid distance
+      let bestDist = Infinity;
+      let bestName: string | undefined;
+      for (const old of namedOld) {
+        const dx = r.cx - old.cx;
+        const dy = r.cy - old.cy;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        // Accept the match if the centroid shift is within ~80% of the old room radius
+        const threshold = Math.sqrt(old.area) * 0.8;
+        if (d < bestDist && d < threshold) {
+          bestDist = d;
+          bestName = old.name;
+        }
+      }
+      if (bestName !== undefined) r.name = bestName;
+    }
+    return computed;
+  }
+
+  confirmEditRoom(): void {
+    if (this.editingRoomIndex === null) return;
+    const room = this.rooms[this.editingRoomIndex];
+    const newName = this.editingRoomName.trim();
+    room.name = newName || undefined;
+    this.editingRoomIndex = null;
+  }
+
+  startEditRoom(index: number, event: MouseEvent): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.editingRoomIndex = index;
+    this.editingRoomName = this.rooms[index]?.name ?? '';
+    setTimeout(() => {
+      this.activeRoomInputRef?.nativeElement.focus();
+      this.activeRoomInputRef?.nativeElement.select();
+    }, 0);
+  }
+
+  cancelEditRoom(): void {
+    this.editingRoomIndex = null;
   }
 
   onToolChange(toolId: string) {

@@ -21,6 +21,7 @@ export interface Room {
   area: number;
   cx: number;
   cy: number;
+  name?: string;
 }
 
 export interface SnapTarget {

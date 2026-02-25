@@ -183,46 +183,89 @@
 
         <!-- Room area labels (planar face detection) -->
         @for (room of rooms; track $index) {
-          <rect
-            [attr.x]="room.cx - 40 / zoom"
-            [attr.y]="room.cy - 16 / zoom"
-            [attr.width]="80 / zoom"
-            [attr.height]="32 / zoom"
-            fill="white"
-            fill-opacity="0.88"
-            stroke="#0066cc"
-            [attr.stroke-width]="0.8 / zoom"
-            [attr.rx]="5 / zoom"
-            pointer-events="none"
-          />
-          <text
-            [attr.x]="room.cx"
-            [attr.y]="room.cy - 7 / zoom"
-            text-anchor="middle"
-            dominant-baseline="middle"
-            fill="#0066cc"
-            [attr.font-size]="13 / zoom + 'px'"
-            font-family="monospace"
-            font-weight="bold"
-            pointer-events="none"
-            style="user-select: none"
-          >
-            {{ room.area / 10000 | number: "1.0-2" }} m²
-          </text>
-          <text
-            [attr.x]="room.cx"
-            [attr.y]="room.cy + 7 / zoom"
-            text-anchor="middle"
-            dominant-baseline="middle"
-            fill="#0066cc"
-            [attr.font-size]="10 / zoom + 'px'"
-            font-family="monospace"
-            pointer-events="none"
-            style="user-select: none"
-            opacity="0.65"
-          >
-            stanza
-          </text>
+          <g [style.cursor]="selectedTool === 'move' ? 'pointer' : 'default'">
+            <rect
+              [attr.x]="room.cx - 40 / zoom"
+              [attr.y]="room.cy - 16 / zoom"
+              [attr.width]="80 / zoom"
+              [attr.height]="32 / zoom"
+              fill="white"
+              fill-opacity="0.88"
+              stroke="#0066cc"
+              [attr.stroke-width]="0.8 / zoom"
+              [attr.rx]="5 / zoom"
+              [attr.pointer-events]="selectedTool === 'move' ? 'all' : 'none'"
+              (dblclick)="startEditRoom($index, $event)"
+            />
+            @if (editingRoomIndex !== $index) {
+              <text
+                [attr.x]="room.cx"
+                [attr.y]="room.cy - 7 / zoom"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                fill="#0066cc"
+                [attr.font-size]="13 / zoom + 'px'"
+                font-family="monospace"
+                font-weight="bold"
+                pointer-events="none"
+                style="user-select: none"
+              >
+                {{ room.area / 10000 | number: "1.0-2" }} m²
+              </text>
+              <text
+                [attr.x]="room.cx"
+                [attr.y]="room.cy + 7 / zoom"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                fill="#0066cc"
+                [attr.font-size]="10 / zoom + 'px'"
+                font-family="monospace"
+                pointer-events="none"
+                style="user-select: none"
+                opacity="0.65"
+              >
+                {{ room.name || "stanza" }}
+              </text>
+            }
+            @if (editingRoomIndex === $index) {
+              <text
+                [attr.x]="room.cx"
+                [attr.y]="room.cy - 7 / zoom"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                fill="#0066cc"
+                [attr.font-size]="13 / zoom + 'px'"
+                font-family="monospace"
+                font-weight="bold"
+                pointer-events="none"
+                style="user-select: none"
+              >
+                {{ room.area / 10000 | number: "1.0-2" }} m²
+              </text>
+              <foreignObject
+                [attr.x]="room.cx - 38 / zoom"
+                [attr.y]="room.cy + 1 / zoom"
+                [attr.width]="76 / zoom"
+                [attr.height]="16 / zoom"
+              >
+                <div
+                  xmlns="http://www.w3.org/1999/xhtml"
+                  style="width:100%;height:100%;display:flex;align-items:center;"
+                >
+                  <input
+                    #activeRoomInput
+                    type="text"
+                    [value]="editingRoomName"
+                    (input)="editingRoomName = $any($event.target).value"
+                    (keydown.enter)="confirmEditRoom()"
+                    (keydown.escape)="cancelEditRoom()"
+                    (blur)="confirmEditRoom()"
+                    style="width:100%;border:none;border-bottom:1px solid #0066cc;outline:none;text-align:center;background:transparent;color:#0066cc;font-family:monospace;font-weight:bold;font-size:13px;padding:0;"
+                  />
+                </div>
+              </foreignObject>
+            }
+          </g>
         }
 
         <!-- Move Tool Indicators: Show all vertices as manipulatable dots when tool is active -->
