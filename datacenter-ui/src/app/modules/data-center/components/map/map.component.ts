@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
 import { LocationService } from '../../../core/api/v1/api/location.service';
@@ -45,6 +45,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private locationService: LocationService,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
   selectedTool: string = 'select';
 
@@ -255,9 +256,11 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.selectedRoomId = null;
       this.elements = [];
       this.rederiveAllWalls();
+      this.router.navigate(['/map']);
       return;
     }
     this.selectedRoomId = id;
+    this.router.navigate(['/map', id]);
     this.locationService.locationRoomRetrieve({ id }).subscribe({
       next: (room) => {
         this.elements = room.floor_plan_data
