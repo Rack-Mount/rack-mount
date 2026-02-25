@@ -1,5 +1,169 @@
 import { MapElement, Point, Room } from './map.types';
 
+// ─── Polylabel (pole of inaccessibility) ─────────────────────────────────────
+// Finds the interior point farthest from all polygon edges.
+// Used so labels never overlap walls, even in concave / L-shaped rooms.
+
+/** [cx, cy, halfSize, signedDist, upperBound] */
+type Cell = [number, number, number, number, number];
+const SQRT2 = Math.SQRT2;
+
+function signedDistToFace(
+  px: number,
+  py: number,
+  pts: Point[],
+  face: number[],
+): number {
+  let inside = false,
+    minD = Infinity;
+  for (let i = 0, j = face.length - 1; i < face.length; j = i++) {
+    const ax = pts[face[j]].x,
+      ay = pts[face[j]].y;
+    const bx = pts[face[i]].x,
+      by = pts[face[i]].y;
+    if (by > py !== ay > py && px < ((ax - bx) * (py - by)) / (ay - by) + bx)
+      inside = !inside;
+    const dx = bx - ax,
+      dy = by - ay;
+    const lenSq = dx * dx + dy * dy;
+    const t =
+      lenSq === 0
+        ? 0
+        : Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq));
+    const ex = px - ax - t * dx,
+      ey = py - ay - t * dy;
+    const d = Math.sqrt(ex * ex + ey * ey);
+    if (d < minD) minD = d;
+  }
+  return inside ? minD : -minD;
+}
+
+function makeCell(
+  cx: number,
+  cy: number,
+  h: number,
+  pts: Point[],
+  face: number[],
+): Cell {
+  const d = signedDistToFace(cx, cy, pts, face);
+  return [cx, cy, h, d, d + h * SQRT2];
+}
+
+function heapPush(heap: Cell[], cell: Cell): void {
+  heap.push(cell);
+  let i = heap.length - 1;
+  while (i > 0) {
+    const p = (i - 1) >> 1;
+    if (heap[p][4] >= heap[i][4]) break;
+    [heap[p], heap[i]] = [heap[i], heap[p]];
+    i = p;
+  }
+}
+
+function heapPop(heap: Cell[]): Cell {
+  const top = heap[0];
+  const last = heap.pop()!;
+  if (heap.length > 0) {
+    heap[0] = last;
+    let i = 0;
+    for (;;) {
+      const l = 2 * i + 1,
+        r = 2 * i + 2;
+      let best = i;
+      if (l < heap.length && heap[l][4] > heap[best][4]) best = l;
+      if (r < heap.length && heap[r][4] > heap[best][4]) best = r;
+      if (best === i) break;
+      [heap[i], heap[best]] = [heap[best], heap[i]];
+      i = best;
+    }
+  }
+  return top;
+}
+
+/**
+ * Mixed label placement:
+ * - Computes the geometric centroid (true visual center of the polygon).
+ * - Computes the polylabel result (point farthest from all walls).
+ * - Uses the centroid if it is already well inside (≥ 60% of the polylabel
+ *   clearance), so regular rooms get a perfectly centered label.
+ * - Falls back to polylabel for concave / L-shaped rooms where the centroid
+ *   would land on or too close to a wall.
+ */
+function labelPoint(
+  pts: Point[],
+  face: number[],
+  sa: number,
+): { cx: number; cy: number } {
+  // 1. Geometric centroid (shoelace formula)
+  let cxSum = 0,
+    cySum = 0;
+  for (let i = 0; i < face.length; i++) {
+    const j = (i + 1) % face.length;
+    const cross =
+      pts[face[i]].x * pts[face[j]].y - pts[face[j]].x * pts[face[i]].y;
+    cxSum += (pts[face[i]].x + pts[face[j]].x) * cross;
+    cySum += (pts[face[i]].y + pts[face[j]].y) * cross;
+  }
+  const gcx = cxSum / (6 * sa);
+  const gcy = cySum / (6 * sa);
+
+  // 2. Polylabel — find the point farthest from all edges
+  let minX = Infinity,
+    maxX = -Infinity,
+    minY = Infinity,
+    maxY = -Infinity;
+  for (const vi of face) {
+    if (pts[vi].x < minX) minX = pts[vi].x;
+    if (pts[vi].x > maxX) maxX = pts[vi].x;
+    if (pts[vi].y < minY) minY = pts[vi].y;
+    if (pts[vi].y > maxY) maxY = pts[vi].y;
+  }
+  const cellSize = Math.max(maxX - minX, maxY - minY);
+  if (cellSize === 0) return { cx: gcx, cy: gcy };
+
+  const heap: Cell[] = [];
+  let h = cellSize / 2;
+  for (let x = minX; x < maxX; x += cellSize)
+    for (let y = minY; y < maxY; y += cellSize)
+      heapPush(heap, makeCell(x + h, y + h, h, pts, face));
+
+  let bestD = -Infinity,
+    bestCx = (minX + maxX) / 2,
+    bestCy = (minY + maxY) / 2;
+  const seed = makeCell(bestCx, bestCy, 0, pts, face);
+  if (seed[3] > bestD) {
+    bestD = seed[3];
+    bestCx = seed[0];
+    bestCy = seed[1];
+  }
+
+  while (heap.length > 0) {
+    const cell = heapPop(heap);
+    if (cell[3] > bestD) {
+      bestD = cell[3];
+      bestCx = cell[0];
+      bestCy = cell[1];
+    }
+    if (cell[4] - bestD <= 1.0) continue;
+    const ch = cell[2] / 2;
+    heapPush(heap, makeCell(cell[0] - ch, cell[1] - ch, ch, pts, face));
+    heapPush(heap, makeCell(cell[0] + ch, cell[1] - ch, ch, pts, face));
+    heapPush(heap, makeCell(cell[0] - ch, cell[1] + ch, ch, pts, face));
+    heapPush(heap, makeCell(cell[0] + ch, cell[1] + ch, ch, pts, face));
+  }
+  // bestD = max clearance from walls (polylabel result)
+
+  // 3. Check centroid clearance
+  const centDist = signedDistToFace(gcx, gcy, pts, face);
+
+  // Use centroid if it's within 60% of the optimal clearance — keeps labels
+  // visually centered for regular rooms, defers to polylabel for L/concave rooms.
+  if (centDist >= bestD * 0.6) {
+    return { cx: gcx, cy: gcy };
+  }
+  return { cx: bestCx, cy: bestCy };
+}
+
 // ─── Planar graph face traversal ─────────────────────────────────────────────
 
 /**
@@ -125,18 +289,7 @@ export function computeRooms(elements: MapElement[]): Room[] {
       }
       sa /= 2;
       if (sa <= 0) continue; // outer face in screen coords (Y↓)
-      // Geometric centroid of the polygon (area-weighted, standard shoelace formula)
-      let cxSum = 0,
-        cySum = 0;
-      for (let i = 0; i < face.length; i++) {
-        const j = (i + 1) % face.length;
-        const cross =
-          pts[face[i]].x * pts[face[j]].y - pts[face[j]].x * pts[face[i]].y;
-        cxSum += (pts[face[i]].x + pts[face[j]].x) * cross;
-        cySum += (pts[face[i]].y + pts[face[j]].y) * cross;
-      }
-      const cx = cxSum / (6 * sa);
-      const cy = cySum / (6 * sa);
+      const { cx, cy } = labelPoint(pts, face, sa);
       rooms.push({ area: sa, cx, cy });
     }
   }
