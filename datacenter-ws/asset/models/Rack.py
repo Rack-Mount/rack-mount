@@ -12,7 +12,7 @@ class Rack(models.Model):
     Attributes:
         name (str): The name of the rack.
         model (ForeignKey): A foreign key to the RackType model.
-        location (ForeignKey): A foreign key to the Location model, can be null.
+        location (ForeignKey): A foreign key to the Location model, set to null if the location is deleted.
         description (str): A text field for additional description of the rack.
         created_at (datetime): The date and time when the rack was created.
         updated_at (datetime): The date and time when the rack was last updated.
@@ -30,7 +30,7 @@ class Rack(models.Model):
     name = models.CharField(max_length=100)
     model = models.ForeignKey(RackType, on_delete=models.CASCADE, null=False)
     location = models.ForeignKey(
-        Location, on_delete=models.CASCADE, related_name='locations', null=True)
+        Location, on_delete=models.SET_NULL, related_name='locations', null=True)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

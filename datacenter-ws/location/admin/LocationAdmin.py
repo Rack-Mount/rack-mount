@@ -26,9 +26,5 @@ class LocationAdmin(VersionAdmin):
     ordering = ('name',)
     inlines = [LocationCustomFieldInline, RoomInline]
 
-    def has_delete_permission(self, request, obj=None):
-        # Disable delete
-        return False
-
     def has_change_permission(self, request, obj=...):
         return True
