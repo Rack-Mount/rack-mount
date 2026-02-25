@@ -2,6 +2,13 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: '',
+    loadComponent: () =>
+      import('./modules/core/components/home/home.component').then(
+        (m) => m.HomeComponent,
+      ),
+  },
+  {
     path: 'rack/:id',
     loadComponent: () =>
       import('./modules/data-center/components/rack/rack.component').then(
