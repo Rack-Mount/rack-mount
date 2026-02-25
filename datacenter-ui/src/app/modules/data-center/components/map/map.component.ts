@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
 import { LocationService } from '../../../core/api/v1/api/location.service';
+import { Location as DjLocation } from '../../../core/api/v1/model/location';
 import { Room as DjRoom } from '../../../core/api/v1/model/room';
 import { dist, distToSegment } from './map-geometry.utils';
 import {
@@ -47,7 +48,10 @@ export class MapComponent implements AfterViewInit {
   elements: MapElement[] = [];
 
   // Floor plan persistence
+  availableLocations: DjLocation[] = [];
   availableRooms: DjRoom[] = [];
+  filteredRooms: DjRoom[] = [];
+  selectedLocationId: number | null = null;
   selectedRoomId: number | null = null;
   saveStatus: 'idle' | 'saving' | 'saved' | 'error' = 'idle';
   private saveStatusTimer: ReturnType<typeof setTimeout> | null = null;
@@ -191,17 +195,31 @@ export class MapComponent implements AfterViewInit {
     window.addEventListener('resize', () => this.scheduleUpdateGrid());
 
     // Load available rooms for floor plan selector
-    this.loadRooms();
+    this.loadLocations();
   }
 
-  loadRooms(): void {
-    this.locationService.locationRoomList().subscribe({
+  loadLocations(): void {
+    this.locationService.locationLocationList({}).subscribe({
       next: (data) => {
-        this.availableRooms = data.results ?? [];
+        this.availableLocations = data.results ?? [];
         this.cdr.markForCheck();
       },
-      error: (err) => console.error('Failed to load rooms', err),
+      error: (err) => console.error('Failed to load locations', err),
     });
+  }
+
+  onLocationSelect(id: number): void {
+    this.selectedLocationId = id || null;
+    this.selectedRoomId = null;
+    this.elements = [];
+    this.rederiveAllWalls();
+    if (id) {
+      const loc = this.availableLocations.find((l) => l.id === id);
+      this.filteredRooms = loc?.rooms ?? [];
+    } else {
+      this.filteredRooms = [];
+    }
+    this.cdr.markForCheck();
   }
 
   onRoomSelect(id: number): void {

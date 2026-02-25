@@ -7,13 +7,24 @@
   <div class="map-content">
     <!-- Floor plan toolbar -->
     <div class="floor-plan-toolbar">
-      <label for="room-select">Planimetria:</label>
+      <label for="location-select">Location:</label>
+      <select
+        id="location-select"
+        (change)="onLocationSelect(+$any($event.target).value)"
+      >
+        <option value="0">-- Seleziona Location --</option>
+        @for (loc of availableLocations; track loc.id) {
+          <option [value]="loc.id">{{ loc.name }}</option>
+        }
+      </select>
+      <label for="room-select">Room:</label>
       <select
         id="room-select"
+        [disabled]="!selectedLocationId"
         (change)="onRoomSelect(+$any($event.target).value)"
       >
         <option value="0">-- Seleziona Room --</option>
-        @for (room of availableRooms; track room.id) {
+        @for (room of filteredRooms; track room.id) {
           <option [value]="room.id">{{ room.name }}</option>
         }
       </select>
