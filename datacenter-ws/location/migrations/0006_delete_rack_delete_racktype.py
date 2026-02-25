@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('asset', '0029_racktype_remove_asset_rack_rack'),
-        ('datacenter', '0005_rack_model'),
+        ('location', '0005_rack_model'),
     ]
 
     operations = [

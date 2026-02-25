@@ -43,3 +43,4 @@ class Location(models.Model):
         ordering = ['name']
         verbose_name = 'Location'
         verbose_name_plural = 'Locations'
+        db_table = 'datacenter_location'

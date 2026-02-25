@@ -17,7 +17,7 @@ Including another URLconf
 from .permissions import AccessListPermission
 from django.conf.urls.static import static
 from django.conf import settings
-from datacenter import urls as dc_urls
+from location import urls as dc_urls
 from asset import urls as asset_urls
 from rest_framework import permissions
 from rest_framework.schemas import get_schema_view

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from datacenter.models import LocationCustomField
+from location.models import LocationCustomField
 
 
 class LocationCustomFieldInline(admin.TabularInline):

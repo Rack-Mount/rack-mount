@@ -1,5 +1,5 @@
 from django.db import models
-from datacenter.models.Location import Location
+from location.models.Location import Location
 from asset.models import RackType
 import reversion
 

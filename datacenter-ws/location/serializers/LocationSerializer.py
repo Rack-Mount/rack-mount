@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from datacenter.models import Location
-from datacenter.serializers import LocationCustomFieldSerializer
+from location.models import Location
+from location.serializers import LocationCustomFieldSerializer
+from location.serializers.RoomSerializer import RoomSerializer
 
 
 class LocationSerializer(serializers.HyperlinkedModelSerializer):
@@ -11,6 +12,7 @@ class LocationSerializer(serializers.HyperlinkedModelSerializer):
         id (IntegerField): Read-only field for the unique identifier of the location.
         url (HyperlinkedIdentityField): Read-only field for the URL of the location detail view.
         custom_fields (LocationCustomFieldSerializer): Read-only field for the custom fields associated with the location.
+        rooms (RoomSerializer): Read-only nested list of rooms belonging to this location.
 
     Meta:
         model (Location): The model that is being serialized.
@@ -21,6 +23,7 @@ class LocationSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True, view_name='location-detail')
     custom_fields = LocationCustomFieldSerializer(
         many=True, read_only=True)
+    rooms = RoomSerializer(many=True, read_only=True)
 
     class Meta:
         model = Location

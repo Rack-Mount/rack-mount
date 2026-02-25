@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('datacenter', '0001_initial'),
+        ('location', '0001_initial'),
     ]
 
     operations = [
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('purchase_date', models.DateField()),
                 ('value', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('location', models.CharField(max_length=100)),
-                ('datacenter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='assets', to='datacenter.location')),
+                ('datacenter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='assets', to='location.location')),
             ],
         ),
     ]

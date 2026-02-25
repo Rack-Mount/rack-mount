@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('asset', '0028_asset_rack'),
-        ('datacenter', '0005_rack_model'),
+        ('location', '0005_rack_model'),
     ]
 
     operations = [
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('description', models.TextField(blank=True)),
-                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='datacenter.location')),
+                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='locations', to='location.location')),
                 ('model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='asset.racktype')),
             ],
             options={

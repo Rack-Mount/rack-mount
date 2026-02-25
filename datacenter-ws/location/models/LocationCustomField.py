@@ -1,5 +1,5 @@
 from django.db import models
-from datacenter.models import Location
+from location.models import Location
 
 
 class LocationCustomField(models.Model):

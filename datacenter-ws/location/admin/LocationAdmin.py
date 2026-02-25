@@ -1,8 +1,9 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from datacenter.admin import LocationCustomFieldInline
-from datacenter.models import Location
+from location.admin import LocationCustomFieldInline
+from location.admin.RoomAdmin import RoomInline
+from location.models import Location
 
 
 @admin.register(Location)
@@ -26,7 +27,7 @@ class LocationAdmin(VersionAdmin):
     search_fields = ['name', 'location']
     readonly_fields = ['operational_since']
     ordering = ('name',)
-    inlines = [LocationCustomFieldInline]
+    inlines = [LocationCustomFieldInline, RoomInline]
 
     def has_delete_permission(self, request, obj=None):
         # Disable delete

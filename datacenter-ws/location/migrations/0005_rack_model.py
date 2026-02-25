@@ -7,14 +7,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datacenter', '0004_racktype_remove_rack_capacity_and_more'),
+        ('location', '0004_racktype_remove_rack_capacity_and_more'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='rack',
             name='model',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='datacenter.racktype'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='location.racktype'),
             preserve_default=False,
         ),
     ]

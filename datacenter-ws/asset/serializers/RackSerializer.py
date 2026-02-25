@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from asset.models import Rack
 from asset.serializers import RackTypeSerializer
-from datacenter.serializers import LocationSerializer
+from location.serializers import LocationSerializer
 
 
 class RackSerializer(serializers.HyperlinkedModelSerializer):

@@ -1,5 +1,5 @@
 from django.db import models
-from datacenter.models import Location
+from location.models import Location
 from asset.models import AssetModel, AssetState
 import reversion
 from django.utils.html import mark_safe

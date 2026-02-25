@@ -8,13 +8,13 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('asset', '0027_assetmodel_front_image_assetmodel_rear_image_and_more'),
-        ('datacenter', '0003_rack'),
+        ('location', '0003_rack'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='asset',
             name='rack',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='racks', to='datacenter.rack'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='racks', to='location.rack'),
         ),
     ]

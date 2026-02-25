@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datacenter', '0003_rack'),
+        ('location', '0003_rack'),
     ]
 
     operations = [
@@ -39,6 +39,6 @@ class Migration(migrations.Migration):
             model_name='rack',
             name='location',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
-                                    related_name='locations', to='datacenter.location'),
+                                    related_name='locations', to='location.location'),
         ),
     ]

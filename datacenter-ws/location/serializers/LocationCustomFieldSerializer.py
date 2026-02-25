@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from datacenter.models import LocationCustomField
+from location.models import LocationCustomField
 
 
 class LocationCustomFieldSerializer(serializers.HyperlinkedModelSerializer):
