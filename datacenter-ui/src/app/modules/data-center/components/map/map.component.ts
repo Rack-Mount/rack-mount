@@ -55,6 +55,8 @@ export class MapComponent implements AfterViewInit {
   selectedRoomId: number | null = null;
   saveStatus: 'idle' | 'saving' | 'saved' | 'error' = 'idle';
   private saveStatusTimer: ReturnType<typeof setTimeout> | null = null;
+  autosave = false;
+  private autosaveTimer: ReturnType<typeof setTimeout> | null = null;
 
   isDrawing = false;
   currentElement: MapElement | null = null;
@@ -269,6 +271,14 @@ export class MapComponent implements AfterViewInit {
       this.saveStatus = 'idle';
       this.cdr.markForCheck();
     }, 3000);
+  }
+
+  private scheduleAutosave(): void {
+    if (!this.autosave || this.selectedRoomId == null) return;
+    if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
+    this.autosaveTimer = setTimeout(() => {
+      this.saveFloorPlan();
+    }, 2000);
   }
 
   get polylinePreviewPoints(): string {
@@ -1023,6 +1033,7 @@ export class MapComponent implements AfterViewInit {
       this.lastMousePosition = null;
       this.snapTargetVertex = null;
       this.rederiveAllWalls();
+      this.scheduleAutosave();
       return;
     }
 
@@ -1051,6 +1062,7 @@ export class MapComponent implements AfterViewInit {
     this.isDrawing = false;
     this.currentElement = null;
     this.startPoint = null;
+    this.scheduleAutosave();
   }
 
   // Explicitly finish polyline (e.g. invalid double click, or ESC key)
@@ -1068,6 +1080,7 @@ export class MapComponent implements AfterViewInit {
       this.elements.push(newEl);
     }
     this.rederiveAllWalls();
+    this.scheduleAutosave();
     this.cancelDrawing();
   }
 
@@ -1110,6 +1123,7 @@ export class MapComponent implements AfterViewInit {
           this.updateWallDerived(newEl);
           this.elements = [...this.elements, newEl];
           this.rederiveAllWalls();
+          this.scheduleAutosave();
           event.stopPropagation();
           return;
         }
@@ -1117,6 +1131,7 @@ export class MapComponent implements AfterViewInit {
         this.updateWallDerived(el);
         this.elements = [...this.elements];
         this.rederiveAllWalls();
+        this.scheduleAutosave();
         event.stopPropagation();
         return;
       }
@@ -1145,6 +1160,7 @@ export class MapComponent implements AfterViewInit {
             el.points = newPoints;
             this.updateWallDerived(el);
             this.elements = [...this.elements];
+            this.scheduleAutosave();
             event.stopPropagation();
             return;
           }
@@ -1187,6 +1203,7 @@ export class MapComponent implements AfterViewInit {
           this.updateWallDerived(el);
           this.elements = [...this.elements];
           this.rederiveAllWalls();
+          this.scheduleAutosave();
           this.hoveredVertex = null;
         }
         return;
@@ -1198,6 +1215,7 @@ export class MapComponent implements AfterViewInit {
         );
         this.selectedElementId = null;
         this.rederiveAllWalls();
+        this.scheduleAutosave();
       }
     }
 

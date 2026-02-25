@@ -41,6 +41,10 @@
       @if (saveStatus === "error") {
         <span class="save-feedback save-err">✗ Errore nel salvataggio</span>
       }
+      <label class="autosave-toggle">
+        <input type="checkbox" [(ngModel)]="autosave" />
+        Autosalvataggio
+      </label>
     </div>
     <svg
       #svgContainer
