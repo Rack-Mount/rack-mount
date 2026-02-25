@@ -91,7 +91,11 @@
               <ng-container>
                 <!-- Per-segment transparent hit zones in move mode -->
                 @if (selectedTool === "move") {
-                  @for (_ of el.points.slice(0, el.points.length - 1); track $index; let i = $index) {
+                  @for (
+                    _ of el.points.slice(0, el.points.length - 1);
+                    track $index;
+                    let i = $index
+                  ) {
                     <line
                       [attr.x1]="el.points[i].x"
                       [attr.y1]="el.points[i].y"
@@ -192,8 +196,10 @@
               <ng-container>
                 @if (selectedTool === "select") {
                   <line
-                    [attr.x1]="el.x" [attr.y1]="el.y"
-                    [attr.x2]="el.x2" [attr.y2]="el.y2"
+                    [attr.x1]="el.x"
+                    [attr.y1]="el.y"
+                    [attr.x2]="el.x2"
+                    [attr.y2]="el.y2"
                     stroke="transparent"
                     [attr.stroke-width]="16 / zoom"
                     style="cursor: pointer"
@@ -205,8 +211,12 @@
                   [attr.y1]="el.y"
                   [attr.x2]="el.x2"
                   [attr.y2]="el.y2"
-                  [attr.stroke]="selectedElementId === el.id ? '#007bff' : 'black'"
-                  [attr.stroke-width]="selectedElementId === el.id ? 6 / zoom : 4 / zoom"
+                  [attr.stroke]="
+                    selectedElementId === el.id ? '#007bff' : 'black'
+                  "
+                  [attr.stroke-width]="
+                    selectedElementId === el.id ? 6 / zoom : 4 / zoom
+                  "
                   pointer-events="none"
                 />
               </ng-container>
