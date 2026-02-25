@@ -12,8 +12,8 @@ export class MapSidebarComponent {
   @Output() toolChange = new EventEmitter<string>();
 
   tools = [
-    { id: 'select', label: 'Seleziona', icon: '👆' },
-    { id: 'move', label: 'Sposta Vertice', icon: '✥' },
+    { id: 'select', label: 'Sposta', icon: '✥' },
+    { id: 'move', label: 'Modifica', icon: '✏️' },
     { id: 'rack', label: 'Aggiungi Rack', icon: '🖥️' },
     { id: 'wall', label: 'Aggiungi Muro', icon: '🧱' },
     { id: 'door', label: 'Aggiungi Porta', icon: '🚪' },
