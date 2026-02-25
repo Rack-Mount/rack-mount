@@ -7,7 +7,9 @@
         [class.active]="activeTool === tool.id"
         [class.disabled]="disabled"
         (click)="selectTool(tool.id)"
-        title="{{ disabled ? 'Seleziona una Room per usare gli strumenti' : tool.label }}"
+        title="{{
+          disabled ? 'Seleziona una Room per usare gli strumenti' : tool.label
+        }}"
       >
         <div class="tool-icon">{{ tool.icon }}</div>
         <div class="tool-label">{{ tool.label }}</div>
