@@ -9,9 +9,21 @@ import {
 import { CommonModule } from '@angular/common';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 import { MapElement, Point, Room, AngleLabel, WallSegment } from './map.types';
-import { dist, distToSegment, projectOnSegment, lineSegmentIntersection } from './map-geometry.utils';
-import { updateWallDerived as _deriveWall, computeWallSegments, computeWallAngles } from './wall-display.utils';
-import { computeRooms as _computeRooms, mergeWalls as _mergeWalls } from './wall-graph.utils';
+import {
+  dist,
+  distToSegment,
+  projectOnSegment,
+  lineSegmentIntersection,
+} from './map-geometry.utils';
+import {
+  updateWallDerived as _deriveWall,
+  computeWallSegments,
+  computeWallAngles,
+} from './wall-display.utils';
+import {
+  computeRooms as _computeRooms,
+  mergeWalls as _mergeWalls,
+} from './wall-graph.utils';
 
 @Component({
   selector: 'app-map',
@@ -165,7 +177,9 @@ export class MapComponent implements AfterViewInit {
     return this.activePolylinePoints.map((p) => `${p.x},${p.y}`).join(' ');
   }
 
-  private getDistance(p1: Point, p2: Point): number { return dist(p1, p2); }
+  private getDistance(p1: Point, p2: Point): number {
+    return dist(p1, p2);
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private getAngle(p1: Point, p2: Point, p3: Point): number {
@@ -187,7 +201,12 @@ export class MapComponent implements AfterViewInit {
     return computeWallAngles(points, this.zoom, centroidX, centroidY, cursor);
   }
 
-  private getLineIntersection(p1: Point, p2: Point, p3: Point, p4: Point): Point | null {
+  private getLineIntersection(
+    p1: Point,
+    p2: Point,
+    p3: Point,
+    p4: Point,
+  ): Point | null {
     return lineSegmentIntersection(p1, p2, p3, p4);
   }
 
@@ -310,7 +329,12 @@ export class MapComponent implements AfterViewInit {
   }
 
   // Delegates to wall-graph.utils; mutates elA.points and returns filtered elements array
-  private mergeWalls(elA: MapElement, idxA: number, elB: MapElement, idxB: number): void {
+  private mergeWalls(
+    elA: MapElement,
+    idxA: number,
+    elB: MapElement,
+    idxB: number,
+  ): void {
     this.elements = _mergeWalls(this.elements, elA, idxA, elB, idxB);
     this.updateWallDerived(elA);
   }
@@ -481,7 +505,9 @@ export class MapComponent implements AfterViewInit {
     segIndex: number;
   } | null = null;
 
-  private getDistanceToSegment(p: Point, v: Point, w: Point): number { return distToSegment(p, v, w); }
+  private getDistanceToSegment(p: Point, v: Point, w: Point): number {
+    return distToSegment(p, v, w);
+  }
 
   // Find closest point on any wall segment to `point`, within `tolerance` SVG units.
   // Returns null if nothing is close enough, or if snap would land on an existing vertex.
