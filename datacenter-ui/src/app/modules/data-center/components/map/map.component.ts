@@ -62,8 +62,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   // Free-rotation drag state
   rotatingElementId: string | null = null;
-  private rotateDragStartAngle = 0;  // atan2 of cursor relative to rack centre at drag start
-  private rotateDragStartRot = 0;    // el.rotation at drag start (degrees)
+  private rotateDragStartAngle = 0; // atan2 of cursor relative to rack centre at drag start
+  private rotateDragStartRot = 0; // el.rotation at drag start (degrees)
   private rotateDragCenter: { x: number; y: number } | null = null;
 
   elements: MapElement[] = [];
@@ -941,9 +941,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           const proposedX = el.x + dx;
           const proposedY = el.y + dy;
           const others = this.getRackRects(el.id);
-          const snapRadius = event.shiftKey ? this.RACK_SNAP_RADIUS / this.zoom : 0;
+          const snapRadius = event.shiftKey
+            ? this.RACK_SNAP_RADIUS / this.zoom
+            : 0;
           const result = getRackSnapResult(
-            { x: proposedX, y: proposedY, width: el.width ?? 0, height: el.height ?? 0 },
+            {
+              x: proposedX,
+              y: proposedY,
+              width: el.width ?? 0,
+              height: el.height ?? 0,
+            },
             others,
             snapRadius,
           );
@@ -1260,7 +1267,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           this.currentElement.y = this.startPoint!.y - 50;
           // Re-run snap on the default-size rect
           const others = this.getRackRects();
-          const snapRadius = event.shiftKey ? this.RACK_SNAP_RADIUS / this.zoom : 0;
+          const snapRadius = event.shiftKey
+            ? this.RACK_SNAP_RADIUS / this.zoom
+            : 0;
           const snapResult = getRackSnapResult(
             {
               x: this.currentElement.x,

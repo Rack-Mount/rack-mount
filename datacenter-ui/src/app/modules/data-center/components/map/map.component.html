@@ -249,7 +249,9 @@
                 (click)="onElementClick($event, el)"
                 class="rack-group"
                 [class.selected]="selectedElementId === el.id"
-                [class.moving-snap]="movingElementId === el.id && rackSnapActive"
+                [class.moving-snap]="
+                  movingElementId === el.id && rackSnapActive
+                "
                 [attr.transform]="getRackTransform(el) || null"
               >
                 <rect
@@ -281,7 +283,10 @@
                   pointer-events="none"
                 />
                 <!-- Rotation handle (drag to rotate freely; Shift snaps to 15°) -->
-                @if (selectedElementId === el.id && (selectedTool === 'select' || selectedTool === 'move')) {
+                @if (
+                  selectedElementId === el.id &&
+                  (selectedTool === "select" || selectedTool === "move")
+                ) {
                   <line
                     [attr.x1]="el.x + (el.width || 0) / 2"
                     [attr.y1]="el.y"

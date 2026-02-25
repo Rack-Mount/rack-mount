@@ -70,36 +70,68 @@ export function getRackSnapResult(
     // ── X-axis snaps ─────────────────────────────────────────────────────────
     // proposed.left → other.right  (place proposed flush to the right of other)
     const d1 = Math.abs(x - oRight);
-    if (d1 < bestDxDist) { bestDxDist = d1; bestDx = oRight - x; hasDx = true; }
+    if (d1 < bestDxDist) {
+      bestDxDist = d1;
+      bestDx = oRight - x;
+      hasDx = true;
+    }
 
     // proposed.right → other.left  (place proposed flush to the left of other)
     const d2 = Math.abs(pRight - other.x);
-    if (d2 < bestDxDist) { bestDxDist = d2; bestDx = other.x - pRight; hasDx = true; }
+    if (d2 < bestDxDist) {
+      bestDxDist = d2;
+      bestDx = other.x - pRight;
+      hasDx = true;
+    }
 
     // proposed.left alignment with other.left
     const d3 = Math.abs(x - other.x);
-    if (d3 < bestDxDist) { bestDxDist = d3; bestDx = other.x - x; hasDx = true; }
+    if (d3 < bestDxDist) {
+      bestDxDist = d3;
+      bestDx = other.x - x;
+      hasDx = true;
+    }
 
     // proposed.right alignment with other.right
     const d4 = Math.abs(pRight - oRight);
-    if (d4 < bestDxDist) { bestDxDist = d4; bestDx = oRight - pRight; hasDx = true; }
+    if (d4 < bestDxDist) {
+      bestDxDist = d4;
+      bestDx = oRight - pRight;
+      hasDx = true;
+    }
 
     // ── Y-axis snaps ─────────────────────────────────────────────────────────
     // proposed.top → other.bottom  (place proposed flush below other)
     const d5 = Math.abs(y - oBottom);
-    if (d5 < bestDyDist) { bestDyDist = d5; bestDy = oBottom - y; hasDy = true; }
+    if (d5 < bestDyDist) {
+      bestDyDist = d5;
+      bestDy = oBottom - y;
+      hasDy = true;
+    }
 
     // proposed.bottom → other.top  (place proposed flush above other)
     const d6 = Math.abs(pBottom - other.y);
-    if (d6 < bestDyDist) { bestDyDist = d6; bestDy = other.y - pBottom; hasDy = true; }
+    if (d6 < bestDyDist) {
+      bestDyDist = d6;
+      bestDy = other.y - pBottom;
+      hasDy = true;
+    }
 
     // proposed.top alignment with other.top
     const d7 = Math.abs(y - other.y);
-    if (d7 < bestDyDist) { bestDyDist = d7; bestDy = other.y - y; hasDy = true; }
+    if (d7 < bestDyDist) {
+      bestDyDist = d7;
+      bestDy = other.y - y;
+      hasDy = true;
+    }
 
     // proposed.bottom alignment with other.bottom
     const d8 = Math.abs(pBottom - oBottom);
-    if (d8 < bestDyDist) { bestDyDist = d8; bestDy = oBottom - pBottom; hasDy = true; }
+    if (d8 < bestDyDist) {
+      bestDyDist = d8;
+      bestDy = oBottom - pBottom;
+      hasDy = true;
+    }
   }
 
   if (hasDx) x += bestDx;
@@ -108,7 +140,12 @@ export function getRackSnapResult(
   const snapped = hasDx || hasDy;
 
   // Collision check at the final snapped position
-  const finalRect: RackRect = { x, y, width: proposed.width, height: proposed.height };
+  const finalRect: RackRect = {
+    x,
+    y,
+    width: proposed.width,
+    height: proposed.height,
+  };
   const blocked = others.some((other) => rectsOverlap(finalRect, other));
 
   return { x, y, snapped, blocked };
