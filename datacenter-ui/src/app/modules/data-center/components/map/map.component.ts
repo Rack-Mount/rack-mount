@@ -620,6 +620,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     return { x: contentX, y: contentY };
   }
 
+  /** Snaps a single SVG-unit value to the nearest 10 cm grid line. */
+  private gridSnap(v: number): number {
+    const grid = 10;
+    return Math.round(v / grid) * grid;
+  }
+
   // Selected vertex for moving
   selectedVertex: { elementId: string; pointIndex: number } | null = null;
   // All co-located vertices that move together with the primary (junction peers)
@@ -1031,9 +1037,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
           this.updateWallDerived(el);
         } else if (el && el.type === 'rack') {
-          // Rack movement: apply magnetic snap (Shift) and collision check
-          const proposedX = el.x + dx;
-          const proposedY = el.y + dy;
+          // Rack movement: apply magnetic snap (Shift), grid snap (Alt), and collision check
+          let proposedX = el.x + dx;
+          let proposedY = el.y + dy;
+          if (event.altKey) {
+            proposedX = this.gridSnap(proposedX);
+            proposedY = this.gridSnap(proposedY);
+          }
           const others = this.getRackRects(el.id);
           const snapRadius = event.shiftKey
             ? this.RACK_SNAP_RADIUS / this.zoom
@@ -1274,8 +1284,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       // Translate rack centered on cursor (dimensions are preset; no drag-resize)
       const w = this.currentElement.width ?? 0;
       const h = this.currentElement.height ?? 0;
-      const rawX = point.x - w / 2;
-      const rawY = point.y - h / 2;
+      // Alt: snap top-left corner to grid; otherwise centre on cursor
+      const rawX = event.altKey
+        ? this.gridSnap(point.x - w / 2)
+        : point.x - w / 2;
+      const rawY = event.altKey
+        ? this.gridSnap(point.y - h / 2)
+        : point.y - h / 2;
 
       // Apply magnetic snap (Shift) and collision check
       const others = this.getRackRects();
