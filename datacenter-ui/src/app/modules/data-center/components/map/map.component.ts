@@ -120,6 +120,10 @@ export class MapComponent implements AfterViewInit {
   // Pre-computed grid path string for SVG (screen-space lines), updated on zoom/pan
   gridPath = ''; // 10cm minor grid
   gridPathMajor = ''; // 1m major grid
+
+  // Detected rooms (enclosed faces in the wall planar graph)
+  rooms: { area: number; cx: number; cy: number }[] = [];
+
   private gridRafId: number | null = null;
 
   // Debounced grid update: at most once per animation frame
@@ -724,7 +728,191 @@ export class MapComponent implements AfterViewInit {
     for (const el of this.elements) {
       if (el.type === 'wall') this.updateWallDerived(el);
     }
+    this.rooms = this.computeRooms();
     this.scheduleUpdateGrid();
+  }
+
+  // Detect all enclosed rooms using planar graph face traversal on the wall network
+  private computeRooms(): { area: number; cx: number; cy: number }[] {
+    const EPS = 3;
+    type Pt = { x: number; y: number };
+    const pts: Pt[] = [];
+    const findOrAdd = (p: Pt): number => {
+      for (let i = 0; i < pts.length; i++) {
+        if (Math.abs(pts[i].x - p.x) < EPS && Math.abs(pts[i].y - p.y) < EPS) return i;
+      }
+      pts.push({ x: p.x, y: p.y });
+      return pts.length - 1;
+    };
+    const edgeSet = new Set<string>();
+    const edgeList: [number, number][] = [];
+    const addEdge = (a: number, b: number) => {
+      if (a === b) return;
+      const key = a < b ? `${a}|${b}` : `${b}|${a}`;
+      if (edgeSet.has(key)) return;
+      edgeSet.add(key);
+      edgeList.push([a, b]);
+    };
+    for (const el of this.elements) {
+      if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
+      for (let i = 0; i < el.points.length - 1; i++) {
+        addEdge(findOrAdd(el.points[i]), findOrAdd(el.points[i + 1]));
+      }
+    }
+    if (pts.length < 3 || edgeList.length < 3) return [];
+    const adj: number[][] = Array.from({ length: pts.length }, () => []);
+    for (const [a, b] of edgeList) { adj[a].push(b); adj[b].push(a); }
+    for (let v = 0; v < pts.length; v++) {
+      adj[v].sort((a, b) => {
+        const aa = Math.atan2(pts[a].y - pts[v].y, pts[a].x - pts[v].x);
+        const ba = Math.atan2(pts[b].y - pts[v].y, pts[b].x - pts[v].x);
+        return aa - ba;
+      });
+    }
+    const nextHE = (u: number, v: number): number => {
+      const inAng = Math.atan2(pts[u].y - pts[v].y, pts[u].x - pts[v].x);
+      let best = -1, bestDelta = -Infinity;
+      for (const w of adj[v]) {
+        if (w === u) continue;
+        const outAng = Math.atan2(pts[w].y - pts[v].y, pts[w].x - pts[v].x);
+        let d = outAng - inAng;
+        if (d <= 0) d += 2 * Math.PI;
+        if (d > bestDelta) { bestDelta = d; best = w; }
+      }
+      return best;
+    };
+    // Signed distance from point to face boundary (positive = inside, negative = outside)
+    const signedDistToFace = (px: number, py: number, face: number[]): number => {
+      let inside = false;
+      let minD = Infinity;
+      for (let i = 0, j = face.length - 1; i < face.length; j = i++) {
+        const ax = pts[face[j]].x, ay = pts[face[j]].y;
+        const bx = pts[face[i]].x, by = pts[face[i]].y;
+        // ray-cast for inside test
+        if ((by > py) !== (ay > py) && px < ((ax - bx) * (py - by)) / (ay - by) + bx)
+          inside = !inside;
+        // distance to edge
+        const dx = bx - ax, dy = by - ay;
+        const lenSq = dx * dx + dy * dy;
+        const t = lenSq === 0 ? 0 : Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq));
+        const ex = px - ax - t * dx, ey = py - ay - t * dy;
+        const d = Math.sqrt(ex * ex + ey * ey);
+        if (d < minD) minD = d;
+      }
+      return inside ? minD : -minD;
+    };
+
+    // Polylabel: iterative cell-refinement to find the point farthest from all edges
+    const polylabel = (face: number[]): { cx: number; cy: number } => {
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      for (const vi of face) {
+        if (pts[vi].x < minX) minX = pts[vi].x;
+        if (pts[vi].x > maxX) maxX = pts[vi].x;
+        if (pts[vi].y < minY) minY = pts[vi].y;
+        if (pts[vi].y > maxY) maxY = pts[vi].y;
+      }
+      const width = maxX - minX, height = maxY - minY;
+      const cellSize = Math.max(width, height);
+      if (cellSize === 0) return { cx: minX, cy: minY };
+
+      // Each cell: [cx, cy, h, d, maxD]  h = half-size
+      // maxD = d + h*sqrt(2)  — upper bound on best achievable dist inside cell
+      type Cell = [number, number, number, number, number];
+      const SQRT2 = 1.4142135623730951;
+      const makeCell = (cx: number, cy: number, h: number): Cell => {
+        const d = signedDistToFace(cx, cy, face);
+        return [cx, cy, h, d, d + h * SQRT2];
+      };
+
+      // Max-heap by maxD (index 4)
+      const heap: Cell[] = [];
+      const heapPush = (c: Cell) => {
+        heap.push(c);
+        let i = heap.length - 1;
+        while (i > 0) {
+          const parent = (i - 1) >> 1;
+          if (heap[parent][4] >= heap[i][4]) break;
+          [heap[parent], heap[i]] = [heap[i], heap[parent]];
+          i = parent;
+        }
+      };
+      const heapPop = (): Cell => {
+        const top = heap[0];
+        const last = heap.pop()!;
+        if (heap.length > 0) {
+          heap[0] = last;
+          let i = 0;
+          for (;;) {
+            const l = 2 * i + 1, r = 2 * i + 2;
+            let best = i;
+            if (l < heap.length && heap[l][4] > heap[best][4]) best = l;
+            if (r < heap.length && heap[r][4] > heap[best][4]) best = r;
+            if (best === i) break;
+            [heap[i], heap[best]] = [heap[best], heap[i]];
+            i = best;
+          }
+        }
+        return top;
+      };
+
+      // Seed coarse grid
+      let h = cellSize / 2;
+      for (let x = minX; x < maxX; x += cellSize) {
+        for (let y = minY; y < maxY; y += cellSize) {
+          heapPush(makeCell(x + h, y + h, h));
+        }
+      }
+
+      // Centroid cell as initial best candidate
+      let bestD = -Infinity, bestCx = minX + width / 2, bestCy = minY + height / 2;
+      const centCell = makeCell(bestCx, bestCy, 0);
+      if (centCell[3] > bestD) { bestD = centCell[3]; bestCx = centCell[0]; bestCy = centCell[1]; }
+
+      const PRECISION = 1.0; // stop when gain < 1px
+      while (heap.length > 0) {
+        const cell = heapPop();
+        if (cell[3] > bestD) { bestD = cell[3]; bestCx = cell[0]; bestCy = cell[1]; }
+        // Skip if this cell can't improve over bestD + precision
+        if (cell[4] - bestD <= PRECISION) continue;
+        const ch = cell[2] / 2;
+        heapPush(makeCell(cell[0] - ch, cell[1] - ch, ch));
+        heapPush(makeCell(cell[0] + ch, cell[1] - ch, ch));
+        heapPush(makeCell(cell[0] - ch, cell[1] + ch, ch));
+        heapPush(makeCell(cell[0] + ch, cell[1] + ch, ch));
+      }
+      return { cx: bestCx, cy: bestCy };
+    };
+
+
+    const visited = new Set<string>();
+    const rooms: { area: number; cx: number; cy: number }[] = [];
+    for (const [ea, eb] of edgeList) {
+      for (const [u0, v0] of [[ea, eb], [eb, ea]] as [number, number][]) {
+        if (visited.has(`${u0}|${v0}`)) continue;
+        const face: number[] = [];
+        let u = u0, v = v0;
+        for (let step = 0; step < edgeList.length * 2 + 4; step++) {
+          const key = `${u}|${v}`;
+          if (visited.has(key)) break;
+          visited.add(key);
+          face.push(v);
+          const w = nextHE(u, v);
+          if (w === -1) break;
+          u = v; v = w;
+        }
+        if (face.length < 3) continue;
+        let sa = 0;
+        for (let i = 0; i < face.length; i++) {
+          const j = (i + 1) % face.length;
+          sa += pts[face[i]].x * pts[face[j]].y - pts[face[j]].x * pts[face[i]].y;
+        }
+        sa /= 2;
+        if (sa <= 0) continue; // outer face
+        const { cx, cy } = polylabel(face);
+        rooms.push({ area: sa, cx, cy });
+      }
+    }
+    return rooms;
   }
 
   onToolChange(toolId: string) {
@@ -741,6 +929,8 @@ export class MapComponent implements AfterViewInit {
     this.previewAngles = [];
     this.currentSegmentLength = 0;
     this.intersectionPoint = null;
+    this.vertexSnapPoint = null;
+    this.edgeSnapPoint = null;
     this.hoveredVertex = null;
   }
 
@@ -769,6 +959,8 @@ export class MapComponent implements AfterViewInit {
 
   // Selected vertex for moving
   selectedVertex: { elementId: string; pointIndex: number } | null = null;
+  // All co-located vertices that move together with the primary (junction peers)
+  selectedVertexPeers: { elementId: string; pointIndex: number }[] = [];
   // Hovered vertex (shown in red, can be deleted with Del)
   hoveredVertex: {
     elementId: string;
@@ -788,6 +980,9 @@ export class MapComponent implements AfterViewInit {
     y: number;
   } | null = null;
 
+  // Snap-to-edge target while drawing a wall (snaps cursor to a wall segment)
+  edgeSnapPoint: { x: number; y: number; elementId: string; segIndex: number } | null = null;
+
   // Minimal distance from point p to line segment v-w
   private getDistanceToSegment(
     p: { x: number; y: number },
@@ -798,8 +993,49 @@ export class MapComponent implements AfterViewInit {
     if (l2 === 0) return this.getDistance(p, v);
     let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
     t = Math.max(0, Math.min(1, t));
-    const projection = { x: v.x + t * (w.x - v.x), y: v.y + t * (w.y - v.y) };
-    return this.getDistance(p, projection);
+    const proj = { x: v.x + t * (w.x - v.x), y: v.y + t * (w.y - v.y) };
+    return this.getDistance(p, proj);
+  }
+
+  // Find closest point on any wall segment to `point`, within `tolerance` SVG units.
+  // Returns null if nothing is close enough, or if snap would land on an existing vertex.
+  private getClosestEdgeSnap(
+    point: { x: number; y: number },
+    tolerance: number,
+  ): { x: number; y: number; elementId: string; segIndex: number } | null {
+    let best: { x: number; y: number; elementId: string; segIndex: number } | null = null;
+    let minDist = tolerance;
+    for (const el of this.elements) {
+      if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
+      for (let i = 0; i < el.points.length - 1; i++) {
+        const p1 = el.points[i];
+        const p2 = el.points[i + 1];
+        const dist = this.getDistanceToSegment(point, p1, p2);
+        if (dist >= minDist) continue;
+        const l2 = Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
+        if (l2 === 0) continue;
+        const t = Math.min(1, Math.max(0, ((point.x - p1.x) * (p2.x - p1.x) + (point.y - p1.y) * (p2.y - p1.y)) / l2));
+        const sx = p1.x + t * (p2.x - p1.x);
+        const sy = p1.y + t * (p2.y - p1.y);
+        // Skip if snap point virtually coincides with an endpoint (vertex snap handles those)
+        if (t < 0.01 || t > 0.99) continue;
+        minDist = dist;
+        best = { x: sx, y: sy, elementId: el.id, segIndex: i };
+      }
+    }
+    return best;
+  }
+
+  // Insert a new vertex into a wall at `pt` between points[segIndex] and points[segIndex+1].
+  private splitWallAtPoint(elementId: string, segIndex: number, pt: { x: number; y: number }): void {
+    const el = this.elements.find(e => e.id === elementId);
+    if (!el?.points) return;
+    const newPoints = [...el.points];
+    newPoints.splice(segIndex + 1, 0, { x: pt.x, y: pt.y });
+    el.points = newPoints;
+    this.updateWallDerived(el);
+    this.elements = [...this.elements];
+    this.rooms = this.computeRooms();
   }
 
   onMouseDown(event: MouseEvent) {
@@ -831,6 +1067,18 @@ export class MapComponent implements AfterViewInit {
             if (this.getDistance(point, el.points[i]) < 10) {
               // Click tolerance
               this.selectedVertex = { elementId: el.id, pointIndex: i };
+              // Find all junction peers: other walls with a vertex at the same position
+              const clickedPt = el.points[i];
+              this.selectedVertexPeers = [];
+              for (const other of this.elements) {
+                if (other.type !== 'wall' || !other.points) continue;
+                for (let j = 0; j < other.points.length; j++) {
+                  if (other.id === el.id && j === i) continue;
+                  if (this.getDistance(clickedPt, other.points[j]) < 2) {
+                    this.selectedVertexPeers.push({ elementId: other.id, pointIndex: j });
+                  }
+                }
+              }
               this.isDrawing = true;
               return;
             }
@@ -838,14 +1086,14 @@ export class MapComponent implements AfterViewInit {
         }
       }
 
-      // 2. Check Wall Body Click (Lower Priority)
+      // 2. Check Wall Body Click (Lower Priority) → move ALL elements together
       for (const el of this.elements) {
         if (el.type === 'wall' && el.points && el.points.length > 1) {
           for (let i = 0; i < el.points.length - 1; i++) {
             const p1 = el.points[i];
             const p2 = el.points[i + 1];
             if (this.getDistanceToSegment(point, p1, p2) < 10) {
-              this.movingElementId = el.id;
+              this.movingElementId = '__ALL__';
               this.lastMousePosition = point;
               this.isDrawing = true;
               return;
@@ -870,10 +1118,21 @@ export class MapComponent implements AfterViewInit {
       // If drawing hasn't started, start it
       if (this.activePolylinePoints.length === 0) {
         console.log('Starting wall drawing');
+        // Snap start point to edge if applicable
+        const startVert = this.getClosestVertex(point, 20);
+        if (startVert) {
+          point = startVert;
+        } else {
+          const startEdge = this.getClosestEdgeSnap(point, 15);
+          if (startEdge) {
+            point = { x: startEdge.x, y: startEdge.y };
+            this.splitWallAtPoint(startEdge.elementId, startEdge.segIndex, point);
+          }
+        }
         this.isDrawing = true;
-        this.activePolylinePoints = [point]; // Start point (new array ref)
+        this.activePolylinePoints = [point];
         this.activeWallSegments = [];
-        this.cursorPosition = { ...point }; // Init cursor
+        this.cursorPosition = { ...point };
       } else {
         const startPoint = this.activePolylinePoints[0];
         const lastPoint =
@@ -902,6 +1161,17 @@ export class MapComponent implements AfterViewInit {
           this.finishPolyline([...this.activePolylinePoints, startPoint]);
           return;
         } else {
+          // Snap to vertex or edge before adding point
+          const addVert = this.getClosestVertex(point, 20);
+          if (addVert) {
+            point = addVert;
+          } else {
+            const addEdge = this.getClosestEdgeSnap(point, 15);
+            if (addEdge) {
+              point = { x: addEdge.x, y: addEdge.y };
+              this.splitWallAtPoint(addEdge.elementId, addEdge.segIndex, point);
+            }
+          }
           // Add point (new array ref to trigger change detection if needed)
           this.activePolylinePoints = [...this.activePolylinePoints, point];
           // Update segments
@@ -992,16 +1262,28 @@ export class MapComponent implements AfterViewInit {
       this.movingElementId &&
       this.lastMousePosition
     ) {
-      const el = this.elements.find((e) => e.id === this.movingElementId);
-      if (el && el.points) {
-        const dx = point.x - this.lastMousePosition.x;
-        const dy = point.y - this.lastMousePosition.y;
+      const dx = point.x - this.lastMousePosition.x;
+      const dy = point.y - this.lastMousePosition.y;
 
-        // Translate all points
-        el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
-        this.updateWallDerived(el);
-        this.lastMousePosition = point;
+      if (this.movingElementId === '__ALL__') {
+        // Translate every element together
+        for (const el of this.elements) {
+          if (el.points) {
+            el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
+            if (el.type === 'wall') this.updateWallDerived(el);
+          } else {
+            el.x = (el.x ?? 0) + dx;
+            el.y = (el.y ?? 0) + dy;
+          }
+        }
+      } else {
+        const el = this.elements.find((e) => e.id === this.movingElementId);
+        if (el && el.points) {
+          el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
+          this.updateWallDerived(el);
+        }
       }
+      this.lastMousePosition = point;
       return;
     }
 
@@ -1061,6 +1343,8 @@ export class MapComponent implements AfterViewInit {
         const SNAP_RADIUS = 15 / this.zoom;
         outer: for (const other of this.elements) {
           if (other.id === el.id || !other.points) continue;
+          // Skip junction peers — they move with us, not snap targets
+          if (this.selectedVertexPeers.some((p) => p.elementId === other.id)) continue;
           for (let j = 0; j < other.points.length; j++) {
             if (this.getDistance(point, other.points[j]) < SNAP_RADIUS) {
               this.snapTargetVertex = {
@@ -1094,6 +1378,24 @@ export class MapComponent implements AfterViewInit {
           }
         }
         this.updateWallDerived(el);
+
+        // Move all junction peers to the same final position
+        for (const peer of this.selectedVertexPeers) {
+          const peerEl = this.elements.find((e) => e.id === peer.elementId);
+          if (!peerEl || !peerEl.points) continue;
+          // Check peer closure BEFORE modifying
+          let peerWasClosed = false;
+          if (peerEl.points.length > 2) {
+            peerWasClosed =
+              this.getDistance(peerEl.points[0], peerEl.points[peerEl.points.length - 1]) < 2;
+          }
+          peerEl.points[peer.pointIndex] = point;
+          if (peerWasClosed) {
+            if (peer.pointIndex === 0) peerEl.points[peerEl.points.length - 1] = point;
+            else if (peer.pointIndex === peerEl.points.length - 1) peerEl.points[0] = point;
+          }
+          this.updateWallDerived(peerEl);
+        }
       }
       return;
     }
@@ -1120,6 +1422,7 @@ export class MapComponent implements AfterViewInit {
 
       this.intersectionPoint = null;
       this.vertexSnapPoint = null;
+      this.edgeSnapPoint = null;
 
       // First find if there IS an intersection up to the current mouse point
       const intersection = this.checkIntersections(point);
@@ -1127,20 +1430,21 @@ export class MapComponent implements AfterViewInit {
 
       if (intersection) {
         this.intersectionPoint = intersection;
-        // The wall cannot go beyond this intersection point.
-        // We clamp 'point' to the intersection.
         point = intersection;
-
-        // However, if the intersection IS actually a vertex (e.g. we hit a corner),
-        // we want the magnetic "snap" feeling.
         if (vertex && this.getDistance(vertex, intersection) < 10) {
           this.vertexSnapPoint = vertex;
           point = vertex;
         }
       } else if (vertex) {
-        // No intersection blocking us, free to snap to vertex
         this.vertexSnapPoint = vertex;
         point = this.vertexSnapPoint;
+      } else {
+        // No vertex snap: try edge snap
+        const edge = this.getClosestEdgeSnap(point, 15);
+        if (edge) {
+          this.edgeSnapPoint = edge;
+          point = { x: edge.x, y: edge.y };
+        }
       }
 
       this.cursorPosition = point;
@@ -1201,9 +1505,11 @@ export class MapComponent implements AfterViewInit {
       }
       this.isDrawing = false;
       this.selectedVertex = null;
+      this.selectedVertexPeers = [];
       this.movingElementId = null;
       this.lastMousePosition = null;
       this.snapTargetVertex = null;
+      this.rooms = this.computeRooms();
       return;
     }
 
@@ -1248,6 +1554,7 @@ export class MapComponent implements AfterViewInit {
       this.updateWallDerived(newEl);
       this.elements.push(newEl);
     }
+    this.rooms = this.computeRooms();
     this.cancelDrawing();
   }
 
@@ -1289,12 +1596,14 @@ export class MapComponent implements AfterViewInit {
           };
           this.updateWallDerived(newEl);
           this.elements = [...this.elements, newEl];
+          this.rooms = this.computeRooms();
           event.stopPropagation();
           return;
         }
 
         this.updateWallDerived(el);
         this.elements = [...this.elements];
+        this.rooms = this.computeRooms();
         event.stopPropagation();
         return;
       }
@@ -1364,6 +1673,7 @@ export class MapComponent implements AfterViewInit {
           el.points = newPoints;
           this.updateWallDerived(el);
           this.elements = [...this.elements];
+          this.rooms = this.computeRooms();
           this.hoveredVertex = null;
         }
         return;
@@ -1374,6 +1684,7 @@ export class MapComponent implements AfterViewInit {
           (e) => e.id !== this.selectedElementId,
         );
         this.selectedElementId = null;
+        this.rooms = this.computeRooms();
       }
     }
 

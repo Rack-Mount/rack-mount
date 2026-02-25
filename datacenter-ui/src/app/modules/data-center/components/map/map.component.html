@@ -77,32 +77,7 @@
                     </text>
                   </g>
                 }
-                <!-- Closed Wall Area -->
-                @if (el.area !== undefined) {
-                  <rect
-                    [attr.x]="(el.centroidX ?? 0) - 30 / zoom"
-                    [attr.y]="(el.centroidY ?? 0) - 12 / zoom"
-                    [attr.width]="60 / zoom"
-                    [attr.height]="22 / zoom"
-                    fill="white"
-                    fill-opacity="0.75"
-                    [attr.rx]="4 / zoom"
-                    pointer-events="none"
-                  />
-                  <text
-                    [attr.x]="el.centroidX ?? 0"
-                    [attr.y]="(el.centroidY ?? 0) + 5 / zoom"
-                    text-anchor="middle"
-                    fill="#0066cc"
-                    [attr.font-size]="14 / zoom + 'px'"
-                    font-family="monospace"
-                    font-weight="bold"
-                    pointer-events="none"
-                    style="user-select: none"
-                  >
-                    {{ el.area / 10000 | number: "1.0-2" }} m²
-                  </text>
-                }
+
                 <!-- Wall Angles -->
                 @for (angleData of el.angles ?? []; track $index) {
                   <g>
@@ -204,6 +179,50 @@
               </g>
             }
           </ng-container>
+        }
+
+        <!-- Room area labels (planar face detection) -->
+        @for (room of rooms; track $index) {
+          <rect
+            [attr.x]="room.cx - 40 / zoom"
+            [attr.y]="room.cy - 16 / zoom"
+            [attr.width]="80 / zoom"
+            [attr.height]="32 / zoom"
+            fill="white"
+            fill-opacity="0.88"
+            stroke="#0066cc"
+            [attr.stroke-width]="0.8 / zoom"
+            [attr.rx]="5 / zoom"
+            pointer-events="none"
+          />
+          <text
+            [attr.x]="room.cx"
+            [attr.y]="room.cy - 3 / zoom"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            fill="#0066cc"
+            [attr.font-size]="13 / zoom + 'px'"
+            font-family="monospace"
+            font-weight="bold"
+            pointer-events="none"
+            style="user-select: none"
+          >
+            {{ room.area / 10000 | number: "1.0-2" }} m²
+          </text>
+          <text
+            [attr.x]="room.cx"
+            [attr.y]="room.cy + 12 / zoom"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            fill="#0066cc"
+            [attr.font-size]="10 / zoom + 'px'"
+            font-family="monospace"
+            pointer-events="none"
+            style="user-select: none"
+            opacity="0.65"
+          >
+            stanza
+          </text>
         }
 
         <!-- Move Tool Indicators: Show all vertices as manipulatable dots when tool is active -->
@@ -429,6 +448,25 @@
                     fill="#007bff"
                     stroke="white"
                     [attr.stroke-width]="2 / zoom"
+                    pointer-events="none"
+                  />
+                }
+                <!-- Edge Snap Indicator (Orange Diamond) -->
+                @if (edgeSnapPoint) {
+                  <circle
+                    [attr.cx]="edgeSnapPoint.x"
+                    [attr.cy]="edgeSnapPoint.y"
+                    [attr.r]="7 / zoom"
+                    fill="none"
+                    stroke="#ff8c00"
+                    [attr.stroke-width]="2 / zoom"
+                    pointer-events="none"
+                  />
+                  <circle
+                    [attr.cx]="edgeSnapPoint.x"
+                    [attr.cy]="edgeSnapPoint.y"
+                    [attr.r]="3 / zoom"
+                    fill="#ff8c00"
                     pointer-events="none"
                   />
                 }
