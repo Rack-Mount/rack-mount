@@ -237,7 +237,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.onRoomSelect(roomId);
   }
 
-  onLocationSelect(id: number): void {
+  onLocationSelect(id: number | null): void {
     this.selectedLocationId = id || null;
     this.selectedRoomId = null;
     this.elements = [];
@@ -251,7 +251,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.cdr.markForCheck();
   }
 
-  onRoomSelect(id: number): void {
+  onRoomSelect(id: number | null): void {
     if (!id) {
       this.selectedRoomId = null;
       this.elements = [];
