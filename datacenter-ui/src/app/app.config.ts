@@ -12,7 +12,11 @@ import {
   ConfigurationParameters,
 } from './modules/core/api/v1';
 import { environment } from '../environments/environment';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from '@angular/common/http';
 import { notFoundInterceptor } from './modules/core/interceptors/not-found.interceptor';
 
 export function apiConfigFactory(): Configuration {
