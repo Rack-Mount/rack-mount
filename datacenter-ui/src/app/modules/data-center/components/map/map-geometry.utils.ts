@@ -40,13 +40,19 @@ export function projectOnSegment(
 /**
  * Interior angle (0–180°) at vertex `p2` formed by the path p1 → p2 → p3.
  */
+/**
+ * Interior angle at p2 between arms p2→p1 and p2→p3, in degrees [0°, 180°].
+ * Uses dot and cross products — no atan2 subtraction ambiguity.
+ */
 export function angleBetween(p1: Point, p2: Point, p3: Point): number {
-  const a1 = Math.atan2(p1.y - p2.y, p1.x - p2.x);
-  const a2 = Math.atan2(p3.y - p2.y, p3.x - p2.x);
-  let angle = (a2 - a1) * (180 / Math.PI);
-  if (angle < 0) angle += 360;
-  if (angle > 180) angle = 360 - angle;
-  return angle;
+  const ax = p1.x - p2.x,
+    ay = p1.y - p2.y;
+  const bx = p3.x - p2.x,
+    by = p3.y - p2.y;
+  const dot = ax * bx + ay * by;
+  const cross = ax * by - ay * bx; // signed area
+  // atan2(|cross|, dot) gives the angle in [0°, 180°] unambiguously
+  return Math.atan2(Math.abs(cross), dot) * (180 / Math.PI);
 }
 
 /**

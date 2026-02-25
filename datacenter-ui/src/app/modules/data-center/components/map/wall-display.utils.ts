@@ -62,12 +62,13 @@ export function computeWallAngles(
 ): AngleLabel[] {
   let fullPoints = cursor ? [...points, cursor] : [...points];
 
-  // Extend closed loop for wrap-around vertex
-  if (
-    fullPoints.length > 2 &&
-    fullPoints[0].x === fullPoints[fullPoints.length - 1].x &&
-    fullPoints[0].y === fullPoints[fullPoints.length - 1].y
-  ) {
+  // Extend closed loop so the closing vertex also gets an angle.
+  // Use distance tolerance (same as isClosed elsewhere) instead of ===
+  // to be robust against floating-point coordinate differences.
+  const first = fullPoints[0],
+    last = fullPoints[fullPoints.length - 1];
+  const closingDist = Math.hypot(last.x - first.x, last.y - first.y);
+  if (fullPoints.length > 2 && closingDist <= 2) {
     fullPoints = [...fullPoints, fullPoints[1]];
   }
 

@@ -14,6 +14,7 @@ import {
   distToSegment,
   projectOnSegment,
   lineSegmentIntersection,
+  angleBetween,
 } from './map-geometry.utils';
 import {
   updateWallDerived as _deriveWall,
@@ -429,8 +430,108 @@ export class MapComponent implements AfterViewInit {
     for (const el of this.elements) {
       if (el.type === 'wall') this.updateWallDerived(el);
     }
+    this.computeJunctionAngles();
     this.rooms = this.computeRooms();
     this.scheduleUpdateGrid();
+  }
+
+  /**
+   * After all wall-derived data is computed, find every vertex where 2+ distinct
+   * walls meet and inject the correct inter-wall angles there.
+   * Removes any intra-wall angle previously computed at those junction vertices.
+   */
+  private computeJunctionAngles(): void {
+    const EPS = 3;
+    const walls = this.elements.filter(
+      (e) => e.type === 'wall' && e.points && e.points.length >= 2,
+    );
+
+    // Build map: rounded position key → all arms meeting there
+    interface Arm {
+      wall: MapElement;
+      neighborPt: Point;
+      azimuth: number;
+    }
+    const junctionMap = new Map<string, { jPt: Point; arms: Arm[] }>();
+
+    const key = (p: Point) =>
+      `${Math.round(p.x / EPS)}_${Math.round(p.y / EPS)}`;
+
+    for (const wall of walls) {
+      const pts = wall.points!;
+      for (let i = 0; i < pts.length; i++) {
+        const k = key(pts[i]);
+        if (!junctionMap.has(k)) junctionMap.set(k, { jPt: pts[i], arms: [] });
+        const entry = junctionMap.get(k)!;
+        // Each vertex contributes one arm per adjacent segment
+        if (i > 0) {
+          const nb = pts[i - 1];
+          entry.arms.push({
+            wall,
+            neighborPt: nb,
+            azimuth: Math.atan2(nb.y - pts[i].y, nb.x - pts[i].x),
+          });
+        }
+        if (i < pts.length - 1) {
+          const nb = pts[i + 1];
+          entry.arms.push({
+            wall,
+            neighborPt: nb,
+            azimuth: Math.atan2(nb.y - pts[i].y, nb.x - pts[i].x),
+          });
+        }
+      }
+    }
+
+    const LABEL_DIST = 18 / this.zoom;
+
+    for (const { jPt, arms } of junctionMap.values()) {
+      // Only process vertices where arms from at least 2 different walls meet
+      const wallIds = new Set(arms.map((a) => a.wall.id));
+      if (wallIds.size < 2) continue;
+
+      // Remove intra-wall angles already computed at this vertex
+      for (const id of wallIds) {
+        const wall = walls.find((w) => w.id === id);
+        if (wall?.angles) {
+          wall.angles = wall.angles.filter(
+            (a) =>
+              !(Math.abs(a.x - jPt.x) < EPS && Math.abs(a.y - jPt.y) < EPS),
+          );
+        }
+      }
+
+      // Sort all arms by azimuth and compute the angle of each consecutive sector
+      arms.sort((a, b) => a.azimuth - b.azimuth);
+      const n = arms.length;
+
+      for (let i = 0; i < n; i++) {
+        const a1 = arms[i];
+        const a2 = arms[(i + 1) % n];
+
+        let delta = a2.azimuth - a1.azimuth;
+        if (delta <= 0) delta += 2 * Math.PI;
+        const angleDeg = delta * (180 / Math.PI);
+
+        // Skip degenerate angles (straight line = 180°, or near-zero)
+        if (angleDeg < 2 || Math.abs(angleDeg - 180) < 1) continue;
+
+        // Bisector direction points into the sector (midway angle + π)
+        const midAz = a1.azimuth + delta / 2;
+        const bx = -Math.cos(midAz); // negate = point inward toward sector center
+        const by = -Math.sin(midAz);
+
+        // Add the angle label to the wall that owns arm a1
+        if (!a1.wall.angles) a1.wall.angles = [];
+        a1.wall.angles.push({
+          x: jPt.x,
+          y: jPt.y,
+          angle: Math.round(angleDeg * 10) / 10,
+          labelX: jPt.x + bx * LABEL_DIST,
+          labelY: jPt.y + by * LABEL_DIST,
+        });
+      }
+    }
   }
 
   // Delegates to wall-graph.utils; restores persisted names by matching new rooms to old
@@ -1113,7 +1214,7 @@ export class MapComponent implements AfterViewInit {
       this.movingElementId = null;
       this.lastMousePosition = null;
       this.snapTargetVertex = null;
-      this.rooms = this.computeRooms();
+      this.rederiveAllWalls();
       return;
     }
 
@@ -1158,7 +1259,7 @@ export class MapComponent implements AfterViewInit {
       this.updateWallDerived(newEl);
       this.elements.push(newEl);
     }
-    this.rooms = this.computeRooms();
+    this.rederiveAllWalls();
     this.cancelDrawing();
   }
 
@@ -1200,14 +1301,14 @@ export class MapComponent implements AfterViewInit {
           };
           this.updateWallDerived(newEl);
           this.elements = [...this.elements, newEl];
-          this.rooms = this.computeRooms();
+          this.rederiveAllWalls();
           event.stopPropagation();
           return;
         }
 
         this.updateWallDerived(el);
         this.elements = [...this.elements];
-        this.rooms = this.computeRooms();
+        this.rederiveAllWalls();
         event.stopPropagation();
         return;
       }
@@ -1277,7 +1378,7 @@ export class MapComponent implements AfterViewInit {
           el.points = newPoints;
           this.updateWallDerived(el);
           this.elements = [...this.elements];
-          this.rooms = this.computeRooms();
+          this.rederiveAllWalls();
           this.hoveredVertex = null;
         }
         return;
@@ -1288,7 +1389,7 @@ export class MapComponent implements AfterViewInit {
           (e) => e.id !== this.selectedElementId,
         );
         this.selectedElementId = null;
-        this.rooms = this.computeRooms();
+        this.rederiveAllWalls();
       }
     }
 
