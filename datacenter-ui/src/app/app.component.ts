@@ -18,7 +18,13 @@ import { PanelTab } from './modules/data-center/components/detail-panel/detail-p
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent, HomeComponent, MapComponent, RackComponent, NotFoundComponent],
+  imports: [
+    HeaderComponent,
+    HomeComponent,
+    MapComponent,
+    RackComponent,
+    NotFoundComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

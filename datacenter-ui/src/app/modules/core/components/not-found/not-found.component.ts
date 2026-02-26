@@ -27,7 +27,7 @@ import { RouterLink } from '@angular/router';
         justify-content: center;
         flex: 1;
         background: #0b1120;
-        font-family: "Inter", "Segoe UI", sans-serif;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
         gap: 10px;
       }
 
@@ -60,7 +60,9 @@ import { RouterLink } from '@angular/router';
         padding: 8px 18px;
         border: 1px solid rgba(0, 212, 255, 0.3);
         border-radius: 8px;
-        transition: background 0.15s, box-shadow 0.15s;
+        transition:
+          background 0.15s,
+          box-shadow 0.15s;
 
         &:hover {
           background: rgba(0, 212, 255, 0.08);
