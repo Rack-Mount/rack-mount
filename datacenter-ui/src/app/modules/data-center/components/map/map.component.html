@@ -940,14 +940,16 @@
       <button class="zoom-btn" (click)="fitToView()" title="Adatta alla vista">
         ⊡
       </button>
-      <button        class="zoom-btn"
+      <button
+        class="zoom-btn"
         (click)="centerAndSnapFloorPlan()"
         title="Centra e aggancia alla griglia"
         [disabled]="!selectedRoomId"
       >
         ⌖
       </button>
-      <button        class="zoom-btn zoom-reset"
+      <button
+        class="zoom-btn zoom-reset"
         (click)="resetZoom()"
         title="Reset zoom"
       >

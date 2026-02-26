@@ -666,7 +666,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const ys: number[] = [];
     for (const el of this.elements) {
       if (el.points && el.points.length > 0) {
-        for (const p of el.points) { xs.push(p.x); ys.push(p.y); }
+        for (const p of el.points) {
+          xs.push(p.x);
+          ys.push(p.y);
+        }
       } else {
         xs.push(el.x, el.x + (el.width ?? 0), el.x2 ?? el.x);
         ys.push(el.y, el.y + (el.height ?? 0), el.y2 ?? el.y);
@@ -701,7 +704,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const contentW = maxX - minX || 1;
     const contentH = maxY - minY || 1;
     const svg = this.svgContainer.nativeElement;
-    this.panX = Math.round((svg.clientWidth  - contentW * this.zoom) / 2);
+    this.panX = Math.round((svg.clientWidth - contentW * this.zoom) / 2);
     this.panY = Math.round((svg.clientHeight - contentH * this.zoom) / 2);
 
     this.scheduleUpdateGrid();
