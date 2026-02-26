@@ -418,16 +418,23 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     elements: MapElement[],
     backendRacks: Rack[],
   ): MapElement[] {
+    const backendNames = new Set(backendRacks.map((r) => r.name));
+
+    // Remove rack elements that no longer exist in the backend
+    const filtered = elements.filter(
+      (el) => el.type !== 'rack' || (el.rackName != null && backendNames.has(el.rackName)),
+    );
+
     const placedNames = new Set(
-      elements
+      filtered
         .filter((el) => el.type === 'rack' && el.rackName)
         .map((el) => el.rackName as string),
     );
     const unplaced = backendRacks.filter((r) => !placedNames.has(r.name));
-    if (unplaced.length === 0) return elements;
+    if (unplaced.length === 0) return filtered;
 
     // Spread unplaced racks in a row starting at (20, 20), spaced 10cm apart
-    const result = [...elements];
+    const result = [...filtered];
     let offsetX = 20;
     const baseY = 20;
     for (const rack of unplaced) {
