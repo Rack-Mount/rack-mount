@@ -43,7 +43,8 @@ export class ConfirmDialogService {
       };
 
       this.appRef.attachView(componentRef.hostView);
-      const domElem = (componentRef.hostView as any).rootNodes[0] as HTMLElement;
+      const domElem = (componentRef.hostView as any)
+        .rootNodes[0] as HTMLElement;
       document.body.appendChild(domElem);
 
       // Trigger initial change detection
