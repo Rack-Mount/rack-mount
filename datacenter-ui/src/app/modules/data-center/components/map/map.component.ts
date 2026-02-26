@@ -1082,7 +1082,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (el.type === 'door') {
           const x2 = el.x2 ?? el.x;
           const y2 = el.y2 ?? el.y;
-          if (distToSegment(point, { x: el.x, y: el.y }, { x: x2, y: y2 }) < DOOR_BODY_RADIUS) {
+          if (
+            distToSegment(point, { x: el.x, y: el.y }, { x: x2, y: y2 }) <
+            DOOR_BODY_RADIUS
+          ) {
             // Compute how far along the door the click landed
             const ddx = x2 - el.x;
             const ddy = y2 - el.y;
