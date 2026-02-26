@@ -3,11 +3,13 @@ import { Subject } from 'rxjs';
 import { AssetService, Rack } from '../api/v1';
 import { PanelTab } from '../../data-center/components/detail-panel/detail-panel.types';
 
+const LS_TABS_KEY = 'dc:tabs';
+
 @Injectable({ providedIn: 'root' })
 export class TabService {
   private readonly assetService = inject(AssetService);
 
-  private readonly _tabs = signal<PanelTab[]>([]);
+  private readonly _tabs = signal<PanelTab[]>(this.loadTabsFromStorage());
   private readonly _loadingRackTabId = signal<string | null>(null);
   private readonly rackCache = new Map<string, Rack | null>();
 
@@ -17,6 +19,25 @@ export class TabService {
 
   readonly tabs = this._tabs.asReadonly();
   readonly loadingRackTabId = this._loadingRackTabId.asReadonly();
+
+  // ── Persistence ──────────────────────────────────────────
+
+  private loadTabsFromStorage(): PanelTab[] {
+    try {
+      const raw = localStorage.getItem(LS_TABS_KEY);
+      return raw ? (JSON.parse(raw) as PanelTab[]) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private persistTabs(): void {
+    try {
+      localStorage.setItem(LS_TABS_KEY, JSON.stringify(this._tabs()));
+    } catch {
+      // storage quota or private mode — ignore
+    }
+  }
 
   // ── Room tabs ────────────────────────────────────────────
 
@@ -28,6 +49,7 @@ export class TabService {
         { id: tabId, label: roomName, type: 'room', roomId, pinned: false },
       ]);
     }
+    this.persistTabs();
     this._activate$.next(tabId);
   }
 
@@ -39,6 +61,7 @@ export class TabService {
         ...tabs,
         { id: tabId, label, type: 'room', roomId, pinned: false },
       ]);
+      this.persistTabs();
     }
   }
 
@@ -47,6 +70,7 @@ export class TabService {
     this._tabs.update((tabs) =>
       tabs.map((t) => (t.id === tabId ? { ...t, label } : t)),
     );
+    this.persistTabs();
   }
 
   // ── Rack tabs ────────────────────────────────────────────
@@ -67,6 +91,7 @@ export class TabService {
     if (!this.rackCache.has(tabId)) {
       this.loadRack(tabId, rackName);
     }
+    this.persistTabs();
     this._activate$.next(tabId);
   }
 
@@ -75,6 +100,7 @@ export class TabService {
   closeTab(tabId: string): void {
     this._tabs.update((tabs) => tabs.filter((t) => t.id !== tabId));
     this.rackCache.delete(tabId);
+    this.persistTabs();
   }
 
   private loadRack(tabId: string, rackName: string): void {

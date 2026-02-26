@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TabService } from '../../../core/services/tab.service';
+import { SettingsService } from '../../../core/services/settings.service';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
 import { LocationService } from '../../../core/api/v1/api/location.service';
@@ -52,6 +53,7 @@ import { getRackSnapResult, RackRect } from './rack-snap.utils';
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly tabService = inject(TabService);
+  readonly settingsService = inject(SettingsService);
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -105,8 +107,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
   saveStatus: 'idle' | 'saving' | 'saved' | 'error' = 'idle';
   private saveStatusTimer: ReturnType<typeof setTimeout> | null = null;
-  autosave = false;
   private autosaveTimer: ReturnType<typeof setTimeout> | null = null;
+
+  get autosave(): boolean {
+    return this.settingsService.autosave();
+  }
+
+  set autosave(value: boolean) {
+    this.settingsService.setAutosave(value);
+  }
 
   isDrawing = false;
   currentElement: MapElement | null = null;
@@ -338,11 +347,33 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       racks: this.assetService.assetRackList({ room: id, pageSize: 200 }),
     }).subscribe({
       next: ({ room, racks }) => {
-        const existing: MapElement[] = room.floor_plan_data
-          ? (room.floor_plan_data as MapElement[])
-          : [];
+        const raw = room.floor_plan_data;
+        let existing: MapElement[];
+        let savedRoomLabels: { cx: number; cy: number; name: string }[] = [];
+        if (Array.isArray(raw)) {
+          // Legacy format: plain MapElement[]
+          existing = raw as MapElement[];
+        } else if (raw && typeof raw === 'object' && 'elements' in (raw as object)) {
+          const parsed = raw as { elements: MapElement[]; roomLabels?: { cx: number; cy: number; name: string }[] };
+          existing = parsed.elements ?? [];
+          savedRoomLabels = parsed.roomLabels ?? [];
+        } else {
+          existing = [];
+        }
+        // Seed this.rooms empty so rederiveAllWalls computes fresh geometry
+        this.rooms = [];
         this.elements = this.injectUnplacedRacks(existing, racks.results ?? []);
         this.rederiveAllWalls();
+        // Apply saved room labels by nearest-centroid match (no threshold — geometry is identical)
+        for (const saved of savedRoomLabels) {
+          let bestDist = Infinity;
+          let bestRoom: (typeof this.rooms)[0] | null = null;
+          for (const r of this.rooms) {
+            const d = Math.hypot(r.cx - saved.cx, r.cy - saved.cy);
+            if (d < bestDist) { bestDist = d; bestRoom = r; }
+          }
+          if (bestRoom) bestRoom.name = saved.name;
+        }
         this.cdr.markForCheck();
       },
       error: (err) => console.error('Failed to load floor plan', err),
@@ -432,10 +463,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (this.selectedRoomId == null) return;
     this.saveStatus = 'saving';
     this.cdr.markForCheck();
+    const roomLabels = this.rooms
+      .filter((r) => r.name)
+      .map((r) => ({ cx: r.cx, cy: r.cy, name: r.name! }));
     this.locationService
       .locationRoomPartialUpdate({
         id: this.selectedRoomId,
-        patchedRoom: { floor_plan_data: this.elements },
+        patchedRoom: { floor_plan_data: { elements: this.elements, roomLabels } as any },
       })
       .subscribe({
         next: () => {
