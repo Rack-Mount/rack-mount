@@ -175,7 +175,10 @@ function labelPoint(
     bestCx = (minX + maxX) / 2,
     bestCy = (minY + maxY) / 2;
   const seed = makeCell(bestCx, bestCy, 0, pts, face);
-  if (seed[3] > bestD && !isInAnyObstacle(seed[0], seed[1], obstacles, RACK_MARGIN)) {
+  if (
+    seed[3] > bestD &&
+    !isInAnyObstacle(seed[0], seed[1], obstacles, RACK_MARGIN)
+  ) {
     bestD = seed[3];
     bestCx = seed[0];
     bestCy = seed[1];
@@ -183,7 +186,10 @@ function labelPoint(
 
   while (heap.length > 0) {
     const cell = heapPop(heap);
-    if (cell[3] > bestD && !isInAnyObstacle(cell[0], cell[1], obstacles, RACK_MARGIN)) {
+    if (
+      cell[3] > bestD &&
+      !isInAnyObstacle(cell[0], cell[1], obstacles, RACK_MARGIN)
+    ) {
       bestD = cell[3];
       bestCx = cell[0];
       bestCy = cell[1];
@@ -201,7 +207,10 @@ function labelPoint(
   const centDist = signedDistToFace(gcx, gcy, pts, face);
 
   // Use centroid if it's within 60% of the optimal clearance AND not inside a rack (with margin).
-  if (centDist >= bestD * 0.6 && !isInAnyObstacle(gcx, gcy, obstacles, RACK_MARGIN)) {
+  if (
+    centDist >= bestD * 0.6 &&
+    !isInAnyObstacle(gcx, gcy, obstacles, RACK_MARGIN)
+  ) {
     return { cx: gcx, cy: gcy };
   }
   return { cx: bestCx, cy: bestCy };
