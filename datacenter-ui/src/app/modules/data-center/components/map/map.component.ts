@@ -867,6 +867,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   rotateRack(el: MapElement): void {
     el.rotation = ((el.rotation ?? 0) + 90) % 360;
     this.elements = [...this.elements];
+    this.rederiveAllWalls();
     this.scheduleAutosave();
     this.cdr.markForCheck();
   }
@@ -1575,6 +1576,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.startPoint = null;
     this.rackCreationBlocked = false;
     this.rackSnapActive = false;
+    this.rederiveAllWalls();
     this.scheduleAutosave();
   }
 

@@ -18,8 +18,13 @@ interface RackObstacle {
   rotation: number; // degrees, pivot = centre
 }
 
-/** True if (px,py) falls inside the oriented rack rectangle. */
-function isInsideRotatedRect(px: number, py: number, o: RackObstacle): boolean {
+/** True if (px,py) falls inside the oriented rack rectangle expanded by `margin` on all sides. */
+function isInsideRotatedRect(
+  px: number,
+  py: number,
+  o: RackObstacle,
+  margin = 0,
+): boolean {
   const cx = o.x + o.w / 2;
   const cy = o.y + o.h / 2;
   const dx = px - cx;
@@ -29,11 +34,16 @@ function isInsideRotatedRect(px: number, py: number, o: RackObstacle): boolean {
   const sinA = Math.sin(-rad);
   const lx = dx * cosA - dy * sinA;
   const ly = dx * sinA + dy * cosA;
-  return Math.abs(lx) <= o.w / 2 && Math.abs(ly) <= o.h / 2;
+  return Math.abs(lx) <= o.w / 2 + margin && Math.abs(ly) <= o.h / 2 + margin;
 }
 
-function isInAnyObstacle(px: number, py: number, obs: RackObstacle[]): boolean {
-  return obs.some((o) => isInsideRotatedRect(px, py, o));
+function isInAnyObstacle(
+  px: number,
+  py: number,
+  obs: RackObstacle[],
+  margin = 0,
+): boolean {
+  return obs.some((o) => isInsideRotatedRect(px, py, o, margin));
 }
 
 function signedDistToFace(
@@ -123,6 +133,11 @@ function labelPoint(
   sa: number,
   obstacles: RackObstacle[] = [],
 ): { cx: number; cy: number } {
+  /**
+   * Margin (SVG units = cm) added around each rack when looking for a clear
+   * label anchor. Keeps the label visually separated from rack bodies.
+   */
+  const RACK_MARGIN = 20;
   // 1. Geometric centroid (shoelace formula)
   let cxSum = 0,
     cySum = 0;
@@ -160,7 +175,7 @@ function labelPoint(
     bestCx = (minX + maxX) / 2,
     bestCy = (minY + maxY) / 2;
   const seed = makeCell(bestCx, bestCy, 0, pts, face);
-  if (seed[3] > bestD && !isInAnyObstacle(seed[0], seed[1], obstacles)) {
+  if (seed[3] > bestD && !isInAnyObstacle(seed[0], seed[1], obstacles, RACK_MARGIN)) {
     bestD = seed[3];
     bestCx = seed[0];
     bestCy = seed[1];
@@ -168,7 +183,7 @@ function labelPoint(
 
   while (heap.length > 0) {
     const cell = heapPop(heap);
-    if (cell[3] > bestD && !isInAnyObstacle(cell[0], cell[1], obstacles)) {
+    if (cell[3] > bestD && !isInAnyObstacle(cell[0], cell[1], obstacles, RACK_MARGIN)) {
       bestD = cell[3];
       bestCx = cell[0];
       bestCy = cell[1];
@@ -185,8 +200,8 @@ function labelPoint(
   // 3. Check centroid clearance
   const centDist = signedDistToFace(gcx, gcy, pts, face);
 
-  // Use centroid if it's within 60% of the optimal clearance AND not inside a rack.
-  if (centDist >= bestD * 0.6 && !isInAnyObstacle(gcx, gcy, obstacles)) {
+  // Use centroid if it's within 60% of the optimal clearance AND not inside a rack (with margin).
+  if (centDist >= bestD * 0.6 && !isInAnyObstacle(gcx, gcy, obstacles, RACK_MARGIN)) {
     return { cx: gcx, cy: gcy };
   }
   return { cx: bestCx, cy: bestCy };
