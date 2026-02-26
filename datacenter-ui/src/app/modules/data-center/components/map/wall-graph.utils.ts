@@ -335,6 +335,63 @@ export function computeRooms(elements: MapElement[]): Room[] {
   return rooms;
 }
 
+// ─── Room face polygons ───────────────────────────────────────────────────────
+
+/**
+ * Polygon descriptor for an enclosed room: the shared vertex array and the
+ * ordered index list that forms the face boundary.
+ */
+export interface RoomFace {
+  /** Flat vertex array shared by all faces from the same buildGraph call. */
+  pts: Point[];
+  /** Ordered vertex indices (CCW in Y↓ SVG coordinates → positive signed area). */
+  face: number[];
+}
+
+/**
+ * Returns the polygon vertices for every enclosed room face.
+ * Useful for point-in-polygon tests (e.g. rack placement validation).
+ */
+export function computeRoomFaces(elements: MapElement[]): RoomFace[] {
+  const { pts, edgeList } = buildGraph(elements);
+  if (pts.length < 3 || edgeList.length < 3) return [];
+  const adj = buildAdjacency(pts, edgeList);
+  const visited = new Set<string>();
+  const faces: RoomFace[] = [];
+
+  for (const [ea, eb] of edgeList) {
+    for (const [u0, v0] of [
+      [ea, eb],
+      [eb, ea],
+    ] as [number, number][]) {
+      if (visited.has(`${u0}|${v0}`)) continue;
+      const face: number[] = [];
+      let u = u0,
+        v = v0;
+      for (let step = 0; step < edgeList.length * 2 + 4; step++) {
+        const key = `${u}|${v}`;
+        if (visited.has(key)) break;
+        visited.add(key);
+        face.push(v);
+        const w = nextHalfEdge(u, v, pts, adj);
+        if (w === -1) break;
+        u = v;
+        v = w;
+      }
+      if (face.length < 3) continue;
+      let sa = 0;
+      for (let i = 0; i < face.length; i++) {
+        const j = (i + 1) % face.length;
+        sa += pts[face[i]].x * pts[face[j]].y - pts[face[j]].x * pts[face[i]].y;
+      }
+      sa /= 2;
+      if (sa <= 0) continue; // outer face
+      faces.push({ pts, face });
+    }
+  }
+  return faces;
+}
+
 // ─── Wall merge ───────────────────────────────────────────────────────────────
 
 /**

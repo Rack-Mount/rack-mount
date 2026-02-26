@@ -32,10 +32,13 @@ import {
 } from './wall-display.utils';
 import {
   computeRooms as _computeRooms,
+  computeRoomFaces,
   mergeWalls as _mergeWalls,
   computeJunctionAngles,
   restoreRoomNames,
+  RoomFace,
 } from './wall-graph.utils';
+import { isRackPlacementValid } from './rack-placement.utils';
 import {
   checkIntersections,
   getClosestEdgeSnap,
@@ -73,6 +76,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly RACK_SNAP_RADIUS = 20;
   /** Last known valid (non-overlapping) position while moving a rack */
   private lastValidRackPos: { x: number; y: number } = { x: 0, y: 0 };
+  /** Cached room face polygons — recomputed whenever walls change. */
+  private roomFaces: RoomFace[] = [];
 
   // RackType models for the toolbar (loaded once from API)
   availableRackTypes: RackType[] = [];
@@ -636,6 +641,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       if (el.type === 'wall') this.updateWallDerived(el);
     }
     computeJunctionAngles(this.elements, this.zoom);
+    this.roomFaces = computeRoomFaces(this.elements);
     this.rooms = restoreRoomNames(_computeRooms(this.elements), this.rooms);
     this.scheduleUpdateGrid();
   }
@@ -806,6 +812,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     el.points = newPoints;
     this.updateWallDerived(el);
     this.elements = [...this.elements];
+    this.roomFaces = computeRoomFaces(this.elements);
     this.rooms = restoreRoomNames(_computeRooms(this.elements), this.rooms);
   }
 
@@ -1197,10 +1204,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           if (!result.blocked) {
             el.x = result.x;
             el.y = result.y;
-            this.lastValidRackPos = { x: el.x, y: el.y };
             this.rackSnapActive = result.snapped;
           }
-          // If blocked, keep rack at last valid position (no-op)
+          // If blocked by another rack, keep current position (no-op)
         }
       }
       this.lastMousePosition = point;
@@ -1439,7 +1445,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.currentElement.x = snapResult.x;
       this.currentElement.y = snapResult.y;
       this.rackSnapActive = snapResult.snapped;
-      this.rackCreationBlocked = snapResult.blocked;
+      this.rackCreationBlocked =
+        snapResult.blocked ||
+        !isRackPlacementValid(
+          snapResult.x,
+          snapResult.y,
+          w,
+          h,
+          this.currentElement.rotation ?? 0,
+          this.roomFaces,
+          this.elements,
+        );
     }
   }
 
@@ -1477,6 +1493,31 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           );
         }
       }
+
+      // Validate final rack position: revert if dropped outside any room or on a wall
+      if (this.movingElementId && this.movingElementId !== '__ALL__') {
+        const movedRack = this.elements.find(
+          (e) => e.id === this.movingElementId && e.type === 'rack',
+        );
+        if (
+          movedRack &&
+          !isRackPlacementValid(
+            movedRack.x,
+            movedRack.y,
+            movedRack.width ?? 0,
+            movedRack.height ?? 0,
+            movedRack.rotation ?? 0,
+            this.roomFaces,
+            this.elements,
+          )
+        ) {
+          movedRack.x = this.lastValidRackPos.x;
+          movedRack.y = this.lastValidRackPos.y;
+        } else if (movedRack) {
+          this.lastValidRackPos = { x: movedRack.x, y: movedRack.y };
+        }
+      }
+
       this.isDrawing = false;
       this.selectedVertex = null;
       this.selectedVertexPeers = [];
