@@ -38,28 +38,40 @@
 
 <!-- content area -->
 <div class="app-content">
-  <!-- Home pane: always mounted, hidden when inactive -->
+  <!-- Home pane: deferred on idle (lazy chunk), kept alive with [hidden] -->
   <div class="content-pane home-pane" [hidden]="activeTabId !== 'home'">
-    <app-home />
+    @defer (on idle) {
+      <app-home />
+    } @placeholder {
+      <div class="loading-state">Caricamento…</div>
+    }
   </div>
 
-  <!-- Room panes: each room has its own map instance, kept alive with [hidden] -->
+  <!-- Room panes: lazy chunk loaded on first tab activation, state preserved by [hidden] -->
   @for (tab of tabService.tabs(); track tab.id) {
     @if (tab.type === "room") {
       <div class="content-pane" [hidden]="activeTabId !== tab.id">
-        <app-map [roomId]="tab.roomId" />
+        @defer (when activeTabId === tab.id; prefetch on idle) {
+          <app-map [roomId]="tab.roomId" />
+        } @placeholder {
+          <div class="loading-state">Apertura room…</div>
+        }
       </div>
     }
   }
 
-  <!-- Rack panes -->
+  <!-- Rack panes: lazy chunk, recreated when tab is active -->
   @for (tab of tabService.tabs(); track tab.id) {
     @if (tab.type === "rack" && activeTabId === tab.id) {
       <div class="content-pane rack-pane">
         @if (tabService.loadingRackTabId() === tab.id) {
           <div class="loading-state">Caricamento rack…</div>
         } @else if (tabService.getRack(tab.id)) {
-          <app-rack [rack]="tabService.getRack(tab.id)!" />
+          @defer (on immediate) {
+            <app-rack [rack]="tabService.getRack(tab.id)!" />
+          } @placeholder {
+            <div class="loading-state">Caricamento rack…</div>
+          }
         } @else {
           <div class="loading-state">Rack non trovato.</div>
         }
@@ -67,3 +79,4 @@
     }
   }
 </div>
+
