@@ -92,8 +92,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-12px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
 }
 
 /* ── Stats row ── */
@@ -302,8 +307,12 @@
 
 /* ── Skeleton loading ── */
 @keyframes shimmer {
-  from { background-position: -600px 0; }
-  to   { background-position: 600px 0; }
+  from {
+    background-position: -600px 0;
+  }
+  to {
+    background-position: 600px 0;
+  }
 }
 
 .skeleton-card {
