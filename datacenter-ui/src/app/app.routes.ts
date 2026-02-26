@@ -1,46 +1,13 @@
 import { Routes } from '@angular/router';
 
+/**
+ * Routes are used only for URL state management (no <router-outlet>).
+ * Navigation events update the address bar and trigger AppComponent's
+ * router subscription; AppComponent controls what is rendered directly.
+ */
 export const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () =>
-      import('./modules/core/components/home/home.component').then(
-        (m) => m.HomeComponent,
-      ),
-  },
-  {
-    path: 'rack/:id',
-    loadComponent: () =>
-      import('./modules/data-center/components/rack/rack.component').then(
-        (m) => m.RackComponent,
-      ),
-  },
-  {
-    path: 'map',
-    loadComponent: () =>
-      import('./modules/data-center/components/map/map.component').then(
-        (m) => m.MapComponent,
-      ),
-  },
-  {
-    path: 'map/:id',
-    loadComponent: () =>
-      import('./modules/data-center/components/map/map.component').then(
-        (m) => m.MapComponent,
-      ),
-  },
-  {
-    path: 'not-found',
-    loadComponent: () =>
-      import('./modules/core/components/not-found/not-found.component').then(
-        (m) => m.NotFoundComponent,
-      ),
-  },
-  {
-    path: '**',
-    loadComponent: () =>
-      import('./modules/core/components/not-found/not-found.component').then(
-        (m) => m.NotFoundComponent,
-      ),
-  },
+  { path: '', pathMatch: 'full', children: [] },
+  { path: 'map', children: [] },
+  { path: 'map/:id', children: [] },
+  { path: '**', redirectTo: '' },
 ];

@@ -1,0 +1,53 @@
+<div class="workspace">
+  <!-- ── Tab bar ─────────────────────────────────────────────── -->
+  <div class="tab-bar">
+    <div class="tab-list">
+      @for (tab of tabs; track tab.id) {
+        <div
+          class="tab"
+          [class.active]="tab.id === activeTabId"
+          [class.pinned]="tab.pinned"
+          (click)="activate(tab.id)"
+          [title]="tab.label"
+        >
+          <span class="tab-icon">
+            @if (tab.type === 'rack') { 🖥️ } @else { 🗺️ }
+          </span>
+          <span class="tab-label">{{ tab.label }}</span>
+          @if (!tab.pinned) {
+            <button
+              class="tab-close"
+              (click)="closeTab(tab.id, $event)"
+              title="Chiudi scheda"
+            >
+              ×
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ── Content area ───────────────────────────────────────── -->
+  <div class="content-area">
+
+    <!-- Map pane: always mounted to preserve state, hidden via CSS -->
+    <div class="content-pane" [hidden]="activeTabId !== 'map'">
+      <app-map (openRack)="openRackTab($event)" />
+    </div>
+
+    <!-- Rack pane: shown only when a rack tab is active -->
+    @if (activeTab?.type === 'rack') {
+      <div class="content-pane rack-pane">
+        @if (loadingTabId === activeTabId) {
+          <div class="loading-state">Caricamento rack…</div>
+        } @else if (rackCache[activeTabId]) {
+          <app-rack [rack]="rackCache[activeTabId]!" />
+        } @else {
+          <div class="loading-state">Rack non trovato.</div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

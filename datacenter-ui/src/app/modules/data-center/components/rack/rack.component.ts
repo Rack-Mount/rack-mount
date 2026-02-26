@@ -41,6 +41,12 @@ export class RackComponent implements OnChanges, OnInit {
   ) {}
 
   ngOnInit(): void {
+    // When rack is supplied via @Input (e.g. from the detail panel),
+    // skip route-based loading entirely — ngOnChanges already called renderRack().
+    if (this.rack) {
+      return;
+    }
+
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
@@ -55,10 +61,6 @@ export class RackComponent implements OnChanges, OnInit {
             });
         }
       });
-
-    if (this.rack) {
-      this.renderRack();
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

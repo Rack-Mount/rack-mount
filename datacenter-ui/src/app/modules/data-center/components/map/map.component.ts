@@ -3,14 +3,17 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
+  Input,
   ViewChild,
   ElementRef,
   AfterViewInit,
   OnDestroy,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { TabService } from '../../../core/services/tab.service';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
 import { LocationService } from '../../../core/api/v1/api/location.service';
@@ -48,14 +51,18 @@ import { getRackSnapResult, RackRect } from './rack-snap.utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
+  private readonly tabService = inject(TabService);
+
   constructor(
     private cdr: ChangeDetectorRef,
     private locationService: LocationService,
     private assetService: AssetService,
-    private route: ActivatedRoute,
     private router: Router,
   ) {}
   selectedTool: string = 'select';
+
+  /** When provided, the map is pre-loaded to this room (tab mode). */
+  @Input() roomId?: number;
 
   // Rack snap / collision feedback
   rackCreationBlocked = false;
@@ -246,7 +253,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   loadLocations(): void {
-    const roomIdFromRoute = this.route.snapshot.paramMap.get('id');
+    // Use @Input roomId if provided, otherwise fall back to URL parsing
+    let roomIdFromRoute: string | null = null;
+    if (this.roomId != null) {
+      roomIdFromRoute = String(this.roomId);
+    } else {
+      const tree = this.router.parseUrl(this.router.url);
+      const segments = tree.root.children['primary']?.segments ?? [];
+      roomIdFromRoute =
+        segments[0]?.path === 'map' && segments[1]?.path ? segments[1].path : null;
+    }
     this.locationService.locationLocationList({}).subscribe({
       next: (data) => {
         this.availableLocations = data.results ?? [];
@@ -1684,6 +1700,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           this.rotateRack(el);
         }
       }
+    }
+  }
+
+  onRackDblClick(event: MouseEvent, el: MapElement): void {
+    if (this.selectedTool !== 'move') return;
+    event.stopPropagation();
+    if (el.rackName) {
+      this.tabService.openRack(el.rackName);
     }
   }
 }

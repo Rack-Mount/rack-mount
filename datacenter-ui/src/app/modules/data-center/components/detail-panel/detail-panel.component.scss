@@ -1,0 +1,145 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.detail-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  border-top: 2px solid #dee2e6;
+}
+
+/* ── Tab bar ─────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  align-items: stretch;
+  background: #f1f3f5;
+  border-bottom: 1px solid #dee2e6;
+  flex-shrink: 0;
+  min-height: 34px;
+}
+
+.tab-list {
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  flex: 1;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  min-width: 100px;
+  max-width: 180px;
+  border-right: 1px solid #dee2e6;
+  cursor: pointer;
+  font-size: 12px;
+  color: #495057;
+  white-space: nowrap;
+  user-select: none;
+  transition: background 0.1s;
+
+  &:hover {
+    background: #e9ecef;
+  }
+
+  &.active {
+    background: #fff;
+    color: #212529;
+    font-weight: 600;
+    border-bottom: 2px solid #007bff;
+    margin-bottom: -1px;
+  }
+
+  &.pinned .tab-icon {
+    opacity: 0.7;
+  }
+}
+
+.tab-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.tab-close {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+
+  &:hover {
+    background: #dee2e6;
+    color: #dc3545;
+  }
+}
+
+.panel-close-btn {
+  flex-shrink: 0;
+  width: 32px;
+  border: none;
+  border-left: 1px solid #dee2e6;
+  background: #f1f3f5;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: #e9ecef;
+    color: #212529;
+  }
+}
+
+/* ── Content area ─────────────────────────────────────────── */
+.tab-content {
+  flex: 1;
+  overflow: auto;
+  padding: 12px 16px;
+}
+
+.overview-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overview-hint {
+  color: #6c757d;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  color: #6c757d;
+  font-size: 13px;
+  font-style: italic;
+}

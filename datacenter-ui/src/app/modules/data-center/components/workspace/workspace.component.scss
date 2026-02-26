@@ -1,12 +1,20 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }
 
-/* ── Global tab bar ───────────────────────────────────────────── */
-.global-tab-bar {
+.workspace {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #f1f3f5;
+}
+
+/* ── Tab bar ─────────────────────────────────────────────── */
+.tab-bar {
   display: flex;
   align-items: stretch;
   background: #2c2c2c;
@@ -89,33 +97,34 @@
   }
 }
 
-/* ── Content area ─────────────────────────────────────────────── */
-.app-content {
+/* ── Content area ─────────────────────────────────────────── */
+.content-area {
   flex: 1;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .content-pane {
   position: absolute;
   inset: 0;
+  flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 
+  // Map pane hidden via [hidden] attribute sets display:none
   &[hidden] {
     display: none !important;
   }
+}
 
-  &.home-pane {
-    overflow: auto;
-  }
-
-  &.rack-pane {
-    overflow: auto;
-    background: #fff;
-    padding: 16px;
-  }
+.rack-pane {
+  background: #fff;
+  overflow: auto;
+  padding: 16px;
+  position: relative;
 }
 
 .loading-state {

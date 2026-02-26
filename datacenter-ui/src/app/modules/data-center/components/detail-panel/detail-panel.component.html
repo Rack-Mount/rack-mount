@@ -1,0 +1,50 @@
+<div class="detail-panel">
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <div class="tab-list">
+      @for (tab of tabs; track tab.id) {
+        <div
+          class="tab"
+          [class.active]="tab.id === activeTabId"
+          [class.pinned]="tab.pinned"
+          (click)="activate(tab.id)"
+          [title]="tab.label"
+        >
+          <span class="tab-icon">
+            @if (tab.type === 'rack') {
+              🖥️
+            } @else {
+              📋
+            }
+          </span>
+          <span class="tab-label">{{ tab.label }}</span>
+          @if (!tab.pinned) {
+            <button
+              class="tab-close"
+              (click)="close(tab.id, $event)"
+              title="Chiudi scheda"
+            >
+              ×
+            </button>
+          }
+        </div>
+      }
+    </div>
+    <button class="panel-close-btn" (click)="closePanel()" title="Chiudi pannello">
+      ↓
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="tab-content">
+    @if (activeTab?.type === 'rack') {
+      @if (loading) {
+        <div class="loading">Caricamento rack…</div>
+      } @else if (activeRack) {
+        <app-rack [rack]="activeRack" />
+      } @else {
+        <div class="loading">Rack non trovato.</div>
+      }
+    }
+  </div>
+</div>

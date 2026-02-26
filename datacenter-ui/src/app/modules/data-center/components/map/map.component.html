@@ -271,6 +271,7 @@
             @if (el.type === "rack") {
               <g
                 (click)="onElementClick($event, el)"
+                (dblclick)="onRackDblClick($event, el)"
                 class="rack-group"
                 [class.selected]="selectedElementId === el.id"
                 [class.moving-snap]="
