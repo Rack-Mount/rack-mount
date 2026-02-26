@@ -100,9 +100,13 @@ export class AppComponent implements OnInit {
     this.tabHistory = this.tabHistory.filter((id) => id !== tabId);
     this.tabService.closeTab(tabId);
     if (wasActive) {
-      const remainingIds = new Set(['home', ...this.tabService.tabs().map((t) => t.id)]);
+      const remainingIds = new Set([
+        'home',
+        ...this.tabService.tabs().map((t) => t.id),
+      ]);
       const previous =
-        [...this.tabHistory].reverse().find((id) => remainingIds.has(id)) ?? 'home';
+        [...this.tabHistory].reverse().find((id) => remainingIds.has(id)) ??
+        'home';
       this.navigateToTab(previous);
     }
     this.cdr.markForCheck();
