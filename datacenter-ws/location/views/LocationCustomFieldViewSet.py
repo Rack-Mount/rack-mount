@@ -12,7 +12,8 @@ class LocationCustomFieldViewSet(viewsets.ModelViewSet):
     queryset = LocationCustomField.objects.select_related('location').all()
     serializer_class = LocationCustomFieldSerializer
     pagination_class = StandardResultsSetPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    filter_backends = (filters.OrderingFilter,
+                       filters.SearchFilter, DjangoFilterBackend)
     filterset_fields = ['location']
     search_fields = ['field_name', 'field_value']
     ordering = ['location__name', 'field_name']

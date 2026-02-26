@@ -12,7 +12,8 @@ class VendorViewSet(viewsets.ModelViewSet):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
     pagination_class = StandardResultsSetPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    filter_backends = (filters.OrderingFilter,
+                       filters.SearchFilter, DjangoFilterBackend)
     ordering = ['name']
     ordering_fields = ['name']
     filterset_fields = ['name']
