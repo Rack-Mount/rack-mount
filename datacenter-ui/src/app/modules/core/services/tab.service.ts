@@ -95,6 +95,21 @@ export class TabService {
     this._activate$.next(tabId);
   }
 
+  /** Creates a rack tab without triggering navigation (used for direct URL restore). */
+  ensureRackTab(rackName: string): void {
+    const tabId = `rack-${rackName}`;
+    if (!this._tabs().find((t) => t.id === tabId)) {
+      this._tabs.update((tabs) => [
+        ...tabs,
+        { id: tabId, label: rackName, type: 'rack', rackName, pinned: false },
+      ]);
+      this.persistTabs();
+    }
+    if (!this.rackCache.has(tabId)) {
+      this.loadRack(tabId, rackName);
+    }
+  }
+
   // ── Close ────────────────────────────────────────────────
 
   closeTab(tabId: string): void {

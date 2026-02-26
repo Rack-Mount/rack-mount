@@ -63,20 +63,25 @@ export class AppComponent implements OnInit {
   private syncFromUrl(): void {
     const tree = this.router.parseUrl(this.router.url);
     const segments = tree.root.children['primary']?.segments ?? [];
-    const tabParam: string | null = tree.queryParams['tab'] ?? null;
 
-    if (segments[0]?.path === 'map') {
+    if (segments[0]?.path === 'rack') {
+      const rackName = segments[1]?.path;
+      if (rackName) {
+        const tabId = `rack-${rackName}`;
+        this.tabService.ensureRackTab(rackName);
+        this.activeTabId = tabId;
+      } else {
+        this.activeTabId = 'home';
+      }
+    } else if (segments[0]?.path === 'map') {
       const rawId = segments[1]?.path;
       const roomId = rawId ? +rawId : NaN;
 
-      if (tabParam?.startsWith('rack-')) {
-        this.activeTabId = tabParam;
-      } else if (!isNaN(roomId)) {
+      if (!isNaN(roomId)) {
         const tabId = `room-${roomId}`;
         this.tabService.ensureRoomTab(roomId, `Room #${roomId}`);
         this.activeTabId = tabId;
       } else {
-        // /map with no room ID — fall back to home
         this.activeTabId = 'home';
       }
     } else {
@@ -123,17 +128,8 @@ export class AppComponent implements OnInit {
       return;
     }
     if (tabId.startsWith('rack-')) {
-      // Rack tabs keep the current room URL
-      const tree = this.router.parseUrl(this.router.url);
-      const segments = tree.root.children['primary']?.segments ?? [];
-      const base =
-        segments[0]?.path === 'map' && segments[1]?.path
-          ? ['/map', segments[1].path]
-          : ['/map'];
-      this.router.navigate(base, {
-        queryParams: { tab: tabId },
-        queryParamsHandling: 'merge',
-      });
+      const rackName = tabId.slice(5);
+      this.router.navigate(['/rack', rackName]);
     }
   }
 }
