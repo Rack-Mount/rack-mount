@@ -412,7 +412,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         // Centre the floor plan after the view has rendered
         setTimeout(() => this.fitToView());
       },
-      error: (err) => console.error('Failed to load floor plan', err),
+      error: (err) => {
+        console.error('Failed to load floor plan', err);
+        if (this.roomId != null) {
+          this.tabService.reportRoomNotFound(id);
+        }
+      },
     });
   }
 

@@ -17,6 +17,19 @@ export class TabService {
   private readonly _activate$ = new Subject<string>();
   readonly activate$ = this._activate$.asObservable();
 
+  /** Emits a rack name whenever its tab was closed due to a load error (not found) */
+  private readonly _rackNotFound$ = new Subject<string>();
+  readonly rackNotFound$ = this._rackNotFound$.asObservable();
+
+  /** Emits a room id whenever its tab was closed due to a load error (not found) */
+  private readonly _roomNotFound$ = new Subject<number>();
+  readonly roomNotFound$ = this._roomNotFound$.asObservable();
+
+  reportRoomNotFound(roomId: number): void {
+    this.closeTab(`room-${roomId}`);
+    this._roomNotFound$.next(roomId);
+  }
+
   readonly tabs = this._tabs.asReadonly();
   readonly loadingRackTabId = this._loadingRackTabId.asReadonly();
 
@@ -127,9 +140,10 @@ export class TabService {
           this._loadingRackTabId.set(null);
       },
       error: () => {
-        this.rackCache.set(tabId, null);
         if (this._loadingRackTabId() === tabId)
           this._loadingRackTabId.set(null);
+        this.closeTab(tabId);
+        this._rackNotFound$.next(rackName);
       },
     });
   }

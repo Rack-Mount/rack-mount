@@ -9,5 +9,6 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', children: [] },
   { path: 'map/:id', children: [] },
   { path: 'rack/:name', children: [] },
-  { path: '**', redirectTo: '' },
+  { path: 'not-found', children: [] },
+  { path: '**', redirectTo: 'not-found' },
 ];

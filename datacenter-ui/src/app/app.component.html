@@ -78,4 +78,9 @@
       </div>
     }
   }
+
+  <!-- Not-found pane -->
+  <div class="content-pane" [hidden]="activeTabId !== 'not-found'">
+    <app-not-found />
+  </div>
 </div>

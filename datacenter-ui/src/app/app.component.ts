@@ -11,13 +11,14 @@ import { HeaderComponent } from './modules/core/components/header/header.compone
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { MapComponent } from './modules/data-center/components/map/map.component';
 import { RackComponent } from './modules/data-center/components/rack/rack.component';
+import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
 import { TabService } from './modules/core/services/tab.service';
 import { PanelTab } from './modules/data-center/components/detail-panel/detail-panel.types';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent, HomeComponent, MapComponent, RackComponent],
+  imports: [HeaderComponent, HomeComponent, MapComponent, RackComponent, NotFoundComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,6 +59,20 @@ export class AppComponent implements OnInit {
       this.pushTabHistory(tabId);
       this.navigateToTab(tabId);
     });
+
+    // When a rack fails to load (not found), close its tab and show 404
+    this.tabService.rackNotFound$.subscribe(() => {
+      this.activeTabId = 'not-found';
+      this.router.navigate(['/not-found']);
+      this.cdr.markForCheck();
+    });
+
+    // When a room fails to load (not found), close its tab and show 404
+    this.tabService.roomNotFound$.subscribe(() => {
+      this.activeTabId = 'not-found';
+      this.router.navigate(['/not-found']);
+      this.cdr.markForCheck();
+    });
   }
 
   private syncFromUrl(): void {
@@ -84,6 +99,8 @@ export class AppComponent implements OnInit {
       } else {
         this.activeTabId = 'home';
       }
+    } else if (segments[0]?.path === 'not-found') {
+      this.activeTabId = 'not-found';
     } else {
       this.activeTabId = 'home';
     }
@@ -95,6 +112,7 @@ export class AppComponent implements OnInit {
   }
 
   private pushTabHistory(tabId: string): void {
+    if (tabId === 'not-found') return;
     this.tabHistory = this.tabHistory.filter((id) => id !== tabId);
     this.tabHistory.push(tabId);
   }
@@ -118,6 +136,7 @@ export class AppComponent implements OnInit {
   }
 
   private navigateToTab(tabId: string): void {
+    if (tabId === 'not-found') return;
     if (tabId === 'home') {
       this.router.navigate(['/']);
       return;
