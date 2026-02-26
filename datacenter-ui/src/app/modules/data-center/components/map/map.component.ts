@@ -88,6 +88,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   availableRackTypes: RackType[] = [];
   selectedRackType: RackType | null = null;
 
+  // Varco (door) settings
+  /** Default door aperture in cm */
+  doorWidth = 100;
+  /** Wall direction while drawing a varco — set on mousedown, cleared on mouseup */
+  private doorSnapDir: { dx: number; dy: number } | null = null;
+  /** Which endpoint of a door is being dragged in move mode: 'start' | 'end' | null */
+  doorDragEndpoint: 'start' | 'end' | null = null;
+
   // Free-rotation drag state
   rotatingElementId: string | null = null;
   private rotateDragStartAngle = 0; // atan2 of cursor relative to rack centre at drag start
@@ -853,6 +861,83 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     return `rotate(${rot},${cx},${cy})`;
   }
 
+  // ── Varco (door) display helpers ────────────────────────────────────────────
+  getDoorLength(el: MapElement): number {
+    return Math.round(Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y));
+  }
+
+  getDoorMidpoint(el: MapElement): { x: number; y: number } {
+    return {
+      x: (el.x + (el.x2 ?? el.x)) / 2,
+      y: (el.y + (el.y2 ?? el.y)) / 2,
+    };
+  }
+
+  /**
+   * Returns the SVG path data for a varco: the door line + perpendicular end-caps.
+   * All geometry is zoom-scaled so the caps stay a fixed screen size.
+   */
+  getDoorPath(el: MapElement): string {
+    const x1 = el.x, y1 = el.y;
+    const x2 = el.x2 ?? el.x, y2 = el.y2 ?? el.y;
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.hypot(dx, dy) || 1;
+    const capLen = 8 / this.zoom;
+    // Perpendicular unit vector
+    const nx = (-dy / len) * capLen;
+    const ny = (dx / len) * capLen;
+    return (
+      `M ${x1 + nx} ${y1 + ny} L ${x1 - nx} ${y1 - ny} ` +
+      `M ${x1} ${y1} L ${x2} ${y2} ` +
+      `M ${x2 + nx} ${y2 + ny} L ${x2 - nx} ${y2 - ny}`
+    );
+  }
+
+  /**
+   * Finds the closest point on any wall segment to `point`.
+   * Always returns the nearest wall point (no distance limit).
+   * Returns null only when there are no walls.
+   */
+  private getDoorWallSnap(
+    point: { x: number; y: number },
+  ): { snapped: { x: number; y: number }; dir: { dx: number; dy: number } } | null {
+    let best: {
+      snapped: { x: number; y: number };
+      dir: { dx: number; dy: number };
+      dist: number;
+    } | null = null;
+
+    for (const el of this.elements) {
+      if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
+      for (let i = 0; i < el.points.length - 1; i++) {
+        const p1 = el.points[i];
+        const p2 = el.points[i + 1];
+        const edx = p2.x - p1.x, edy = p2.y - p1.y;
+        const elen = Math.hypot(edx, edy);
+        if (elen === 0) continue;
+        const t = Math.min(
+          1,
+          Math.max(
+            0,
+            ((point.x - p1.x) * edx + (point.y - p1.y) * edy) / (elen * elen),
+          ),
+        );
+        const sx = p1.x + t * edx, sy = p1.y + t * edy;
+        const dist = Math.hypot(point.x - sx, point.y - sy);
+        if (!best || dist < best.dist) {
+          best = {
+            snapped: { x: sx, y: sy },
+            dir: { dx: edx / elen, dy: edy / elen },
+            dist,
+          };
+        }
+      }
+    }
+    // Always return closest wall point (no radius limit when walls exist)
+    return best ? { snapped: best.snapped, dir: best.dir } : null;
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
   /**
    * Starts a free-rotation drag when the user presses the rotation handle.
    * Rotation follows the cursor angle relative to the rack centre.
@@ -952,6 +1037,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
               this.isDrawing = true;
               return;
             }
+          }
+        }
+      }
+
+      // 1b. Check Door Endpoint Click → drag that endpoint
+      const DOOR_HANDLE_RADIUS = 12 / this.zoom;
+      for (const el of this.elements) {
+        if (el.type === 'door') {
+          const dx1 = dist(point, { x: el.x, y: el.y });
+          const dx2 = dist(point, { x: el.x2 ?? el.x, y: el.y2 ?? el.y });
+          if (dx1 < DOOR_HANDLE_RADIUS || dx2 < DOOR_HANDLE_RADIUS) {
+            this.doorDragEndpoint = dx1 <= dx2 ? 'start' : 'end';
+            this.movingElementId = el.id;
+            this.selectedElementId = el.id;
+            this.isDrawing = true;
+            return;
           }
         }
       }
@@ -1097,13 +1198,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.startPoint = point;
 
     if (this.selectedTool === 'door') {
+      // Snap start point to the nearest wall
+      const wallSnap = this.getDoorWallSnap(point);
+      const start = wallSnap ? wallSnap.snapped : point;
+      this.doorSnapDir = wallSnap ? wallSnap.dir : null;
+      const x2 = this.doorSnapDir
+        ? start.x + this.doorSnapDir.dx * this.doorWidth
+        : start.x;
+      const y2 = this.doorSnapDir
+        ? start.y + this.doorSnapDir.dy * this.doorWidth
+        : start.y;
       this.currentElement = {
         id: Date.now().toString(),
         type: 'door',
-        x: point.x,
-        y: point.y,
-        x2: point.x,
-        y2: point.y,
+        x: start.x,
+        y: start.y,
+        x2,
+        y2,
+        width: this.doorWidth,
       };
     } else if (this.selectedTool === 'rack') {
       const dims = this.getSelectedRackDimensions();
@@ -1218,6 +1330,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           } else {
             el.x = (el.x ?? 0) + dx;
             el.y = (el.y ?? 0) + dy;
+            if (el.type === 'door') {
+              el.x2 = (el.x2 ?? el.x) + dx;
+              el.y2 = (el.y2 ?? el.y) + dy;
+            }
           }
         }
       } else {
@@ -1225,6 +1341,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (el && el.points) {
           el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
           this.updateWallDerived(el);
+        } else if (el && el.type === 'door') {
+          el.x = (el.x ?? 0) + dx;
+          el.y = (el.y ?? 0) + dy;
+          el.x2 = (el.x2 ?? el.x) + dx;
+          el.y2 = (el.y2 ?? el.y) + dy;
         } else if (el && el.type === 'rack') {
           // Rack movement: apply magnetic snap (Shift), grid snap (Alt), and collision check
           let proposedX = el.x + dx;
@@ -1472,11 +1593,47 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Allow dragging for other tools
+    // Door endpoint drag in move mode (no currentElement needed)
+    if (this.doorDragEndpoint && this.movingElementId && this.isDrawing) {
+      const el = this.elements.find((e) => e.id === this.movingElementId);
+      if (el && el.type === 'door') {
+        const wallSnap = this.getDoorWallSnap(point);
+        const snapped = wallSnap ? wallSnap.snapped : point;
+        if (this.doorDragEndpoint === 'start') {
+          el.x = snapped.x;
+          el.y = snapped.y;
+        } else {
+          el.x2 = snapped.x;
+          el.y2 = snapped.y;
+        }
+        el.width = Math.round(Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y));
+        this.elements = [...this.elements];
+      }
+      return;
+    }
+
     if (!this.isDrawing || !this.currentElement || !this.startPoint) return;
 
     if (this.currentElement.type === 'door') {
-      this.currentElement.x2 = point.x;
-      this.currentElement.y2 = point.y;
+      if (this.doorSnapDir) {
+        // Project cursor onto wall direction from the start point
+        const ddx = point.x - this.currentElement.x;
+        const ddy = point.y - this.currentElement.y;
+        const t = Math.max(
+          0,
+          ddx * this.doorSnapDir.dx + ddy * this.doorSnapDir.dy,
+        );
+        this.currentElement.x2 = this.currentElement.x + this.doorSnapDir.dx * t;
+        this.currentElement.y2 = this.currentElement.y + this.doorSnapDir.dy * t;
+        this.currentElement.width = t;
+      } else {
+        this.currentElement.x2 = point.x;
+        this.currentElement.y2 = point.y;
+        this.currentElement.width = Math.hypot(
+          point.x - this.currentElement.x,
+          point.y - this.currentElement.y,
+        );
+      }
     } else if (this.currentElement.type === 'rack') {
       // Translate rack centered on cursor (dimensions are preset; no drag-resize)
       const w = this.currentElement.width ?? 0;
@@ -1581,6 +1738,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
 
+      if (this.doorDragEndpoint) {
+        this.doorDragEndpoint = null;
+        this.movingElementId = null;
+        this.isDrawing = false;
+        this.rederiveAllWalls();
+        this.scheduleAutosave();
+        return;
+      }
+
       this.isDrawing = false;
       this.selectedVertex = null;
       this.selectedVertexPeers = [];
@@ -1638,6 +1804,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.startPoint = null;
     this.rackCreationBlocked = false;
     this.rackSnapActive = false;
+    this.doorSnapDir = null;
     this.rederiveAllWalls();
     this.scheduleAutosave();
   }
@@ -1834,11 +2001,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
         return;
       }
-      // Delete whole element (walls only in move mode; racks only in move mode)
+      // Delete whole element (walls / racks only in move mode; doors in any mode)
       if (this.selectedElementId) {
         const el = this.elements.find((e) => e.id === this.selectedElementId);
         if (el?.type === 'wall' && this.selectedTool !== 'move') return;
         if (el?.type === 'rack' && this.selectedTool !== 'move') return;
+        if (el?.type === 'door' && this.selectedTool !== 'move') return;
         this.elements = this.elements.filter(
           (e) => e.id !== this.selectedElementId,
         );

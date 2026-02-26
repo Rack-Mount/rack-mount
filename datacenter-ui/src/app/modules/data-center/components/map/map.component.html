@@ -83,6 +83,19 @@
           </select>
         }
       }
+      @if (selectedTool === "door") {
+        <span class="rack-picker-sep"></span>
+        <label class="rack-picker-label">🚪 Larghezza varco:</label>
+        <input
+          type="number"
+          class="door-width-input"
+          [(ngModel)]="doorWidth"
+          min="20"
+          max="2000"
+          step="10"
+        />
+        <span class="rack-picker-label">cm</span>
+      }
     </div>
     <svg
       #svgContainer
@@ -259,21 +272,74 @@
                 />
               </ng-container>
             }
-            <!-- Door -->
+            <!-- Varco (door) -->
             @if (el.type === "door") {
-              <ng-container>
+              <g
+                [style.cursor]="selectedTool === 'move' ? 'pointer' : 'default'"
+                (click)="onElementClick($event, el)"
+              >
+                <!-- White gap to visually cut-through the wall -->
                 <line
                   [attr.x1]="el.x"
                   [attr.y1]="el.y"
                   [attr.x2]="el.x2"
                   [attr.y2]="el.y2"
-                  stroke="brown"
-                  [attr.stroke-width]="4 / zoom"
-                  stroke-dasharray="5,5"
-                  [class.selected]="selectedElementId === el.id"
-                  (click)="onElementClick($event, el)"
+                  stroke="white"
+                  [attr.stroke-width]="6 / zoom"
+                  pointer-events="none"
                 />
-              </ng-container>
+                <!-- Transparent hit area (always, for selection clicks) -->
+                <line
+                  [attr.x1]="el.x"
+                  [attr.y1]="el.y"
+                  [attr.x2]="el.x2"
+                  [attr.y2]="el.y2"
+                  stroke="transparent"
+                  [attr.stroke-width]="14 / zoom"
+                  stroke-linecap="round"
+                />
+                <!-- Door line + end caps -->
+                <path
+                  [attr.d]="getDoorPath(el)"
+                  [attr.stroke]="selectedElementId === el.id ? '#007bff' : '#8B4513'"
+                  [attr.stroke-width]="(selectedElementId === el.id ? 3 : 2.5) / zoom"
+                  fill="none"
+                  pointer-events="none"
+                />
+                <!-- Dimension label -->
+                <text
+                  [attr.x]="getDoorMidpoint(el).x"
+                  [attr.y]="getDoorMidpoint(el).y - 10 / zoom"
+                  [attr.font-size]="11 / zoom"
+                  text-anchor="middle"
+                  font-family="sans-serif"
+                  [attr.fill]="selectedElementId === el.id ? '#007bff' : '#8B4513'"
+                  pointer-events="none"
+                >{{ getDoorLength(el) }} cm</text>
+                <!-- Endpoint handles (visible only when selected in move mode) -->
+                @if (selectedElementId === el.id && selectedTool === 'move') {
+                  <circle
+                    [attr.cx]="el.x"
+                    [attr.cy]="el.y"
+                    [attr.r]="6 / zoom"
+                    fill="#007bff"
+                    stroke="white"
+                    [attr.stroke-width]="1.5 / zoom"
+                    style="cursor: move"
+                    pointer-events="all"
+                  />
+                  <circle
+                    [attr.cx]="el.x2"
+                    [attr.cy]="el.y2"
+                    [attr.r]="6 / zoom"
+                    fill="#007bff"
+                    stroke="white"
+                    [attr.stroke-width]="1.5 / zoom"
+                    style="cursor: move"
+                    pointer-events="all"
+                  />
+                }
+              </g>
             }
             <!-- Rack -->
             @if (el.type === "rack") {
@@ -790,16 +856,42 @@
             @if (currentElement && currentElement.type !== "wall") {
               <ng-container>
                 @if (currentElement.type === "door") {
-                  <line
-                    [attr.x1]="currentElement.x"
-                    [attr.y1]="currentElement.y"
-                    [attr.x2]="currentElement.x2"
-                    [attr.y2]="currentElement.y2"
-                    stroke="brown"
-                    [attr.stroke-width]="4 / zoom"
-                    stroke-dasharray="5,5"
-                    opacity="0.5"
-                  />
+                  <g opacity="0.65">
+                    <!-- White gap preview -->
+                    <line
+                      [attr.x1]="currentElement.x"
+                      [attr.y1]="currentElement.y"
+                      [attr.x2]="currentElement.x2"
+                      [attr.y2]="currentElement.y2"
+                      stroke="white"
+                      [attr.stroke-width]="6 / zoom"
+                    />
+                    <!-- Door line + end caps preview -->
+                    <path
+                      [attr.d]="getDoorPath(currentElement)"
+                      stroke="#8B4513"
+                      [attr.stroke-width]="2.5 / zoom"
+                      fill="none"
+                    />
+                    <!-- Dimension label preview -->
+                    <text
+                      [attr.x]="getDoorMidpoint(currentElement).x"
+                      [attr.y]="getDoorMidpoint(currentElement).y - 10 / zoom"
+                      [attr.font-size]="11 / zoom"
+                      text-anchor="middle"
+                      font-family="sans-serif"
+                      fill="#8B4513"
+                    >{{ getDoorLength(currentElement) }} cm</text>
+                    <!-- Start-point position indicator -->
+                    <circle
+                      [attr.cx]="currentElement.x"
+                      [attr.cy]="currentElement.y"
+                      [attr.r]="5 / zoom"
+                      fill="#8B4513"
+                      stroke="white"
+                      [attr.stroke-width]="1.5 / zoom"
+                    />
+                  </g>
                 }
                 @if (currentElement.type === "rack") {
                   <rect

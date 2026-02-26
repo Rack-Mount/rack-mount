@@ -23,7 +23,7 @@ export class MapSidebarComponent {
     { id: 'select', label: 'Sposta', icon: '✥' },
     { id: 'move', label: 'Modifica', icon: '📝' },
     { id: 'wall', label: 'Aggiungi Muro', icon: '🧱' },
-    { id: 'door', label: 'Aggiungi Porta', icon: '🚪' },
+    { id: 'door', label: 'Aggiungi Varco', icon: '🚪' },
     { id: 'text', label: 'Aggiungi Testo', icon: '🔤' },
     { id: 'rack', label: 'Aggiungi Rack', icon: '🖥️' },
   ];

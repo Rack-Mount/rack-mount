@@ -197,6 +197,22 @@
         box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
       }
     }
+
+    .door-width-input {
+      font-size: 13px;
+      padding: 4px 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      background: #fff;
+      width: 80px;
+      text-align: right;
+
+      &:focus {
+        outline: none;
+        border-color: #80bdff;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+      }
+    }
   }
 
   .drawing-area {
