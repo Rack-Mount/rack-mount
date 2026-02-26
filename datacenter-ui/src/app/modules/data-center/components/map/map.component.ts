@@ -44,7 +44,7 @@ import {
   getClosestEdgeSnap,
   getClosestVertex,
 } from './wall-snap.utils';
-import { getRackSnapResult, RackRect } from './rack-snap.utils';
+import { getRackSnapResult, RackRect, ObbRect, isObbBlocked } from './rack-snap.utils';
 
 @Component({
   selector: 'app-map',
@@ -88,6 +88,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private rotateDragStartAngle = 0; // atan2 of cursor relative to rack centre at drag start
   private rotateDragStartRot = 0; // el.rotation at drag start (degrees)
   private rotateDragCenter: { x: number; y: number } | null = null;
+  /** Last OBB-collision-free rotation angle during a free-rotation drag. */
+  private lastValidRackRot = 0;
 
   elements: MapElement[] = [];
 
@@ -860,16 +862,40 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.rotatingElementId = el.id;
     this.rotateDragStartAngle = Math.atan2(point.y - cy, point.x - cx);
     this.rotateDragStartRot = el.rotation ?? 0;
+    this.lastValidRackRot = el.rotation ?? 0;
     this.rotateDragCenter = { x: cx, y: cy };
   }
 
-  /** Rotate 90° CW (keyboard shortcut R). */
+  /** Rotate 90° CW (keyboard shortcut R). Only applies if the new footprint is clear. */
   rotateRack(el: MapElement): void {
-    el.rotation = ((el.rotation ?? 0) + 90) % 360;
+    const newRot = ((el.rotation ?? 0) + 90) % 360;
+    const proposed: ObbRect = {
+      x: el.x,
+      y: el.y,
+      width: el.width ?? 0,
+      height: el.height ?? 0,
+      rotation: newRot,
+    };
+    if (!isObbBlocked(proposed, this.getRackObbs(el.id))) {
+      el.rotation = newRot;
+    }
     this.elements = [...this.elements];
     this.rederiveAllWalls();
     this.scheduleAutosave();
     this.cdr.markForCheck();
+  }
+
+  /** Returns the true OBB (oriented bounding box) of all racks, optionally excluding one by id. */
+  private getRackObbs(excludeId?: string): ObbRect[] {
+    return this.elements
+      .filter((el) => el.type === 'rack' && el.id !== excludeId)
+      .map((el) => ({
+        x: el.x,
+        y: el.y,
+        width: el.width ?? 0,
+        height: el.height ?? 0,
+        rotation: el.rotation ?? 0,
+      }));
   }
 
   onMouseDown(event: MouseEvent) {
@@ -1115,7 +1141,21 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (event.shiftKey) {
           newRot = Math.round(newRot / 15) * 15;
         }
-        el.rotation = newRot;
+        // OBB collision check: only apply rotation if the new footprint is clear
+        const rotObbs = this.getRackObbs(el.id);
+        const rotProposed: ObbRect = {
+          x: el.x,
+          y: el.y,
+          width: el.width ?? 0,
+          height: el.height ?? 0,
+          rotation: newRot,
+        };
+        if (!isObbBlocked(rotProposed, rotObbs)) {
+          el.rotation = newRot;
+          this.lastValidRackRot = newRot;
+        } else {
+          el.rotation = this.lastValidRackRot;
+        }
         this.cdr.markForCheck();
       }
       return;
@@ -1202,7 +1242,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             others,
             snapRadius,
           );
-          if (!result.blocked) {
+          // Use OBB overlap (SAT) for the final blocked decision — more accurate
+          // than AABB vs AABB when racks are rotated.
+          const moveObb: ObbRect = {
+            x: result.x,
+            y: result.y,
+            width: el.width ?? 0,
+            height: el.height ?? 0,
+            rotation: el.rotation ?? 0,
+          };
+          if (!isObbBlocked(moveObb, this.getRackObbs(el.id))) {
             el.x = result.x;
             el.y = result.y;
             this.rackSnapActive = result.snapped;
@@ -1446,8 +1495,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.currentElement.x = snapResult.x;
       this.currentElement.y = snapResult.y;
       this.rackSnapActive = snapResult.snapped;
+      const creationObb: ObbRect = {
+        x: snapResult.x,
+        y: snapResult.y,
+        width: w,
+        height: h,
+        rotation: this.currentElement.rotation ?? 0,
+      };
       this.rackCreationBlocked =
-        snapResult.blocked ||
+        isObbBlocked(creationObb, this.getRackObbs()) ||
         !isRackPlacementValid(
           snapResult.x,
           snapResult.y,
@@ -1472,6 +1528,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.rotatingElementId = null;
       this.rotateDragCenter = null;
       this.elements = [...this.elements];
+      this.rederiveAllWalls();
       this.scheduleAutosave();
       return;
     }

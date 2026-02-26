@@ -6,6 +6,15 @@ export interface RackRect {
   height: number;
 }
 
+/** Oriented bounding box (OBB) — the true rotated footprint of a rack. */
+export interface ObbRect {
+  x: number;       // top-left corner (before rotation)
+  y: number;
+  width: number;
+  height: number;
+  rotation: number; // degrees, pivot = centre
+}
+
 export interface RackSnapResult {
   /** Snapped X position */
   x: number;
@@ -17,10 +26,79 @@ export interface RackSnapResult {
   blocked: boolean;
 }
 
+// ─── SAT OBB collision ────────────────────────────────────────────────────────
+
+/** Returns the 4 world-space corners of an OBB. */
+function getObbCorners(o: ObbRect): [number, number][] {
+  const cx = o.x + o.width / 2;
+  const cy = o.y + o.height / 2;
+  const hw = o.width / 2;
+  const hh = o.height / 2;
+  const cos = Math.cos((o.rotation * Math.PI) / 180);
+  const sin = Math.sin((o.rotation * Math.PI) / 180);
+  // local (±hw, ±hh) → world via: x = cx + lx·cos − ly·sin, y = cy + lx·sin + ly·cos
+  return [
+    [cx - hw * cos + hh * sin, cy - hw * sin - hh * cos], // TL
+    [cx + hw * cos + hh * sin, cy + hw * sin - hh * cos], // TR
+    [cx + hw * cos - hh * sin, cy + hw * sin + hh * cos], // BR
+    [cx - hw * cos - hh * sin, cy - hw * sin + hh * cos], // BL
+  ];
+}
+
+/** Scalar projection interval of corners onto an axis (not normalised — safe for SAT). */
+function projectObb(
+  corners: [number, number][],
+  ax: number,
+  ay: number,
+): [number, number] {
+  let min = Infinity,
+    max = -Infinity;
+  for (const [cx, cy] of corners) {
+    const p = cx * ax + cy * ay;
+    if (p < min) min = p;
+    if (p > max) max = p;
+  }
+  return [min, max];
+}
+
+/**
+ * Returns true when two OBBs overlap (Separating Axis Theorem, 4 axes).
+ * Racks that share an edge but have zero area intersection are NOT considered
+ * overlapping (flush placement is valid).
+ */
+export function obbsOverlap(a: ObbRect, b: ObbRect): boolean {
+  const ca = getObbCorners(a);
+  const cb = getObbCorners(b);
+  // 4 axes to test: local X and Y of each OBB (edge normals)
+  const radA = (a.rotation * Math.PI) / 180;
+  const radB = (b.rotation * Math.PI) / 180;
+  const axes: [number, number][] = [
+    [Math.cos(radA), Math.sin(radA)],   // A local-X
+    [-Math.sin(radA), Math.cos(radA)],  // A local-Y
+    [Math.cos(radB), Math.sin(radB)],   // B local-X
+    [-Math.sin(radB), Math.cos(radB)],  // B local-Y
+  ];
+  for (const [ax, ay] of axes) {
+    const [aMin, aMax] = projectObb(ca, ax, ay);
+    const [bMin, bMax] = projectObb(cb, ax, ay);
+    // Strict comparison: touching boundaries are allowed
+    if (aMax <= bMin || bMax <= aMin) return false; // separating axis found
+  }
+  return true; // no separating axis → overlap
+}
+
+/**
+ * Returns true when `proposed` overlaps any OBB in `others`.
+ */
+export function isObbBlocked(proposed: ObbRect, others: ObbRect[]): boolean {
+  return others.some((o) => obbsOverlap(proposed, o));
+}
+
+// ─── AABB helpers (kept for snap-edge calculation) ─────────────────────────
+
 /**
  * Returns true when two AABBs overlap.
- * Touching edges (shared boundary with zero area intersection) are NOT
- * considered overlapping, so racks placed flush against each other are valid.
+ * Touching edges are NOT considered overlapping.
  */
 export function rectsOverlap(a: RackRect, b: RackRect): boolean {
   return (
