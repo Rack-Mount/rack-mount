@@ -407,6 +407,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           if (bestRoom) bestRoom.name = saved.name;
         }
         this.cdr.markForCheck();
+        // Centre the floor plan after the view has rendered
+        setTimeout(() => this.fitToView());
       },
       error: (err) => console.error('Failed to load floor plan', err),
     });
@@ -649,6 +651,61 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.panX = (svgW - contentW * newZoom) / 2 - minX * newZoom;
     this.panY = (svgH - contentH * newZoom) / 2 - minY * newZoom;
     this.rederiveAllWalls();
+  }
+
+  /**
+   * Moves all floor-plan element coordinates so that the bounding-box
+   * top-left corner lands at (0, 0) — always on the 10 cm grid — then
+   * re-centres the viewport at the current zoom level (no zoom change).
+   */
+  centerAndSnapFloorPlan(): void {
+    if (this.elements.length === 0) return;
+
+    // Compute bounding-box min from all elements
+    const xs: number[] = [];
+    const ys: number[] = [];
+    for (const el of this.elements) {
+      if (el.points && el.points.length > 0) {
+        for (const p of el.points) { xs.push(p.x); ys.push(p.y); }
+      } else {
+        xs.push(el.x, el.x + (el.width ?? 0), el.x2 ?? el.x);
+        ys.push(el.y, el.y + (el.height ?? 0), el.y2 ?? el.y);
+      }
+    }
+    const minX = Math.min(...xs);
+    const minY = Math.min(...ys);
+    const maxX = Math.max(...xs);
+    const maxY = Math.max(...ys);
+
+    // Translate so (minX, minY) → (0, 0) — always on the 10 cm grid
+    const dx = -minX;
+    const dy = -minY;
+
+    for (const el of this.elements) {
+      if (el.points) {
+        el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
+        if (el.type === 'wall') this.updateWallDerived(el);
+      } else {
+        el.x = (el.x ?? 0) + dx;
+        el.y = (el.y ?? 0) + dy;
+        if (el.type === 'door') {
+          el.x2 = (el.x2 ?? el.x) + dx;
+          el.y2 = (el.y2 ?? el.y) + dy;
+        }
+      }
+    }
+    this.elements = [...this.elements];
+    this.rederiveAllWalls();
+
+    // Centre the content at the current zoom level (no zoom change)
+    const contentW = maxX - minX || 1;
+    const contentH = maxY - minY || 1;
+    const svg = this.svgContainer.nativeElement;
+    this.panX = Math.round((svg.clientWidth  - contentW * this.zoom) / 2);
+    this.panY = Math.round((svg.clientHeight - contentH * this.zoom) / 2);
+
+    this.scheduleUpdateGrid();
+    this.scheduleAutosave();
   }
 
   private applyZoom(factor: number, pivotX?: number, pivotY?: number): void {
