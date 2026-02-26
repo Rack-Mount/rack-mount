@@ -1,10 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
+      providers: [provideRouter(routes), provideHttpClient()],
     }).compileComponents();
   });
 
@@ -14,16 +18,17 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'datacenter-ui' title`, () => {
+  it('should show the home tab by default', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('datacenter-ui');
+    expect(app.activeTabId()).toEqual('home');
   });
 
-  it('should render title', () => {
+  it('should include the home tab in the tab list', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, datacenter-ui');
+    const app = fixture.componentInstance;
+    const homeTab = app.tabs().find((t) => t.id === 'home');
+    expect(homeTab).toBeTruthy();
+    expect(homeTab?.pinned).toBeTrue();
   });
 });

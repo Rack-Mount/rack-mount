@@ -1,32 +1,136 @@
-<div class="rack">
-  <table>
-    <thead>
-      <th>
-        <strong>Rack: </strong>{{ rack?.name }} - {{ rack?.location_name }}
-      </th>
-    </thead>
-    @for (rackElem of rackRender; track rackElem.position) {
-      <tr>
-        @if (rackElem.visible) {
-          <td
-            [attr.rowspan]="
-              rackElem.device ? rackElem.device.device_rack_units : 1
-            "
-          >
-            @if (!rackElem.device) {
-              <div class="ru ru1">
-                {{ rackElem.position }}
+<div class="rack-view" [style.--u-height]="uHeightCss()">
+
+  <!-- ── Left column: rack chassis only ──────────────────────── -->
+  <div class="rack-col">
+
+    <!-- Chassis -->
+    <div class="rack-chassis">
+
+      <div class="rack-panel rack-panel--top">
+        <span class="rack-panel__screw"></span>
+        <span class="rack-panel__label">{{ rack()?.name }}</span>
+        <span class="rack-panel__screw"></span>
+      </div>
+
+      <div class="rack-units">
+        @if (loading()) {
+          @for (i of skeletonRows(); track i) {
+            <div class="rack-row rack-row--skeleton" [style.--u-span]="1">
+              <div class="rack-u-num"></div>
+              <div class="rack-slot rack-slot--skeleton"></div>
+              <div class="rack-u-num rack-u-num--r"></div>
+            </div>
+          }
+        } @else if (error()) {
+          <div class="rack-error">
+            <svg viewBox="0 0 20 20" fill="currentColor" class="rack-error__icon">
+              <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+            </svg>
+            <span>Errore nel caricamento delle unità rack</span>
+          </div>
+        } @else {
+          @for (row of rackRender(); track row.position) {
+            @if (row.visible) {
+              <div
+                class="rack-row"
+                [class.rack-row--occupied]="!!row.device"
+                [style.--u-span]="row.device ? row.device.device_rack_units : 1"
+              >
+                <div class="rack-u-num">{{ row.position }}</div>
+                <div class="rack-slot">
+                  @if (row.device) {
+                    <div class="rack-slot__occupied">
+                      <span class="rack-slot__mount rack-slot__mount--l"></span>
+                      <app-device [device]="row.device" [position]="row.position" />
+                      <span class="rack-slot__mount rack-slot__mount--r"></span>
+                    </div>
+                  } @else {
+                    <div class="rack-slot__empty">
+                      <span class="rack-slot__rail rack-slot__rail--l"></span>
+                      <span class="rack-slot__rail rack-slot__rail--r"></span>
+                    </div>
+                  }
+                </div>
+                <div class="rack-u-num rack-u-num--r">{{ row.position }}</div>
               </div>
             }
-            @if (rackElem.device) {
-              <app-device
-                [device]="rackElem.device"
-                [position]="rackElem.position"
-              ></app-device>
-            }
-          </td>
+          }
         }
-      </tr>
+      </div><!-- /rack-units -->
+
+      <div class="rack-panel rack-panel--bottom">
+        <span class="rack-panel__screw"></span>
+        <span class="rack-panel__screw"></span>
+      </div>
+
+    </div><!-- /rack-chassis -->
+  </div><!-- /rack-col -->
+
+  <!-- ── Right column: rack info + device table ──────────────── -->
+  <div class="rack-aside">
+
+    <!-- Rack header: always visible -->
+    <div class="rack-header">
+      <div class="rack-header__top">
+        <span class="rack-header__name">{{ rack()?.name ?? '—' }}</span>
+        @if (rack()?.location_name) {
+          <span class="rack-header__location">{{ rack()?.location_name }}</span>
+        }
+      </div>
+      @if (rack() && !loading()) {
+        <div class="rack-header__stats">
+          <div class="rack-stat">
+            <span class="rack-stat__value">{{ rack()!.model.capacity }}</span>
+            <span class="rack-stat__label">Unità totali</span>
+          </div>
+          <div class="rack-stat rack-stat--used">
+            <span class="rack-stat__value">{{ occupiedUnits() }}</span>
+            <span class="rack-stat__label">Occupate</span>
+          </div>
+          <div class="rack-stat rack-stat--free">
+            <span class="rack-stat__value">{{ freeUnits() }}</span>
+            <span class="rack-stat__label">Libere</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Device table: visible only when data is ready -->
+    @if (!loading() && !error() && deviceRows().length) {
+      <div class="rack-aside__header">
+        <span class="rack-aside__title">Apparati installati</span>
+        <span class="rack-aside__count">{{ deviceRows().length }}</span>
+      </div>
+      <table class="device-table">
+        <thead>
+          <tr>
+            <th class="device-table__th device-table__th--num">U</th>
+            <th class="device-table__th">Hostname</th>
+            <th class="device-table__th">Modello</th>
+            <th class="device-table__th">Vendor</th>
+            <th class="device-table__th">Tipo</th>
+            <th class="device-table__th device-table__th--num">Size</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of deviceRows(); track row.position) {
+            <tr class="device-table__row">
+              <td class="device-table__td device-table__td--num">{{ row.position }}</td>
+              <td class="device-table__td device-table__td--hostname">{{ row.device!.device_hostname || '—' }}</td>
+              <td class="device-table__td">{{ row.device!.device_model || '—' }}</td>
+              <td class="device-table__td">{{ row.device!.device_vendor || '—' }}</td>
+              <td class="device-table__td">
+                <span class="device-table__badge device-table__badge--{{ typeClass(row.device!.device_type) }}">
+                  {{ row.device!.device_type || '—' }}
+                </span>
+              </td>
+              <td class="device-table__td device-table__td--num">{{ row.device!.device_rack_units }}U</td>
+            </tr>
+          }
+        </tbody>
+      </table>
     }
-  </table>
-</div>
+
+  </div><!-- /rack-aside -->
+
+</div><!-- /rack-view -->

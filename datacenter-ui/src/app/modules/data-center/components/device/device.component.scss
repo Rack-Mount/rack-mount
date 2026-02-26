@@ -1,0 +1,238 @@
+@use 'sass:map';
+
+// ─── Type-colour tokens ─────────────────────────────────────────────────────
+$type-colors: (
+  server:   #3b82f6,
+  switch:   #22c55e,
+  router:   #06b6d4,
+  firewall: #f59e0b,
+  storage:  #a855f7,
+  pdu:      #f97316,
+  kvm:      #84cc16,
+  ups:      #ec4899,
+  other:    #6b7280,
+);
+
+// ─── Host ───────────────────────────────────────────────────────────────────
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+// ─── Base device faceplate ───────────────────────────────────────────────────
+.device {
+  --type-color: #{map.get($type-colors, other)};
+
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 28px;
+  background: #2a2a2c;
+  border: 1px solid #3c3c3e;
+  border-radius: 2px;
+  overflow: visible;     // allow tooltip to overflow
+  position: relative;
+  cursor: default;
+  transition: background 120ms ease;
+
+  &:not(.device--has-image):hover {
+    background: #323235;
+  }
+
+  // Generate --type-color CSS var for each device type
+  @each $type, $color in $type-colors {
+    &.device--#{$type} {
+      --type-color: #{$color};
+    }
+  }
+}
+
+// ─── Left accent bar ─────────────────────────────────────────────────────────
+.device__type-bar {
+  flex: 0 0 4px;
+  background: var(--type-color);
+  border-radius: 2px 0 0 2px;
+  z-index: 1;   // stay above the image
+}
+
+// ─── Front-panel image (full-bleed) ──────────────────────────────────────────
+.device__panel {
+  flex: 1 1 auto;
+  position: relative;
+  overflow: hidden;   // clip image inside slot
+  display: flex;
+  align-items: stretch;
+  // Dark chassis background for areas not covered by the image
+  background: #1c1c1e;
+}
+
+.device__panel-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  // cover = fills the full slot area; any excess is cropped at the right edge
+  // (rack photos are full-width fronts so this is visually correct)
+  object-fit: cover;
+  object-position: center left;
+  image-rendering: crisp-edges;
+  filter: brightness(1.05) contrast(1.02);
+  transition: filter 120ms ease;
+
+  .device--has-image:hover & {
+    filter: brightness(0.45) contrast(1.02);
+  }
+}
+
+// ─── Hover overlay (shown only in image mode) ─────────────────────────────────
+.device__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 8px;
+  gap: 2px;
+  // Hidden by default; fades in when parent .device is hovered
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+
+  .device--has-image:hover & {
+    opacity: 1;
+  }
+}
+
+.device__overlay-hostname {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #f5f5f5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+  letter-spacing: 0.02em;
+}
+
+.device__overlay-model {
+  font-size: 0.6rem;
+  color: #d1d5db;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+// ─── Fallback body (icon + text, shown when no image) ─────────────────────────
+.device__body {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.device__icon {
+  flex: 0 0 auto;
+  font-size: 14px;
+  line-height: 1;
+  filter: grayscale(0.2);
+}
+
+// ─── Text info (fallback) ─────────────────────────────────────────────────────
+.device__info {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.device__hostname {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #f0f0f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+}
+
+.device__model {
+  font-size: 0.6rem;
+  color: #8e8e93;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ─── Hover tooltip (fixed-position, escapes all overflow containers) ──────────
+.device__tooltip {
+  position: fixed;
+  // top/left set via [style] binding from getBoundingClientRect()
+  transform: translateY(-50%);
+  z-index: 9999;
+  min-width: 180px;
+  max-width: 260px;
+  background: #1c1c1e;
+  border: 1px solid #48484a;
+  border-radius: 6px;
+  padding: 8px 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+
+  // Arrow pointing left
+  &::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: #48484a;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: calc(100% - 1px);
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: #1c1c1e;
+  }
+}
+
+.device__tooltip-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 2px 0;
+
+  & + & {
+    border-top: 1px solid #2c2c2e;
+  }
+}
+
+.device__tooltip-label {
+  flex: 0 0 44px;
+  font-size: 0.6rem;
+  color: #8e8e93;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.device__tooltip-value {
+  flex: 1;
+  font-size: 0.7rem;
+  color: #f0f0f0;
+  word-break: break-word;
+}

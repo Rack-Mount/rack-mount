@@ -1,18 +1,77 @@
-<div
-  class="asset"
-  (mouseenter)="hostnameVisible = true"
-  (mouseleave)="hostnameVisible = false"
->
-  @if (device) {
-    <div class="ru ru1">
-      <img
-        class="ru ru{{ device.device_rack_units }}"
-        src="{{ serviceUrl }}/files/{{ device.device_image }}"
-        alt="{{ device.device_hostname }}"
-      />
-      @if (hostnameVisible) {
-        <span class="ru1 ru-text">{{ device.device_hostname }}</span>
-      }
-    </div>
-  }
-</div>
+@if (device(); as dev) {
+  <div
+    [class]="'device device--' + typeClass() + (dev.device_image ? ' device--has-image' : '')"
+    (mouseenter)="showTooltip()"
+    (mouseleave)="hideTooltip()"
+  >
+    <!-- Coloured accent bar on the left edge (always visible) -->
+    <div class="device__type-bar" aria-hidden="true"></div>
+
+    @if (dev.device_image) {
+      <!-- ── Front-panel image mode: full-bleed photo ── -->
+      <div class="device__panel">
+        <img
+          class="device__panel-img"
+          [src]="serviceUrl + '/files/' + dev.device_image"
+          [alt]="dev.device_hostname"
+        />
+        <!-- Overlay with info, fades in on hover -->
+        <div class="device__overlay" aria-hidden="true">
+          <span class="device__overlay-hostname">{{ dev.device_hostname }}</span>
+          @if (dev.device_model) {
+            <span class="device__overlay-model">{{ dev.device_model }}</span>
+          }
+        </div>
+      </div>
+    } @else {
+      <!-- ── Fallback: icon + text ── -->
+      <div class="device__body">
+        <span class="device__icon" aria-hidden="true">{{ typeIcon() }}</span>
+        <div class="device__info">
+          <span class="device__hostname">{{ dev.device_hostname }}</span>
+          @if (dev.device_model) {
+            <span class="device__model">{{ dev.device_model }}</span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Hover tooltip (shown for both modes) -->
+    @if (tooltipVisible) {
+      <div class="device__tooltip" role="tooltip"
+           [style.top.px]="tooltipTop"
+           [style.left.px]="tooltipLeft">
+        @if (dev.device_hostname) {
+          <div class="device__tooltip-row">
+            <span class="device__tooltip-label">Host</span>
+            <span class="device__tooltip-value">{{ dev.device_hostname }}</span>
+          </div>
+        }
+        @if (dev.device_model) {
+          <div class="device__tooltip-row">
+            <span class="device__tooltip-label">Model</span>
+            <span class="device__tooltip-value">{{ dev.device_model }}</span>
+          </div>
+        }
+        @if (dev.device_vendor) {
+          <div class="device__tooltip-row">
+            <span class="device__tooltip-label">Vendor</span>
+            <span class="device__tooltip-value">{{ dev.device_vendor }}</span>
+          </div>
+        }
+        @if (dev.device_type) {
+          <div class="device__tooltip-row">
+            <span class="device__tooltip-label">Type</span>
+            <span class="device__tooltip-value">{{ dev.device_type }}</span>
+          </div>
+        }
+        @if (dev.device_rack_units) {
+          <div class="device__tooltip-row">
+            <span class="device__tooltip-label">Units</span>
+            <span class="device__tooltip-value">{{ dev.device_rack_units }}U</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
