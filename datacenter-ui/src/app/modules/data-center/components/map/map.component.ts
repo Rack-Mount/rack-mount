@@ -90,6 +90,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   filteredRooms: DjRoom[] = [];
   selectedLocationId: number | null = null;
   selectedRoomId: number | null = null;
+
+  get selectedLocationName(): string {
+    return this.availableLocations.find((l) => l.id === this.selectedLocationId)?.name ?? '';
+  }
+
+  get selectedRoomName(): string {
+    return this.filteredRooms.find((r) => r.id === this.selectedRoomId)?.name ?? '';
+  }
   saveStatus: 'idle' | 'saving' | 'saved' | 'error' = 'idle';
   private saveStatusTimer: ReturnType<typeof setTimeout> | null = null;
   autosave = false;

@@ -29,6 +29,27 @@
       white-space: nowrap;
     }
 
+    .toolbar-info-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #495057;
+      white-space: nowrap;
+    }
+
+    .toolbar-info-value {
+      font-size: 13px;
+      color: #212529;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .toolbar-info-sep {
+      width: 1px;
+      height: 18px;
+      background: #dee2e6;
+      flex-shrink: 0;
+    }
+
     select {
       font-size: 13px;
       padding: 4px 8px;

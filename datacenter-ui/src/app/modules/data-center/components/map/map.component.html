@@ -8,29 +8,37 @@
   <div class="map-content">
     <!-- Floor plan toolbar -->
     <div class="floor-plan-toolbar">
-      <label for="location-select">Location:</label>
-      <select
-        id="location-select"
-        [ngModel]="selectedLocationId"
-        (ngModelChange)="onLocationSelect($event)"
-      >
-        <option [ngValue]="null">-- Seleziona Location --</option>
-        @for (loc of availableLocations; track loc.id) {
-          <option [ngValue]="loc.id">{{ loc.name }}</option>
-        }
-      </select>
-      <label for="room-select">Room:</label>
-      <select
-        id="room-select"
-        [disabled]="!selectedLocationId"
-        [ngModel]="selectedRoomId"
-        (ngModelChange)="onRoomSelect($event)"
-      >
-        <option [ngValue]="null">-- Seleziona Room --</option>
-        @for (room of filteredRooms; track room.id) {
-          <option [ngValue]="room.id">{{ room.name }}</option>
-        }
-      </select>
+      @if (roomId) {
+        <span class="toolbar-info-label">Location:</span>
+        <span class="toolbar-info-value">{{ selectedLocationName }}</span>
+        <span class="toolbar-info-sep"></span>
+        <span class="toolbar-info-label">Room:</span>
+        <span class="toolbar-info-value">{{ selectedRoomName }}</span>
+      } @else {
+        <label for="location-select">Location:</label>
+        <select
+          id="location-select"
+          [ngModel]="selectedLocationId"
+          (ngModelChange)="onLocationSelect($event)"
+        >
+          <option [ngValue]="null">-- Seleziona Location --</option>
+          @for (loc of availableLocations; track loc.id) {
+            <option [ngValue]="loc.id">{{ loc.name }}</option>
+          }
+        </select>
+        <label for="room-select">Room:</label>
+        <select
+          id="room-select"
+          [disabled]="!selectedLocationId"
+          [ngModel]="selectedRoomId"
+          (ngModelChange)="onRoomSelect($event)"
+        >
+          <option [ngValue]="null">-- Seleziona Room --</option>
+          @for (room of filteredRooms; track room.id) {
+            <option [ngValue]="room.id">{{ room.name }}</option>
+          }
+        </select>
+      }
       <button
         class="btn-save"
         (click)="saveFloorPlan()"
