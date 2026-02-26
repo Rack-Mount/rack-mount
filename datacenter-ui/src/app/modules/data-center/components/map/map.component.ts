@@ -353,8 +353,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (Array.isArray(raw)) {
           // Legacy format: plain MapElement[]
           existing = raw as MapElement[];
-        } else if (raw && typeof raw === 'object' && 'elements' in (raw as object)) {
-          const parsed = raw as { elements: MapElement[]; roomLabels?: { cx: number; cy: number; name: string }[] };
+        } else if (
+          raw &&
+          typeof raw === 'object' &&
+          'elements' in (raw as object)
+        ) {
+          const parsed = raw as {
+            elements: MapElement[];
+            roomLabels?: { cx: number; cy: number; name: string }[];
+          };
           existing = parsed.elements ?? [];
           savedRoomLabels = parsed.roomLabels ?? [];
         } else {
@@ -370,7 +377,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           let bestRoom: (typeof this.rooms)[0] | null = null;
           for (const r of this.rooms) {
             const d = Math.hypot(r.cx - saved.cx, r.cy - saved.cy);
-            if (d < bestDist) { bestDist = d; bestRoom = r; }
+            if (d < bestDist) {
+              bestDist = d;
+              bestRoom = r;
+            }
           }
           if (bestRoom) bestRoom.name = saved.name;
         }
@@ -469,7 +479,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.locationService
       .locationRoomPartialUpdate({
         id: this.selectedRoomId,
-        patchedRoom: { floor_plan_data: { elements: this.elements, roomLabels } as any },
+        patchedRoom: {
+          floor_plan_data: { elements: this.elements, roomLabels } as any,
+        },
       })
       .subscribe({
         next: () => {
