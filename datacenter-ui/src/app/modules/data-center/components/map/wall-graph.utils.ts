@@ -46,6 +46,41 @@ function isInAnyObstacle(
   return obs.some((o) => isInsideRotatedRect(px, py, o, margin));
 }
 
+/**
+ * Signed Euclidean distance from (px,py) to the oriented rack rectangle
+ * expanded by `margin` on every side.
+ *   > 0  →  outside the expanded rect (clearance)
+ *   < 0  →  inside  the expanded rect (overlap)
+ * Because this is the signed distance to a convex set it is Lipschitz-1, so
+ * the polylabel upper-bound formula (d + h·√2) remains valid when this value
+ * is combined with other Lipschitz-1 distances.
+ */
+function signedDistToExpandedRect(
+  px: number,
+  py: number,
+  o: RackObstacle,
+  margin: number,
+): number {
+  const rcx = o.x + o.w / 2;
+  const rcy = o.y + o.h / 2;
+  const cosA = Math.cos((-o.rotation * Math.PI) / 180);
+  const sinA = Math.sin((-o.rotation * Math.PI) / 180);
+  const dx0 = px - rcx;
+  const dy0 = py - rcy;
+  // Rotate into the rack's local axis-aligned frame and take absolute values
+  // (the expanded rect is symmetric about the centre).
+  const lx = Math.abs(dx0 * cosA - dy0 * sinA);
+  const ly = Math.abs(dx0 * sinA + dy0 * cosA);
+  const hw = o.w / 2 + margin;
+  const hh = o.h / 2 + margin;
+  const ex = lx - hw; // negative = inside on this axis
+  const ey = ly - hh;
+  // outside corner: Euclidean; outside one side: that distance; inside: negative
+  const ox = Math.max(ex, 0);
+  const oy = Math.max(ey, 0);
+  return Math.sqrt(ox * ox + oy * oy) + Math.min(Math.max(ex, ey), 0);
+}
+
 function signedDistToFace(
   px: number,
   py: number,
@@ -74,17 +109,6 @@ function signedDistToFace(
     if (d < minD) minD = d;
   }
   return inside ? minD : -minD;
-}
-
-function makeCell(
-  cx: number,
-  cy: number,
-  h: number,
-  pts: Point[],
-  face: number[],
-): Cell {
-  const d = signedDistToFace(cx, cy, pts, face);
-  return [cx, cy, h, d, d + h * SQRT2];
 }
 
 function heapPush(heap: Cell[], cell: Cell): void {
@@ -119,13 +143,23 @@ function heapPop(heap: Cell[]): Cell {
 }
 
 /**
- * Mixed label placement:
- * - Computes the geometric centroid (true visual center of the polygon).
- * - Computes the polylabel result (point farthest from all walls).
- * - Uses the centroid if it is already well inside (≥ 60% of the polylabel
- *   clearance), so regular rooms get a perfectly centered label.
- * - Falls back to polylabel for concave / L-shaped rooms where the centroid
- *   would land on or too close to a wall.
+ * Finds the best label anchor for a room polygon.
+ *
+ * When no racks are present the standard polylabel (pole of inaccessibility)
+ * is used — the point farthest from every wall — with a centroid preference
+ * for regular rectangular rooms.
+ *
+ * When racks are present a *composite distance* is used instead:
+ *
+ *   d_eff(P) = min( d_walls(P),  min_i( d_expandedRack_i(P, RACK_MARGIN) ) )
+ *
+ * Both operands are signed distances to convex sets, hence Lipschitz-1, so
+ * their minimum is also Lipschitz-1.  The polylabel upper-bound inequality
+ *   d_eff(P) ≤ d_eff(cell_centre) + half_size · √2
+ * therefore remains valid, and the algorithm converges correctly to the point
+ * that simultaneously maximises clearance from walls AND from rack bodies.
+ * This is the only correct approach — filtering inside the heap loop would
+ * break early-termination and leave bestD at −∞.
  */
 function labelPoint(
   pts: Point[],
@@ -133,12 +167,10 @@ function labelPoint(
   sa: number,
   obstacles: RackObstacle[] = [],
 ): { cx: number; cy: number } {
-  /**
-   * Margin (SVG units = cm) added around each rack when looking for a clear
-   * label anchor. Keeps the label visually separated from rack bodies.
-   */
-  const RACK_MARGIN = 20;
-  // 1. Geometric centroid (shoelace formula)
+  /** Minimum gap (SVG units = cm) between label anchor and any rack edge. */
+  const RACK_MARGIN = 10;
+
+  // ── 1. Geometric centroid (shoelace) ───────────────────────────────────────
   let cxSum = 0,
     cySum = 0;
   for (let i = 0; i < face.length; i++) {
@@ -151,7 +183,7 @@ function labelPoint(
   const gcx = cxSum / (6 * sa);
   const gcy = cySum / (6 * sa);
 
-  // 2. Polylabel — find the point farthest from all edges
+  // ── 2. Bbox of the face ────────────────────────────────────────────────────
   let minX = Infinity,
     maxX = -Infinity,
     minY = Infinity,
@@ -165,52 +197,59 @@ function labelPoint(
   const cellSize = Math.max(maxX - minX, maxY - minY);
   if (cellSize === 0) return { cx: gcx, cy: gcy };
 
+  // ── 3. Composite distance (wall + rack clearance) ─────────────────────────
+  const effDist = (px: number, py: number): number => {
+    let d = signedDistToFace(px, py, pts, face);
+    for (const o of obstacles)
+      d = Math.min(d, signedDistToExpandedRect(px, py, o, RACK_MARGIN));
+    return d;
+  };
+
+  // makeCell variant that uses effDist; upper-bound formula still holds
+  // because effDist is Lipschitz-1.
+  const makeEffCell = (cx: number, cy: number, h: number): Cell => {
+    const d = effDist(cx, cy);
+    return [cx, cy, h, d, d + h * SQRT2];
+  };
+
+  // ── 4. Polylabel with composite distance ──────────────────────────────────
   const heap: Cell[] = [];
   let h = cellSize / 2;
   for (let x = minX; x < maxX; x += cellSize)
     for (let y = minY; y < maxY; y += cellSize)
-      heapPush(heap, makeCell(x + h, y + h, h, pts, face));
+      heapPush(heap, makeEffCell(x + h, y + h, h));
 
   let bestD = -Infinity,
     bestCx = (minX + maxX) / 2,
     bestCy = (minY + maxY) / 2;
-  const seed = makeCell(bestCx, bestCy, 0, pts, face);
-  if (
-    seed[3] > bestD &&
-    !isInAnyObstacle(seed[0], seed[1], obstacles, RACK_MARGIN)
-  ) {
+  const seed = makeEffCell(bestCx, bestCy, 0);
+  if (seed[3] > bestD) {
     bestD = seed[3];
     bestCx = seed[0];
     bestCy = seed[1];
   }
-
   while (heap.length > 0) {
     const cell = heapPop(heap);
-    if (
-      cell[3] > bestD &&
-      !isInAnyObstacle(cell[0], cell[1], obstacles, RACK_MARGIN)
-    ) {
+    if (cell[3] > bestD) {
       bestD = cell[3];
       bestCx = cell[0];
       bestCy = cell[1];
     }
     if (cell[4] - bestD <= 1.0) continue;
     const ch = cell[2] / 2;
-    heapPush(heap, makeCell(cell[0] - ch, cell[1] - ch, ch, pts, face));
-    heapPush(heap, makeCell(cell[0] + ch, cell[1] - ch, ch, pts, face));
-    heapPush(heap, makeCell(cell[0] - ch, cell[1] + ch, ch, pts, face));
-    heapPush(heap, makeCell(cell[0] + ch, cell[1] + ch, ch, pts, face));
+    heapPush(heap, makeEffCell(cell[0] - ch, cell[1] - ch, ch));
+    heapPush(heap, makeEffCell(cell[0] + ch, cell[1] - ch, ch));
+    heapPush(heap, makeEffCell(cell[0] - ch, cell[1] + ch, ch));
+    heapPush(heap, makeEffCell(cell[0] + ch, cell[1] + ch, ch));
   }
-  // bestD = max clearance from walls (polylabel result)
+  // bestCx/bestCy is the point that maximises min(wall_clearance, rack_clearance).
+  // bestD ≥ 0 means the point is inside the polygon AND outside all expanded racks.
 
-  // 3. Check centroid clearance
-  const centDist = signedDistToFace(gcx, gcy, pts, face);
-
-  // Use centroid if it's within 60% of the optimal clearance AND not inside a rack (with margin).
-  if (
-    centDist >= bestD * 0.6 &&
-    !isInAnyObstacle(gcx, gcy, obstacles, RACK_MARGIN)
-  ) {
+  // ── 5. Prefer centroid for regular (non-concave) rooms ────────────────────
+  // The centroid usually reads better visually; use it when its effective
+  // clearance is at least 60% of the optimum.
+  const centEff = effDist(gcx, gcy);
+  if (centEff >= bestD * 0.6 && centEff > 0) {
     return { cx: gcx, cy: gcy };
   }
   return { cx: bestCx, cy: bestCy };
