@@ -863,7 +863,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   // ── Varco (door) display helpers ────────────────────────────────────────────
   getDoorLength(el: MapElement): number {
-    return Math.round(Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y));
+    return Math.round(
+      Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y),
+    );
   }
 
   getDoorMidpoint(el: MapElement): { x: number; y: number } {
@@ -878,9 +880,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
    * All geometry is zoom-scaled so the caps stay a fixed screen size.
    */
   getDoorPath(el: MapElement): string {
-    const x1 = el.x, y1 = el.y;
-    const x2 = el.x2 ?? el.x, y2 = el.y2 ?? el.y;
-    const dx = x2 - x1, dy = y2 - y1;
+    const x1 = el.x,
+      y1 = el.y;
+    const x2 = el.x2 ?? el.x,
+      y2 = el.y2 ?? el.y;
+    const dx = x2 - x1,
+      dy = y2 - y1;
     const len = Math.hypot(dx, dy) || 1;
     const capLen = 8 / this.zoom;
     // Perpendicular unit vector
@@ -898,9 +903,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
    * Always returns the nearest wall point (no distance limit).
    * Returns null only when there are no walls.
    */
-  private getDoorWallSnap(
-    point: { x: number; y: number },
-  ): { snapped: { x: number; y: number }; dir: { dx: number; dy: number } } | null {
+  private getDoorWallSnap(point: {
+    x: number;
+    y: number;
+  }): {
+    snapped: { x: number; y: number };
+    dir: { dx: number; dy: number };
+  } | null {
     let best: {
       snapped: { x: number; y: number };
       dir: { dx: number; dy: number };
@@ -912,7 +921,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       for (let i = 0; i < el.points.length - 1; i++) {
         const p1 = el.points[i];
         const p2 = el.points[i + 1];
-        const edx = p2.x - p1.x, edy = p2.y - p1.y;
+        const edx = p2.x - p1.x,
+          edy = p2.y - p1.y;
         const elen = Math.hypot(edx, edy);
         if (elen === 0) continue;
         const t = Math.min(
@@ -922,7 +932,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             ((point.x - p1.x) * edx + (point.y - p1.y) * edy) / (elen * elen),
           ),
         );
-        const sx = p1.x + t * edx, sy = p1.y + t * edy;
+        const sx = p1.x + t * edx,
+          sy = p1.y + t * edy;
         const dist = Math.hypot(point.x - sx, point.y - sy);
         if (!best || dist < best.dist) {
           best = {
@@ -1606,7 +1617,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           el.x2 = snapped.x;
           el.y2 = snapped.y;
         }
-        el.width = Math.round(Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y));
+        el.width = Math.round(
+          Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y),
+        );
         this.elements = [...this.elements];
       }
       return;
@@ -1623,8 +1636,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           0,
           ddx * this.doorSnapDir.dx + ddy * this.doorSnapDir.dy,
         );
-        this.currentElement.x2 = this.currentElement.x + this.doorSnapDir.dx * t;
-        this.currentElement.y2 = this.currentElement.y + this.doorSnapDir.dy * t;
+        this.currentElement.x2 =
+          this.currentElement.x + this.doorSnapDir.dx * t;
+        this.currentElement.y2 =
+          this.currentElement.y + this.doorSnapDir.dy * t;
         this.currentElement.width = t;
       } else {
         this.currentElement.x2 = point.x;

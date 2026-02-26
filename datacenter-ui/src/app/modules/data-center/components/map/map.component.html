@@ -301,8 +301,12 @@
                 <!-- Door line + end caps -->
                 <path
                   [attr.d]="getDoorPath(el)"
-                  [attr.stroke]="selectedElementId === el.id ? '#007bff' : '#8B4513'"
-                  [attr.stroke-width]="(selectedElementId === el.id ? 3 : 2.5) / zoom"
+                  [attr.stroke]="
+                    selectedElementId === el.id ? '#007bff' : '#8B4513'
+                  "
+                  [attr.stroke-width]="
+                    (selectedElementId === el.id ? 3 : 2.5) / zoom
+                  "
                   fill="none"
                   pointer-events="none"
                 />
@@ -313,11 +317,15 @@
                   [attr.font-size]="11 / zoom"
                   text-anchor="middle"
                   font-family="sans-serif"
-                  [attr.fill]="selectedElementId === el.id ? '#007bff' : '#8B4513'"
+                  [attr.fill]="
+                    selectedElementId === el.id ? '#007bff' : '#8B4513'
+                  "
                   pointer-events="none"
-                >{{ getDoorLength(el) }} cm</text>
+                >
+                  {{ getDoorLength(el) }} cm
+                </text>
                 <!-- Endpoint handles (visible only when selected in move mode) -->
-                @if (selectedElementId === el.id && selectedTool === 'move') {
+                @if (selectedElementId === el.id && selectedTool === "move") {
                   <circle
                     [attr.cx]="el.x"
                     [attr.cy]="el.y"
@@ -881,7 +889,9 @@
                       text-anchor="middle"
                       font-family="sans-serif"
                       fill="#8B4513"
-                    >{{ getDoorLength(currentElement) }} cm</text>
+                    >
+                      {{ getDoorLength(currentElement) }} cm
+                    </text>
                     <!-- Start-point position indicator -->
                     <circle
                       [attr.cx]="currentElement.x"
