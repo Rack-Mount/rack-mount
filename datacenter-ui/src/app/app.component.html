@@ -13,9 +13,13 @@
         [title]="tab.label"
       >
         <span class="tab-icon">
-          @if (tab.type === 'rack') { 🖥️ }
-          @else if (tab.type === 'room') { 🗺️ }
-          @else { 🏠 }
+          @if (tab.type === "rack") {
+            🖥️
+          } @else if (tab.type === "room") {
+            🗺️
+          } @else {
+            🏠
+          }
         </span>
         <span class="tab-label">{{ tab.label }}</span>
         @if (!tab.pinned) {
@@ -23,7 +27,9 @@
             class="tab-close"
             (click)="closeTab(tab.id, $event)"
             title="Chiudi scheda"
-          >×</button>
+          >
+            ×
+          </button>
         }
       </div>
     }
@@ -32,7 +38,6 @@
 
 <!-- content area -->
 <div class="app-content">
-
   <!-- Home pane: always mounted, hidden when inactive -->
   <div class="content-pane home-pane" [hidden]="activeTabId !== 'home'">
     <app-home />
@@ -40,7 +45,7 @@
 
   <!-- Room panes: each room has its own map instance, kept alive with [hidden] -->
   @for (tab of tabService.tabs(); track tab.id) {
-    @if (tab.type === 'room') {
+    @if (tab.type === "room") {
       <div class="content-pane" [hidden]="activeTabId !== tab.id">
         <app-map [roomId]="tab.roomId" />
       </div>
@@ -49,7 +54,7 @@
 
   <!-- Rack panes -->
   @for (tab of tabService.tabs(); track tab.id) {
-    @if (tab.type === 'rack' && activeTabId === tab.id) {
+    @if (tab.type === "rack" && activeTabId === tab.id) {
       <div class="content-pane rack-pane">
         @if (tabService.loadingRackTabId() === tab.id) {
           <div class="loading-state">Caricamento rack…</div>
@@ -61,5 +66,4 @@
       </div>
     }
   }
-
 </div>

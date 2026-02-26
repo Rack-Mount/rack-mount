@@ -11,7 +11,7 @@
           [title]="tab.label"
         >
           <span class="tab-icon">
-            @if (tab.type === 'rack') {
+            @if (tab.type === "rack") {
               🖥️
             } @else {
               📋
@@ -30,14 +30,18 @@
         </div>
       }
     </div>
-    <button class="panel-close-btn" (click)="closePanel()" title="Chiudi pannello">
+    <button
+      class="panel-close-btn"
+      (click)="closePanel()"
+      title="Chiudi pannello"
+    >
       ↓
     </button>
   </div>
 
   <!-- Content -->
   <div class="tab-content">
-    @if (activeTab?.type === 'rack') {
+    @if (activeTab?.type === "rack") {
       @if (loading) {
         <div class="loading">Caricamento rack…</div>
       } @else if (activeRack) {

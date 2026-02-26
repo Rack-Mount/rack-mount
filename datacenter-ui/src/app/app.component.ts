@@ -27,7 +27,12 @@ export class AppComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   readonly tabService = inject(TabService);
 
-  readonly homeTab: PanelTab = { id: 'home', label: 'Home', type: 'home', pinned: true };
+  readonly homeTab: PanelTab = {
+    id: 'home',
+    label: 'Home',
+    type: 'home',
+    pinned: true,
+  };
 
   get tabs(): PanelTab[] {
     return [this.homeTab, ...this.tabService.tabs()];
@@ -114,4 +119,3 @@ export class AppComponent implements OnInit {
     }
   }
 }
-

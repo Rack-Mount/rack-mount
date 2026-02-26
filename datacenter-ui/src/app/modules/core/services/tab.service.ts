@@ -64,11 +64,13 @@ export class TabService {
     this.assetService.assetRackRetrieve({ name: rackName }).subscribe({
       next: (rack) => {
         this.rackCache.set(tabId, rack);
-        if (this._loadingRackTabId() === tabId) this._loadingRackTabId.set(null);
+        if (this._loadingRackTabId() === tabId)
+          this._loadingRackTabId.set(null);
       },
       error: () => {
         this.rackCache.set(tabId, null);
-        if (this._loadingRackTabId() === tabId) this._loadingRackTabId.set(null);
+        if (this._loadingRackTabId() === tabId)
+          this._loadingRackTabId.set(null);
       },
     });
   }

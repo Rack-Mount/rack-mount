@@ -261,7 +261,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const tree = this.router.parseUrl(this.router.url);
       const segments = tree.root.children['primary']?.segments ?? [];
       roomIdFromRoute =
-        segments[0]?.path === 'map' && segments[1]?.path ? segments[1].path : null;
+        segments[0]?.path === 'map' && segments[1]?.path
+          ? segments[1].path
+          : null;
     }
     this.locationService.locationLocationList({}).subscribe({
       next: (data) => {

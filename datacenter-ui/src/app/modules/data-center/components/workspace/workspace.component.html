@@ -11,7 +11,11 @@
           [title]="tab.label"
         >
           <span class="tab-icon">
-            @if (tab.type === 'rack') { 🖥️ } @else { 🗺️ }
+            @if (tab.type === "rack") {
+              🖥️
+            } @else {
+              🗺️
+            }
           </span>
           <span class="tab-label">{{ tab.label }}</span>
           @if (!tab.pinned) {
@@ -30,14 +34,13 @@
 
   <!-- ── Content area ───────────────────────────────────────── -->
   <div class="content-area">
-
     <!-- Map pane: always mounted to preserve state, hidden via CSS -->
     <div class="content-pane" [hidden]="activeTabId !== 'map'">
       <app-map (openRack)="openRackTab($event)" />
     </div>
 
     <!-- Rack pane: shown only when a rack tab is active -->
-    @if (activeTab?.type === 'rack') {
+    @if (activeTab?.type === "rack") {
       <div class="content-pane rack-pane">
         @if (loadingTabId === activeTabId) {
           <div class="loading-state">Caricamento rack…</div>
@@ -48,6 +51,5 @@
         }
       </div>
     }
-
   </div>
 </div>
