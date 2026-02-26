@@ -2153,6 +2153,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (el?.type === 'wall' && this.selectedTool !== 'move') return;
         if (el?.type === 'rack' && this.selectedTool !== 'move') return;
         if (el?.type === 'door' && this.selectedTool !== 'move') return;
+        if (el?.type === 'rack') {
+          const rackName = el.label ?? el.id;
+          if (!window.confirm(`Eliminare il rack "${rackName}"?`)) return;
+        }
         this.elements = this.elements.filter(
           (e) => e.id !== this.selectedElementId,
         );
