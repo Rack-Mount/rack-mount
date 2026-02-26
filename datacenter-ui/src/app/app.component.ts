@@ -70,7 +70,9 @@ export class AppComponent implements OnInit {
       if (tabParam?.startsWith('rack-')) {
         this.activeTabId = tabParam;
       } else if (!isNaN(roomId)) {
-        this.activeTabId = `room-${roomId}`;
+        const tabId = `room-${roomId}`;
+        this.tabService.ensureRoomTab(roomId, `Room #${roomId}`);
+        this.activeTabId = tabId;
       } else {
         // /map with no room ID — fall back to home
         this.activeTabId = 'home';

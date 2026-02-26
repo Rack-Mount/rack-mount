@@ -31,6 +31,24 @@ export class TabService {
     this._activate$.next(tabId);
   }
 
+  /** Creates a room tab without triggering navigation (used for direct URL restore). */
+  ensureRoomTab(roomId: number, label: string): void {
+    const tabId = `room-${roomId}`;
+    if (!this._tabs().find((t) => t.id === tabId)) {
+      this._tabs.update((tabs) => [
+        ...tabs,
+        { id: tabId, label, type: 'room', roomId, pinned: false },
+      ]);
+    }
+  }
+
+  /** Updates the label of an existing tab (e.g. once the real room name is known). */
+  updateTabLabel(tabId: string, label: string): void {
+    this._tabs.update((tabs) =>
+      tabs.map((t) => (t.id === tabId ? { ...t, label } : t)),
+    );
+  }
+
   // ── Rack tabs ────────────────────────────────────────────
 
   getRack(tabId: string): Rack | null | undefined {

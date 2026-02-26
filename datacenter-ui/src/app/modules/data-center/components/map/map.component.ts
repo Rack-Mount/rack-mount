@@ -299,6 +299,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       if (match) {
         this.selectedLocationId = loc.id ?? null;
         this.filteredRooms = loc.rooms ?? [];
+        // Update tab label with the real room name if opened as a tab
+        if (this.roomId != null && match.name) {
+          this.tabService.updateTabLabel(`room-${roomId}`, match.name);
+        }
         break;
       }
     }
