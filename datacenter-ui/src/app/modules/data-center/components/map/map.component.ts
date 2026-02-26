@@ -95,6 +95,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private doorSnapDir: { dx: number; dy: number } | null = null;
   /** Which endpoint of a door is being dragged in move mode: 'start' | 'end' | null */
   doorDragEndpoint: 'start' | 'end' | null = null;
+  /** Offset (cm along door direction) from door-start to the initial click, used when dragging the full door body */
+  private doorBodyDragOffset = 0;
 
   // Free-rotation drag state
   rotatingElementId: string | null = null;
@@ -422,7 +424,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // Remove rack elements that no longer exist in the backend
     const filtered = elements.filter(
-      (el) => el.type !== 'rack' || (el.rackName != null && backendNames.has(el.rackName)),
+      (el) =>
+        el.type !== 'rack' ||
+        (el.rackName != null && backendNames.has(el.rackName)),
     );
 
     const placedNames = new Set(
@@ -910,10 +914,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
    * Always returns the nearest wall point (no distance limit).
    * Returns null only when there are no walls.
    */
-  private getDoorWallSnap(point: {
-    x: number;
-    y: number;
-  }): {
+  private getDoorWallSnap(point: { x: number; y: number }): {
     snapped: { x: number; y: number };
     dir: { dx: number; dy: number };
   } | null {
@@ -1069,6 +1070,28 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             this.doorDragEndpoint = dx1 <= dx2 ? 'start' : 'end';
             this.movingElementId = el.id;
             this.selectedElementId = el.id;
+            this.isDrawing = true;
+            return;
+          }
+        }
+      }
+
+      // 1c. Check Door Body Click → slide whole door along wall
+      const DOOR_BODY_RADIUS = 12 / this.zoom;
+      for (const el of this.elements) {
+        if (el.type === 'door') {
+          const x2 = el.x2 ?? el.x;
+          const y2 = el.y2 ?? el.y;
+          if (distToSegment(point, { x: el.x, y: el.y }, { x: x2, y: y2 }) < DOOR_BODY_RADIUS) {
+            // Compute how far along the door the click landed
+            const ddx = x2 - el.x;
+            const ddy = y2 - el.y;
+            const dlen = Math.hypot(ddx, ddy) || 1;
+            this.doorBodyDragOffset =
+              ((point.x - el.x) * ddx + (point.y - el.y) * ddy) / dlen;
+            this.movingElementId = el.id;
+            this.selectedElementId = el.id;
+            this.lastMousePosition = point;
             this.isDrawing = true;
             return;
           }
@@ -1360,10 +1383,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
           this.updateWallDerived(el);
         } else if (el && el.type === 'door') {
-          el.x = (el.x ?? 0) + dx;
-          el.y = (el.y ?? 0) + dy;
-          el.x2 = (el.x2 ?? el.x) + dx;
-          el.y2 = (el.y2 ?? el.y) + dy;
+          // Slide whole door along nearest wall
+          const wallSnap = this.getDoorWallSnap(point);
+          if (wallSnap) {
+            const { snapped, dir } = wallSnap;
+            const doorLen = Math.round(
+              Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y),
+            );
+            el.x = snapped.x - dir.dx * this.doorBodyDragOffset;
+            el.y = snapped.y - dir.dy * this.doorBodyDragOffset;
+            el.x2 = el.x + dir.dx * doorLen;
+            el.y2 = el.y + dir.dy * doorLen;
+            el.width = doorLen;
+          } else {
+            el.x = (el.x ?? 0) + dx;
+            el.y = (el.y ?? 0) + dy;
+            el.x2 = (el.x2 ?? el.x) + dx;
+            el.y2 = (el.y2 ?? el.y) + dy;
+          }
         } else if (el && el.type === 'rack') {
           // Rack movement: apply magnetic snap (Shift), grid snap (Alt), and collision check
           let proposedX = el.x + dx;
