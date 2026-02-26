@@ -44,5 +44,5 @@ class RackSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Rack
-        fields = ['name', 'model', 'model_id',
+        fields = ['id', 'name', 'model', 'model_id',
                   'room', 'room_id', 'location_name']

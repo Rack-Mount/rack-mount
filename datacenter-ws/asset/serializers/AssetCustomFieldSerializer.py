@@ -3,9 +3,8 @@ from asset.models import AssetCustomField
 
 
 class AssetCustomFieldSerializer(serializers.ModelSerializer):
-    asset_id = serializers.StringRelatedField(
+    asset_id = serializers.IntegerField(
         source='asset.id',
-        many=False,
         read_only=True
     )
     asset_hostname = serializers.StringRelatedField(

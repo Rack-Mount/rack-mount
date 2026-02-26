@@ -1,21 +1,18 @@
-from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from location.models import LocationCustomField
 from location.serializers import LocationCustomFieldSerializer
+from asset.paginations import StandardResultsSetPagination
 
 
 class LocationCustomFieldViewSet(viewsets.ModelViewSet):
     """
-    A viewset for viewing and editing LocationCustomField instances.
-
-    This viewset provides `list`, `create`, `retrieve`, `update`, and `destroy` actions for the LocationCustomField model.
-
-    Attributes:
-        queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.
-        serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.
-        permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
+    ViewSet for viewing and editing LocationCustomField instances.
     """
-    queryset = LocationCustomField.objects.all()
+    queryset = LocationCustomField.objects.select_related('location').all()
     serializer_class = LocationCustomFieldSerializer
-
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = StandardResultsSetPagination
+    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    filterset_fields = ['location']
+    search_fields = ['field_name', 'field_value']
+    ordering = ['location__name', 'field_name']

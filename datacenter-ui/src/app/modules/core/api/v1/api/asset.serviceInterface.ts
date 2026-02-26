@@ -305,8 +305,10 @@ export interface AssetVendorDestroyRequestParams {
 
 export interface AssetVendorListRequestParams {
     name?: string;
+    ordering?: string;
     page?: number;
     pageSize?: number;
+    search?: string;
 }
 
 export interface AssetVendorPartialUpdateRequestParams {
@@ -714,7 +716,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint post /asset/vendor
 * @param requestParameters
      */
@@ -722,7 +724,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint delete /asset/vendor/{id}
 * @param requestParameters
      */
@@ -730,7 +732,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint get /asset/vendor
 * @param requestParameters
      */
@@ -738,7 +740,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint patch /asset/vendor/{id}
 * @param requestParameters
      */
@@ -746,7 +748,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint get /asset/vendor/{id}
 * @param requestParameters
      */
@@ -754,7 +756,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint put /asset/vendor/{id}
 * @param requestParameters
      */

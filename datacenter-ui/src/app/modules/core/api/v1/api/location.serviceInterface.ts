@@ -56,29 +56,32 @@ export interface LocationLocationUpdateRequestParams {
     location: Location;
 }
 
-export interface LocationLocationcustomfiledCreateRequestParams {
+export interface LocationLocationcustomfieldCreateRequestParams {
     locationCustomField: LocationCustomField;
 }
 
-export interface LocationLocationcustomfiledDestroyRequestParams {
+export interface LocationLocationcustomfieldDestroyRequestParams {
     id: number;
 }
 
-export interface LocationLocationcustomfiledListRequestParams {
-    limit?: number;
-    offset?: number;
+export interface LocationLocationcustomfieldListRequestParams {
+    location?: number;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
 }
 
-export interface LocationLocationcustomfiledPartialUpdateRequestParams {
+export interface LocationLocationcustomfieldPartialUpdateRequestParams {
     id: number;
     patchedLocationCustomField?: PatchedLocationCustomField;
 }
 
-export interface LocationLocationcustomfiledRetrieveRequestParams {
+export interface LocationLocationcustomfieldRetrieveRequestParams {
     id: number;
 }
 
-export interface LocationLocationcustomfiledUpdateRequestParams {
+export interface LocationLocationcustomfieldUpdateRequestParams {
     id: number;
     locationCustomField: LocationCustomField;
 }
@@ -168,51 +171,51 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint post /location/locationcustomfiled
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint post /location/locationcustomfield
 * @param requestParameters
      */
-    locationLocationcustomfiledCreate(requestParameters: LocationLocationcustomfiledCreateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+    locationLocationcustomfieldCreate(requestParameters: LocationLocationcustomfieldCreateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint delete /location/locationcustomfiled/{id}
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint delete /location/locationcustomfield/{id}
 * @param requestParameters
      */
-    locationLocationcustomfiledDestroy(requestParameters: LocationLocationcustomfiledDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+    locationLocationcustomfieldDestroy(requestParameters: LocationLocationcustomfieldDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint get /location/locationcustomfiled
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint get /location/locationcustomfield
 * @param requestParameters
      */
-    locationLocationcustomfiledList(requestParameters: LocationLocationcustomfiledListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedLocationCustomFieldList>;
+    locationLocationcustomfieldList(requestParameters: LocationLocationcustomfieldListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedLocationCustomFieldList>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint patch /location/locationcustomfiled/{id}
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint patch /location/locationcustomfield/{id}
 * @param requestParameters
      */
-    locationLocationcustomfiledPartialUpdate(requestParameters: LocationLocationcustomfiledPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+    locationLocationcustomfieldPartialUpdate(requestParameters: LocationLocationcustomfieldPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint get /location/locationcustomfiled/{id}
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint get /location/locationcustomfield/{id}
 * @param requestParameters
      */
-    locationLocationcustomfiledRetrieve(requestParameters: LocationLocationcustomfiledRetrieveRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+    locationLocationcustomfieldRetrieve(requestParameters: LocationLocationcustomfieldRetrieveRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint put /location/locationcustomfiled/{id}
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint put /location/locationcustomfield/{id}
 * @param requestParameters
      */
-    locationLocationcustomfiledUpdate(requestParameters: LocationLocationcustomfiledUpdateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+    locationLocationcustomfieldUpdate(requestParameters: LocationLocationcustomfieldUpdateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
 
     /**
      * 

@@ -18,4 +18,4 @@ class AssetTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AssetType
-        fields = ['name']
+        fields = ['id', 'name']

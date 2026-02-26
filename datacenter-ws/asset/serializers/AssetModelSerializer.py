@@ -31,6 +31,7 @@ class AssetModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = AssetModel
         fields = [
+            'id',
             'name',
             'vendor',
             'type',

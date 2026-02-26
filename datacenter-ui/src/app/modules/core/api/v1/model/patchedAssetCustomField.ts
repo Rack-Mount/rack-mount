@@ -11,7 +11,7 @@
 
 export interface PatchedAssetCustomField { 
     readonly id?: number;
-    readonly asset_id?: string;
+    readonly asset_id?: number;
     readonly asset_hostname?: string;
     readonly field_name?: string;
     field_value?: string;

@@ -7,7 +7,7 @@
     <div class="ru ru1">
       <img
         class="ru ru{{ device.device_rack_units }}"
-        src="http://localhost:8000/files/{{ device.device_image }}"
+        src="{{ serviceUrl }}/files/{{ device.device_image }}"
         alt="{{ device.device_hostname }}"
       />
       @if (hostnameVisible) {

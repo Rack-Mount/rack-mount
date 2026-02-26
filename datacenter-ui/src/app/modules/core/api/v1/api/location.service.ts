@@ -47,12 +47,12 @@ import {
     LocationLocationPartialUpdateRequestParams,
     LocationLocationRetrieveRequestParams,
     LocationLocationUpdateRequestParams,
-    LocationLocationcustomfiledCreateRequestParams,
-    LocationLocationcustomfiledDestroyRequestParams,
-    LocationLocationcustomfiledListRequestParams,
-    LocationLocationcustomfiledPartialUpdateRequestParams,
-    LocationLocationcustomfiledRetrieveRequestParams,
-    LocationLocationcustomfiledUpdateRequestParams,
+    LocationLocationcustomfieldCreateRequestParams,
+    LocationLocationcustomfieldDestroyRequestParams,
+    LocationLocationcustomfieldListRequestParams,
+    LocationLocationcustomfieldPartialUpdateRequestParams,
+    LocationLocationcustomfieldRetrieveRequestParams,
+    LocationLocationcustomfieldUpdateRequestParams,
     LocationRoomCreateRequestParams,
     LocationRoomDestroyRequestParams,
     LocationRoomListRequestParams,
@@ -532,20 +532,20 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint post /location/locationcustomfiled
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint post /location/locationcustomfield
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public locationLocationcustomfiledCreate(requestParameters: LocationLocationcustomfiledCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
-    public locationLocationcustomfiledCreate(requestParameters: LocationLocationcustomfiledCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
-    public locationLocationcustomfiledCreate(requestParameters: LocationLocationcustomfiledCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
-    public locationLocationcustomfiledCreate(requestParameters: LocationLocationcustomfiledCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfieldCreate(requestParameters: LocationLocationcustomfieldCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
+    public locationLocationcustomfieldCreate(requestParameters: LocationLocationcustomfieldCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
+    public locationLocationcustomfieldCreate(requestParameters: LocationLocationcustomfieldCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
+    public locationLocationcustomfieldCreate(requestParameters: LocationLocationcustomfieldCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const locationCustomField = requestParameters?.locationCustomField;
         if (locationCustomField === null || locationCustomField === undefined) {
-            throw new Error('Required parameter locationCustomField was null or undefined when calling locationLocationcustomfiledCreate.');
+            throw new Error('Required parameter locationCustomField was null or undefined when calling locationLocationcustomfieldCreate.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -587,7 +587,7 @@ export class LocationService extends BaseService implements LocationServiceInter
             }
         }
 
-        let localVarPath = `/location/locationcustomfiled`;
+        let localVarPath = `/location/locationcustomfield`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<LocationCustomField>('post', `${basePath}${localVarPath}`,
             {
@@ -604,20 +604,20 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint delete /location/locationcustomfiled/{id}
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint delete /location/locationcustomfield/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public locationLocationcustomfiledDestroy(requestParameters: LocationLocationcustomfiledDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public locationLocationcustomfiledDestroy(requestParameters: LocationLocationcustomfiledDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public locationLocationcustomfiledDestroy(requestParameters: LocationLocationcustomfiledDestroyRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public locationLocationcustomfiledDestroy(requestParameters: LocationLocationcustomfiledDestroyRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfieldDestroy(requestParameters: LocationLocationcustomfieldDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public locationLocationcustomfieldDestroy(requestParameters: LocationLocationcustomfieldDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public locationLocationcustomfieldDestroy(requestParameters: LocationLocationcustomfieldDestroyRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public locationLocationcustomfieldDestroy(requestParameters: LocationLocationcustomfieldDestroyRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfiledDestroy.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfieldDestroy.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -647,7 +647,7 @@ export class LocationService extends BaseService implements LocationServiceInter
             }
         }
 
-        let localVarPath = `/location/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/locationcustomfield/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
@@ -663,26 +663,29 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint get /location/locationcustomfiled
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint get /location/locationcustomfield
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public locationLocationcustomfiledList(requestParameters?: LocationLocationcustomfiledListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedLocationCustomFieldList>;
-    public locationLocationcustomfiledList(requestParameters?: LocationLocationcustomfiledListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedLocationCustomFieldList>>;
-    public locationLocationcustomfiledList(requestParameters?: LocationLocationcustomfiledListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedLocationCustomFieldList>>;
-    public locationLocationcustomfiledList(requestParameters?: LocationLocationcustomfiledListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        const limit = requestParameters?.limit;
-        const offset = requestParameters?.offset;
+    public locationLocationcustomfieldList(requestParameters?: LocationLocationcustomfieldListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedLocationCustomFieldList>;
+    public locationLocationcustomfieldList(requestParameters?: LocationLocationcustomfieldListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedLocationCustomFieldList>>;
+    public locationLocationcustomfieldList(requestParameters?: LocationLocationcustomfieldListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedLocationCustomFieldList>>;
+    public locationLocationcustomfieldList(requestParameters?: LocationLocationcustomfieldListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const location = requestParameters?.location;
+        const ordering = requestParameters?.ordering;
+        const page = requestParameters?.page;
+        const pageSize = requestParameters?.pageSize;
+        const search = requestParameters?.search;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
         localVarQueryParameters = this.addToHttpParams(
             localVarQueryParameters,
-            'limit',
-            <any>limit,
+            'location',
+            <any>location,
             QueryParamStyle.Form,
             true,
         );
@@ -690,8 +693,35 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         localVarQueryParameters = this.addToHttpParams(
             localVarQueryParameters,
-            'offset',
-            <any>offset,
+            'ordering',
+            <any>ordering,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page',
+            <any>page,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page_size',
+            <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'search',
+            <any>search,
             QueryParamStyle.Form,
             true,
         );
@@ -725,7 +755,7 @@ export class LocationService extends BaseService implements LocationServiceInter
             }
         }
 
-        let localVarPath = `/location/locationcustomfiled`;
+        let localVarPath = `/location/locationcustomfield`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<PaginatedLocationCustomFieldList>('get', `${basePath}${localVarPath}`,
             {
@@ -742,20 +772,20 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint patch /location/locationcustomfiled/{id}
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint patch /location/locationcustomfield/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public locationLocationcustomfiledPartialUpdate(requestParameters: LocationLocationcustomfiledPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
-    public locationLocationcustomfiledPartialUpdate(requestParameters: LocationLocationcustomfiledPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
-    public locationLocationcustomfiledPartialUpdate(requestParameters: LocationLocationcustomfiledPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
-    public locationLocationcustomfiledPartialUpdate(requestParameters: LocationLocationcustomfiledPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfieldPartialUpdate(requestParameters: LocationLocationcustomfieldPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
+    public locationLocationcustomfieldPartialUpdate(requestParameters: LocationLocationcustomfieldPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
+    public locationLocationcustomfieldPartialUpdate(requestParameters: LocationLocationcustomfieldPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
+    public locationLocationcustomfieldPartialUpdate(requestParameters: LocationLocationcustomfieldPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfiledPartialUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfieldPartialUpdate.');
         }
         const patchedLocationCustomField = requestParameters?.patchedLocationCustomField;
 
@@ -798,7 +828,7 @@ export class LocationService extends BaseService implements LocationServiceInter
             }
         }
 
-        let localVarPath = `/location/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/locationcustomfield/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<LocationCustomField>('patch', `${basePath}${localVarPath}`,
             {
@@ -815,20 +845,20 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint get /location/locationcustomfiled/{id}
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint get /location/locationcustomfield/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public locationLocationcustomfiledRetrieve(requestParameters: LocationLocationcustomfiledRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
-    public locationLocationcustomfiledRetrieve(requestParameters: LocationLocationcustomfiledRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
-    public locationLocationcustomfiledRetrieve(requestParameters: LocationLocationcustomfiledRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
-    public locationLocationcustomfiledRetrieve(requestParameters: LocationLocationcustomfiledRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfieldRetrieve(requestParameters: LocationLocationcustomfieldRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
+    public locationLocationcustomfieldRetrieve(requestParameters: LocationLocationcustomfieldRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
+    public locationLocationcustomfieldRetrieve(requestParameters: LocationLocationcustomfieldRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
+    public locationLocationcustomfieldRetrieve(requestParameters: LocationLocationcustomfieldRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfiledRetrieve.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfieldRetrieve.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -859,7 +889,7 @@ export class LocationService extends BaseService implements LocationServiceInter
             }
         }
 
-        let localVarPath = `/location/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/locationcustomfield/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<LocationCustomField>('get', `${basePath}${localVarPath}`,
             {
@@ -875,24 +905,24 @@ export class LocationService extends BaseService implements LocationServiceInter
     }
 
     /**
-     * A viewset for viewing and editing LocationCustomField instances.  This viewset provides &#x60;list&#x60;, &#x60;create&#x60;, &#x60;retrieve&#x60;, &#x60;update&#x60;, and &#x60;destroy&#x60; actions for the LocationCustomField model.  Attributes:     queryset (QuerySet): The queryset that retrieves all LocationCustomField instances.     serializer_class (Serializer): The serializer class used to validate and serialize LocationCustomField instances.     permission_classes (list): The list of permission classes that determine access control. By default, it allows authenticated users to perform any action and unauthenticated users to read-only access.
-     * @endpoint put /location/locationcustomfiled/{id}
+     * ViewSet for viewing and editing LocationCustomField instances.
+     * @endpoint put /location/locationcustomfield/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public locationLocationcustomfiledUpdate(requestParameters: LocationLocationcustomfiledUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
-    public locationLocationcustomfiledUpdate(requestParameters: LocationLocationcustomfiledUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
-    public locationLocationcustomfiledUpdate(requestParameters: LocationLocationcustomfiledUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
-    public locationLocationcustomfiledUpdate(requestParameters: LocationLocationcustomfiledUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public locationLocationcustomfieldUpdate(requestParameters: LocationLocationcustomfieldUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LocationCustomField>;
+    public locationLocationcustomfieldUpdate(requestParameters: LocationLocationcustomfieldUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LocationCustomField>>;
+    public locationLocationcustomfieldUpdate(requestParameters: LocationLocationcustomfieldUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LocationCustomField>>;
+    public locationLocationcustomfieldUpdate(requestParameters: LocationLocationcustomfieldUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const id = requestParameters?.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfiledUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling locationLocationcustomfieldUpdate.');
         }
         const locationCustomField = requestParameters?.locationCustomField;
         if (locationCustomField === null || locationCustomField === undefined) {
-            throw new Error('Required parameter locationCustomField was null or undefined when calling locationLocationcustomfiledUpdate.');
+            throw new Error('Required parameter locationCustomField was null or undefined when calling locationLocationcustomfieldUpdate.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -934,7 +964,7 @@ export class LocationService extends BaseService implements LocationServiceInter
             }
         }
 
-        let localVarPath = `/location/locationcustomfiled/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/location/locationcustomfield/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<LocationCustomField>('put', `${basePath}${localVarPath}`,
             {

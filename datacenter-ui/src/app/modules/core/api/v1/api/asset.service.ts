@@ -3845,7 +3845,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint post /asset/vendor
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -3917,7 +3917,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint delete /asset/vendor/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -3976,7 +3976,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint get /asset/vendor
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -3988,8 +3988,10 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     public assetVendorList(requestParameters?: AssetVendorListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedVendorList>>;
     public assetVendorList(requestParameters?: AssetVendorListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const name = requestParameters?.name;
+        const ordering = requestParameters?.ordering;
         const page = requestParameters?.page;
         const pageSize = requestParameters?.pageSize;
+        const search = requestParameters?.search;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
@@ -3997,6 +3999,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
             localVarQueryParameters,
             'name',
             <any>name,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'ordering',
+            <any>ordering,
             QueryParamStyle.Form,
             true,
         );
@@ -4015,6 +4026,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
             localVarQueryParameters,
             'page_size',
             <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'search',
+            <any>search,
             QueryParamStyle.Form,
             true,
         );
@@ -4065,7 +4085,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint patch /asset/vendor/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4138,7 +4158,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint get /asset/vendor/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4198,7 +4218,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * VendorViewSet is a viewset for handling CRUD operations on Vendor model.  Attributes:     queryset (QuerySet): The queryset that retrieves all Vendor objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize Vendor objects.     pagination_class (Pagination): The pagination class used to paginate the results.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset, in this case, \&#39;name\&#39;.
+     * VendorViewSet handles CRUD operations on the Vendor model.
      * @endpoint put /asset/vendor/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
