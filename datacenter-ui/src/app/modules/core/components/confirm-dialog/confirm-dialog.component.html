@@ -1,0 +1,26 @@
+<div class="cd-overlay" (click)="onOverlayClick($event)">
+  <div class="cd-dialog" role="dialog" aria-modal="true">
+    <div class="cd-header">
+      <span class="cd-title">{{ title }}</span>
+    </div>
+    <div class="cd-body">
+      <p class="cd-message">{{ message }}</p>
+    </div>
+    <div class="cd-footer">
+      @if (cancelLabel) {
+        <button class="cd-btn cd-btn-cancel" (click)="onCancel()">
+          {{ cancelLabel }}
+        </button>
+      }
+      <button
+        #confirmBtn
+        class="cd-btn"
+        [class.cd-btn-danger]="confirmDanger"
+        [class.cd-btn-confirm]="!confirmDanger"
+        (click)="onConfirm()"
+      >
+        {{ confirmLabel }}
+      </button>
+    </div>
+  </div>
+</div>

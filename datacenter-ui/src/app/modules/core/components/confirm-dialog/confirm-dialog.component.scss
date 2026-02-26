@@ -1,0 +1,103 @@
+.cd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: cd-fade-in 0.12s ease;
+}
+
+.cd-dialog {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+  min-width: 320px;
+  max-width: 480px;
+  width: 90%;
+  overflow: hidden;
+  animation: cd-slide-in 0.15s ease;
+}
+
+.cd-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.cd-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cd-body {
+  padding: 16px 20px;
+}
+
+.cd-message {
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.cd-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cd-btn {
+  padding: 7px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+
+  &:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+}
+
+.cd-btn-cancel {
+  background: #f3f4f6;
+  color: #374151;
+
+  &:hover {
+    background: #e5e7eb;
+  }
+}
+
+.cd-btn-confirm {
+  background: #3b82f6;
+  color: #fff;
+
+  &:hover {
+    background: #2563eb;
+  }
+}
+
+.cd-btn-danger {
+  background: #ef4444;
+  color: #fff;
+
+  &:hover {
+    background: #dc2626;
+  }
+}
+
+@keyframes cd-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes cd-slide-in {
+  from { transform: translateY(-12px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}

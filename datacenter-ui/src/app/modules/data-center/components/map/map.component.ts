@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TabService } from '../../../core/services/tab.service';
 import { SettingsService } from '../../../core/services/settings.service';
+import { ConfirmDialogService } from '../../../core/services/confirm-dialog.service';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
 import { LocationService } from '../../../core/api/v1/api/location.service';
@@ -62,6 +63,7 @@ import {
 export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly tabService = inject(TabService);
   readonly settingsService = inject(SettingsService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -2077,7 +2079,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
+  async handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       if (this.selectedTool === 'wall' && this.isDrawing) {
         // Finish polyline on Escape if we have points
@@ -2155,7 +2157,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (el?.type === 'door' && this.selectedTool !== 'move') return;
         if (el?.type === 'rack') {
           const rackName = el.rackName ?? el.id;
-          if (!window.confirm(`Eliminare il rack "${rackName}"?`)) return;
+          const confirmed = await this.confirmDialog.confirm(
+            `Eliminare il rack "${rackName}"?`,
+            { title: 'Elimina rack', confirmLabel: 'Elimina', danger: true },
+          );
+          if (!confirmed) return;
           const deletedId = this.selectedElementId;
           this.assetService.assetRackDestroy({ name: rackName }).subscribe({
             next: () => {
@@ -2169,7 +2175,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             },
             error: (err) => {
               console.error("Errore durante l'eliminazione del rack:", err);
-              alert(`Impossibile eliminare il rack "${rackName}".`);
+              this.confirmDialog.alert(
+                `Impossibile eliminare il rack "${rackName}".`,
+                'Errore',
+              );
             },
           });
           return;
