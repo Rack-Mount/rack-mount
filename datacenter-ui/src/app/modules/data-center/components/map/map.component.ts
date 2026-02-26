@@ -1366,17 +1366,41 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const dy = point.y - this.lastMousePosition.y;
 
       if (this.movingElementId === '__ALL__') {
+        // Find first wall vertex as grid-snap reference
+        let refPoint: { x: number; y: number } | null = null;
+        if (event.altKey) {
+          for (const el of this.elements) {
+            if (el.type === 'wall' && el.points && el.points.length > 0) {
+              refPoint = el.points[0];
+              break;
+            }
+          }
+        }
+
+        let actualDx = dx;
+        let actualDy = dy;
+        if (event.altKey && refPoint) {
+          // Snap the reference vertex to the nearest grid point and derive the real delta
+          const snappedX = this.gridSnap(refPoint.x + dx);
+          const snappedY = this.gridSnap(refPoint.y + dy);
+          actualDx = snappedX - refPoint.x;
+          actualDy = snappedY - refPoint.y;
+        }
+
         // Translate every element together
         for (const el of this.elements) {
           if (el.points) {
-            el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
+            el.points = el.points.map((p) => ({
+              x: p.x + actualDx,
+              y: p.y + actualDy,
+            }));
             if (el.type === 'wall') this.updateWallDerived(el);
           } else {
-            el.x = (el.x ?? 0) + dx;
-            el.y = (el.y ?? 0) + dy;
+            el.x = (el.x ?? 0) + actualDx;
+            el.y = (el.y ?? 0) + actualDy;
             if (el.type === 'door') {
-              el.x2 = (el.x2 ?? el.x) + dx;
-              el.y2 = (el.y2 ?? el.y) + dy;
+              el.x2 = (el.x2 ?? el.x) + actualDx;
+              el.y2 = (el.y2 ?? el.y) + actualDy;
             }
           }
         }
