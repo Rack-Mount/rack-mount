@@ -8,6 +8,34 @@ import { AngleLabel, MapElement, Point, Room } from './map.types';
 type Cell = [number, number, number, number, number];
 const SQRT2 = Math.SQRT2;
 
+// ─── Rack obstacles ───────────────────────────────────────────────────────────
+
+interface RackObstacle {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  rotation: number; // degrees, pivot = centre
+}
+
+/** True if (px,py) falls inside the oriented rack rectangle. */
+function isInsideRotatedRect(px: number, py: number, o: RackObstacle): boolean {
+  const cx = o.x + o.w / 2;
+  const cy = o.y + o.h / 2;
+  const dx = px - cx;
+  const dy = py - cy;
+  const rad = (o.rotation * Math.PI) / 180;
+  const cosA = Math.cos(-rad);
+  const sinA = Math.sin(-rad);
+  const lx = dx * cosA - dy * sinA;
+  const ly = dx * sinA + dy * cosA;
+  return Math.abs(lx) <= o.w / 2 && Math.abs(ly) <= o.h / 2;
+}
+
+function isInAnyObstacle(px: number, py: number, obs: RackObstacle[]): boolean {
+  return obs.some((o) => isInsideRotatedRect(px, py, o));
+}
+
 function signedDistToFace(
   px: number,
   py: number,
@@ -93,6 +121,7 @@ function labelPoint(
   pts: Point[],
   face: number[],
   sa: number,
+  obstacles: RackObstacle[] = [],
 ): { cx: number; cy: number } {
   // 1. Geometric centroid (shoelace formula)
   let cxSum = 0,
@@ -131,7 +160,7 @@ function labelPoint(
     bestCx = (minX + maxX) / 2,
     bestCy = (minY + maxY) / 2;
   const seed = makeCell(bestCx, bestCy, 0, pts, face);
-  if (seed[3] > bestD) {
+  if (seed[3] > bestD && !isInAnyObstacle(seed[0], seed[1], obstacles)) {
     bestD = seed[3];
     bestCx = seed[0];
     bestCy = seed[1];
@@ -139,7 +168,7 @@ function labelPoint(
 
   while (heap.length > 0) {
     const cell = heapPop(heap);
-    if (cell[3] > bestD) {
+    if (cell[3] > bestD && !isInAnyObstacle(cell[0], cell[1], obstacles)) {
       bestD = cell[3];
       bestCx = cell[0];
       bestCy = cell[1];
@@ -156,9 +185,8 @@ function labelPoint(
   // 3. Check centroid clearance
   const centDist = signedDistToFace(gcx, gcy, pts, face);
 
-  // Use centroid if it's within 60% of the optimal clearance — keeps labels
-  // visually centered for regular rooms, defers to polylabel for L/concave rooms.
-  if (centDist >= bestD * 0.6) {
+  // Use centroid if it's within 60% of the optimal clearance AND not inside a rack.
+  if (centDist >= bestD * 0.6 && !isInAnyObstacle(gcx, gcy, obstacles)) {
     return { cx: gcx, cy: gcy };
   }
   return { cx: bestCx, cy: bestCy };
@@ -255,6 +283,17 @@ function nextHalfEdge(
  * (in SVG units²) and the polylabel centroid.
  */
 export function computeRooms(elements: MapElement[]): Room[] {
+  // Extract rack geometries to use as label-placement obstacles
+  const obstacles: RackObstacle[] = elements
+    .filter((e) => e.type === 'rack' && e.x != null)
+    .map((e) => ({
+      x: e.x!,
+      y: e.y!,
+      w: e.width ?? 0,
+      h: e.height ?? 0,
+      rotation: e.rotation ?? 0,
+    }));
+
   const { pts, edgeList } = buildGraph(elements);
   if (pts.length < 3 || edgeList.length < 3) return [];
 
@@ -289,7 +328,7 @@ export function computeRooms(elements: MapElement[]): Room[] {
       }
       sa /= 2;
       if (sa <= 0) continue; // outer face in screen coords (Y↓)
-      const { cx, cy } = labelPoint(pts, face, sa);
+      const { cx, cy } = labelPoint(pts, face, sa, obstacles);
       rooms.push({ area: sa, cx, cy });
     }
   }
