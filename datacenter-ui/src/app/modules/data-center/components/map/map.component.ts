@@ -2191,7 +2191,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onRackDblClick(event: MouseEvent, el: MapElement): void {
-    if (this.selectedTool !== 'move') return;
+    if (this.selectedTool !== 'move' && this.selectedTool !== 'select') return;
     event.stopPropagation();
     if (el.rackName) {
       this.tabService.openRack(el.rackName);
