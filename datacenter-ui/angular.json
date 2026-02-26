@@ -69,7 +69,8 @@
               "buildTarget": "datacenter-ui:build:production"
             },
             "development": {
-              "buildTarget": "datacenter-ui:build:development"
+              "buildTarget": "datacenter-ui:build:development",
+              "hmr": false
             }
           },
           "defaultConfiguration": "development"
