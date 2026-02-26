@@ -112,7 +112,7 @@
   }
 
   &.rack-pane {
-    display: flex;       // so :host (child) can use flex: 1 to fill it
+    display: flex; // so :host (child) can use flex: 1 to fill it
     flex-direction: column;
     overflow: hidden;
     background: #1a1a1a;

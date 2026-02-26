@@ -39,7 +39,7 @@ const RACK_OVERHEAD_PX = 120;
 export class RackComponent {
   readonly rack = input<Rack>();
 
-  private readonly el         = inject(ElementRef<HTMLElement>);
+  private readonly el = inject(ElementRef<HTMLElement>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly assetService = inject(AssetService);
 
@@ -51,7 +51,7 @@ export class RackComponent {
       // Observe :host itself (not the parent) — :host is flex:1 of rack-pane
       // so its clientHeight is the exact available content height.
       const el = this.el.nativeElement as HTMLElement;
-      const obs = new ResizeObserver(entries => {
+      const obs = new ResizeObserver((entries) => {
         this._paneHeight.set(entries[0]?.contentRect.height ?? 0);
       });
       obs.observe(el);
@@ -65,7 +65,7 @@ export class RackComponent {
    * Clamped to [20, 48] px to remain legible.
    */
   private readonly _uHeightPx = computed(() => {
-    const pane     = this._paneHeight();
+    const pane = this._paneHeight();
     const capacity = this.rack()?.model.capacity ?? 0;
     if (!pane || !capacity) return 24;
     // Overhead: rack-view padding 32 + chassis border 4
@@ -78,7 +78,6 @@ export class RackComponent {
   /** CSS string passed as --u-height custom property on the view wrapper. */
   readonly uHeightCss = computed(() => `${this._uHeightPx()}px`);
 
-
   private readonly _unitsState = toSignal<UnitsState>(
     toObservable(this.rack).pipe(
       switchMap((rack) => {
@@ -86,9 +85,14 @@ export class RackComponent {
         return concat(
           of<UnitsState>({ status: 'loading' }),
           this.assetService
-            .assetRackUnitList({ rackName: rack.name, pageSize: rack.model.capacity })
+            .assetRackUnitList({
+              rackName: rack.name,
+              pageSize: rack.model.capacity,
+            })
             .pipe(
-              map((r): UnitsState => ({ status: 'loaded', results: r.results })),
+              map(
+                (r): UnitsState => ({ status: 'loaded', results: r.results }),
+              ),
               catchError(() => of<UnitsState>({ status: 'error' })),
             ),
         );
@@ -97,7 +101,7 @@ export class RackComponent {
   );
 
   readonly loading = computed(() => this._unitsState()?.status === 'loading');
-  readonly error   = computed(() => this._unitsState()?.status === 'error');
+  readonly error = computed(() => this._unitsState()?.status === 'error');
 
   readonly occupiedUnits = computed(() => {
     const state = this._unitsState();
@@ -105,26 +109,35 @@ export class RackComponent {
     return state.results.reduce((sum, u) => sum + u.device_rack_units, 0);
   });
 
-  readonly freeUnits = computed(() =>
-    (this.rack()?.model.capacity ?? 0) - this.occupiedUnits(),
+  readonly freeUnits = computed(
+    () => (this.rack()?.model.capacity ?? 0) - this.occupiedUnits(),
   );
 
   /** Array of indices used to render the loading skeleton rows. */
   readonly skeletonRows = computed(() =>
-    Array.from({ length: Math.min(this.rack()?.model.capacity ?? 12, 24) }, (_, i) => i),
+    Array.from(
+      { length: Math.min(this.rack()?.model.capacity ?? 12, 24) },
+      (_, i) => i,
+    ),
   );
 
   /** Only the rows that have a device, ordered top-to-bottom. */
   readonly deviceRows = computed(() =>
-    this.rackRender().filter(row => !!row.device),
+    this.rackRender().filter((row) => !!row.device),
   );
 
   /** Map a raw device_type string to the same CSS modifier key used by DeviceComponent. */
   protected typeClass(type?: string): string {
     const t = (type ?? '').toLowerCase();
     const map: Record<string, string> = {
-      server: 'server', switch: 'switch', router: 'router',
-      firewall: 'firewall', storage: 'storage', pdu: 'pdu', kvm: 'kvm', ups: 'ups',
+      server: 'server',
+      switch: 'switch',
+      router: 'router',
+      firewall: 'firewall',
+      storage: 'storage',
+      pdu: 'pdu',
+      kvm: 'kvm',
+      ups: 'ups',
     };
     return map[t] ?? 'other';
   }
@@ -166,4 +179,3 @@ export class RackComponent {
     return rows;
   });
 }
-

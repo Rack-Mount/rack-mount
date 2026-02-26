@@ -1,16 +1,16 @@
-@use 'sass:map';
+@use "sass:map";
 
 // ─── Type-colour tokens ─────────────────────────────────────────────────────
 $type-colors: (
-  server:   #3b82f6,
-  switch:   #22c55e,
-  router:   #06b6d4,
+  server: #3b82f6,
+  switch: #22c55e,
+  router: #06b6d4,
   firewall: #f59e0b,
-  storage:  #a855f7,
-  pdu:      #f97316,
-  kvm:      #84cc16,
-  ups:      #ec4899,
-  other:    #6b7280,
+  storage: #a855f7,
+  pdu: #f97316,
+  kvm: #84cc16,
+  ups: #ec4899,
+  other: #6b7280,
 );
 
 // ─── Host ───────────────────────────────────────────────────────────────────
@@ -33,7 +33,7 @@ $type-colors: (
   background: #2a2a2c;
   border: 1px solid #3c3c3e;
   border-radius: 2px;
-  overflow: visible;     // allow tooltip to overflow
+  overflow: visible; // allow tooltip to overflow
   position: relative;
   cursor: default;
   transition: background 120ms ease;
@@ -55,14 +55,14 @@ $type-colors: (
   flex: 0 0 4px;
   background: var(--type-color);
   border-radius: 2px 0 0 2px;
-  z-index: 1;   // stay above the image
+  z-index: 1; // stay above the image
 }
 
 // ─── Front-panel image (full-bleed) ──────────────────────────────────────────
 .device__panel {
   flex: 1 1 auto;
   position: relative;
-  overflow: hidden;   // clip image inside slot
+  overflow: hidden; // clip image inside slot
   display: flex;
   align-items: stretch;
   // Dark chassis background for areas not covered by the image
@@ -114,7 +114,7 @@ $type-colors: (
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
   letter-spacing: 0.02em;
 }
 
@@ -125,7 +125,7 @@ $type-colors: (
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 // ─── Fallback body (icon + text, shown when no image) ─────────────────────────
@@ -191,7 +191,7 @@ $type-colors: (
 
   // Arrow pointing left
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     right: 100%;
     top: 50%;
@@ -201,7 +201,7 @@ $type-colors: (
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     right: calc(100% - 1px);
     top: 50%;

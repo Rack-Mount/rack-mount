@@ -1,6 +1,10 @@
 @if (device(); as dev) {
   <div
-    [class]="'device device--' + typeClass() + (dev.device_image ? ' device--has-image' : '')"
+    [class]="
+      'device device--' +
+      typeClass() +
+      (dev.device_image ? ' device--has-image' : '')
+    "
     (mouseenter)="showTooltip()"
     (mouseleave)="hideTooltip()"
   >
@@ -17,7 +21,9 @@
         />
         <!-- Overlay with info, fades in on hover -->
         <div class="device__overlay" aria-hidden="true">
-          <span class="device__overlay-hostname">{{ dev.device_hostname }}</span>
+          <span class="device__overlay-hostname">{{
+            dev.device_hostname
+          }}</span>
           @if (dev.device_model) {
             <span class="device__overlay-model">{{ dev.device_model }}</span>
           }
@@ -38,9 +44,12 @@
 
     <!-- Hover tooltip (shown for both modes) -->
     @if (tooltipVisible) {
-      <div class="device__tooltip" role="tooltip"
-           [style.top.px]="tooltipTop"
-           [style.left.px]="tooltipLeft">
+      <div
+        class="device__tooltip"
+        role="tooltip"
+        [style.top.px]="tooltipTop"
+        [style.left.px]="tooltipLeft"
+      >
         @if (dev.device_hostname) {
           <div class="device__tooltip-row">
             <span class="device__tooltip-label">Host</span>
@@ -68,7 +77,9 @@
         @if (dev.device_rack_units) {
           <div class="device__tooltip-row">
             <span class="device__tooltip-label">Units</span>
-            <span class="device__tooltip-value">{{ dev.device_rack_units }}U</span>
+            <span class="device__tooltip-value"
+              >{{ dev.device_rack_units }}U</span
+            >
           </div>
         }
       </div>
