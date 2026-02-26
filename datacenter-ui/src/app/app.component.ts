@@ -39,6 +39,7 @@ export class AppComponent implements OnInit {
   }
 
   activeTabId = 'home';
+  private tabHistory: string[] = ['home'];
 
   ngOnInit(): void {
     // Sync active tab from URL on every navigation
@@ -54,6 +55,7 @@ export class AppComponent implements OnInit {
 
     // When a room/rack is opened, navigate to activate it
     this.tabService.activate$.subscribe((tabId) => {
+      this.pushTabHistory(tabId);
       this.navigateToTab(tabId);
     });
   }
@@ -83,15 +85,25 @@ export class AppComponent implements OnInit {
   }
 
   activateTab(tabId: string): void {
+    this.pushTabHistory(tabId);
     this.navigateToTab(tabId);
+  }
+
+  private pushTabHistory(tabId: string): void {
+    this.tabHistory = this.tabHistory.filter((id) => id !== tabId);
+    this.tabHistory.push(tabId);
   }
 
   closeTab(tabId: string, event: MouseEvent): void {
     event.stopPropagation();
     const wasActive = this.activeTabId === tabId;
+    this.tabHistory = this.tabHistory.filter((id) => id !== tabId);
     this.tabService.closeTab(tabId);
     if (wasActive) {
-      this.navigateToTab('home');
+      const remainingIds = new Set(['home', ...this.tabService.tabs().map((t) => t.id)]);
+      const previous =
+        [...this.tabHistory].reverse().find((id) => remainingIds.has(id)) ?? 'home';
+      this.navigateToTab(previous);
     }
     this.cdr.markForCheck();
   }
