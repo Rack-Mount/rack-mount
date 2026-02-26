@@ -307,10 +307,7 @@
                   pointer-events="none"
                 />
                 <!-- Rotation handle (drag to rotate freely; Shift snaps to 15°) -->
-                @if (
-                  selectedElementId === el.id &&
-                  selectedTool === "move"
-                ) {
+                @if (selectedElementId === el.id && selectedTool === "move") {
                   <line
                     [attr.x1]="el.x + (el.width || 0) / 2"
                     [attr.y1]="el.y"

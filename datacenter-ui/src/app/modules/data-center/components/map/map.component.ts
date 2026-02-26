@@ -1670,7 +1670,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // R → rotate selected rack 90° CW (only in move mode)
     if (event.key === 'r' || event.key === 'R') {
-      if (!event.ctrlKey && !event.metaKey && this.selectedElementId && this.selectedTool === 'move') {
+      if (
+        !event.ctrlKey &&
+        !event.metaKey &&
+        this.selectedElementId &&
+        this.selectedTool === 'move'
+      ) {
         const el = this.elements.find(
           (e) => e.id === this.selectedElementId && e.type === 'rack',
         );
