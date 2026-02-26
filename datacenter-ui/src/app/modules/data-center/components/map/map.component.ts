@@ -44,7 +44,12 @@ import {
   getClosestEdgeSnap,
   getClosestVertex,
 } from './wall-snap.utils';
-import { getRackSnapResult, RackRect, ObbRect, isObbBlocked } from './rack-snap.utils';
+import {
+  getRackSnapResult,
+  RackRect,
+  ObbRect,
+  isObbBlocked,
+} from './rack-snap.utils';
 
 @Component({
   selector: 'app-map',

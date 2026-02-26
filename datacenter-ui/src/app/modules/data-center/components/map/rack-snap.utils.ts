@@ -8,7 +8,7 @@ export interface RackRect {
 
 /** Oriented bounding box (OBB) — the true rotated footprint of a rack. */
 export interface ObbRect {
-  x: number;       // top-left corner (before rotation)
+  x: number; // top-left corner (before rotation)
   y: number;
   width: number;
   height: number;
@@ -73,10 +73,10 @@ export function obbsOverlap(a: ObbRect, b: ObbRect): boolean {
   const radA = (a.rotation * Math.PI) / 180;
   const radB = (b.rotation * Math.PI) / 180;
   const axes: [number, number][] = [
-    [Math.cos(radA), Math.sin(radA)],   // A local-X
-    [-Math.sin(radA), Math.cos(radA)],  // A local-Y
-    [Math.cos(radB), Math.sin(radB)],   // B local-X
-    [-Math.sin(radB), Math.cos(radB)],  // B local-Y
+    [Math.cos(radA), Math.sin(radA)], // A local-X
+    [-Math.sin(radA), Math.cos(radA)], // A local-Y
+    [Math.cos(radB), Math.sin(radB)], // B local-X
+    [-Math.sin(radB), Math.cos(radB)], // B local-Y
   ];
   for (const [ax, ay] of axes) {
     const [aMin, aMax] = projectObb(ca, ax, ay);
