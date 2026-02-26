@@ -2156,6 +2156,23 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (el?.type === 'rack') {
           const rackName = el.rackName ?? el.id;
           if (!window.confirm(`Eliminare il rack "${rackName}"?`)) return;
+          const deletedId = this.selectedElementId;
+          this.assetService.assetRackDestroy({ name: rackName }).subscribe({
+            next: () => {
+              this.elements = this.elements.filter((e) => e.id !== deletedId);
+              if (this.selectedElementId === deletedId) {
+                this.selectedElementId = null;
+              }
+              this.rederiveAllWalls();
+              this.scheduleAutosave();
+              this.cdr.markForCheck();
+            },
+            error: (err) => {
+              console.error("Errore durante l'eliminazione del rack:", err);
+              alert(`Impossibile eliminare il rack "${rackName}".`);
+            },
+          });
+          return;
         }
         this.elements = this.elements.filter(
           (e) => e.id !== this.selectedElementId,
