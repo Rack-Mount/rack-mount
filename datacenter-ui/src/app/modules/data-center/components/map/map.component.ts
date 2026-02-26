@@ -1559,10 +1559,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onElementClick(event: MouseEvent, element: MapElement) {
-    if (
-      this.selectedTool === 'select' ||
-      (this.selectedTool === 'move' && element.type === 'rack')
-    ) {
+    if (this.selectedTool === 'move') {
       event.stopPropagation();
       this.selectedSegment = null;
       this.selectedElementId = element.id;
@@ -1648,10 +1645,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
         return;
       }
-      // Delete whole element (walls only in move mode; other elements in select mode)
+      // Delete whole element (walls only in move mode; racks only in move mode)
       if (this.selectedElementId) {
         const el = this.elements.find((e) => e.id === this.selectedElementId);
         if (el?.type === 'wall' && this.selectedTool !== 'move') return;
+        if (el?.type === 'rack' && this.selectedTool !== 'move') return;
         this.elements = this.elements.filter(
           (e) => e.id !== this.selectedElementId,
         );
@@ -1670,9 +1668,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.finishPolyline();
     }
 
-    // R → rotate selected rack 90° CW (works in both select and move mode)
+    // R → rotate selected rack 90° CW (only in move mode)
     if (event.key === 'r' || event.key === 'R') {
-      if (!event.ctrlKey && !event.metaKey && this.selectedElementId) {
+      if (!event.ctrlKey && !event.metaKey && this.selectedElementId && this.selectedTool === 'move') {
         const el = this.elements.find(
           (e) => e.id === this.selectedElementId && e.type === 'rack',
         );

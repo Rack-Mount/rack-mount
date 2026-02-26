@@ -309,7 +309,7 @@
                 <!-- Rotation handle (drag to rotate freely; Shift snaps to 15°) -->
                 @if (
                   selectedElementId === el.id &&
-                  (selectedTool === "select" || selectedTool === "move")
+                  selectedTool === "move"
                 ) {
                   <line
                     [attr.x1]="el.x + (el.width || 0) / 2"
@@ -345,10 +345,10 @@
                       font-weight="bold"
                       style="user-select: none"
                       [attr.pointer-events]="
-                        selectedTool === 'select' ? 'all' : 'none'
+                        selectedTool === 'move' ? 'all' : 'none'
                       "
                       [style.cursor]="
-                        selectedTool === 'select' ? 'text' : 'default'
+                        selectedTool === 'move' ? 'text' : 'default'
                       "
                       (click)="startEditRack(el, $event)"
                     >
