@@ -19,14 +19,12 @@ import { TabService } from '../../services/tab.service';
 })
 export class HomeComponent implements OnInit {
   private readonly tabService = inject(TabService);
+  private readonly locationService = inject(LocationService);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   locations: DjLocation[] = [];
   totalRooms = 0;
   loading = true;
-
-  constructor(
-    private locationService: LocationService,
-    private cdr: ChangeDetectorRef,
-  ) {}
 
   ngOnInit(): void {
     this.locationService.locationLocationList({}).subscribe({

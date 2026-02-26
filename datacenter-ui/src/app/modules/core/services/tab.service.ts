@@ -17,23 +17,18 @@ export class TabService {
   private readonly _activate$ = new Subject<string>();
   readonly activate$ = this._activate$.asObservable();
 
-  /** Emits a rack name whenever its tab was closed due to a load error (not found) */
+  /** Emits when a rack tab was closed due to a 404 load error */
   private readonly _rackNotFound$ = new Subject<string>();
   readonly rackNotFound$ = this._rackNotFound$.asObservable();
 
-  /** Emits a room id whenever its tab was closed due to a load error (not found) */
+  /** Emits when a room tab was closed due to a 404 load error */
   private readonly _roomNotFound$ = new Subject<number>();
   readonly roomNotFound$ = this._roomNotFound$.asObservable();
-
-  reportRoomNotFound(roomId: number): void {
-    this.closeTab(`room-${roomId}`);
-    this._roomNotFound$.next(roomId);
-  }
 
   readonly tabs = this._tabs.asReadonly();
   readonly loadingRackTabId = this._loadingRackTabId.asReadonly();
 
-  // ── Persistence ──────────────────────────────────────────
+  // ── Persistence ───────────────────────────────────────────
 
   private loadTabsFromStorage(): PanelTab[] {
     try {
@@ -52,16 +47,33 @@ export class TabService {
     }
   }
 
-  // ── Room tabs ────────────────────────────────────────────
+  // ── Tab upsert helpers ────────────────────────────────────
+
+  /** Adds a room tab if not already present. Returns true if newly added. */
+  private upsertRoomTab(tabId: string, roomId: number, label: string): boolean {
+    if (this._tabs().some((t) => t.id === tabId)) return false;
+    this._tabs.update((tabs) => [
+      ...tabs,
+      { id: tabId, label, type: 'room', roomId, pinned: false },
+    ]);
+    return true;
+  }
+
+  /** Adds a rack tab if not already present. Returns true if newly added. */
+  private upsertRackTab(tabId: string, rackName: string): boolean {
+    if (this._tabs().some((t) => t.id === tabId)) return false;
+    this._tabs.update((tabs) => [
+      ...tabs,
+      { id: tabId, label: rackName, type: 'rack', rackName, pinned: false },
+    ]);
+    return true;
+  }
+
+  // ── Room tabs ─────────────────────────────────────────────
 
   openRoom(roomId: number, roomName: string): void {
     const tabId = `room-${roomId}`;
-    if (!this._tabs().find((t) => t.id === tabId)) {
-      this._tabs.update((tabs) => [
-        ...tabs,
-        { id: tabId, label: roomName, type: 'room', roomId, pinned: false },
-      ]);
-    }
+    this.upsertRoomTab(tabId, roomId, roomName);
     this.persistTabs();
     this._activate$.next(tabId);
   }
@@ -69,11 +81,7 @@ export class TabService {
   /** Creates a room tab without triggering navigation (used for direct URL restore). */
   ensureRoomTab(roomId: number, label: string): void {
     const tabId = `room-${roomId}`;
-    if (!this._tabs().find((t) => t.id === tabId)) {
-      this._tabs.update((tabs) => [
-        ...tabs,
-        { id: tabId, label, type: 'room', roomId, pinned: false },
-      ]);
+    if (this.upsertRoomTab(tabId, roomId, label)) {
       this.persistTabs();
     }
   }
@@ -86,21 +94,22 @@ export class TabService {
     this.persistTabs();
   }
 
-  // ── Rack tabs ────────────────────────────────────────────
+  reportRoomNotFound(roomId: number): void {
+    this.closeTab(`room-${roomId}`);
+    this._roomNotFound$.next(roomId);
+  }
+
+  // ── Rack tabs ─────────────────────────────────────────────
 
   getRack(tabId: string): Rack | null | undefined {
-    if (!this.rackCache.has(tabId)) return undefined;
-    return this.rackCache.get(tabId) ?? null;
+    return this.rackCache.has(tabId)
+      ? (this.rackCache.get(tabId) ?? null)
+      : undefined;
   }
 
   openRack(rackName: string): void {
     const tabId = `rack-${rackName}`;
-    if (!this._tabs().find((t) => t.id === tabId)) {
-      this._tabs.update((tabs) => [
-        ...tabs,
-        { id: tabId, label: rackName, type: 'rack', rackName, pinned: false },
-      ]);
-    }
+    this.upsertRackTab(tabId, rackName);
     if (!this.rackCache.has(tabId)) {
       this.loadRack(tabId, rackName);
     }
@@ -111,19 +120,14 @@ export class TabService {
   /** Creates a rack tab without triggering navigation (used for direct URL restore). */
   ensureRackTab(rackName: string): void {
     const tabId = `rack-${rackName}`;
-    if (!this._tabs().find((t) => t.id === tabId)) {
-      this._tabs.update((tabs) => [
-        ...tabs,
-        { id: tabId, label: rackName, type: 'rack', rackName, pinned: false },
-      ]);
-      this.persistTabs();
-    }
+    this.upsertRackTab(tabId, rackName);
+    this.persistTabs();
     if (!this.rackCache.has(tabId)) {
       this.loadRack(tabId, rackName);
     }
   }
 
-  // ── Close ────────────────────────────────────────────────
+  // ── Close ─────────────────────────────────────────────────
 
   closeTab(tabId: string): void {
     this._tabs.update((tabs) => tabs.filter((t) => t.id !== tabId));

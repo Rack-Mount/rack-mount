@@ -6,11 +6,9 @@ import {
   inject,
   Input,
   OnChanges,
-  OnInit,
   SimpleChanges,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
 import {
   AssetRackUnitListRequestParams,
   AssetService,
@@ -27,41 +25,14 @@ import { DeviceComponent } from '../device/device.component';
   styleUrl: './rack.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RackComponent implements OnChanges, OnInit {
+export class RackComponent implements OnChanges {
   @Input() rack: Rack | undefined;
   assets: RackUnit[] = [];
   rackRender: RackRender[] = [];
 
+  private readonly assetService = inject(AssetService);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
-
-  constructor(
-    private readonly assetService: AssetService,
-    private readonly route: ActivatedRoute,
-    private readonly cdr: ChangeDetectorRef,
-  ) {}
-
-  ngOnInit(): void {
-    // When rack is supplied via @Input (e.g. from the detail panel),
-    // skip route-based loading entirely — ngOnChanges already called renderRack().
-    if (this.rack) {
-      return;
-    }
-
-    this.route.paramMap
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((params) => {
-        const id = params.get('id');
-        if (id) {
-          this.assetService
-            .assetRackRetrieve({ name: id })
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((rack) => {
-              this.rack = rack;
-              this.renderRack();
-            });
-        }
-      });
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['rack'] && this.rack) {

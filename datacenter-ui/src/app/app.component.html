@@ -4,10 +4,10 @@
 <!-- global tab bar -->
 <div class="global-tab-bar">
   <div class="tab-list">
-    @for (tab of tabs; track tab.id) {
+    @for (tab of tabs(); track tab.id) {
       <div
         class="tab"
-        [class.active]="tab.id === activeTabId"
+        [class.active]="tab.id === activeTabId()"
         [class.pinned]="tab.pinned"
         (click)="activateTab(tab.id)"
         [title]="tab.label"
@@ -39,7 +39,7 @@
 <!-- content area -->
 <div class="app-content">
   <!-- Home pane: deferred on idle (lazy chunk), kept alive with [hidden] -->
-  <div class="content-pane home-pane" [hidden]="activeTabId !== 'home'">
+  <div class="content-pane home-pane" [hidden]="activeTabId() !== 'home'">
     @defer (on idle) {
       <app-home />
     } @placeholder {
@@ -50,8 +50,8 @@
   <!-- Room panes: lazy chunk loaded on first tab activation, state preserved by [hidden] -->
   @for (tab of tabService.tabs(); track tab.id) {
     @if (tab.type === "room") {
-      <div class="content-pane" [hidden]="activeTabId !== tab.id">
-        @defer (when activeTabId === tab.id; prefetch on idle) {
+      <div class="content-pane" [hidden]="activeTabId() !== tab.id">
+        @defer (when activeTabId() === tab.id; prefetch on idle) {
           <app-map [roomId]="tab.roomId" />
         } @placeholder {
           <div class="loading-state">Apertura room…</div>
@@ -62,7 +62,7 @@
 
   <!-- Rack panes: lazy chunk, recreated when tab is active -->
   @for (tab of tabService.tabs(); track tab.id) {
-    @if (tab.type === "rack" && activeTabId === tab.id) {
+    @if (tab.type === "rack" && activeTabId() === tab.id) {
       <div class="content-pane rack-pane">
         @if (tabService.loadingRackTabId() === tab.id) {
           <div class="loading-state">Caricamento rack…</div>
@@ -80,7 +80,7 @@
   }
 
   <!-- Not-found pane -->
-  <div class="content-pane" [hidden]="activeTabId !== 'not-found'">
+  <div class="content-pane" [hidden]="activeTabId() !== 'not-found'">
     <app-not-found />
   </div>
 </div>

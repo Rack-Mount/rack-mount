@@ -1,12 +1,16 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  computed,
+  DestroyRef,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { merge } from 'rxjs';
 import { filter, startWith } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HeaderComponent } from './modules/core/components/header/header.component';
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { MapComponent } from './modules/data-center/components/map/map.component';
@@ -31,7 +35,7 @@ import { PanelTab } from './modules/data-center/components/detail-panel/detail-p
 })
 export class AppComponent implements OnInit {
   private readonly router = inject(Router);
-  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
   readonly tabService = inject(TabService);
 
   readonly homeTab: PanelTab = {
@@ -41,11 +45,8 @@ export class AppComponent implements OnInit {
     pinned: true,
   };
 
-  get tabs(): PanelTab[] {
-    return [this.homeTab, ...this.tabService.tabs()];
-  }
-
-  activeTabId = 'home';
+  readonly tabs = computed(() => [this.homeTab, ...this.tabService.tabs()]);
+  readonly activeTabId = signal('home');
   private tabHistory: string[] = ['home'];
 
   ngOnInit(): void {
@@ -54,31 +55,27 @@ export class AppComponent implements OnInit {
       .pipe(
         filter((e) => e instanceof NavigationEnd),
         startWith(null as NavigationEnd | null),
+        takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => {
-        this.syncFromUrl();
-        this.cdr.markForCheck();
-      });
+      .subscribe(() => this.syncFromUrl());
 
     // When a room/rack is opened, navigate to activate it
-    this.tabService.activate$.subscribe((tabId) => {
-      this.pushTabHistory(tabId);
-      this.navigateToTab(tabId);
-    });
+    this.tabService.activate$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((tabId) => {
+        this.pushTabHistory(tabId);
+        this.navigateToTab(tabId);
+      });
 
-    // When a rack fails to load (not found), close its tab and show 404
-    this.tabService.rackNotFound$.subscribe(() => {
-      this.activeTabId = 'not-found';
-      this.router.navigate(['/not-found']);
-      this.cdr.markForCheck();
-    });
+    // When a rack or room fails to load (not found), close its tab and show 404
+    merge(this.tabService.rackNotFound$, this.tabService.roomNotFound$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.showNotFound());
+  }
 
-    // When a room fails to load (not found), close its tab and show 404
-    this.tabService.roomNotFound$.subscribe(() => {
-      this.activeTabId = 'not-found';
-      this.router.navigate(['/not-found']);
-      this.cdr.markForCheck();
-    });
+  private showNotFound(): void {
+    this.activeTabId.set('not-found');
+    this.router.navigate(['/not-found']);
   }
 
   private syncFromUrl(): void {
@@ -88,27 +85,24 @@ export class AppComponent implements OnInit {
     if (segments[0]?.path === 'rack') {
       const rackName = segments[1]?.path;
       if (rackName) {
-        const tabId = `rack-${rackName}`;
         this.tabService.ensureRackTab(rackName);
-        this.activeTabId = tabId;
+        this.activeTabId.set(`rack-${rackName}`);
       } else {
-        this.activeTabId = 'home';
+        this.activeTabId.set('home');
       }
     } else if (segments[0]?.path === 'map') {
       const rawId = segments[1]?.path;
       const roomId = rawId ? +rawId : NaN;
-
       if (!isNaN(roomId)) {
-        const tabId = `room-${roomId}`;
         this.tabService.ensureRoomTab(roomId, `Room #${roomId}`);
-        this.activeTabId = tabId;
+        this.activeTabId.set(`room-${roomId}`);
       } else {
-        this.activeTabId = 'home';
+        this.activeTabId.set('home');
       }
     } else if (segments[0]?.path === 'not-found') {
-      this.activeTabId = 'not-found';
+      this.activeTabId.set('not-found');
     } else {
-      this.activeTabId = 'home';
+      this.activeTabId.set('home');
     }
   }
 
@@ -125,7 +119,7 @@ export class AppComponent implements OnInit {
 
   closeTab(tabId: string, event: MouseEvent): void {
     event.stopPropagation();
-    const wasActive = this.activeTabId === tabId;
+    const wasActive = this.activeTabId() === tabId;
     this.tabHistory = this.tabHistory.filter((id) => id !== tabId);
     this.tabService.closeTab(tabId);
     if (wasActive) {
@@ -138,7 +132,6 @@ export class AppComponent implements OnInit {
         'home';
       this.navigateToTab(previous);
     }
-    this.cdr.markForCheck();
   }
 
   private navigateToTab(tabId: string): void {
@@ -148,13 +141,11 @@ export class AppComponent implements OnInit {
       return;
     }
     if (tabId.startsWith('room-')) {
-      const roomId = +tabId.slice(5);
-      this.router.navigate(['/map', roomId]);
+      this.router.navigate(['/map', +tabId.slice(5)]);
       return;
     }
     if (tabId.startsWith('rack-')) {
-      const rackName = tabId.slice(5);
-      this.router.navigate(['/rack', rackName]);
+      this.router.navigate(['/rack', tabId.slice(5)]);
     }
   }
 }
