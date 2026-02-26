@@ -427,6 +427,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   saveFloorPlan(): void {
     if (this.selectedRoomId == null) return;
     this.saveStatus = 'saving';
+    this.cdr.markForCheck();
     this.locationService
       .locationRoomPartialUpdate({
         id: this.selectedRoomId,
@@ -435,11 +436,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       .subscribe({
         next: () => {
           this.saveStatus = 'saved';
+          this.cdr.markForCheck();
           this.resetSaveStatusAfterDelay();
         },
         error: (err) => {
           console.error('Failed to save floor plan', err);
           this.saveStatus = 'error';
+          this.cdr.markForCheck();
           this.resetSaveStatusAfterDelay();
         },
       });

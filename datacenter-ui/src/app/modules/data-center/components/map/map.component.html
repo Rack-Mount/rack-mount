@@ -46,12 +46,6 @@
       >
         {{ saveStatus === "saving" ? "Salvataggio..." : "Salva Planimetria" }}
       </button>
-      @if (saveStatus === "saved") {
-        <span class="save-feedback save-ok">✓ Salvato</span>
-      }
-      @if (saveStatus === "error") {
-        <span class="save-feedback save-err">✗ Errore nel salvataggio</span>
-      }
       <label class="autosave-toggle">
         <input type="checkbox" [(ngModel)]="autosave" />
         <span class="switch-track">
@@ -59,6 +53,12 @@
         </span>
         <span class="switch-label">Autosalvataggio</span>
       </label>
+      @if (saveStatus === "saved") {
+        <span class="save-feedback save-ok">✓ Salvato</span>
+      }
+      @if (saveStatus === "error") {
+        <span class="save-feedback save-err">✗ Errore nel salvataggio</span>
+      }
       @if (selectedTool === "rack") {
         <span class="rack-picker-sep"></span>
         <label for="rack-select" class="rack-picker-label"
@@ -833,17 +833,10 @@
     <!-- Zoom Controls -->
     <div class="zoom-controls">
       <button class="zoom-btn" (click)="zoomIn()" title="Zoom in">+</button>
-      <button class="zoom-btn" (click)="fitToView()" title="Adatta alla vista">
-        ⊡
-      </button>
-      <button
-        class="zoom-btn zoom-reset"
-        (click)="resetZoom()"
-        title="Reset zoom"
-      >
-        {{ zoom * 100 | number: "1.0-0" }}%
-      </button>
       <button class="zoom-btn" (click)="zoomOut()" title="Zoom out">−</button>
+      <div class="zoom-sep"></div>
+      <button class="zoom-btn" (click)="fitToView()" title="Adatta alla vista">⊡</button>
+      <button class="zoom-btn zoom-reset" (click)="resetZoom()" title="Reset zoom">{{ zoom * 100 | number: "1.0-0" }}%</button>
     </div>
   </div>
 </div>
