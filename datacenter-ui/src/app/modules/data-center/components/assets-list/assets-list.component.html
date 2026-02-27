@@ -67,6 +67,37 @@
     <div class="toolbar-right">
       @if (listState().status === "loaded") {
         <span class="count-badge"> {{ totalCount() | number }} asset </span>
+        <button
+          class="btn-export"
+          (click)="exportToExcel()"
+          title="Esporta in Excel (filtri correnti)"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect
+              x="2"
+              y="1"
+              width="9"
+              height="12"
+              rx="1"
+              stroke="currentColor"
+              stroke-width="1.3"
+            />
+            <path
+              d="M5 5h5M5 7.5h5M5 10h3"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M11 9v5m0 0l-1.5-1.5M11 14l1.5-1.5"
+              stroke="currentColor"
+              stroke-width="1.3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Esporta Excel
+        </button>
       }
     </div>
   </div>
@@ -126,6 +157,37 @@
             />
           </svg>
           Deseleziona tutti
+        </button>
+        <button
+          class="selection-action"
+          (click)="exportToExcel(true)"
+          title="Esporta in Excel gli elementi selezionati"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect
+              x="2"
+              y="1"
+              width="9"
+              height="12"
+              rx="1"
+              stroke="currentColor"
+              stroke-width="1.3"
+            />
+            <path
+              d="M5 5h5M5 7.5h5M5 10h3"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M11 9v5m0 0l-1.5-1.5M11 14l1.5-1.5"
+              stroke="currentColor"
+              stroke-width="1.3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Esporta Excel
         </button>
       </div>
     </div>

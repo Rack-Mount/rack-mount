@@ -150,6 +150,40 @@ $text-muted: #475569;
   white-space: nowrap;
 }
 
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  background: rgba(74, 222, 128, 0.08);
+  color: #4ade80;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  &:hover:not(:disabled) {
+    background: rgba(74, 222, 128, 0.16);
+    color: #86efac;
+  }
+
+  &:disabled,
+  &.is-loading {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
 // ── Table wrapper ─────────────────────────────────────────────────────────────
 .assets-table-wrapper {
   flex: 1;

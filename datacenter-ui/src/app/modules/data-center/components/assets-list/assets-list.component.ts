@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,9 +7,8 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import {
   catchError,
   concat,
@@ -20,6 +20,7 @@ import {
   Subject,
   switchMap,
 } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 import {
   Asset,
   AssetService,
@@ -442,7 +443,29 @@ export class AssetsListComponent {
     event.stopPropagation();
     this.tabService.openRack(rackName);
   }
+  // ── Excel export ─────────────────────────────────────────────────────────────────
+  protected exportToExcel(onlySelected = false): void {
+    const p = this.params();
+    const selectedSet = this.selectedIds();
+    const useSelection =
+      onlySelected && !this.selectAllPages() && selectedSet.size > 0;
 
+    const query = new URLSearchParams();
+    if (p.search) query.set('search', p.search);
+    if (p.stateId) query.set('state', String(p.stateId));
+    if (p.typeId) query.set('model__type', String(p.typeId));
+    if (p.ordering) query.set('ordering', p.ordering);
+
+    if (useSelection) {
+      query.set('ids', [...selectedSet].join(','));
+    }
+
+    const url = `${environment.service_url}/asset/asset/export?${query.toString()}`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '';
+    a.click();
+  }
   // ── Format helpers ────────────────────────────────────────────────────────
 
   protected formatDate(iso: string | null | undefined): string {
