@@ -863,7 +863,9 @@ $_type-colors: (
   background: transparent;
   color: #4b5563;
   cursor: pointer;
-  transition: background 80ms ease, color 80ms ease;
+  transition:
+    background 80ms ease,
+    color 80ms ease;
   opacity: 0;
 
   .device-table__row:hover & {

@@ -159,8 +159,15 @@
               class="device-table__bulk-btn device-table__bulk-btn--remove"
               (click)="openBulkRemoveConfirm()"
             >
-              <svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
-                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66H13.5a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Z"/>
+              <svg
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                width="12"
+                height="12"
+              >
+                <path
+                  d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66H13.5a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Z"
+                />
               </svg>
               Rimuovi dal rack
             </button>
@@ -202,14 +209,18 @@
           @for (row of deviceRows(); track row.position) {
             <tr
               class="device-table__row"
-              [class.device-table__row--selected]="_selectedIds().has(row.device!.id)"
+              [class.device-table__row--selected]="
+                _selectedIds().has(row.device!.id)
+              "
             >
               <td class="device-table__td device-table__td--check">
                 <input
                   type="checkbox"
                   class="device-table__checkbox"
                   [checked]="_selectedIds().has(row.device!.id)"
-                  (change)="toggleSelect(row.device!.id, $any($event.target).checked)"
+                  (change)="
+                    toggleSelect(row.device!.id, $any($event.target).checked)
+                  "
                 />
               </td>
               <td class="device-table__td device-table__td--num">
@@ -257,10 +268,23 @@
                 <button
                   class="device-table__remove-btn"
                   title="Rimuovi dal rack"
-                  (click)="openRemoveConfirm(row.device!.id, +row.device!.device_id, $event)"
+                  (click)="
+                    openRemoveConfirm(
+                      row.device!.id,
+                      +row.device!.device_id,
+                      $event
+                    )
+                  "
                 >
-                  <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13">
-                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66H13.5a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    width="13"
+                    height="13"
+                  >
+                    <path
+                      d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66H13.5a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"
+                    />
                   </svg>
                 </button>
               </td>
@@ -380,13 +404,21 @@
     } @else {
       <div class="rack-modal__icon">
         <svg viewBox="0 0 20 20" fill="currentColor" width="28" height="28">
-          <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+          <path
+            fill-rule="evenodd"
+            d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+            clip-rule="evenodd"
+          />
         </svg>
       </div>
-      <p class="rack-modal__title">Rimuovere {{ selectedCount() }} apparati dal rack?</p>
-      <p class="rack-modal__sub">Questa azione rimuove gli apparati selezionati dalle loro posizioni.
+      <p class="rack-modal__title">
+        Rimuovere {{ selectedCount() }} apparati dal rack?
+      </p>
+      <p class="rack-modal__sub">
+        Questa azione rimuove gli apparati selezionati dalle loro posizioni.
         @if (decommissionedStateId()) {
-          Lo stato di ciascun apparato sarà impostato a <strong>Decommissionato</strong>.
+          Lo stato di ciascun apparato sarà impostato a
+          <strong>Decommissionato</strong>.
         }
       </p>
       <div class="rack-modal__actions">
@@ -421,7 +453,9 @@
     } @else {
       <p class="rack-remove-confirm__msg">Rimuovere l'apparato dal rack?</p>
       @if (decommissionedStateId()) {
-        <p class="rack-remove-confirm__note">Lo stato sarà impostato a <strong>Decommissionato</strong>.</p>
+        <p class="rack-remove-confirm__note">
+          Lo stato sarà impostato a <strong>Decommissionato</strong>.
+        </p>
       }
       <div class="rack-remove-confirm__actions">
         <button

@@ -113,7 +113,10 @@ export class RackComponent {
 
   readonly allSelected = computed(() => {
     const rows = this.deviceRows();
-    return rows.length > 0 && rows.every((r) => this._selectedIds().has(r.device!.id));
+    return (
+      rows.length > 0 &&
+      rows.every((r) => this._selectedIds().has(r.device!.id))
+    );
   });
 
   readonly someSelected = computed(
@@ -415,7 +418,9 @@ export class RackComponent {
 
     this._bulkRemoving.set(true);
 
-    const destroys = ids.map((id) => this.assetService.assetRackUnitDestroy({ id }));
+    const destroys = ids.map((id) =>
+      this.assetService.assetRackUnitDestroy({ id }),
+    );
     const patches = stateId
       ? ids
           .map((id) => ruToAsset.get(id))
@@ -441,7 +446,11 @@ export class RackComponent {
     });
   }
 
-  protected openRemoveConfirm(rackUnitId: number, assetId: number, event: MouseEvent): void {
+  protected openRemoveConfirm(
+    rackUnitId: number,
+    assetId: number,
+    event: MouseEvent,
+  ): void {
     event.stopPropagation();
     const el = event.currentTarget as HTMLElement;
     const rect = el.getBoundingClientRect();
@@ -472,12 +481,13 @@ export class RackComponent {
 
     const destroy$ = this.assetService.assetRackUnitDestroy({ id });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const patch$ = assetId && stateId
-      ? this.assetService.assetAssetPartialUpdate({
-          id: assetId,
-          patchedAsset: { state_id: stateId } as any,
-        })
-      : of(null);
+    const patch$ =
+      assetId && stateId
+        ? this.assetService.assetAssetPartialUpdate({
+            id: assetId,
+            patchedAsset: { state_id: stateId } as any,
+          })
+        : of(null);
 
     forkJoin([destroy$, patch$]).subscribe({
       next: () => {
