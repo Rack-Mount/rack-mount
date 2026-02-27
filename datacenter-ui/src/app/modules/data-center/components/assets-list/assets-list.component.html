@@ -71,11 +71,81 @@
     </div>
   </div>
 
+  <!-- ── Selection bar ───────────────────────────────────────────────────── -->
+  @if (selectedCount() > 0) {
+    <div class="selection-bar">
+      <span class="selection-count"
+        >{{ selectedCount() | number }} selezionati</span
+      >
+
+      @if (canSelectAllPages()) {
+        <span class="select-all-banner">
+          Hai selezionato i {{ selectedIds().size }} asset di questa pagina.
+          <button class="select-all-link" (click)="selectAcrossAllPages()">
+            Seleziona tutti i {{ totalCount() | number }} asset
+          </button>
+        </span>
+      }
+      @if (selectAllPages()) {
+        <span class="select-all-banner select-all-banner--active">
+          Tutti i {{ totalCount() | number }} asset sono selezionati.
+        </span>
+      }
+
+      <div class="selection-actions">
+        <button
+          class="selection-action selection-action--primary"
+          [class.is-saving]="bulkEditState() === 'saving'"
+          [disabled]="bulkEditState() === 'saving'"
+          (click)="openBulkStatePicker($event)"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <circle
+              cx="8"
+              cy="8"
+              r="5"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <path
+              d="M8 5v3l2 1"
+              stroke="currentColor"
+              stroke-width="1.3"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{ bulkEditState() === "saving" ? "Salvataggio…" : "Cambia stato" }}
+        </button>
+        <button class="selection-action" (click)="clearSelection()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4l8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          Deseleziona tutti
+        </button>
+      </div>
+    </div>
+  }
+
   <!-- ── Table ───────────────────────────────────────────────────────────── -->
   <div class="assets-table-wrapper">
     <table class="assets-table">
       <thead>
         <tr>
+          <th class="col-check">
+            <input
+              type="checkbox"
+              class="row-check"
+              [checked]="isAllSelected()"
+              [indeterminate]="isSomeSelected()"
+              (click)="toggleSelectAll()"
+              title="Seleziona tutto"
+            />
+          </th>
           <th
             class="col-hostname sortable"
             [class.sort-asc]="sortField() === 'hostname' && sortDir() === 'asc'"
@@ -167,6 +237,7 @@
         @if (listState().status === "loading") {
           @for (i of skeletonRows; track i) {
             <tr class="skeleton-row">
+              <td></td>
               <td><span class="skel skel--hostname"></span></td>
               <td><span class="skel skel--model"></span></td>
               <td><span class="skel skel--vendor"></span></td>
@@ -242,8 +313,17 @@
             <tr
               class="asset-row"
               [class.asset-row--expanded]="expandedId() === asset.id"
+              [class.asset-row--selected]="selectedIds().has(asset.id)"
               (click)="toggleExpand(asset.id)"
             >
+              <td class="col-check" (click)="toggleSelectRow(asset.id, $event)">
+                <input
+                  type="checkbox"
+                  class="row-check"
+                  [checked]="selectedIds().has(asset.id)"
+                  (click)="toggleSelectRow(asset.id, $event)"
+                />
+              </td>
               <td class="col-hostname">
                 <span class="hostname">{{ asset.hostname || "—" }}</span>
               </td>
@@ -473,6 +553,39 @@
         </button>
       }
       @if (stateEditState() === "error") {
+        <p class="picker-error">Errore — riprova</p>
+      }
+    }
+  </div>
+}
+
+<!-- ── Bulk state picker overlay ────────────────────────────────────────── -->
+@if (bulkPickerOpen()) {
+  <div class="overlay-backdrop" (click)="closeBulkPicker()"></div>
+  <div
+    class="state-picker"
+    [style.top.px]="bulkPickerY()"
+    [style.left.px]="bulkPickerX()"
+  >
+    @if (bulkEditState() === "saving") {
+      <div class="picker-loading">
+        Salvataggio {{ selectedCount() | number }} asset…
+      </div>
+    } @else {
+      <p class="picker-bulk-hint">
+        Applica a {{ selectedCount() | number }} asset
+      </p>
+      @for (s of availableStates(); track s.id) {
+        <button
+          class="state-option"
+          [attr.data-color]="stateColor(s.name)"
+          (click)="bulkPickState(s.id)"
+        >
+          <span class="state-dot"></span>
+          {{ s.name }}
+        </button>
+      }
+      @if (bulkEditState() === "error") {
         <p class="picker-error">Errore — riprova</p>
       }
     }

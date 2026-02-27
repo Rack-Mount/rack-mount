@@ -14,6 +14,7 @@ import {
   concat,
   debounceTime,
   distinctUntilChanged,
+  forkJoin,
   map,
   of,
   Subject,
@@ -105,11 +106,134 @@ export class AssetsListComponent {
   // ── Expanded row ──────────────────────────────────────────────────────────
   protected readonly expandedId = signal<number | null>(null);
 
+  // ── Row selection ─────────────────────────────────────────────────────────
+  protected readonly selectedIds = signal<Set<number>>(new Set());
+  /** When true, the bulk action targets ALL pages (not just selectedIds) */
+  protected readonly selectAllPages = signal(false);
+
+  protected readonly selectedCount = computed(() =>
+    this.selectAllPages() ? this.totalCount() : this.selectedIds().size,
+  );
+
+  protected readonly isAllSelected = computed(() => {
+    const assets = this.assets();
+    if (!assets.length) return false;
+    const sel = this.selectedIds();
+    return assets.every((a) => sel.has(a.id));
+  });
+
+  protected readonly isSomeSelected = computed(
+    () => !this.isAllSelected() && this.selectedIds().size > 0,
+  );
+
+  /** True when all page assets are checked but more pages exist and not yet all-pages */
+  protected readonly canSelectAllPages = computed(
+    () =>
+      this.isAllSelected() && this.totalPages() > 1 && !this.selectAllPages(),
+  );
+
+  protected toggleSelectAll(): void {
+    if (this.isAllSelected()) {
+      this.selectedIds.set(new Set());
+      this.selectAllPages.set(false);
+    } else {
+      this.selectedIds.set(new Set(this.assets().map((a) => a.id)));
+      this.selectAllPages.set(false);
+    }
+  }
+
+  protected toggleSelectRow(id: number, event: MouseEvent): void {
+    event.stopPropagation();
+    this.selectAllPages.set(false);
+    this.selectedIds.update((cur) => {
+      const next = new Set(cur);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  protected clearSelection(): void {
+    this.selectedIds.set(new Set());
+    this.selectAllPages.set(false);
+  }
+
+  protected selectAcrossAllPages(): void {
+    this.selectAllPages.set(true);
+  }
+
+  protected openBulkStatePicker(event: MouseEvent): void {
+    event.stopPropagation();
+    const el = event.currentTarget as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    const pickerW = 200;
+    const pickerH = Math.min(this.availableStates().length * 36 + 8, 280);
+    const idealX = rect.left;
+    const x =
+      idealX + pickerW > window.innerWidth - 4 ? rect.right - pickerW : idealX;
+    const idealY = rect.bottom + 6;
+    const y = Math.max(4, Math.min(idealY, window.innerHeight - pickerH - 4));
+    this.bulkPickerX.set(x);
+    this.bulkPickerY.set(y);
+    this.bulkPickerOpen.set(true);
+    this.bulkEditState.set('idle');
+  }
+
+  protected closeBulkPicker(): void {
+    this.bulkPickerOpen.set(false);
+  }
+
+  protected bulkPickState(stateId: number): void {
+    const ids = [...this.selectedIds()];
+    if (!ids.length) return;
+    this.bulkEditState.set('saving');
+    forkJoin(
+      ids.map((id) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.assetService.assetAssetPartialUpdate({
+          id,
+          patchedAsset: { state_id: stateId } as any,
+        }),
+      ),
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (updatedAssets) => {
+          this.bulkEditState.set('idle');
+          this.closeBulkPicker();
+          const updatedMap = new Map(updatedAssets.map((a) => [a.id, a]));
+          this.listState.update((s) => {
+            if (s.status !== 'loaded') return s;
+            return {
+              ...s,
+              results: s.results.map((a) =>
+                updatedMap.has(a.id)
+                  ? {
+                      ...a,
+                      state: updatedMap.get(a.id)!.state,
+                      state_id: updatedMap.get(a.id)!.state_id,
+                    }
+                  : a,
+              ),
+            };
+          });
+          this.clearSelection();
+        },
+        error: () => this.bulkEditState.set('error'),
+      });
+  }
+
   // ── State picker (same UX as rack) ────────────────────────────────────────
   protected readonly statePickerAssetId = signal<number | null>(null);
   protected readonly statePickerX = signal(0);
   protected readonly statePickerY = signal(0);
   protected readonly stateEditState = signal<EditState>('idle');
+
+  // ── Bulk action picker ────────────────────────────────────────────────────
+  protected readonly bulkPickerOpen = signal(false);
+  protected readonly bulkPickerX = signal(0);
+  protected readonly bulkPickerY = signal(0);
+  protected readonly bulkEditState = signal<EditState>('idle');
 
   // ── Computed helpers ──────────────────────────────────────────────────────
   protected readonly assets = computed<Asset[]>(() => {
