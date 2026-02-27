@@ -45,12 +45,10 @@
                 <div class="rack-slot">
                   @if (row.device) {
                     <div class="rack-slot__occupied">
-                      <span class="rack-slot__mount rack-slot__mount--l"></span>
                       <app-device
                         [device]="row.device"
                         [position]="row.position"
                       />
-                      <span class="rack-slot__mount rack-slot__mount--r"></span>
                     </div>
                   } @else {
                     <div class="rack-slot__empty">

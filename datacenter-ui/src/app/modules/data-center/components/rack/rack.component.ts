@@ -22,12 +22,14 @@ type UnitsState =
   | { status: 'error' };
 
 /**
- * Fixed vertical overhead NOT including unit rows:
- * rack-view padding (32) + rack-col gap (8)
- * + rack-header (36) + top panel (18) + bottom panel (18) + chassis borders (4)
- * = 116 px  →  use 120 as safe buffer.
+ * Fixed vertical overhead NOT including unit rows (must match rack.component.scss):
+ *   rack-view padding top+bottom  16+16 = 32 px
+ *   chassis border top+bottom      2+2  =  4 px
+ *   rack-panel--top  min-height 18px (border-box: border is INSIDE) = 18 px
+ *   rack-panel--bottom min-height 18px (border-box: border is INSIDE) = 18 px
+ *                                          total  = 72 px
  */
-const RACK_OVERHEAD_PX = 120;
+const RACK_OVERHEAD_PX = 72;
 
 @Component({
   selector: 'app-rack',
@@ -68,10 +70,7 @@ export class RackComponent {
     const pane = this._paneHeight();
     const capacity = this.rack()?.model.capacity ?? 0;
     if (!pane || !capacity) return 24;
-    // Overhead: rack-view padding 32 + chassis border 4
-    //           + top-panel 18 + bottom-panel 18 = 72 → 80 buffer
-    const available = pane - 80;
-    // Min 14px: still readable at small heights; max 48px for large screens
+    const available = pane - RACK_OVERHEAD_PX;
     return Math.min(48, Math.max(14, Math.floor(available / capacity)));
   });
 
