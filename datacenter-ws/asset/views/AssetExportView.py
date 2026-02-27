@@ -41,14 +41,14 @@ COLUMNS = [
         '%d/%m/%Y') if a.decommissioned_date else ''),
 ]
 
-HEADER_FILL = PatternFill('solid', fgColor='1E293B')
-HEADER_FONT = Font(bold=True, color='94A3B8', size=10)
+HEADER_FILL   = PatternFill('solid', fgColor='4472C4')
+HEADER_FONT   = Font(bold=True, color='FFFFFF', size=10)
 HEADER_BORDER = Border(
-    bottom=Side(style='thin', color='334155'),
+    bottom=Side(style='thin', color='2F5496'),
 )
-ROW_FONT = Font(color='E2E8F0', size=10)
-ROW_FILL_ODD = PatternFill('solid', fgColor='0F172A')
-ROW_FILL_EVEN = PatternFill('solid', fgColor='131F2E')
+ROW_FONT      = Font(color='000000', size=10)
+ROW_FILL_ODD  = PatternFill('solid', fgColor='FFFFFF')
+ROW_FILL_EVEN = PatternFill('solid', fgColor='DCE6F1')
 
 
 class AssetExportView(APIView):

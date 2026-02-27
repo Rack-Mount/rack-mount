@@ -35,6 +35,6 @@ router.register('rack_unit', RackUnitViewSet)
 router.register('asset_custom_field', AssetCustomFieldViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
     path('asset/export', AssetExportView.as_view(), name='asset-export'),
+    path('', include(router.urls)),
 ]
