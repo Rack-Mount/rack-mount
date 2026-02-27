@@ -10,7 +10,7 @@ import {
   OnDestroy,
   inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TabService } from '../../../core/services/tab.service';
@@ -55,7 +55,7 @@ import {
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [CommonModule, FormsModule, MapSidebarComponent],
+  imports: [DecimalPipe, FormsModule, MapSidebarComponent],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

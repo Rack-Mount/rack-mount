@@ -60,21 +60,27 @@
     }
   }
 
-  <!-- Rack panes: preserved with [hidden] to avoid recreating on tab switch -->
+  <!-- Rack panes: lazy chunk, state preserved by [hidden] -->
   @for (tab of tabService.tabs(); track tab.id) {
     @if (tab.type === "rack") {
       <div class="content-pane rack-pane" [hidden]="activeTabId() !== tab.id">
-        @if (tabService.loadingRackTabId() === tab.id) {
+        @defer (when activeTabId() === tab.id; prefetch on idle) {
+          @if (tabService.loadingRackTabId() === tab.id) {
+            <div class="loading-state">Caricamento rack…</div>
+          } @else {
+            <app-rack [rack]="tabService.getRack(tab.id) ?? undefined" />
+          }
+        } @placeholder {
           <div class="loading-state">Caricamento rack…</div>
-        } @else {
-          <app-rack [rack]="tabService.getRack(tab.id) ?? undefined" />
         }
       </div>
     }
   }
 
-  <!-- Not-found pane -->
+  <!-- Not-found pane: lazy chunk -->
   <div class="content-pane" [hidden]="activeTabId() !== 'not-found'">
-    <app-not-found />
+    @defer (when activeTabId() === 'not-found'; prefetch on idle) {
+      <app-not-found />
+    }
   </div>
 </div>

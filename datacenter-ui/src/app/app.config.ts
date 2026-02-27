@@ -1,13 +1,11 @@
 import {
   ApplicationConfig,
-  importProvidersFrom,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { routes } from './app.routes';
 import {
-  ApiModule,
   Configuration,
   ConfigurationParameters,
 } from './modules/core/api/v1';
@@ -38,7 +36,7 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: 'top',
       }),
     ),
-    importProvidersFrom(ApiModule.forRoot(apiConfigFactory)),
+    { provide: Configuration, useFactory: apiConfigFactory },
     provideHttpClient(withFetch(), withInterceptors([notFoundInterceptor])),
   ],
 };
