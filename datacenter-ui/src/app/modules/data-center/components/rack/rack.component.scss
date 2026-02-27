@@ -240,7 +240,9 @@ $u-label-color: #6b7280;
   // Device being dragged: dim its original position
   &--dragging {
     opacity: 0.3;
-    .rack-slot__occupied { cursor: grabbing; }
+    .rack-slot__occupied {
+      cursor: grabbing;
+    }
   }
 
   // Valid drop target: highlight green
@@ -249,7 +251,9 @@ $u-label-color: #6b7280;
       background: rgba(34, 197, 94, 0.18);
       box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.55);
     }
-    .rack-u-num { background: rgba(34, 197, 94, 0.08); }
+    .rack-u-num {
+      background: rgba(34, 197, 94, 0.08);
+    }
   }
 
   // Invalid drop target: highlight red
@@ -258,15 +262,22 @@ $u-label-color: #6b7280;
       background: rgba(239, 68, 68, 0.12);
       box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.35);
     }
-    .rack-u-num { background: rgba(239, 68, 68, 0.06); }
+    .rack-u-num {
+      background: rgba(239, 68, 68, 0.06);
+    }
   }
 
   // Hidden row made visible only during drag (no content, just a drop-target slot)
   &--ghost-target {
-    .rack-u-num { visibility: hidden; }
+    .rack-u-num {
+      visibility: hidden;
+    }
     // Invisible by default; drop-valid / drop-invalid classes override the slot background
     &:not(.rack-row--drop-valid):not(.rack-row--drop-invalid) {
-      .rack-slot__empty { background: transparent; box-shadow: none; }
+      .rack-slot__empty {
+        background: transparent;
+        box-shadow: none;
+      }
     }
   }
 
@@ -348,7 +359,9 @@ $u-label-color: #6b7280;
     position: relative;
     height: 100%;
     cursor: grab;
-    &:active { cursor: grabbing; }
+    &:active {
+      cursor: grabbing;
+    }
 
     > app-device {
       display: block;
@@ -567,8 +580,14 @@ $_type-colors: (
 }
 
 @keyframes toast-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 // ── Error state ───────────────────────────────────────────────────────────

@@ -255,18 +255,22 @@ export class RackComponent {
     ev.preventDefault();
     const device = this._dragging();
     // Evaluate canDropAt BEFORE resetting _dragging (it reads the signal internally)
-    const allowed = !!device && this.canDropAt(targetPos) && device.position !== targetPos;
+    const allowed =
+      !!device && this.canDropAt(targetPos) && device.position !== targetPos;
     this._dragging.set(null);
     this._dropTarget.set(null);
     if (!allowed || !device) return;
     this._saving.set(true);
     this._moveError.set(null);
     this.assetService
-      .assetRackUnitPartialUpdate({ id: device.id, patchedRackUnit: { position: targetPos } })
+      .assetRackUnitPartialUpdate({
+        id: device.id,
+        patchedRackUnit: { position: targetPos },
+      })
       .subscribe({
         next: () => {
           this._saving.set(false);
-          this._refresh.update(v => v + 1);
+          this._refresh.update((v) => v + 1);
         },
         error: () => {
           this._saving.set(false);
