@@ -65,7 +65,10 @@
     @if (tab.type === "rack") {
       <div class="content-pane rack-pane" [hidden]="activeTabId() !== tab.id">
         @defer (when activeTabId() === tab.id; prefetch on idle) {
-          <app-rack [rackName]="tab.rackName!" (rackNotFound)="onRackNotFound($event)" />
+          <app-rack
+            [rackName]="tab.rackName!"
+            (rackNotFound)="onRackNotFound($event)"
+          />
         } @placeholder {
           <div class="loading-state">Caricamento rack…</div>
         }

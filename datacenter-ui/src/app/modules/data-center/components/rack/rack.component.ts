@@ -74,7 +74,9 @@ const RACK_OVERHEAD_PX = 72;
 export class RackComponent {
   readonly rackName = input<string>();
   readonly rackNotFound = output<string>();
-  private readonly _rackLoadState = signal<RackLoadState>({ status: 'loading' });
+  private readonly _rackLoadState = signal<RackLoadState>({
+    status: 'loading',
+  });
   readonly rack = computed<Rack | undefined>(() => {
     const s = this._rackLoadState();
     return s.status === 'loaded' ? s.rack : undefined;

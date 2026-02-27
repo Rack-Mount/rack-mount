@@ -120,5 +120,4 @@ export class TabService {
     this._tabs.update((tabs) => tabs.filter((t) => t.id !== tabId));
     this.persistTabs();
   }
-
 }
