@@ -1,17 +1,12 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Subject } from 'rxjs';
-import { AssetService, Rack } from '../api/v1';
 import { PanelTab } from '../../data-center/components/detail-panel/detail-panel.types';
 
 const LS_TABS_KEY = 'dc:tabs';
 
 @Injectable({ providedIn: 'root' })
 export class TabService {
-  private readonly assetService = inject(AssetService);
-
   private readonly _tabs = signal<PanelTab[]>(this.loadTabsFromStorage());
-  private readonly _loadingRackTabId = signal<string | null>(null);
-  private readonly rackCache = new Map<string, Rack | null>();
 
   /** Emits a tab id whenever it should become active */
   private readonly _activate$ = new Subject<string>();
@@ -26,7 +21,6 @@ export class TabService {
   readonly roomNotFound$ = this._roomNotFound$.asObservable();
 
   readonly tabs = this._tabs.asReadonly();
-  readonly loadingRackTabId = this._loadingRackTabId.asReadonly();
 
   // ── Persistence ───────────────────────────────────────────
 
@@ -101,18 +95,14 @@ export class TabService {
 
   // ── Rack tabs ─────────────────────────────────────────────
 
-  getRack(tabId: string): Rack | null | undefined {
-    return this.rackCache.has(tabId)
-      ? (this.rackCache.get(tabId) ?? null)
-      : undefined;
+  reportRackNotFound(rackName: string): void {
+    this.closeTab(`rack-${rackName}`);
+    this._rackNotFound$.next(rackName);
   }
 
   openRack(rackName: string): void {
     const tabId = `rack-${rackName}`;
     this.upsertRackTab(tabId, rackName);
-    if (!this.rackCache.has(tabId)) {
-      this.loadRack(tabId, rackName);
-    }
     this.persistTabs();
     this._activate$.next(tabId);
   }
@@ -122,33 +112,13 @@ export class TabService {
     const tabId = `rack-${rackName}`;
     this.upsertRackTab(tabId, rackName);
     this.persistTabs();
-    if (!this.rackCache.has(tabId)) {
-      this.loadRack(tabId, rackName);
-    }
   }
 
   // ── Close ─────────────────────────────────────────────────
 
   closeTab(tabId: string): void {
     this._tabs.update((tabs) => tabs.filter((t) => t.id !== tabId));
-    this.rackCache.delete(tabId);
     this.persistTabs();
   }
 
-  private loadRack(tabId: string, rackName: string): void {
-    this._loadingRackTabId.set(tabId);
-    this.assetService.assetRackRetrieve({ name: rackName }).subscribe({
-      next: (rack) => {
-        this.rackCache.set(tabId, rack);
-        if (this._loadingRackTabId() === tabId)
-          this._loadingRackTabId.set(null);
-      },
-      error: () => {
-        if (this._loadingRackTabId() === tabId)
-          this._loadingRackTabId.set(null);
-        this.closeTab(tabId);
-        this._rackNotFound$.next(rackName);
-      },
-    });
-  }
 }

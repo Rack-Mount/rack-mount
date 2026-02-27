@@ -148,4 +148,8 @@ export class AppComponent implements OnInit {
       this.router.navigate(['/rack', tabId.slice(5)]);
     }
   }
+
+  protected onRackNotFound(rackName: string): void {
+    this.tabService.reportRackNotFound(rackName);
+  }
 }

@@ -7,9 +7,9 @@ import {
   ElementRef,
   inject,
   input,
+  output,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import {
   toObservable,
   takeUntilDestroyed,
@@ -49,6 +49,11 @@ type InstallAssetsState =
   | { status: 'loaded'; results: Asset[] }
   | { status: 'error' };
 
+type RackLoadState =
+  | { status: 'loading' }
+  | { status: 'loaded'; rack: Rack }
+  | { status: 'error' };
+
 /**
  * Fixed vertical overhead NOT including unit rows (must match rack.component.scss):
  *   rack-view padding top+bottom  16+16 = 32 px
@@ -61,13 +66,19 @@ const RACK_OVERHEAD_PX = 72;
 
 @Component({
   selector: 'app-rack',
-  imports: [DeviceComponent, FormsModule],
+  imports: [DeviceComponent],
   templateUrl: './rack.component.html',
   styleUrl: './rack.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RackComponent {
-  readonly rack = input<Rack>();
+  readonly rackName = input<string>();
+  readonly rackNotFound = output<string>();
+  private readonly _rackLoadState = signal<RackLoadState>({ status: 'loading' });
+  readonly rack = computed<Rack | undefined>(() => {
+    const s = this._rackLoadState();
+    return s.status === 'loaded' ? s.rack : undefined;
+  });
 
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly destroyRef = inject(DestroyRef);
@@ -313,6 +324,26 @@ export class RackComponent {
       .assetAssetStateList({ pageSize: 100 })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((r) => this.availableStates.set(r.results));
+
+    // Load rack model from the server whenever rackName changes
+    toObservable(this.rackName)
+      .pipe(
+        switchMap((name) => {
+          if (!name) return of<RackLoadState>({ status: 'loading' });
+          return concat(
+            of<RackLoadState>({ status: 'loading' }),
+            this.assetService.assetRackRetrieve({ name }).pipe(
+              map((rack): RackLoadState => ({ status: 'loaded', rack })),
+              catchError(() => {
+                this.rackNotFound.emit(name);
+                return of<RackLoadState>({ status: 'error' });
+              }),
+            ),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((s) => this._rackLoadState.set(s));
   }
 
   /**

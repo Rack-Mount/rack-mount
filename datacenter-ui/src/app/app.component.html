@@ -65,11 +65,7 @@
     @if (tab.type === "rack") {
       <div class="content-pane rack-pane" [hidden]="activeTabId() !== tab.id">
         @defer (when activeTabId() === tab.id; prefetch on idle) {
-          @if (tabService.loadingRackTabId() === tab.id) {
-            <div class="loading-state">Caricamento rack…</div>
-          } @else {
-            <app-rack [rack]="tabService.getRack(tab.id) ?? undefined" />
-          }
+          <app-rack [rackName]="tab.rackName!" (rackNotFound)="onRackNotFound($event)" />
         } @placeholder {
           <div class="loading-state">Caricamento rack…</div>
         }
