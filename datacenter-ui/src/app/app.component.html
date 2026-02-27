@@ -9,7 +9,14 @@
         class="tab"
         [class.active]="tab.id === activeTabId()"
         [class.pinned]="tab.pinned"
+        [class.tab--dragging]="_dragTabId() === tab.id"
+        [class.tab--drag-over]="_dragOverId() === tab.id"
+        [attr.draggable]="tab.pinned ? null : 'true'"
         (click)="activateTab(tab.id)"
+        (dragstart)="!tab.pinned && onTabDragStart(tab.id, $event)"
+        (dragover)="onTabDragOver(tab.id, $event)"
+        (drop)="onTabDrop(tab.id, $event)"
+        (dragend)="onTabDragEnd()"
         [title]="tab.label"
       >
         <span class="tab-icon">
@@ -35,6 +42,14 @@
         }
       </div>
     }
+  @if (_dragTabId() !== null) {
+    <div
+      class="tab-drop-end"
+      [class.tab-drop-end--active]="_dragOverEnd()"
+      (dragover)="onTabDragOverEnd($event)"
+      (drop)="onTabDropEnd($event)"
+    ></div>
+  }
   </div>
 </div>
 

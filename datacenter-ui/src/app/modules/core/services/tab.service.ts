@@ -149,4 +149,30 @@ export class TabService {
     this._tabs.update((tabs) => tabs.filter((t) => t.id !== tabId));
     this.persistTabs();
   }
+  /** Moves the tab with `fromId` to the position currently occupied by `toId`. */
+  reorderTabs(fromId: string, toId: string): void {
+    if (fromId === toId) return;
+    this._tabs.update((tabs) => {
+      const from = tabs.findIndex((t) => t.id === fromId);
+      const to = tabs.findIndex((t) => t.id === toId);
+      if (from === -1 || to === -1) return tabs;
+      const next = [...tabs];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+    this.persistTabs();
+  }
+
+  moveTabToEnd(fromId: string): void {
+    this._tabs.update((tabs) => {
+      const from = tabs.findIndex((t) => t.id === fromId);
+      if (from === -1) return tabs;
+      const next = [...tabs];
+      const [moved] = next.splice(from, 1);
+      next.push(moved);
+      return next;
+    });
+    this.persistTabs();
+  }
 }

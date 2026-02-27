@@ -51,6 +51,58 @@ export class AppComponent implements OnInit {
   readonly activeTabId = signal('home');
   private tabHistory: string[] = ['home'];
 
+  // ── Drag-and-drop tab reordering ─────────────────────────────
+  readonly _dragTabId = signal<string | null>(null);
+  readonly _dragOverId = signal<string | null>(null);
+  readonly _dragOverEnd = signal(false);
+
+  protected onTabDragStart(tabId: string, event: DragEvent): void {
+    event.dataTransfer!.effectAllowed = 'move';
+    event.dataTransfer!.setData('text/plain', tabId);
+    // Small delay so the ghost is rendered before we mark the element dragging
+    setTimeout(() => this._dragTabId.set(tabId), 0);
+  }
+
+  protected onTabDragOver(tabId: string, event: DragEvent): void {
+    if (this._dragTabId() === null || tabId === 'home') return;
+    event.preventDefault();
+    event.dataTransfer!.dropEffect = 'move';
+    this._dragOverEnd.set(false);
+    if (this._dragOverId() !== tabId) this._dragOverId.set(tabId);
+  }
+
+  protected onTabDrop(tabId: string, event: DragEvent): void {
+    event.preventDefault();
+    const fromId = this._dragTabId();
+    this._dragTabId.set(null);
+    this._dragOverId.set(null);
+    if (!fromId || fromId === tabId || tabId === 'home') return;
+    this.tabService.reorderTabs(fromId, tabId);
+  }
+
+  protected onTabDragOverEnd(event: DragEvent): void {
+    if (this._dragTabId() === null) return;
+    event.preventDefault();
+    event.dataTransfer!.dropEffect = 'move';
+    this._dragOverId.set(null);
+    this._dragOverEnd.set(true);
+  }
+
+  protected onTabDropEnd(event: DragEvent): void {
+    event.preventDefault();
+    const fromId = this._dragTabId();
+    this._dragTabId.set(null);
+    this._dragOverEnd.set(false);
+    if (!fromId) return;
+    this.tabService.moveTabToEnd(fromId);
+  }
+
+  protected onTabDragEnd(): void {
+    this._dragTabId.set(null);
+    this._dragOverId.set(null);
+    this._dragOverEnd.set(false);
+  }
+
   ngOnInit(): void {
     // Sync active tab from URL on every navigation
     this.router.events
