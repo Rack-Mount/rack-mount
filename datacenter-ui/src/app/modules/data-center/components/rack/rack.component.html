@@ -74,7 +74,10 @@
                       />
                     </div>
                   } @else {
-                    <div class="rack-slot__empty" (click)="openInstall(row.position, $event)">
+                    <div
+                      class="rack-slot__empty"
+                      (click)="openInstall(row.position, $event)"
+                    >
                       <span class="rack-slot__rail rack-slot__rail--l"></span>
                       <span class="rack-slot__install-hint">+</span>
                       <span class="rack-slot__rail rack-slot__rail--r"></span>
@@ -123,11 +126,15 @@
             <span class="rack-stat__label">Libere</span>
           </div>
           <div class="rack-stat rack-stat--power">
-            <span class="rack-stat__value">{{ totalPowerKw() }}<small> kW</small></span>
+            <span class="rack-stat__value"
+              >{{ totalPowerKw() }}<small> kW</small></span
+            >
             <span class="rack-stat__label">Potenza</span>
           </div>
           <div class="rack-stat rack-stat--ampere">
-            <span class="rack-stat__value">{{ totalPowerAmpere() }}<small> A</small></span>
+            <span class="rack-stat__value"
+              >{{ totalPowerAmpere() }}<small> A</small></span
+            >
             <span class="rack-stat__label">Corrente</span>
           </div>
         </div>
@@ -178,15 +185,22 @@
                   {{ row.device!.device_type || "—" }}
                 </span>
               </td>
-              <td class="device-table__td device-table__td--mono">{{ row.device!.device_serial_number || "—" }}</td>
-              <td class="device-table__td device-table__td--mono">{{ row.device!.device_sap_id || "—" }}</td>
+              <td class="device-table__td device-table__td--mono">
+                {{ row.device!.device_serial_number || "—" }}
+              </td>
+              <td class="device-table__td device-table__td--mono">
+                {{ row.device!.device_sap_id || "—" }}
+              </td>
               <td class="device-table__td">
                 @if (row.device!.device_state) {
                   <span
                     class="device-table__state-badge device-table__state-badge--clickable"
                     (click)="openStatePicker(+row.device!.device_id, $event)"
-                  >{{ row.device!.device_state }}</span>
-                } @else { <span>—</span> }
+                    >{{ row.device!.device_state }}</span
+                  >
+                } @else {
+                  <span>—</span>
+                }
               </td>
               <td class="device-table__td device-table__td--num">
                 {{ row.device!.device_rack_units }}U
@@ -202,9 +216,16 @@
   <!-- ── Install panel ──────────────────────────────────────── -->
   @if (_installPos()) {
     <div class="rack-install-backdrop" (click)="closeInstall()"></div>
-    <div class="rack-install" [style.top.px]="_installAnchorY()" [style.left.px]="_installAnchorX()" (click)="$event.stopPropagation()">
+    <div
+      class="rack-install"
+      [style.top.px]="_installAnchorY()"
+      [style.left.px]="_installAnchorX()"
+      (click)="$event.stopPropagation()"
+    >
       <div class="rack-install__header">
-        <span class="rack-install__title">Installa in posizione {{ _installPos() }}U</span>
+        <span class="rack-install__title"
+          >Installa in posizione {{ _installPos() }}U</span
+        >
         <button class="rack-install__close" (click)="closeInstall()">✕</button>
       </div>
 
@@ -220,29 +241,48 @@
       </div>
 
       <div class="rack-install__list">
-        @if (_installAssetsState().status === 'loading') {
+        @if (_installAssetsState().status === "loading") {
           <div class="rack-install__loading">Caricamento…</div>
-        } @else if (_installAssetsState().status === 'error') {
+        } @else if (_installAssetsState().status === "error") {
           <div class="rack-install__empty">Errore nel caricamento</div>
-        } @else if (installableAssets().length === 0 && _installAssetsState().status === 'loaded') {
+        } @else if (
+          installableAssets().length === 0 &&
+          _installAssetsState().status === "loaded"
+        ) {
           <div class="rack-install__empty">Nessun apparato da installare</div>
         } @else {
           @for (asset of installableAssets(); track asset.id) {
             <div
               class="rack-install__item"
-              [class.rack-install__item--selected]="_installSelectedId() === asset.id"
+              [class.rack-install__item--selected]="
+                _installSelectedId() === asset.id
+              "
               (click)="installAsset(asset.id)"
             >
               @if (asset.model.front_image) {
-                <img class="rack-install__thumb" [src]="asset.model.front_image" alt="" loading="lazy" />
+                <img
+                  class="rack-install__thumb"
+                  [src]="asset.model.front_image"
+                  alt=""
+                  loading="lazy"
+                />
               } @else {
-                <div class="rack-install__thumb rack-install__thumb--empty"></div>
+                <div
+                  class="rack-install__thumb rack-install__thumb--empty"
+                ></div>
               }
               <div class="rack-install__info">
-                <span class="rack-install__hostname">{{ asset.hostname || '—' }}</span>
-                <span class="rack-install__meta">{{ asset.model.name }} &middot; {{ asset.model.rack_units ?? '?' }}U</span>
+                <span class="rack-install__hostname">{{
+                  asset.hostname || "—"
+                }}</span>
+                <span class="rack-install__meta"
+                  >{{ asset.model.name }} &middot;
+                  {{ asset.model.rack_units ?? "?" }}U</span
+                >
                 @if (asset.serial_number) {
-                  <span class="rack-install__serial">S/N: {{ asset.serial_number }}</span>
+                  <span class="rack-install__serial"
+                    >S/N: {{ asset.serial_number }}</span
+                  >
                 }
               </div>
             </div>
@@ -258,13 +298,15 @@
         @if (_installSaving()) {
           <span class="rack-install__saving">Installazione in corso…</span>
         }
-        <button class="rack-install__btn rack-install__btn--cancel" (click)="closeInstall()">
+        <button
+          class="rack-install__btn rack-install__btn--cancel"
+          (click)="closeInstall()"
+        >
           Annulla
         </button>
       </div>
     </div>
   }
-
 </div>
 <!-- /rack-view -->
 

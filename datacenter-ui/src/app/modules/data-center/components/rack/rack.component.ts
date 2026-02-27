@@ -10,7 +10,11 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { toObservable, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import {
+  toObservable,
+  takeUntilDestroyed,
+  toSignal,
+} from '@angular/core/rxjs-interop';
 import {
   catchError,
   combineLatest,
@@ -22,7 +26,13 @@ import {
   Subject,
   switchMap,
 } from 'rxjs';
-import { Asset, AssetService, AssetState, Rack, RackUnit } from '../../../core/api/v1';
+import {
+  Asset,
+  AssetService,
+  AssetState,
+  Rack,
+  RackUnit,
+} from '../../../core/api/v1';
 import { RackRender } from '../../models/RackRender';
 import { DeviceComponent } from '../device/device.component';
 
@@ -124,12 +134,13 @@ export class RackComponent {
     const panelH = Math.min(460, window.innerHeight * 0.8);
     // vertical: center panel on the slot row, clamped to viewport
     const idealY = rect.top + rect.height / 2 - panelH / 2;
-    this._installAnchorY.set(Math.max(8, Math.min(idealY, window.innerHeight - panelH - 8)));
+    this._installAnchorY.set(
+      Math.max(8, Math.min(idealY, window.innerHeight - panelH - 8)),
+    );
     // horizontal: just to the right of the slot, fall back left if too close to edge
     const idealX = rect.right + 8;
-    const clampedX = idealX + panelW > window.innerWidth - 4
-      ? rect.left - panelW - 8
-      : idealX;
+    const clampedX =
+      idealX + panelW > window.innerWidth - 4 ? rect.left - panelW - 8 : idealX;
     this._installAnchorX.set(Math.max(4, clampedX));
     this._installPos.set(pos);
     this._installSelectedId.set(null);
@@ -164,7 +175,9 @@ export class RackComponent {
     this._installError.set(null);
     this.assetService
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .assetRackUnitCreate({ rackUnit: { rack: rack.id, device: assetId, position: pos } as any })
+      .assetRackUnitCreate({
+        rackUnit: { rack: rack.id, device: assetId, position: pos } as any,
+      })
       .subscribe({
         next: () => {
           this._installSaving.set(false);
@@ -173,7 +186,9 @@ export class RackComponent {
         },
         error: () => {
           this._installSaving.set(false);
-          this._installError.set('Installazione non riuscita: verificare che la posizione sia libera e l\'apparato non sia già installato.');
+          this._installError.set(
+            "Installazione non riuscita: verificare che la posizione sia libera e l'apparato non sia già installato.",
+          );
         },
       });
   }
@@ -188,10 +203,17 @@ export class RackComponent {
         switchMap((search) =>
           concat(
             of<InstallAssetsState>({ status: 'loading' }),
-            this.assetService.assetAssetList({ search, pageSize: 5, notInRack: true }).pipe(
-              map((r): InstallAssetsState => ({ status: 'loaded', results: r.results })),
-              catchError(() => of<InstallAssetsState>({ status: 'error' })),
-            ),
+            this.assetService
+              .assetAssetList({ search, pageSize: 5, notInRack: true })
+              .pipe(
+                map(
+                  (r): InstallAssetsState => ({
+                    status: 'loaded',
+                    results: r.results,
+                  }),
+                ),
+                catchError(() => of<InstallAssetsState>({ status: 'error' })),
+              ),
           ),
         ),
         takeUntilDestroyed(this.destroyRef),
@@ -270,14 +292,21 @@ export class RackComponent {
   readonly totalPowerWatt = computed(() => {
     const state = this._unitsState();
     if (!state || state.status !== 'loaded') return 0;
-    return state.results.reduce((sum, u) => sum + (u.device_power_watt ?? 0), 0);
+    return state.results.reduce(
+      (sum, u) => sum + (u.device_power_watt ?? 0),
+      0,
+    );
   });
 
   /** Total power in kW, rounded to 1 decimal. */
-  readonly totalPowerKw = computed(() => Math.round(this.totalPowerWatt() / 100) / 10);
+  readonly totalPowerKw = computed(
+    () => Math.round(this.totalPowerWatt() / 100) / 10,
+  );
 
   /** Total current in Ampere at 230 V, rounded to 1 decimal. */
-  readonly totalPowerAmpere = computed(() => Math.round(this.totalPowerWatt() / 23) / 10);
+  readonly totalPowerAmpere = computed(
+    () => Math.round(this.totalPowerWatt() / 23) / 10,
+  );
 
   /** Array of indices used to render the loading skeleton rows. */
   readonly skeletonRows = computed(() =>
@@ -299,7 +328,10 @@ export class RackComponent {
     const pickerW = 180;
     const pickerH = Math.min(this.availableStates().length * 34 + 8, 260);
     const idealX = rect.right + 6;
-    const x = idealX + pickerW > window.innerWidth - 4 ? rect.left - pickerW - 4 : idealX;
+    const x =
+      idealX + pickerW > window.innerWidth - 4
+        ? rect.left - pickerW - 4
+        : idealX;
     const idealY = rect.top - 4;
     const y = Math.max(4, Math.min(idealY, window.innerHeight - pickerH - 4));
     this._statePickerX.set(x);
@@ -316,7 +348,10 @@ export class RackComponent {
     if (!deviceId) return;
     this._stateUpdateSaving.set(true);
     this.assetService
-      .assetAssetPartialUpdate({ id: deviceId, patchedAsset: { state_id: stateId } as any })
+      .assetAssetPartialUpdate({
+        id: deviceId,
+        patchedAsset: { state_id: stateId } as any,
+      })
       .subscribe({
         next: () => {
           this._stateUpdateSaving.set(false);

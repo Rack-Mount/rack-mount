@@ -22,9 +22,7 @@
       </div>
       <!-- Overlay lives outside device__panel to escape its overflow:hidden -->
       <div class="device__overlay" aria-hidden="true">
-        <span class="device__overlay-hostname">{{
-          dev.device_hostname
-        }}</span>
+        <span class="device__overlay-hostname">{{ dev.device_hostname }}</span>
         @if (dev.device_model) {
           <span class="device__overlay-model">{{ dev.device_model }}</span>
         }
@@ -42,7 +40,10 @@
     <!-- Hover tooltip (shown for both modes) -->
     @if (tooltipVisible) {
       <div
-        [class]="'device__tooltip' + (tooltipFlipped ? ' device__tooltip--flipped' : '')"
+        [class]="
+          'device__tooltip' +
+          (tooltipFlipped ? ' device__tooltip--flipped' : '')
+        "
         role="tooltip"
         [style.top.px]="tooltipTop"
         [style.left.px]="tooltipLeft"
@@ -82,13 +83,17 @@
         @if (dev.device_serial_number) {
           <div class="device__tooltip-row">
             <span class="device__tooltip-label">Serial</span>
-            <span class="device__tooltip-value device__tooltip-value--mono">{{ dev.device_serial_number }}</span>
+            <span class="device__tooltip-value device__tooltip-value--mono">{{
+              dev.device_serial_number
+            }}</span>
           </div>
         }
         @if (dev.device_sap_id) {
           <div class="device__tooltip-row">
             <span class="device__tooltip-label">SAP ID</span>
-            <span class="device__tooltip-value device__tooltip-value--mono">{{ dev.device_sap_id }}</span>
+            <span class="device__tooltip-value device__tooltip-value--mono">{{
+              dev.device_sap_id
+            }}</span>
           </div>
         }
       </div>

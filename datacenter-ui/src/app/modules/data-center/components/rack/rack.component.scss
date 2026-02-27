@@ -161,7 +161,11 @@ $u-label-color: #c8cdd5;
     background: rgba(251, 146, 60, 0.1);
     .rack-stat__value {
       color: #fb923c;
-      small { font-size: 0.65rem; font-weight: 400; margin-left: 1px; }
+      small {
+        font-size: 0.65rem;
+        font-weight: 400;
+        margin-left: 1px;
+      }
     }
     .rack-stat__label {
       color: rgba(251, 146, 60, 0.55);
@@ -172,7 +176,11 @@ $u-label-color: #c8cdd5;
     background: rgba(232, 121, 249, 0.1);
     .rack-stat__value {
       color: #e879f9;
-      small { font-size: 0.65rem; font-weight: 400; margin-left: 1px; }
+      small {
+        font-size: 0.65rem;
+        font-weight: 400;
+        margin-left: 1px;
+      }
     }
     .rack-stat__label {
       color: rgba(232, 121, 249, 0.55);
@@ -412,7 +420,9 @@ $u-label-color: #c8cdd5;
     &:hover {
       background: color.adjust($slot-empty-bg, $lightness: 4%);
 
-      .rack-slot__install-hint { opacity: 1; }
+      .rack-slot__install-hint {
+        opacity: 1;
+      }
     }
   }
 
@@ -604,7 +614,9 @@ $_type-colors: (
   &--clickable {
     cursor: pointer;
     transition: background 100ms ease;
-    &:hover { background: rgba(34, 197, 94, 0.26); }
+    &:hover {
+      background: rgba(34, 197, 94, 0.26);
+    }
   }
 }
 
@@ -637,7 +649,10 @@ $_type-colors: (
     text-align: left;
     cursor: pointer;
     transition: background 80ms ease;
-    &:hover { background: #2c2c2e; color: #fff; }
+    &:hover {
+      background: #2c2c2e;
+      color: #fff;
+    }
   }
 
   &__saving {
@@ -664,11 +679,11 @@ $_type-colors: (
 
 .rack-install {
   position: fixed;
-  top: 0;    // overridden by [style.top.px] binding
-  left: 0;   // overridden by [style.left.px] binding
+  top: 0; // overridden by [style.top.px] binding
+  left: 0; // overridden by [style.left.px] binding
   z-index: 9991;
   width: 320px;
-  height: min(460px, 80vh);   // explicit height so flex children can fill it
+  height: min(460px, 80vh); // explicit height so flex children can fill it
   display: flex;
   flex-direction: column;
   background: #1c1c1e;
@@ -700,7 +715,10 @@ $_type-colors: (
     font-size: 0.8rem;
     padding: 2px 6px;
     border-radius: 4px;
-    &:hover { background: #2c2c2e; color: #e5e7eb; }
+    &:hover {
+      background: #2c2c2e;
+      color: #e5e7eb;
+    }
   }
 
   &__search {
@@ -718,13 +736,17 @@ $_type-colors: (
     font-size: 0.78rem;
     padding: 7px 10px;
     outline: none;
-    &:focus { border-color: #5b6eff; }
-    &::placeholder { color: #4b5563; }
+    &:focus {
+      border-color: #5b6eff;
+    }
+    &::placeholder {
+      color: #4b5563;
+    }
   }
 
   &__list {
     flex: 1 1 0;
-    min-height: 0;            // allows flex to shrink below content size and enable overflow
+    min-height: 0; // allows flex to shrink below content size and enable overflow
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #3a3a3c transparent;
@@ -739,8 +761,12 @@ $_type-colors: (
     padding: 8px 12px;
     cursor: pointer;
     transition: background 80ms ease;
-    &:hover { background: #2c2c2e; }
-    &--selected { background: rgba(91, 110, 255, 0.18); }
+    &:hover {
+      background: #2c2c2e;
+    }
+    &--selected {
+      background: rgba(91, 110, 255, 0.18);
+    }
   }
 
   &__thumb {
@@ -829,14 +855,21 @@ $_type-colors: (
     &--cancel {
       background: #2c2c2e;
       color: #9ca3af;
-      &:hover { background: #3a3a3c; }
+      &:hover {
+        background: #3a3a3c;
+      }
     }
 
     &--confirm {
       background: #5b6eff;
       color: #fff;
-      &:hover:not(:disabled) { background: #4b5cf0; }
-      &:disabled { opacity: 0.45; cursor: not-allowed; }
+      &:hover:not(:disabled) {
+        background: #4b5cf0;
+      }
+      &:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
     }
   }
 }
