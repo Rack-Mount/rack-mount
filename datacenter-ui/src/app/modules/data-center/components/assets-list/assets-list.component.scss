@@ -83,7 +83,9 @@ $text-muted: #475569;
     outline: none;
     transition: border-color 0.15s;
 
-    &::placeholder { color: $text-muted; }
+    &::placeholder {
+      color: $text-muted;
+    }
 
     &:focus {
       border-color: $accent;
@@ -94,7 +96,9 @@ $text-muted: #475569;
 
 .filter-select {
   appearance: none;
-  background: $bg-row url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center / 14px;
+  background: $bg-row
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat right 8px center / 14px;
   border: 1px solid $border-strong;
   border-radius: 8px;
   color: $text-primary;
@@ -104,9 +108,13 @@ $text-muted: #475569;
   outline: none;
   transition: border-color 0.15s;
 
-  option { background: #1e2840; }
+  option {
+    background: #1e2840;
+  }
 
-  &:focus { border-color: $accent; }
+  &:focus {
+    border-color: $accent;
+  }
 }
 
 .btn-reset {
@@ -122,9 +130,14 @@ $text-muted: #475569;
   cursor: pointer;
   transition: background 0.15s;
 
-  svg { width: 12px; height: 12px; }
+  svg {
+    width: 12px;
+    height: 12px;
+  }
 
-  &:hover { background: rgba(239, 68, 68, 0.22); }
+  &:hover {
+    background: rgba(239, 68, 68, 0.22);
+  }
 }
 
 .count-badge {
@@ -147,8 +160,14 @@ $text-muted: #475569;
   scrollbar-width: thin;
   scrollbar-color: #2d3a50 transparent;
 
-  &::-webkit-scrollbar { width: 6px; height: 6px; }
-  &::-webkit-scrollbar-thumb { background: #2d3a50; border-radius: 3px; }
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #2d3a50;
+    border-radius: 3px;
+  }
 }
 
 // ── Table ─────────────────────────────────────────────────────────────────────
@@ -162,7 +181,9 @@ $text-muted: #475569;
     top: 0;
     z-index: 2;
 
-    tr { background: $bg-surface; }
+    tr {
+      background: $bg-surface;
+    }
 
     th {
       padding: 10px 14px;
@@ -184,14 +205,33 @@ $text-muted: #475569;
 }
 
 // ── Column widths ─────────────────────────────────────────────────────────────
-.col-hostname { min-width: 160px; }
-.col-model    { min-width: 160px; }
-.col-vendor   { min-width: 110px; }
-.col-type     { min-width: 100px; }
-.col-state    { min-width: 120px; }
-.col-serial   { min-width: 140px; }
-.col-updated  { width: 90px; text-align: right; white-space: nowrap; }
-.col-expand   { width: 36px; text-align: center; }
+.col-hostname {
+  min-width: 160px;
+}
+.col-model {
+  min-width: 160px;
+}
+.col-vendor {
+  min-width: 110px;
+}
+.col-type {
+  min-width: 100px;
+}
+.col-state {
+  min-width: 120px;
+}
+.col-serial {
+  min-width: 140px;
+}
+.col-updated {
+  width: 90px;
+  text-align: right;
+  white-space: nowrap;
+}
+.col-expand {
+  width: 36px;
+  text-align: center;
+}
 
 // ── Asset rows ────────────────────────────────────────────────────────────────
 .asset-row {
@@ -204,7 +244,9 @@ $text-muted: #475569;
     vertical-align: middle;
   }
 
-  &:hover { background: $bg-row-hover; }
+  &:hover {
+    background: $bg-row-hover;
+  }
 
   &--expanded {
     background: $bg-row-hover;
@@ -258,7 +300,9 @@ $text-muted: #475569;
   cursor: pointer;
   transition: filter 0.15s;
 
-  &:hover { filter: brightness(1.2); }
+  &:hover {
+    filter: brightness(1.2);
+  }
 
   &[data-color="green"] {
     color: #4ade80;
@@ -300,7 +344,9 @@ $text-muted: #475569;
   color: $text-muted;
   transition: transform 0.2s;
 
-  &--open { transform: rotate(180deg); }
+  &--open {
+    transform: rotate(180deg);
+  }
 }
 
 // ── Detail row ────────────────────────────────────────────────────────────────
@@ -375,11 +421,17 @@ $text-muted: #475569;
 }
 
 // ── Skeleton ──────────────────────────────────────────────────────────────────
-.skeleton-row td { padding: 13px 14px; }
+.skeleton-row td {
+  padding: 13px 14px;
+}
 
 @keyframes shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
 }
 
 .skel {
@@ -390,13 +442,28 @@ $text-muted: #475569;
   background-size: 800px 100%;
   animation: shimmer 1.4s infinite linear;
 
-  &--hostname { width: 120px; }
-  &--model    { width: 140px; }
-  &--vendor   { width: 80px; }
-  &--type     { width: 60px; }
-  &--state    { width: 70px; border-radius: 20px; }
-  &--serial   { width: 110px; }
-  &--date     { width: 50px; }
+  &--hostname {
+    width: 120px;
+  }
+  &--model {
+    width: 140px;
+  }
+  &--vendor {
+    width: 80px;
+  }
+  &--type {
+    width: 60px;
+  }
+  &--state {
+    width: 70px;
+    border-radius: 20px;
+  }
+  &--serial {
+    width: 110px;
+  }
+  &--date {
+    width: 50px;
+  }
 }
 
 // ── Empty / error state ───────────────────────────────────────────────────────
@@ -418,7 +485,9 @@ $text-muted: #475569;
     opacity: 0.5;
   }
 
-  span { font-size: 0.9rem; }
+  span {
+    font-size: 0.9rem;
+  }
 }
 
 .btn-retry {
@@ -432,7 +501,9 @@ $text-muted: #475569;
   margin-top: 6px;
   transition: background 0.15s;
 
-  &:hover { background: rgba(59, 130, 246, 0.25); }
+  &:hover {
+    background: rgba(59, 130, 246, 0.25);
+  }
 }
 
 // ── Pagination ────────────────────────────────────────────────────────────────
@@ -461,8 +532,13 @@ $text-muted: #475569;
   cursor: pointer;
   transition: background 0.15s;
 
-  &:hover:not(:disabled) { background: $bg-row-hover; }
-  &:disabled { opacity: 0.3; cursor: default; }
+  &:hover:not(:disabled) {
+    background: $bg-row-hover;
+  }
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
 }
 
 .page-info {
@@ -503,7 +579,9 @@ $text-muted: #475569;
   cursor: pointer;
   transition: background 0.12s;
 
-  &:hover { background: rgba(255, 255, 255, 0.07); }
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+  }
 
   .state-dot {
     width: 8px;
@@ -512,11 +590,21 @@ $text-muted: #475569;
     flex-shrink: 0;
   }
 
-  &[data-color="green"]  .state-dot { background: #4ade80; }
-  &[data-color="yellow"] .state-dot { background: #fbbf24; }
-  &[data-color="red"]    .state-dot { background: #f87171; }
-  &[data-color="blue"]   .state-dot { background: #60a5fa; }
-  &[data-color="gray"]   .state-dot { background: #64748b; }
+  &[data-color="green"] .state-dot {
+    background: #4ade80;
+  }
+  &[data-color="yellow"] .state-dot {
+    background: #fbbf24;
+  }
+  &[data-color="red"] .state-dot {
+    background: #f87171;
+  }
+  &[data-color="blue"] .state-dot {
+    background: #60a5fa;
+  }
+  &[data-color="gray"] .state-dot {
+    background: #64748b;
+  }
 }
 
 .picker-loading {

@@ -42,13 +42,17 @@ function stateColor(name: string): string {
   if (n.includes('attiv') || n.includes('activ') || n.includes('operativ'))
     return 'green';
   if (
-    n.includes('manut') || n.includes('maint') ||
-    n.includes('riserva') || n.includes('standby')
+    n.includes('manut') ||
+    n.includes('maint') ||
+    n.includes('riserva') ||
+    n.includes('standby')
   )
     return 'yellow';
   if (
-    n.includes('decomm') || n.includes('guasto') ||
-    n.includes('fault') || n.includes('dismess')
+    n.includes('decomm') ||
+    n.includes('guasto') ||
+    n.includes('fault') ||
+    n.includes('dismess')
   )
     return 'red';
   if (n.includes('install') || n.includes('transit')) return 'blue';
@@ -220,10 +224,7 @@ export class AssetsListComponent {
 
   // ── State picker ──────────────────────────────────────────────────────────
 
-  protected openStatePicker(
-    assetId: number,
-    event: MouseEvent,
-  ): void {
+  protected openStatePicker(assetId: number, event: MouseEvent): void {
     event.stopPropagation();
     const el = event.currentTarget as HTMLElement;
     const rect = el.getBoundingClientRect();
@@ -252,7 +253,10 @@ export class AssetsListComponent {
     this.stateEditState.set('saving');
     this.assetService
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .assetAssetPartialUpdate({ id: assetId, patchedAsset: { state_id: stateId } as any })
+      .assetAssetPartialUpdate({
+        id: assetId,
+        patchedAsset: { state_id: stateId } as any,
+      })
       .subscribe({
         next: (updated) => {
           this.stateEditState.set('idle');
@@ -263,7 +267,9 @@ export class AssetsListComponent {
             return {
               ...s,
               results: s.results.map((a) =>
-                a.id === assetId ? { ...a, state: updated.state, state_id: updated.state_id } : a,
+                a.id === assetId
+                  ? { ...a, state: updated.state, state_id: updated.state_id }
+                  : a,
               ),
             };
           });

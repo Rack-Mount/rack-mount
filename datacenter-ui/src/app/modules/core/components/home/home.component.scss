@@ -204,7 +204,10 @@
   cursor: pointer;
   text-align: left;
   color: inherit;
-  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
 
   &:hover {
     background: #162240;
@@ -221,7 +224,10 @@
     align-items: center;
     justify-content: center;
 
-    svg { width: 20px; height: 20px; }
+    svg {
+      width: 20px;
+      height: 20px;
+    }
 
     &--assets {
       background: rgba(96, 165, 250, 0.12);
@@ -257,7 +263,9 @@
     height: 16px;
     color: rgba(226, 232, 240, 0.3);
     flex-shrink: 0;
-    transition: transform 0.15s, color 0.15s;
+    transition:
+      transform 0.15s,
+      color 0.15s;
   }
 
   &:hover &__arrow {

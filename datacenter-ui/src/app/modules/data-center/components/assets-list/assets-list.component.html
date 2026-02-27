@@ -1,12 +1,22 @@
 <div class="assets-page">
-
   <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
   <div class="assets-toolbar">
     <div class="toolbar-left">
       <div class="search-box">
         <svg class="search-icon" viewBox="0 0 20 20" fill="none">
-          <circle cx="8.5" cy="8.5" r="5" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M12.5 12.5L16 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle
+            cx="8.5"
+            cy="8.5"
+            r="5"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+          <path
+            d="M12.5 12.5L16 16"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
         </svg>
         <input
           class="search-input"
@@ -42,7 +52,12 @@
       @if (params().search || params().stateId || params().typeId) {
         <button class="btn-reset" (click)="resetFilters()">
           <svg viewBox="0 0 16 16" fill="none">
-            <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path
+              d="M12 4L4 12M4 4l8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
           </svg>
           Reset
         </button>
@@ -50,10 +65,8 @@
     </div>
 
     <div class="toolbar-right">
-      @if (listState().status === 'loaded') {
-        <span class="count-badge">
-          {{ totalCount() | number }} asset
-        </span>
+      @if (listState().status === "loaded") {
+        <span class="count-badge"> {{ totalCount() | number }} asset </span>
       }
     </div>
   </div>
@@ -75,9 +88,8 @@
       </thead>
 
       <tbody>
-
         <!-- Loading skeleton -->
-        @if (listState().status === 'loading') {
+        @if (listState().status === "loading") {
           @for (i of skeletonRows; track i) {
             <tr class="skeleton-row">
               <td><span class="skel skel--hostname"></span></td>
@@ -93,30 +105,56 @@
         }
 
         <!-- Error -->
-        @if (listState().status === 'error') {
+        @if (listState().status === "error") {
           <tr>
             <td colspan="8" class="empty-cell">
               <div class="empty-state">
                 <svg viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
-                  <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="9"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M12 8v4M12 16h.01"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
                 </svg>
                 <span>Errore nel caricamento degli asset</span>
-                <button class="btn-retry" (click)="resetFilters()">Riprova</button>
+                <button class="btn-retry" (click)="resetFilters()">
+                  Riprova
+                </button>
               </div>
             </td>
           </tr>
         }
 
         <!-- Data rows -->
-        @if (listState().status === 'loaded') {
+        @if (listState().status === "loaded") {
           @if (assets().length === 0) {
             <tr>
               <td colspan="8" class="empty-cell">
                 <div class="empty-state">
                   <svg viewBox="0 0 24 24" fill="none">
-                    <rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/>
-                    <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <rect
+                      x="3"
+                      y="6"
+                      width="18"
+                      height="13"
+                      rx="2"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
                   </svg>
                   <span>Nessun asset trovato</span>
                 </div>
@@ -132,10 +170,10 @@
               (click)="toggleExpand(asset.id)"
             >
               <td class="col-hostname">
-                <span class="hostname">{{ asset.hostname || '—' }}</span>
+                <span class="hostname">{{ asset.hostname || "—" }}</span>
               </td>
               <td class="col-model">
-                <span class="model-name">{{ asset.model.name || '—' }}</span>
+                <span class="model-name">{{ asset.model.name || "—" }}</span>
                 <span class="rack-units">{{ asset.model.rack_units }}U</span>
               </td>
               <td class="col-vendor">{{ asset.model.vendor.name }}</td>
@@ -148,10 +186,11 @@
                   [attr.data-color]="stateColor(asset.state.name)"
                   (click)="openStatePicker(asset.id, $event)"
                   title="Clicca per cambiare stato"
-                >{{ asset.state.name }}</span>
+                  >{{ asset.state.name }}</span
+                >
               </td>
               <td class="col-serial">
-                <span class="mono">{{ asset.serial_number || '—' }}</span>
+                <span class="mono">{{ asset.serial_number || "—" }}</span>
               </td>
               <td class="col-updated">
                 <span [title]="formatDate(asset.updated_at)">
@@ -162,9 +201,16 @@
                 <svg
                   class="chevron"
                   [class.chevron--open]="expandedId() === asset.id"
-                  viewBox="0 0 16 16" fill="none"
+                  viewBox="0 0 16 16"
+                  fill="none"
                 >
-                  <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path
+                    d="M4 6l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
               </td>
             </tr>
@@ -175,25 +221,26 @@
                 <td colspan="8">
                   <div class="detail-panel">
                     <div class="detail-grid">
-
                       <div class="detail-section">
                         <h4 class="detail-section-title">Identificazione</h4>
                         <dl class="detail-list">
                           <div class="detail-item">
                             <dt>Hostname</dt>
-                            <dd>{{ asset.hostname || '—' }}</dd>
+                            <dd>{{ asset.hostname || "—" }}</dd>
                           </div>
                           <div class="detail-item">
                             <dt>Seriale</dt>
-                            <dd class="mono">{{ asset.serial_number || '—' }}</dd>
+                            <dd class="mono">
+                              {{ asset.serial_number || "—" }}
+                            </dd>
                           </div>
                           <div class="detail-item">
                             <dt>SAP ID</dt>
-                            <dd class="mono">{{ asset.sap_id || '—' }}</dd>
+                            <dd class="mono">{{ asset.sap_id || "—" }}</dd>
                           </div>
                           <div class="detail-item">
                             <dt>Order ID</dt>
-                            <dd class="mono">{{ asset.order_id || '—' }}</dd>
+                            <dd class="mono">{{ asset.order_id || "—" }}</dd>
                           </div>
                         </dl>
                       </div>
@@ -203,7 +250,7 @@
                         <dl class="detail-list">
                           <div class="detail-item">
                             <dt>Nome</dt>
-                            <dd>{{ asset.model.name || '—' }}</dd>
+                            <dd>{{ asset.model.name || "—" }}</dd>
                           </div>
                           <div class="detail-item">
                             <dt>Vendor</dt>
@@ -230,14 +277,24 @@
                           <div class="detail-item">
                             <dt>Scad. garanzia</dt>
                             <dd
-                              [class.date--expired]="asset.warranty_expiration && $any(asset.warranty_expiration) < $any(today)"
-                            >{{ formatDate(asset.warranty_expiration) }}</dd>
+                              [class.date--expired]="
+                                asset.warranty_expiration &&
+                                $any(asset.warranty_expiration) < $any(today)
+                              "
+                            >
+                              {{ formatDate(asset.warranty_expiration) }}
+                            </dd>
                           </div>
                           <div class="detail-item">
                             <dt>Scad. supporto</dt>
                             <dd
-                              [class.date--expired]="asset.support_expiration && $any(asset.support_expiration) < $any(today)"
-                            >{{ formatDate(asset.support_expiration) }}</dd>
+                              [class.date--expired]="
+                                asset.support_expiration &&
+                                $any(asset.support_expiration) < $any(today)
+                              "
+                            >
+                              {{ formatDate(asset.support_expiration) }}
+                            </dd>
                           </div>
                           <div class="detail-item">
                             <dt>Dismissione</dt>
@@ -251,11 +308,17 @@
                         <dl class="detail-list">
                           <div class="detail-item">
                             <dt>Alimentatori</dt>
-                            <dd>{{ asset.power_supplies ?? '—' }}</dd>
+                            <dd>{{ asset.power_supplies ?? "—" }}</dd>
                           </div>
                           <div class="detail-item">
                             <dt>Assorbimento</dt>
-                            <dd>{{ asset.power_cosumption_watt ? (asset.power_cosumption_watt + ' W') : '—' }}</dd>
+                            <dd>
+                              {{
+                                asset.power_cosumption_watt
+                                  ? asset.power_cosumption_watt + " W"
+                                  : "—"
+                              }}
+                            </dd>
                           </div>
                           <div class="detail-item">
                             <dt>Creato</dt>
@@ -267,7 +330,6 @@
                           </div>
                         </dl>
                       </div>
-
                     </div>
 
                     @if (asset.note) {
@@ -282,20 +344,21 @@
             }
           }
         }
-
       </tbody>
     </table>
   </div>
 
   <!-- ── Pagination ──────────────────────────────────────────────────────── -->
-  @if (listState().status === 'loaded' && totalPages() > 1) {
+  @if (listState().status === "loaded" && totalPages() > 1) {
     <div class="pagination">
       <button
         class="page-btn"
         [disabled]="params().page === 1"
         (click)="goToPage(params().page - 1)"
         title="Pagina precedente"
-      >‹</button>
+      >
+        ‹
+      </button>
 
       <span class="page-info">
         {{ startIndex() }}–{{ endIndex() }} di {{ totalCount() | number }}
@@ -306,10 +369,11 @@
         [disabled]="params().page === totalPages()"
         (click)="goToPage(params().page + 1)"
         title="Pagina successiva"
-      >›</button>
+      >
+        ›
+      </button>
     </div>
   }
-
 </div>
 
 <!-- ── State picker overlay ────────────────────────────────────────────── -->
@@ -320,7 +384,7 @@
     [style.top.px]="statePickerY()"
     [style.left.px]="statePickerX()"
   >
-    @if (stateEditState() === 'saving') {
+    @if (stateEditState() === "saving") {
       <div class="picker-loading">Salvataggio…</div>
     } @else {
       @for (s of availableStates(); track s.id) {
@@ -333,7 +397,7 @@
           {{ s.name }}
         </button>
       }
-      @if (stateEditState() === 'error') {
+      @if (stateEditState() === "error") {
         <p class="picker-error">Errore — riprova</p>
       }
     }
