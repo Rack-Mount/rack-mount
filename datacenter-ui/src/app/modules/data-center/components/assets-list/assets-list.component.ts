@@ -82,7 +82,19 @@ export class AssetsListComponent {
     stateId: null as number | null,
     typeId: null as number | null,
     page: 1,
+    ordering: null as string | null,
   });
+
+  // ── Sort helpers ──────────────────────────────────────────────────────────
+  protected readonly sortField = computed(() => {
+    const o = this.params().ordering;
+    if (!o) return null;
+    return o.startsWith('-') ? o.slice(1) : o;
+  });
+
+  protected readonly sortDir = computed<'asc' | 'desc'>(() =>
+    this.params().ordering?.startsWith('-') ? 'desc' : 'asc',
+  );
 
   // Debounced search subject
   private readonly _searchInput = new Subject<string>();
@@ -164,6 +176,7 @@ export class AssetsListComponent {
                 modelType: p.typeId ?? undefined,
                 page: p.page,
                 pageSize: PAGE_SIZE,
+                ordering: p.ordering ?? undefined,
               })
               .pipe(
                 map(
@@ -205,7 +218,28 @@ export class AssetsListComponent {
   }
 
   protected resetFilters(): void {
-    this.params.set({ search: '', stateId: null, typeId: null, page: 1 });
+    this.params.set({
+      search: '',
+      stateId: null,
+      typeId: null,
+      page: 1,
+      ordering: null,
+    });
+  }
+
+  // ── Sort handler ──────────────────────────────────────────────────────────
+
+  protected sortBy(field: string): void {
+    const cur = this.params().ordering;
+    let next: string | null;
+    if (cur === field) {
+      next = '-' + field;
+    } else if (cur === '-' + field) {
+      next = null;
+    } else {
+      next = field;
+    }
+    this.params.update((p) => ({ ...p, ordering: next, page: 1 }));
   }
 
   // ── Pagination ────────────────────────────────────────────────────────────

@@ -49,6 +49,11 @@ class AssetViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.OrderingFilter, filters.SearchFilter,
                        DjangoFilterBackend)
     filterset_class = AssetFilter
-    ordering_fields = '__all__'
+    ordering_fields = [
+        'hostname', 'serial_number', 'sap_id', 'order_id',
+        'updated_at', 'created_at',
+        'model__name', 'model__vendor__name', 'model__type__name',
+        'state__name',
+    ]
     ordering = ['hostname']
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]

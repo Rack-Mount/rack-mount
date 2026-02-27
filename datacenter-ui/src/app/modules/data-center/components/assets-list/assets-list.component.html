@@ -76,13 +76,88 @@
     <table class="assets-table">
       <thead>
         <tr>
-          <th class="col-hostname">Hostname</th>
-          <th class="col-model">Modello</th>
-          <th class="col-vendor">Vendor</th>
-          <th class="col-type">Tipo</th>
-          <th class="col-state">Stato</th>
-          <th class="col-serial">Seriale</th>
-          <th class="col-updated">Aggiornato</th>
+          <th
+            class="col-hostname sortable"
+            [class.sort-asc]="sortField() === 'hostname' && sortDir() === 'asc'"
+            [class.sort-desc]="
+              sortField() === 'hostname' && sortDir() === 'desc'
+            "
+            (click)="sortBy('hostname')"
+          >
+            Hostname
+          </th>
+          <th
+            class="col-model sortable"
+            [class.sort-asc]="
+              sortField() === 'model__name' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'model__name' && sortDir() === 'desc'
+            "
+            (click)="sortBy('model__name')"
+          >
+            Modello
+          </th>
+          <th
+            class="col-vendor sortable"
+            [class.sort-asc]="
+              sortField() === 'model__vendor__name' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'model__vendor__name' && sortDir() === 'desc'
+            "
+            (click)="sortBy('model__vendor__name')"
+          >
+            Vendor
+          </th>
+          <th
+            class="col-type sortable"
+            [class.sort-asc]="
+              sortField() === 'model__type__name' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'model__type__name' && sortDir() === 'desc'
+            "
+            (click)="sortBy('model__type__name')"
+          >
+            Tipo
+          </th>
+          <th
+            class="col-state sortable"
+            [class.sort-asc]="
+              sortField() === 'state__name' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'state__name' && sortDir() === 'desc'
+            "
+            (click)="sortBy('state__name')"
+          >
+            Stato
+          </th>
+          <th
+            class="col-serial sortable"
+            [class.sort-asc]="
+              sortField() === 'serial_number' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'serial_number' && sortDir() === 'desc'
+            "
+            (click)="sortBy('serial_number')"
+          >
+            Seriale
+          </th>
+          <th
+            class="col-updated sortable"
+            [class.sort-asc]="
+              sortField() === 'updated_at' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'updated_at' && sortDir() === 'desc'
+            "
+            (click)="sortBy('updated_at')"
+          >
+            Aggiornato
+          </th>
           <th class="col-expand"></th>
         </tr>
       </thead>

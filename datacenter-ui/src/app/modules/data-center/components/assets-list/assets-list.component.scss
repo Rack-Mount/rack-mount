@@ -195,6 +195,49 @@ $text-muted: #475569;
       color: $text-muted;
       border-bottom: 1px solid $border-strong;
       white-space: nowrap;
+
+      &.sortable {
+        cursor: pointer;
+        user-select: none;
+
+        &::after {
+          content: "";
+          display: inline-block;
+          width: 0;
+          height: 0;
+          margin-left: 5px;
+          vertical-align: middle;
+          opacity: 0.3;
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+          border-bottom: 5px solid currentColor;
+        }
+
+        &:hover {
+          color: $text-primary;
+          &::after {
+            opacity: 0.6;
+          }
+        }
+
+        &.sort-asc {
+          color: $text-primary;
+          &::after {
+            border-bottom: 5px solid #4a9eff;
+            border-top: none;
+            opacity: 1;
+          }
+        }
+
+        &.sort-desc {
+          color: $text-primary;
+          &::after {
+            border-top: 5px solid #4a9eff;
+            border-bottom: none;
+            opacity: 1;
+          }
+        }
+      }
     }
   }
 
