@@ -41,13 +41,13 @@ COLUMNS = [
         '%d/%m/%Y') if a.decommissioned_date else ''),
 ]
 
-HEADER_FILL   = PatternFill('solid', fgColor='4472C4')
-HEADER_FONT   = Font(bold=True, color='FFFFFF', size=10)
+HEADER_FILL = PatternFill('solid', fgColor='4472C4')
+HEADER_FONT = Font(bold=True, color='FFFFFF', size=10)
 HEADER_BORDER = Border(
     bottom=Side(style='thin', color='2F5496'),
 )
-ROW_FONT      = Font(color='000000', size=10)
-ROW_FILL_ODD  = PatternFill('solid', fgColor='FFFFFF')
+ROW_FONT = Font(color='000000', size=10)
+ROW_FILL_ODD = PatternFill('solid', fgColor='FFFFFF')
 ROW_FILL_EVEN = PatternFill('solid', fgColor='DCE6F1')
 
 
