@@ -19,15 +19,15 @@
           [src]="serviceUrl + '/files/' + dev.device_image"
           [alt]="dev.device_hostname"
         />
-        <!-- Overlay with info, fades in on hover -->
-        <div class="device__overlay" aria-hidden="true">
-          <span class="device__overlay-hostname">{{
-            dev.device_hostname
-          }}</span>
-          @if (dev.device_model) {
-            <span class="device__overlay-model">{{ dev.device_model }}</span>
-          }
-        </div>
+      </div>
+      <!-- Overlay lives outside device__panel to escape its overflow:hidden -->
+      <div class="device__overlay" aria-hidden="true">
+        <span class="device__overlay-hostname">{{
+          dev.device_hostname
+        }}</span>
+        @if (dev.device_model) {
+          <span class="device__overlay-model">{{ dev.device_model }}</span>
+        }
       </div>
     } @else {
       <!-- ── Fallback: icon + text ── -->
@@ -35,9 +35,6 @@
         <span class="device__icon" aria-hidden="true">{{ typeIcon() }}</span>
         <div class="device__info">
           <span class="device__hostname">{{ dev.device_hostname }}</span>
-          @if (dev.device_model) {
-            <span class="device__model">{{ dev.device_model }}</span>
-          }
         </div>
       </div>
     }
@@ -45,7 +42,7 @@
     <!-- Hover tooltip (shown for both modes) -->
     @if (tooltipVisible) {
       <div
-        class="device__tooltip"
+        [class]="'device__tooltip' + (tooltipFlipped ? ' device__tooltip--flipped' : '')"
         role="tooltip"
         [style.top.px]="tooltipTop"
         [style.left.px]="tooltipLeft"
@@ -80,6 +77,18 @@
             <span class="device__tooltip-value"
               >{{ dev.device_rack_units }}U</span
             >
+          </div>
+        }
+        @if (dev.device_serial_number) {
+          <div class="device__tooltip-row">
+            <span class="device__tooltip-label">Serial</span>
+            <span class="device__tooltip-value device__tooltip-value--mono">{{ dev.device_serial_number }}</span>
+          </div>
+        }
+        @if (dev.device_sap_id) {
+          <div class="device__tooltip-row">
+            <span class="device__tooltip-label">SAP ID</span>
+            <span class="device__tooltip-value device__tooltip-value--mono">{{ dev.device_sap_id }}</span>
           </div>
         }
       </div>

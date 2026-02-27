@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from asset.models import RackUnit
+from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.types import OpenApiTypes
+from asset.models import RackUnit, Rack, Asset
 
 
 class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
@@ -69,7 +71,20 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
 
     device_rack_units = serializers.IntegerField(
         source='device.model.rack_units',
-        required=True
+        read_only=True
+    )
+
+    # Write-only foreign-key fields used for creation / update
+    rack = serializers.PrimaryKeyRelatedField(
+        queryset=Rack.objects.all(),
+        write_only=True
+    )
+
+    device = serializers.PrimaryKeyRelatedField(
+        queryset=Asset.objects.all(),
+        write_only=True,
+        required=False,
+        allow_null=True
     )
 
     device_vendor = serializers.StringRelatedField(
@@ -84,11 +99,35 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True
     )
 
+    device_serial_number = serializers.CharField(
+        source='device.serial_number',
+        read_only=True
+    )
+
+    device_sap_id = serializers.CharField(
+        source='device.sap_id',
+        read_only=True
+    )
+
+    device_state = serializers.StringRelatedField(
+        source='device.state.name',
+        many=False,
+        read_only=True
+    )
+
     device_image = serializers.StringRelatedField(
         source='device.model.front_image',
         many=False,
         read_only=True
     )
+
+    device_power_watt = serializers.SerializerMethodField()
+
+    @extend_schema_field(OpenApiTypes.INT32)
+    def get_device_power_watt(self, obj):
+        if obj.device is None:
+            return 0
+        return (obj.device.power_cosumption_watt or 0) * (obj.device.power_supplies or 1)
 
     rack_installation_front = serializers.BooleanField(
         source='front',
@@ -98,4 +137,6 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RackUnit
         fields = ['id', 'rack_id', 'rack_name', 'location_id', 'location_name', 'location_short_name', 'device_id', 'device_hostname',
-                  'device_model', 'device_vendor', 'device_type', 'device_image', 'rack_installation_front', 'device_rack_units', 'position']
+                  'device_model', 'device_vendor', 'device_type', 'device_serial_number', 'device_sap_id', 'device_state',
+                  'device_image', 'device_power_watt', 'rack_installation_front', 'device_rack_units', 'position',
+                  'rack', 'device']

@@ -12,10 +12,10 @@ $rail-strip-w: 8px; // narrow mounting-rail overlay on each side
 $chassis-bg: #1c1c1e;
 $chassis-border: #3a3a3c;
 $panel-bg: #2c2c2e;
-$slot-empty-bg: #242426;
+$slot-empty-bg: #2c2c30;
 $upright-bg: #222224;
 $rail-color: #3a3a3c;
-$u-label-color: #6b7280;
+$u-label-color: #c8cdd5;
 
 // ── Host ──────────────────────────────────────────────────────────────────
 :host {
@@ -156,6 +156,28 @@ $u-label-color: #6b7280;
       color: rgba(74, 222, 128, 0.55);
     }
   }
+
+  &--power {
+    background: rgba(251, 146, 60, 0.1);
+    .rack-stat__value {
+      color: #fb923c;
+      small { font-size: 0.65rem; font-weight: 400; margin-left: 1px; }
+    }
+    .rack-stat__label {
+      color: rgba(251, 146, 60, 0.55);
+    }
+  }
+
+  &--ampere {
+    background: rgba(232, 121, 249, 0.1);
+    .rack-stat__value {
+      color: #e879f9;
+      small { font-size: 0.65rem; font-weight: 400; margin-left: 1px; }
+    }
+    .rack-stat__label {
+      color: rgba(232, 121, 249, 0.55);
+    }
+  }
 }
 
 // ── Chassis ───────────────────────────────────────────────────────────────
@@ -197,7 +219,7 @@ $u-label-color: #6b7280;
     font-size: 0.58rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #4b5563;
+    color: #9ca3af;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -311,7 +333,8 @@ $u-label-color: #6b7280;
   align-items: center;
   justify-content: flex-end;
   padding-right: 5px;
-  font-size: 0.54rem;
+  font-size: 0.62rem;
+  font-weight: 500;
   color: $u-label-color;
   user-select: none;
   background: $panel-bg;
@@ -383,6 +406,23 @@ $u-label-color: #6b7280;
     height: 100%;
     background: $slot-empty-bg;
     padding: 0 8px;
+    cursor: pointer;
+    transition: background 120ms ease;
+
+    &:hover {
+      background: color.adjust($slot-empty-bg, $lightness: 4%);
+
+      .rack-slot__install-hint { opacity: 1; }
+    }
+  }
+
+  &__install-hint {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    opacity: 0;
+    transition: opacity 120ms ease;
+    pointer-events: none;
+    user-select: none;
   }
 
   &__rail {
@@ -550,7 +590,257 @@ $_type-colors: (
   }
 }
 
-// ── Drag save feedback ────────────────────────────────────────────────────
+.device-table__state-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  white-space: nowrap;
+
+  &--clickable {
+    cursor: pointer;
+    transition: background 100ms ease;
+    &:hover { background: rgba(34, 197, 94, 0.26); }
+  }
+}
+
+.rack-state-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9992;
+  background: transparent;
+}
+
+.rack-state-picker {
+  position: fixed;
+  z-index: 9993;
+  width: 180px;
+  background: #1c1c1e;
+  border: 1px solid #3a3a3c;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  padding: 4px 0;
+
+  &__item {
+    display: block;
+    width: 100%;
+    padding: 7px 14px;
+    background: none;
+    border: none;
+    color: #e5e7eb;
+    font-size: 0.75rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 80ms ease;
+    &:hover { background: #2c2c2e; color: #fff; }
+  }
+
+  &__saving {
+    padding: 10px 14px;
+    font-size: 0.72rem;
+    color: #9ca3af;
+    text-align: center;
+  }
+}
+
+.device-table__td--mono {
+  font-family: ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: #9ca3af;
+}
+
+// ── Install panel ────────────────────────────────────────────────────────
+.rack-install-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  background: transparent;
+}
+
+.rack-install {
+  position: fixed;
+  top: 0;    // overridden by [style.top.px] binding
+  left: 0;   // overridden by [style.left.px] binding
+  z-index: 9991;
+  width: 320px;
+  height: min(460px, 80vh);   // explicit height so flex children can fill it
+  display: flex;
+  flex-direction: column;
+  background: #1c1c1e;
+  border: 1px solid #3a3a3c;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid #2c2c2e;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #e5e7eb;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    &:hover { background: #2c2c2e; color: #e5e7eb; }
+  }
+
+  &__search {
+    padding: 10px 12px 8px;
+    flex-shrink: 0;
+  }
+
+  &__input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #2c2c2e;
+    border: 1px solid #3a3a3c;
+    border-radius: 8px;
+    color: #e5e7eb;
+    font-size: 0.78rem;
+    padding: 7px 10px;
+    outline: none;
+    &:focus { border-color: #5b6eff; }
+    &::placeholder { color: #4b5563; }
+  }
+
+  &__list {
+    flex: 1 1 0;
+    min-height: 0;            // allows flex to shrink below content size and enable overflow
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #3a3a3c transparent;
+    padding: 4px 0;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 80ms ease;
+    &:hover { background: #2c2c2e; }
+    &--selected { background: rgba(91, 110, 255, 0.18); }
+  }
+
+  &__thumb {
+    width: 48px;
+    height: 30px;
+    object-fit: contain;
+    border-radius: 3px;
+    background: #111;
+    flex-shrink: 0;
+    &--empty {
+      background: #2c2c2e;
+      border: 1px solid #3a3a3c;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__hostname {
+    font-size: 0.78rem;
+    color: #e5e7eb;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    font-size: 0.7rem;
+    color: #6b7280;
+  }
+
+  &__serial {
+    font-size: 0.68rem;
+    color: #4b5563;
+  }
+
+  &__loading,
+  &__empty {
+    padding: 20px 16px;
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-align: center;
+  }
+
+  &__error {
+    margin: 0 12px 8px;
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-top: 1px solid #2c2c2e;
+    flex-shrink: 0;
+  }
+
+  &__saving {
+    flex: 1;
+    font-size: 0.72rem;
+    color: #9ca3af;
+  }
+
+  &__btn {
+    flex: 1;
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 100ms ease;
+
+    &--cancel {
+      background: #2c2c2e;
+      color: #9ca3af;
+      &:hover { background: #3a3a3c; }
+    }
+
+    &--confirm {
+      background: #5b6eff;
+      color: #fff;
+      &:hover:not(:disabled) { background: #4b5cf0; }
+      &:disabled { opacity: 0.45; cursor: not-allowed; }
+    }
+  }
+}
+
 .rack-chassis--saving {
   // Dim chassis while save is in-flight
   opacity: 0.6;

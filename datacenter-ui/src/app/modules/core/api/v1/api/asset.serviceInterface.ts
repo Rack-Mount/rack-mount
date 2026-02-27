@@ -86,6 +86,7 @@ export interface AssetAssetListRequestParams {
     model?: number;
     modelType?: number;
     modelVendor?: number;
+    notInRack?: boolean;
     orderId?: string;
     ordering?: string;
     page?: number;

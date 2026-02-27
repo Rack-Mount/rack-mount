@@ -53,6 +53,8 @@ export class DeviceComponent {
   /** Fixed-position coords for the tooltip (avoids overflow clipping). */
   protected tooltipTop = 0;
   protected tooltipLeft = 0;
+  /** True when the tooltip is flipped to the left side of the device. */
+  protected tooltipFlipped = false;
   protected readonly serviceUrl = environment.service_url;
 
   constructor(
@@ -74,8 +76,27 @@ export class DeviceComponent {
 
   protected showTooltip(): void {
     const rect = this.el.nativeElement.getBoundingClientRect();
-    this.tooltipTop = rect.top + rect.height / 2;
-    this.tooltipLeft = rect.right + 8;
+    const tooltipW = 260; // max-width from CSS
+    const tooltipH = 160; // conservative estimate
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    // Horizontal: prefer right side, flip left if it would overflow
+    if (rect.right + 8 + tooltipW <= vw - 4) {
+      this.tooltipLeft = rect.right + 8;
+      this.tooltipFlipped = false;
+    } else {
+      this.tooltipLeft = Math.max(4, rect.left - 8 - tooltipW);
+      this.tooltipFlipped = true;
+    }
+
+    // Vertical: centre on element, clamp to viewport
+    const ideal = rect.top + rect.height / 2;
+    this.tooltipTop = Math.max(
+      tooltipH / 2 + 4,
+      Math.min(ideal, vh - tooltipH / 2 - 4),
+    );
+
     this.tooltipVisible = true;
     this.cdr.markForCheck();
   }

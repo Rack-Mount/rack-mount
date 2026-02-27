@@ -92,6 +92,7 @@ $type-colors: (
 .device__overlay {
   position: absolute;
   inset: 0;
+  z-index: 2; // above device__panel (image)
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -191,7 +192,7 @@ $type-colors: (
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
   pointer-events: none;
 
-  // Arrow pointing left
+  // Arrow pointing left (tooltip is to the right of the device)
   &::before {
     content: "";
     position: absolute;
@@ -211,6 +212,23 @@ $type-colors: (
     border: 5px solid transparent;
     border-right-color: #1c1c1e;
   }
+
+  // Flipped: tooltip is to the left of the device — arrow points right
+  &.device__tooltip--flipped {
+    &::before {
+      right: auto;
+      left: 100%;
+      border-right-color: transparent;
+      border-left-color: #48484a;
+    }
+
+    &::after {
+      right: auto;
+      left: calc(100% - 1px);
+      border-right-color: transparent;
+      border-left-color: #1c1c1e;
+    }
+  }
 }
 
 .device__tooltip-row {
@@ -225,7 +243,7 @@ $type-colors: (
 }
 
 .device__tooltip-label {
-  flex: 0 0 44px;
+  flex: 0 0 48px;
   font-size: 0.6rem;
   color: #8e8e93;
   text-transform: uppercase;
@@ -237,4 +255,10 @@ $type-colors: (
   font-size: 0.7rem;
   color: #f0f0f0;
   word-break: break-word;
+
+  &--mono {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.65rem;
+    color: #d1d5db;
+  }
 }

@@ -19,6 +19,7 @@ export interface PatchedAsset {
     readonly id?: number;
     model?: AssetModel;
     state?: AssetState;
+    state_id?: number;
     hostname?: string;
     serial_number?: string;
     sap_id?: string;

@@ -32,8 +32,9 @@ class AssetAdmin(ExportActionModelAdmin, VersionAdmin):
 
     resource_classes = [AssetResource]
 
-    list_display = ('hostname',  'model__type', 'model__name', 'model__vendor',
-                    'serial_number', 'sap_id', 'order_id', 'model__rack_units', 'power_cosumption_watt', 'state')
+    list_display = ('hostname', 'model__type', 'model__name', 'model__vendor',
+                    'serial_number', 'sap_id', 'order_id', 'model__rack_units',
+                    'power_supplies', 'power_cosumption_watt', 'state', 'installed_rack')
     search_fields = ('hostname', 'model__type__name',
                      'model__name', 'serial_number', 'sap_id', 'order_id')
     list_filter = ('model__type__name', 'model__vendor',
@@ -44,6 +45,19 @@ class AssetAdmin(ExportActionModelAdmin, VersionAdmin):
 
     inlines = [RackUnitInline, AssetCustomFieldInline]
     autocomplete_fields = ['model']
+
+    @admin.display(description='Rack installato', ordering='rackunit__rack__name')
+    def installed_rack(self, obj):
+        try:
+            ru = obj.rackunit
+            return f"{ru.rack.room.name} / {ru.rack.name} / U{ru.position}"
+        except (RackUnit.DoesNotExist, AttributeError):
+            return '—'
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'rackunit__rack__room__location', 'model__vendor', 'model__type', 'state'
+        )
 
     def has_delete_permission(self, request, obj=None):
         # Disable delete

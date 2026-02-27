@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from asset.models import Asset
+from asset.models import Asset, AssetState
 from asset.serializers import AssetModelSerializer, AssetStateSerializer
 
 
@@ -20,6 +20,12 @@ class AssetSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
     model = AssetModelSerializer()
     state = AssetStateSerializer()
+    state_id = serializers.PrimaryKeyRelatedField(
+        queryset=AssetState.objects.all(),
+        source='state',
+        write_only=True,
+        required=False,
+    )
 
     class Meta:
         model = Asset

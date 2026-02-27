@@ -2,9 +2,27 @@ from rest_framework import viewsets
 from asset.serializers import AssetSerializer
 from asset.models import Asset
 from rest_framework import filters
+from django_filters import rest_framework as df_filters
 from django_filters.rest_framework import DjangoFilterBackend
 from asset.paginations import StandardResultsSetPagination
 from rest_framework import permissions
+
+
+class AssetFilter(df_filters.FilterSet):
+    not_in_rack = df_filters.BooleanFilter(
+        method='filter_not_in_rack',
+        label='Apparati non installati in rack'
+    )
+
+    def filter_not_in_rack(self, queryset, name, value):
+        if value:
+            return queryset.filter(rackunit__isnull=True)
+        return queryset
+
+    class Meta:
+        model = Asset
+        fields = ['hostname', 'sap_id', 'serial_number', 'order_id',
+                  'model', 'state', 'model__vendor', 'model__type']
 
 
 class AssetViewSet(viewsets.ModelViewSet):
@@ -26,12 +44,11 @@ class AssetViewSet(viewsets.ModelViewSet):
     ).all()
     serializer_class = AssetSerializer
     pagination_class = StandardResultsSetPagination
-    search_fields = ['hostname', 'sap_id', 'serial_number', 'order_id']
+    search_fields = ['hostname', 'sap_id', 'serial_number', 'order_id',
+                     'model__name', 'model__vendor__name']
     filter_backends = (filters.OrderingFilter, filters.SearchFilter,
                        DjangoFilterBackend)
-
+    filterset_class = AssetFilter
     ordering_fields = '__all__'
     ordering = ['hostname']
-    filterset_fields = ['hostname', 'sap_id',
-                        'serial_number', 'order_id', 'model', 'state', 'model__vendor', 'model__type']
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]

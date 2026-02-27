@@ -728,6 +728,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const model = requestParameters?.model;
         const modelType = requestParameters?.modelType;
         const modelVendor = requestParameters?.modelVendor;
+        const notInRack = requestParameters?.notInRack;
         const orderId = requestParameters?.orderId;
         const ordering = requestParameters?.ordering;
         const page = requestParameters?.page;
@@ -770,6 +771,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
             localVarQueryParameters,
             'model__vendor',
             <any>modelVendor,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'not_in_rack',
+            <any>notInRack,
             QueryParamStyle.Form,
             true,
         );

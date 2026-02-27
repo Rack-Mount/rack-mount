@@ -24,9 +24,15 @@ export interface RackUnit {
     readonly device_model: string;
     readonly device_vendor: string;
     readonly device_type: string;
+    readonly device_serial_number: string;
+    readonly device_sap_id: string;
+    readonly device_state: string;
     readonly device_image: string;
+    readonly device_power_watt: number;
     readonly rack_installation_front: boolean;
-    device_rack_units: number;
+    readonly device_rack_units: number;
     position: number;
+    rack: number;
+    device?: number | null;
 }
 
