@@ -17,6 +17,8 @@
             🖥️
           } @else if (tab.type === "room") {
             🗺️
+          } @else if (tab.type === "assets") {
+            📦
           } @else {
             🏠
           }
@@ -42,6 +44,15 @@
   <div class="content-pane home-pane" [hidden]="activeTabId() !== 'home'">
     @defer (on idle) {
       <app-home />
+    } @placeholder {
+      <div class="loading-state">Caricamento…</div>
+    }
+  </div>
+
+  <!-- Assets pane: deferred on first activation, kept alive with [hidden] -->
+  <div class="content-pane" [hidden]="activeTabId() !== 'assets'">
+    @defer (when activeTabId() === 'assets'; prefetch on idle) {
+      <app-assets-list />
     } @placeholder {
       <div class="loading-state">Caricamento…</div>
     }

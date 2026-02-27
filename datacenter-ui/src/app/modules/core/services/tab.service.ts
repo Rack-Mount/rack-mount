@@ -27,7 +27,12 @@ export class TabService {
   private loadTabsFromStorage(): PanelTab[] {
     try {
       const raw = localStorage.getItem(LS_TABS_KEY);
-      return raw ? (JSON.parse(raw) as PanelTab[]) : [];
+      // Filter out pinned tabs managed by AppComponent ('home', 'assets')
+      // to avoid duplicate or closeable entries after a session restore.
+      const RESERVED = new Set(['home']);
+      return raw
+        ? (JSON.parse(raw) as PanelTab[]).filter((t) => !RESERVED.has(t.id))
+        : [];
     } catch {
       return [];
     }
@@ -94,6 +99,30 @@ export class TabService {
   }
 
   // ── Rack tabs ─────────────────────────────────────────────
+
+  // ── Assets tab ─────────────────────────────────────────
+
+  private upsertAssetsTab(): boolean {
+    if (this._tabs().some((t) => t.id === 'assets')) return false;
+    this._tabs.update((tabs) => [
+      { id: 'assets', label: 'Asset', type: 'assets', pinned: false },
+      ...tabs,
+    ]);
+    return true;
+  }
+
+  openAssets(): void {
+    this.upsertAssetsTab();
+    this.persistTabs();
+    this._activate$.next('assets');
+  }
+
+  /** Restores the assets tab without triggering navigation (used for direct URL restore). */
+  ensureAssetsTab(): void {
+    if (this.upsertAssetsTab()) {
+      this.persistTabs();
+    }
+  }
 
   reportRackNotFound(rackName: string): void {
     this.closeTab(`rack-${rackName}`);

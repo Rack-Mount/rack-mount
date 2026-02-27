@@ -7,6 +7,7 @@ import { Routes } from '@angular/router';
  */
 export const routes: Routes = [
   { path: '', pathMatch: 'full', children: [] },
+  { path: 'assets', children: [] },
   { path: 'map/:id', children: [] },
   { path: 'rack/:name', children: [] },
   { path: 'not-found', children: [] },

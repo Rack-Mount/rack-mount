@@ -1,0 +1,341 @@
+<div class="assets-page">
+
+  <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
+  <div class="assets-toolbar">
+    <div class="toolbar-left">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+          <circle cx="8.5" cy="8.5" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12.5 12.5L16 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Cerca hostname, seriale, SAP…"
+          [value]="params().search"
+          (input)="onSearchInput($any($event.target).value)"
+        />
+      </div>
+
+      <select
+        class="filter-select"
+        [value]="params().stateId ?? ''"
+        (change)="onStateFilter($any($event.target).value)"
+      >
+        <option value="">Tutti gli stati</option>
+        @for (s of availableStates(); track s.id) {
+          <option [value]="s.id">{{ s.name }}</option>
+        }
+      </select>
+
+      <select
+        class="filter-select"
+        [value]="params().typeId ?? ''"
+        (change)="onTypeFilter($any($event.target).value)"
+      >
+        <option value="">Tutti i tipi</option>
+        @for (t of availableTypes(); track t.id) {
+          <option [value]="t.id">{{ t.name }}</option>
+        }
+      </select>
+
+      @if (params().search || params().stateId || params().typeId) {
+        <button class="btn-reset" (click)="resetFilters()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Reset
+        </button>
+      }
+    </div>
+
+    <div class="toolbar-right">
+      @if (listState().status === 'loaded') {
+        <span class="count-badge">
+          {{ totalCount() | number }} asset
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- ── Table ───────────────────────────────────────────────────────────── -->
+  <div class="assets-table-wrapper">
+    <table class="assets-table">
+      <thead>
+        <tr>
+          <th class="col-hostname">Hostname</th>
+          <th class="col-model">Modello</th>
+          <th class="col-vendor">Vendor</th>
+          <th class="col-type">Tipo</th>
+          <th class="col-state">Stato</th>
+          <th class="col-serial">Seriale</th>
+          <th class="col-updated">Aggiornato</th>
+          <th class="col-expand"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <!-- Loading skeleton -->
+        @if (listState().status === 'loading') {
+          @for (i of skeletonRows; track i) {
+            <tr class="skeleton-row">
+              <td><span class="skel skel--hostname"></span></td>
+              <td><span class="skel skel--model"></span></td>
+              <td><span class="skel skel--vendor"></span></td>
+              <td><span class="skel skel--type"></span></td>
+              <td><span class="skel skel--state"></span></td>
+              <td><span class="skel skel--serial"></span></td>
+              <td><span class="skel skel--date"></span></td>
+              <td></td>
+            </tr>
+          }
+        }
+
+        <!-- Error -->
+        @if (listState().status === 'error') {
+          <tr>
+            <td colspan="8" class="empty-cell">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>Errore nel caricamento degli asset</span>
+                <button class="btn-retry" (click)="resetFilters()">Riprova</button>
+              </div>
+            </td>
+          </tr>
+        }
+
+        <!-- Data rows -->
+        @if (listState().status === 'loaded') {
+          @if (assets().length === 0) {
+            <tr>
+              <td colspan="8" class="empty-cell">
+                <div class="empty-state">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span>Nessun asset trovato</span>
+                </div>
+              </td>
+            </tr>
+          }
+
+          @for (asset of assets(); track asset.id) {
+            <!-- Main row -->
+            <tr
+              class="asset-row"
+              [class.asset-row--expanded]="expandedId() === asset.id"
+              (click)="toggleExpand(asset.id)"
+            >
+              <td class="col-hostname">
+                <span class="hostname">{{ asset.hostname || '—' }}</span>
+              </td>
+              <td class="col-model">
+                <span class="model-name">{{ asset.model.name || '—' }}</span>
+                <span class="rack-units">{{ asset.model.rack_units }}U</span>
+              </td>
+              <td class="col-vendor">{{ asset.model.vendor.name }}</td>
+              <td class="col-type">
+                <span class="type-chip">{{ asset.model.type.name }}</span>
+              </td>
+              <td class="col-state">
+                <span
+                  class="state-badge"
+                  [attr.data-color]="stateColor(asset.state.name)"
+                  (click)="openStatePicker(asset.id, $event)"
+                  title="Clicca per cambiare stato"
+                >{{ asset.state.name }}</span>
+              </td>
+              <td class="col-serial">
+                <span class="mono">{{ asset.serial_number || '—' }}</span>
+              </td>
+              <td class="col-updated">
+                <span [title]="formatDate(asset.updated_at)">
+                  {{ relativeDate(asset.updated_at) }}
+                </span>
+              </td>
+              <td class="col-expand">
+                <svg
+                  class="chevron"
+                  [class.chevron--open]="expandedId() === asset.id"
+                  viewBox="0 0 16 16" fill="none"
+                >
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </td>
+            </tr>
+
+            <!-- Expanded detail row -->
+            @if (expandedId() === asset.id) {
+              <tr class="detail-row">
+                <td colspan="8">
+                  <div class="detail-panel">
+                    <div class="detail-grid">
+
+                      <div class="detail-section">
+                        <h4 class="detail-section-title">Identificazione</h4>
+                        <dl class="detail-list">
+                          <div class="detail-item">
+                            <dt>Hostname</dt>
+                            <dd>{{ asset.hostname || '—' }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Seriale</dt>
+                            <dd class="mono">{{ asset.serial_number || '—' }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>SAP ID</dt>
+                            <dd class="mono">{{ asset.sap_id || '—' }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Order ID</dt>
+                            <dd class="mono">{{ asset.order_id || '—' }}</dd>
+                          </div>
+                        </dl>
+                      </div>
+
+                      <div class="detail-section">
+                        <h4 class="detail-section-title">Modello</h4>
+                        <dl class="detail-list">
+                          <div class="detail-item">
+                            <dt>Nome</dt>
+                            <dd>{{ asset.model.name || '—' }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Vendor</dt>
+                            <dd>{{ asset.model.vendor.name }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Tipo</dt>
+                            <dd>{{ asset.model.type.name }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Rack units</dt>
+                            <dd>{{ asset.model.rack_units }}U</dd>
+                          </div>
+                        </dl>
+                      </div>
+
+                      <div class="detail-section">
+                        <h4 class="detail-section-title">Ciclo di vita</h4>
+                        <dl class="detail-list">
+                          <div class="detail-item">
+                            <dt>Acquisto</dt>
+                            <dd>{{ formatDate(asset.purchase_date) }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Scad. garanzia</dt>
+                            <dd
+                              [class.date--expired]="asset.warranty_expiration && $any(asset.warranty_expiration) < $any(today)"
+                            >{{ formatDate(asset.warranty_expiration) }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Scad. supporto</dt>
+                            <dd
+                              [class.date--expired]="asset.support_expiration && $any(asset.support_expiration) < $any(today)"
+                            >{{ formatDate(asset.support_expiration) }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Dismissione</dt>
+                            <dd>{{ formatDate(asset.decommissioned_date) }}</dd>
+                          </div>
+                        </dl>
+                      </div>
+
+                      <div class="detail-section">
+                        <h4 class="detail-section-title">Hardware</h4>
+                        <dl class="detail-list">
+                          <div class="detail-item">
+                            <dt>Alimentatori</dt>
+                            <dd>{{ asset.power_supplies ?? '—' }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Assorbimento</dt>
+                            <dd>{{ asset.power_cosumption_watt ? (asset.power_cosumption_watt + ' W') : '—' }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Creato</dt>
+                            <dd>{{ formatDate(asset.created_at) }}</dd>
+                          </div>
+                          <div class="detail-item">
+                            <dt>Aggiornato</dt>
+                            <dd>{{ formatDate(asset.updated_at) }}</dd>
+                          </div>
+                        </dl>
+                      </div>
+
+                    </div>
+
+                    @if (asset.note) {
+                      <div class="detail-note">
+                        <h4 class="detail-section-title">Note</h4>
+                        <p class="note-text">{{ asset.note }}</p>
+                      </div>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        }
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Pagination ──────────────────────────────────────────────────────── -->
+  @if (listState().status === 'loaded' && totalPages() > 1) {
+    <div class="pagination">
+      <button
+        class="page-btn"
+        [disabled]="params().page === 1"
+        (click)="goToPage(params().page - 1)"
+        title="Pagina precedente"
+      >‹</button>
+
+      <span class="page-info">
+        {{ startIndex() }}–{{ endIndex() }} di {{ totalCount() | number }}
+      </span>
+
+      <button
+        class="page-btn"
+        [disabled]="params().page === totalPages()"
+        (click)="goToPage(params().page + 1)"
+        title="Pagina successiva"
+      >›</button>
+    </div>
+  }
+
+</div>
+
+<!-- ── State picker overlay ────────────────────────────────────────────── -->
+@if (statePickerAssetId() !== null) {
+  <div class="overlay-backdrop" (click)="closeStatePicker()"></div>
+  <div
+    class="state-picker"
+    [style.top.px]="statePickerY()"
+    [style.left.px]="statePickerX()"
+  >
+    @if (stateEditState() === 'saving') {
+      <div class="picker-loading">Salvataggio…</div>
+    } @else {
+      @for (s of availableStates(); track s.id) {
+        <button
+          class="state-option"
+          [attr.data-color]="stateColor(s.name)"
+          (click)="pickState(s.id)"
+        >
+          <span class="state-dot"></span>
+          {{ s.name }}
+        </button>
+      }
+      @if (stateEditState() === 'error') {
+        <p class="picker-error">Errore — riprova</p>
+      }
+    }
+  </div>
+}

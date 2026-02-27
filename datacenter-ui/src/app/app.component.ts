@@ -16,6 +16,7 @@ import { HomeComponent } from './modules/core/components/home/home.component';
 import { MapComponent } from './modules/data-center/components/map/map.component';
 import { RackComponent } from './modules/data-center/components/rack/rack.component';
 import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
+import { AssetsListComponent } from './modules/data-center/components/assets-list/assets-list.component';
 import { TabService } from './modules/core/services/tab.service';
 import { PanelTab } from './modules/data-center/components/detail-panel/detail-panel.types';
 
@@ -28,6 +29,7 @@ import { PanelTab } from './modules/data-center/components/detail-panel/detail-p
     MapComponent,
     RackComponent,
     NotFoundComponent,
+    AssetsListComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -99,6 +101,9 @@ export class AppComponent implements OnInit {
       } else {
         this.activeTabId.set('home');
       }
+    } else if (segments[0]?.path === 'assets') {
+      this.tabService.ensureAssetsTab();
+      this.activeTabId.set('assets');
     } else if (segments[0]?.path === 'not-found') {
       this.activeTabId.set('not-found');
     } else {
@@ -138,6 +143,10 @@ export class AppComponent implements OnInit {
     if (tabId === 'not-found') return;
     if (tabId === 'home') {
       this.router.navigate(['/']);
+      return;
+    }
+    if (tabId === 'assets') {
+      this.router.navigate(['/assets']);
       return;
     }
     if (tabId.startsWith('room-')) {

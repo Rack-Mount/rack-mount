@@ -53,4 +53,8 @@ export class HomeComponent implements OnInit {
   openRoom(roomId: number, roomName: string): void {
     this.tabService.openRoom(roomId, roomName);
   }
+
+  openAssets(): void {
+    this.tabService.openAssets();
+  }
 }
