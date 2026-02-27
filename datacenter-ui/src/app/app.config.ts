@@ -1,14 +1,8 @@
-import {
-  ApplicationConfig,
-  provideZoneChangeDetection,
-} from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { routes } from './app.routes';
-import {
-  Configuration,
-  ConfigurationParameters,
-} from './modules/core/api/v1';
+import { Configuration, ConfigurationParameters } from './modules/core/api/v1';
 import { environment } from '../environments/environment';
 import {
   provideHttpClient,
