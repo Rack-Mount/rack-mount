@@ -121,6 +121,12 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True
     )
 
+    device_rear_image = serializers.StringRelatedField(
+        source='device.model.rear_image',
+        many=False,
+        read_only=True
+    )
+
     device_power_watt = serializers.SerializerMethodField()
 
     @extend_schema_field(OpenApiTypes.INT32)
@@ -138,5 +144,5 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         model = RackUnit
         fields = ['id', 'rack_id', 'rack_name', 'location_id', 'location_name', 'location_short_name', 'device_id', 'device_hostname',
                   'device_model', 'device_vendor', 'device_type', 'device_serial_number', 'device_sap_id', 'device_state',
-                  'device_image', 'device_power_watt', 'rack_installation_front', 'device_rack_units', 'position',
+                  'device_image', 'device_rear_image', 'device_power_watt', 'rack_installation_front', 'device_rack_units', 'position',
                   'rack', 'device']

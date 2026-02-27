@@ -48,6 +48,8 @@ const TYPE_ICON_MAP: Record<string, string> = {
 export class DeviceComponent {
   readonly device = input<RackUnit>();
   readonly position = input<number>();
+  /** True when the rack is shown from the rear face. */
+  readonly rearView = input<boolean>(false);
 
   protected tooltipVisible = false;
   /** Fixed-position coords for the tooltip (avoids overflow clipping). */
@@ -66,6 +68,16 @@ export class DeviceComponent {
   protected readonly typeClass = computed(() => {
     const t = (this.device()?.device_type ?? '').toLowerCase();
     return TYPE_CLASS_MAP[t] ?? 'other';
+  });
+
+  /** The image path to display: rear image when in rear view, front otherwise. Falls back to the other face if one is missing. */
+  protected readonly activeImage = computed(() => {
+    const dev = this.device();
+    if (!dev) return null;
+    if (this.rearView()) {
+      return dev.device_rear_image || dev.device_image || null;
+    }
+    return dev.device_image || dev.device_rear_image || null;
   });
 
   /** Fallback icon when the device has no front image. */

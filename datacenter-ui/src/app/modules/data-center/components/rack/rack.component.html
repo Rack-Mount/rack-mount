@@ -7,7 +7,7 @@
   <!-- ── Left column: rack chassis only ──────────────────────── -->
   <div class="rack-col">
     <!-- Chassis -->
-    <div class="rack-chassis" [class.rack-chassis--saving]="_saving()">
+    <div class="rack-chassis" [class.rack-chassis--saving]="_saving()" [class.rack-chassis--rear]="_rearView()">
       <div class="rack-panel rack-panel--top">
         <span class="rack-panel__screw"></span>
         <span class="rack-panel__label">{{ rack()?.name }}</span>
@@ -71,6 +71,7 @@
                       <app-device
                         [device]="row.device"
                         [position]="row.position"
+                        [rearView]="_rearView()"
                       />
                     </div>
                   } @else {
@@ -110,6 +111,20 @@
         @if (rack()?.location_name) {
           <span class="rack-header__location">{{ rack()?.location_name }}</span>
         }
+        <div class="rack-face-toggle">
+          <button
+            class="rack-face-toggle__btn"
+            [class.rack-face-toggle__btn--active]="!_rearView()"
+            (click)="_rearView.set(false)"
+            title="Vista fronte"
+          >Fronte</button>
+          <button
+            class="rack-face-toggle__btn"
+            [class.rack-face-toggle__btn--active]="_rearView()"
+            (click)="_rearView.set(true)"
+            title="Vista retro"
+          >Retro</button>
+        </div>
       </div>
       @if (rack() && !loading()) {
         <div class="rack-header__stats">

@@ -28,6 +28,7 @@ export interface PatchedRackUnit {
     readonly device_sap_id?: string;
     readonly device_state?: string;
     readonly device_image?: string;
+    readonly device_rear_image?: string;
     readonly device_power_watt?: number;
     readonly rack_installation_front?: boolean;
     readonly device_rack_units?: number;

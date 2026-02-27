@@ -66,6 +66,57 @@ $u-label-color: #e8eaed;
   }
 }
 
+// ── Face toggle (Fronte / Retro) ──────────────────────────────────────────
+.rack-face-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #2c2c2e;
+  border-radius: 8px;
+  padding: 3px;
+  margin-left: auto;
+  flex-shrink: 0;
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #9ca3af;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      color 0.15s;
+
+    svg {
+      flex-shrink: 0;
+      opacity: 0.6;
+      transition: opacity 0.15s;
+    }
+
+    &:hover:not(&--active) {
+      color: #d1d5db;
+      svg {
+        opacity: 0.8;
+      }
+    }
+
+    &--active {
+      background: #3a3a3c;
+      color: #f5f5f5;
+      svg {
+        opacity: 1;
+      }
+    }
+  }
+}
+
 // ── Header ────────────────────────────────────────────────────────────────
 .rack-header {
   width: 100%;
@@ -1168,6 +1219,14 @@ $_type-colors: (
   // Dim chassis while save is in-flight
   opacity: 0.6;
   pointer-events: none;
+}
+
+.rack-chassis--rear {
+  // Subtle teal tint on the border to signal rear view
+  border-color: #2d6a6a;
+  box-shadow:
+    0 0 0 1px rgba(45, 200, 200, 0.08) inset,
+    0 8px 32px rgba(0, 0, 0, 0.55);
 }
 
 .rack-toast {

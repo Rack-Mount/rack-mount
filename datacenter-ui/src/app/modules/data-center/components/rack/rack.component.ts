@@ -78,6 +78,8 @@ export class RackComponent {
 
   /** Bump to force re-fetch of rack units after a position update. */
   private readonly _refresh = signal(0);
+  /** True = show the rear face of the rack; false = front face (default). */
+  readonly _rearView = signal(false);
   /** Device currently being dragged. */
   readonly _dragging = signal<RackUnit | null>(null);
   /** Rack-unit position (1-based from bottom) being targeted as drop destination. */
