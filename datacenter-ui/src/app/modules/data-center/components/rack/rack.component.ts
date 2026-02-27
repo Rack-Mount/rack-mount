@@ -20,6 +20,7 @@ import {
   combineLatest,
   concat,
   debounceTime,
+  forkJoin,
   map,
   merge,
   of,
@@ -103,6 +104,77 @@ export class RackComponent {
   /** Error from a failed install attempt. */
   readonly _installError = signal<string | null>(null);
 
+  // ── Selection ─────────────────────────────────────────────────────────────
+
+  /** Set of selected rack-unit IDs. */
+  readonly _selectedIds = signal<ReadonlySet<number>>(new Set());
+
+  readonly selectedCount = computed(() => this._selectedIds().size);
+
+  readonly allSelected = computed(() => {
+    const rows = this.deviceRows();
+    return rows.length > 0 && rows.every((r) => this._selectedIds().has(r.device!.id));
+  });
+
+  readonly someSelected = computed(
+    () => this._selectedIds().size > 0 && !this.allSelected(),
+  );
+
+  protected toggleSelect(id: number, checked: boolean): void {
+    this._selectedIds.update((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  protected toggleSelectAll(checked: boolean): void {
+    if (checked) {
+      this._selectedIds.set(
+        new Set(this.deviceRows().map((r) => r.device!.id)),
+      );
+    } else {
+      this._selectedIds.set(new Set());
+    }
+  }
+
+  protected clearSelection(): void {
+    this._selectedIds.set(new Set());
+  }
+
+  // ── Remove from rack ──────────────────────────────────────────────────────
+
+  /** Rack unit ID pending removal confirmation (null = popover closed). */
+  readonly _removeConfirmId = signal<number | null>(null);
+  /** Viewport X offset for the remove confirmation popover. */
+  readonly _removeConfirmX = signal<number>(0);
+  /** Viewport Y offset for the remove confirmation popover. */
+  readonly _removeConfirmY = signal<number>(0);
+  /** Asset (device) ID associated with the rack unit pending removal. */
+  readonly _removeConfirmAssetId = signal<number | null>(null);
+  /** True while the single DELETE request is in flight. */
+  readonly _removeSaving = signal(false);
+
+  /**
+   * ID of the state whose name contains "decomm" or "dismess" (case-insensitive).
+   * Used to automatically decommission an asset when it is removed from the rack.
+   */
+  readonly decommissionedStateId = computed<number | null>(() => {
+    const match = this.availableStates().find((s) => {
+      const n = s.name.toLowerCase();
+      return n.includes('decomm') || n.includes('dismess');
+    });
+    return match?.id ?? null;
+  });
+
+  // ── Bulk remove ───────────────────────────────────────────────────────────
+
+  /** True when the bulk-remove confirmation modal is open. */
+  readonly _bulkRemoveConfirm = signal(false);
+  /** True while bulk DELETE requests are in flight. */
+  readonly _bulkRemoving = signal(false);
+
   // ── State picker ──────────────────────────────────────────────────────────
 
   /** ID of the asset currently being edited for state (null = picker closed). */
@@ -182,7 +254,7 @@ export class RackComponent {
         next: () => {
           this._installSaving.set(false);
           this.closeInstall();
-          this._refresh.update((v) => v + 1);
+          this.refreshRack();
         },
         error: () => {
           this._installSaving.set(false);
@@ -321,6 +393,110 @@ export class RackComponent {
     this.rackRender().filter((row) => !!row.device),
   );
 
+  protected openBulkRemoveConfirm(): void {
+    this._bulkRemoveConfirm.set(true);
+  }
+
+  protected closeBulkRemoveConfirm(): void {
+    this._bulkRemoveConfirm.set(false);
+  }
+
+  protected executeBulkRemove(): void {
+    const ids = [...this._selectedIds()];
+    if (!ids.length) return;
+    const stateId = this.decommissionedStateId();
+
+    // Build rack-unit-id → asset-id map from current rendered rows
+    const ruToAsset = new Map<number, number>(
+      this.deviceRows()
+        .filter((r) => !!r.device)
+        .map((r) => [r.device!.id, +r.device!.device_id]),
+    );
+
+    this._bulkRemoving.set(true);
+
+    const destroys = ids.map((id) => this.assetService.assetRackUnitDestroy({ id }));
+    const patches = stateId
+      ? ids
+          .map((id) => ruToAsset.get(id))
+          .filter((assetId): assetId is number => !!assetId)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .map((assetId) =>
+            this.assetService.assetAssetPartialUpdate({
+              id: assetId,
+              patchedAsset: { state_id: stateId } as any,
+            }),
+          )
+      : [];
+
+    forkJoin([...destroys, ...patches]).subscribe({
+      next: () => {
+        this._bulkRemoving.set(false);
+        this.closeBulkRemoveConfirm();
+        this.refreshRack();
+      },
+      error: () => {
+        this._bulkRemoving.set(false);
+      },
+    });
+  }
+
+  protected openRemoveConfirm(rackUnitId: number, assetId: number, event: MouseEvent): void {
+    event.stopPropagation();
+    const el = event.currentTarget as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    const popW = 240;
+    const popH = 110;
+    const idealX = rect.right + 6;
+    const x =
+      idealX + popW > window.innerWidth - 4 ? rect.left - popW - 4 : idealX;
+    const idealY = rect.top - 4;
+    const y = Math.max(4, Math.min(idealY, window.innerHeight - popH - 4));
+    this._removeConfirmX.set(x);
+    this._removeConfirmY.set(y);
+    this._removeConfirmId.set(rackUnitId);
+    this._removeConfirmAssetId.set(assetId);
+  }
+
+  protected closeRemoveConfirm(): void {
+    this._removeConfirmId.set(null);
+    this._removeConfirmAssetId.set(null);
+  }
+
+  protected executeRemove(): void {
+    const id = this._removeConfirmId();
+    const assetId = this._removeConfirmAssetId();
+    const stateId = this.decommissionedStateId();
+    if (!id) return;
+    this._removeSaving.set(true);
+
+    const destroy$ = this.assetService.assetRackUnitDestroy({ id });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const patch$ = assetId && stateId
+      ? this.assetService.assetAssetPartialUpdate({
+          id: assetId,
+          patchedAsset: { state_id: stateId } as any,
+        })
+      : of(null);
+
+    forkJoin([destroy$, patch$]).subscribe({
+      next: () => {
+        this._removeSaving.set(false);
+        this.closeRemoveConfirm();
+        this.refreshRack();
+      },
+      error: () => {
+        this._removeSaving.set(false);
+      },
+    });
+  }
+
+  /** Clears selection and bumps the refresh counter. */
+  private refreshRack(): void {
+    this._selectedIds.set(new Set());
+    this._refresh.update((v) => v + 1);
+  }
+
   protected openStatePicker(deviceId: number, event: MouseEvent): void {
     event.stopPropagation();
     const el = event.currentTarget as HTMLElement;
@@ -356,7 +532,7 @@ export class RackComponent {
         next: () => {
           this._stateUpdateSaving.set(false);
           this.closeStatePicker();
-          this._refresh.update((v) => v + 1);
+          this.refreshRack();
         },
         error: () => {
           this._stateUpdateSaving.set(false);
@@ -498,7 +674,7 @@ export class RackComponent {
       .subscribe({
         next: () => {
           this._saving.set(false);
-          this._refresh.update((v) => v + 1);
+          this.refreshRack();
         },
         error: () => {
           this._saving.set(false);
