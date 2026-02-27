@@ -42,14 +42,14 @@
         }
       </div>
     }
-  @if (_dragTabId() !== null) {
-    <div
-      class="tab-drop-end"
-      [class.tab-drop-end--active]="_dragOverEnd()"
-      (dragover)="onTabDragOverEnd($event)"
-      (drop)="onTabDropEnd($event)"
-    ></div>
-  }
+    @if (_dragTabId() !== null) {
+      <div
+        class="tab-drop-end"
+        [class.tab-drop-end--active]="_dragOverEnd()"
+        (dragover)="onTabDragOverEnd($event)"
+        (drop)="onTabDropEnd($event)"
+      ></div>
+    }
   </div>
 </div>
 
