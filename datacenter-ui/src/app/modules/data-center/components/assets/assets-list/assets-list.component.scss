@@ -694,13 +694,11 @@ $text-muted: var(--dc-text-muted);
   font-size: 0.85rem;
   font-weight: 500;
   border-radius: 8px;
-  border: 1px solid var(--dc-accent);
-  background: var(--dc-accent-dim);
-  color: var(--dc-accent);
+  border: none;
+  background: var(--dc-action-bg);
+  color: var(--dc-action-text);
   cursor: pointer;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  transition: background 0.15s;
   white-space: nowrap;
 
   svg {
@@ -710,7 +708,6 @@ $text-muted: var(--dc-text-muted);
   }
 
   &:hover {
-    background: var(--dc-accent-dim);
-    filter: brightness(1.1);
+    background: var(--dc-action-bg-hover);
   }
 }

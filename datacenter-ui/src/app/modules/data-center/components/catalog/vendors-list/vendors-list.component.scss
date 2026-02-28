@@ -111,22 +111,22 @@ $text-muted: var(--dc-text-muted);
   display: flex;
   align-items: center;
   gap: 6px;
-  background: $accent;
+  background: var(--dc-action-bg);
   border: none;
   border-radius: 8px;
-  color: #fff;
+  color: var(--dc-action-text);
   font-size: 0.83rem;
   font-weight: 500;
   padding: 7px 14px;
   cursor: pointer;
-  transition: filter 0.15s;
+  transition: background 0.15s;
 
   svg {
     width: 14px;
     height: 14px;
   }
   &:hover {
-    filter: brightness(1.1);
+    background: var(--dc-action-bg-hover);
   }
 }
 
