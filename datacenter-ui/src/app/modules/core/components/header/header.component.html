@@ -53,17 +53,18 @@
 
     <!-- Language switcher -->
     <div class="lang-switcher">
-      @for (l of lang.availableLanguages; track l.code) {
-        <button
-          class="lang-btn"
-          [class.lang-btn--active]="lang.currentLang() === l.code"
-          (click)="lang.use(l.code)"
-          [title]="l.label"
-        >
-          <span class="lang-flag">{{ l.flag }}</span>
-          <span class="lang-code">{{ l.code.toUpperCase() }}</span>
-        </button>
-      }
+      <select
+        class="lang-select"
+        [value]="lang.currentLang()"
+        (change)="lang.use($any($event.target).value)"
+        [title]="lang.currentLanguage.label"
+      >
+        @for (l of lang.availableLanguages; track l.code) {
+          <option [value]="l.code" [selected]="lang.currentLang() === l.code">
+            {{ l.flag }} {{ l.code.toUpperCase() }}
+          </option>
+        }
+      </select>
     </div>
   </div>
 </nav>
