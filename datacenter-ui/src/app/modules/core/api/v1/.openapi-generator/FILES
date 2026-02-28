@@ -12,7 +12,7 @@ encoder.ts
 git_push.sh
 index.ts
 model/asset.ts
-model/assetAssetAssetModelImportCreateRequest.ts
+model/assetAssetModelImportCreateRequest.ts
 model/assetCustomField.ts
 model/assetModel.ts
 model/assetState.ts

@@ -19,7 +19,7 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 // @ts-ignore
 import { Asset } from '../model/asset';
 // @ts-ignore
-import { AssetAssetAssetModelImportCreateRequest } from '../model/assetAssetAssetModelImportCreateRequest';
+import { AssetAssetModelImportCreateRequest } from '../model/assetAssetModelImportCreateRequest';
 // @ts-ignore
 import { AssetCustomField } from '../model/assetCustomField';
 // @ts-ignore
@@ -79,7 +79,6 @@ import { Configuration }                                     from '../configurat
 import { BaseService } from '../api.base.service';
 import {
     AssetServiceInterface,
-    AssetAssetAssetModelImportCreateRequestParams,
     AssetAssetBulkStatePartialUpdateRequestParams,
     AssetAssetCreateRequestParams,
     AssetAssetCustomFieldCreateRequestParams,
@@ -92,6 +91,7 @@ import {
     AssetAssetListRequestParams,
     AssetAssetModelCreateRequestParams,
     AssetAssetModelDestroyRequestParams,
+    AssetAssetModelImportCreateRequestParams,
     AssetAssetModelListRequestParams,
     AssetAssetModelPartialUpdateRequestParams,
     AssetAssetModelRetrieveRequestParams,
@@ -146,74 +146,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
     constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string|string[], @Optional() configuration?: Configuration) {
         super(basePath, configuration);
-    }
-
-    /**
-     * Import an AssetModel from JSON (with optional base64 images)
-     * POST /asset/asset-model/import  Import an AssetModel from a JSON payload.  Accepts the same fields as the standard form, but &#x60;&#x60;vendor&#x60;&#x60; and &#x60;&#x60;type&#x60;&#x60; are provided as **name strings** (not IDs) and images are optional **Data URL (base64)** strings.  Request body (JSON): &#x60;&#x60;&#x60;json {   \&quot;name\&quot;: \&quot;PowerEdge R750\&quot;,   \&quot;vendor\&quot;: \&quot;Dell\&quot;,   \&quot;type\&quot;: \&quot;Server\&quot;,   \&quot;rack_units\&quot;: 2,   \&quot;note\&quot;: \&quot;...\&quot;,   \&quot;front_image\&quot;: \&quot;data:image/jpeg;base64,...\&quot;,   \&quot;rear_image\&quot;:  \&quot;data:image/jpeg;base64,...\&quot; } &#x60;&#x60;&#x60;  Responses: - 201: model created, returns AssetModelSerializer data. - 400: missing/invalid fields. - 409: a model with the same (name, vendor, type) already exists.
-     * @endpoint post /asset/asset/asset-model/import
-     * @param requestParameters
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     * @param options additional options
-     */
-    public assetAssetAssetModelImportCreate(requestParameters?: AssetAssetAssetModelImportCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetModel>;
-    public assetAssetAssetModelImportCreate(requestParameters?: AssetAssetAssetModelImportCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetModel>>;
-    public assetAssetAssetModelImportCreate(requestParameters?: AssetAssetAssetModelImportCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetModel>>;
-    public assetAssetAssetModelImportCreate(requestParameters?: AssetAssetAssetModelImportCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        const assetAssetAssetModelImportCreateRequest = requestParameters?.assetAssetAssetModelImportCreateRequest;
-
-        let localVarHeaders = this.defaultHeaders;
-
-        // authentication (basicAuth) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
-
-        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            'application/json'
-        ]);
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/asset/asset/asset-model/import`;
-        const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<AssetModel>('post', `${basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                body: assetAssetAssetModelImportCreateRequest,
-                responseType: <any>responseType_,
-                ...(withCredentials ? { withCredentials } : {}),
-                headers: localVarHeaders,
-                observe: observe,
-                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
-                reportProgress: reportProgress
-            }
-        );
     }
 
     /**
@@ -1208,6 +1140,74 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Import an AssetModel from JSON (with optional base64 images)
+     * POST /asset/asset-model/import  Import an AssetModel from a JSON payload.  Accepts the same fields as the standard form, but &#x60;&#x60;vendor&#x60;&#x60; and &#x60;&#x60;type&#x60;&#x60; are provided as **name strings** (not IDs) and images are optional **Data URL (base64)** strings.  Request body (JSON): &#x60;&#x60;&#x60;json {   \&quot;name\&quot;: \&quot;PowerEdge R750\&quot;,   \&quot;vendor\&quot;: \&quot;Dell\&quot;,   \&quot;type\&quot;: \&quot;Server\&quot;,   \&quot;rack_units\&quot;: 2,   \&quot;note\&quot;: \&quot;...\&quot;,   \&quot;front_image\&quot;: \&quot;data:image/jpeg;base64,...\&quot;,   \&quot;rear_image\&quot;:  \&quot;data:image/jpeg;base64,...\&quot; } &#x60;&#x60;&#x60;  Responses: - 201: model created, returns AssetModelSerializer data. - 400: missing/invalid fields. - 409: a model with the same (name, vendor, type) already exists.
+     * @endpoint post /asset/asset-model/import
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetModelImportCreate(requestParameters?: AssetAssetModelImportCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetModel>;
+    public assetAssetModelImportCreate(requestParameters?: AssetAssetModelImportCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetModel>>;
+    public assetAssetModelImportCreate(requestParameters?: AssetAssetModelImportCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetModel>>;
+    public assetAssetModelImportCreate(requestParameters?: AssetAssetModelImportCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const assetAssetModelImportCreateRequest = requestParameters?.assetAssetModelImportCreateRequest;
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (basicAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset-model/import`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetModel>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: assetAssetModelImportCreateRequest,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

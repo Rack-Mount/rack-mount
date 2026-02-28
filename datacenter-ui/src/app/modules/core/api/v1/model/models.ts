@@ -1,5 +1,5 @@
 export * from './asset';
-export * from './assetAssetAssetModelImportCreateRequest';
+export * from './assetAssetModelImportCreateRequest';
 export * from './assetCustomField';
 export * from './assetModel';
 export * from './assetState';
