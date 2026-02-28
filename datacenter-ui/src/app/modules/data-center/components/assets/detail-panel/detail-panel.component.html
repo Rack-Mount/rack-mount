@@ -45,7 +45,7 @@
       @if (loading) {
         <div class="loading">{{ "detail_panel.loading_rack" | translate }}</div>
       } @else if (activeRack) {
-        <app-rack [rack]="activeRack" />
+        <app-rack />
       } @else {
         <div class="loading">
           {{ "detail_panel.rack_not_found" | translate }}
