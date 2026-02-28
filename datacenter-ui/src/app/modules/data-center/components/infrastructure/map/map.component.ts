@@ -265,8 +265,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     for (let y = offYm; y <= H + minor; y += minor)
       dMinor += `M0,${y} L${W},${y} `;
     this.gridPath = dMinor;
-    // Major grid: 100cm = 1m
-    const major = 100 * this.zoom;
+    // Major grid: 60cm
+    const major = 60 * this.zoom;
     const offXM = ((this.panX % major) + major) % major;
     const offYM = ((this.panY % major) + major) % major;
     let dMajor = '';
