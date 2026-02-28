@@ -1,4 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from asset.serializers import AssetSerializer
 from asset.models import Asset
 from rest_framework import filters
@@ -57,3 +59,22 @@ class AssetViewSet(viewsets.ModelViewSet):
     ]
     ordering = ['hostname']
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    @action(detail=False, methods=['patch'], url_path='bulk_state')
+    def bulk_state(self, request):
+        """
+        PATCH /asset/asset/bulk_state?search=...&state=...&model__type=...
+        Body: { "state_id": <int> }
+
+        Updates the state of ALL assets matching the current filter params.
+        Returns: { "updated": <int> }
+        """
+        state_id = request.data.get('state_id')
+        if state_id is None:
+            return Response(
+                {'error': 'state_id is required'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        queryset = self.filter_queryset(self.get_queryset())
+        updated_count = queryset.update(state_id=state_id)
+        return Response({'updated': updated_count})

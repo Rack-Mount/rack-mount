@@ -1,4 +1,5 @@
 import { DecimalPipe } from '@angular/common';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -55,6 +56,7 @@ export class AssetsListComponent {
   protected readonly assetService = inject(AssetService);
   protected readonly tabService = inject(TabService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly http = inject(HttpClient);
 
   // ── Filter options ────────────────────────────────────────────────────────
   protected readonly availableStates = signal<AssetState[]>([]);
@@ -177,6 +179,35 @@ export class AssetsListComponent {
   }
 
   protected bulkPickState(stateId: number): void {
+    // ── All-pages bulk update via dedicated endpoint ──────────────────────────
+    if (this.selectAllPages()) {
+      this.bulkEditState.set('saving');
+      const p = this.params();
+      let qp = new HttpParams();
+      if (p.search) qp = qp.set('search', p.search);
+      if (p.stateId != null) qp = qp.set('state', String(p.stateId));
+      if (p.typeId != null) qp = qp.set('model__type', String(p.typeId));
+      this.http
+        .patch<{ updated: number }>(
+          `${environment.service_url}/asset/asset/bulk_state`,
+          { state_id: stateId },
+          { params: qp },
+        )
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.bulkEditState.set('idle');
+            this.closeBulkPicker();
+            this.clearSelection();
+            // Reload list by bumping params (keeps current filters/page)
+            this.params.update((cur) => ({ ...cur }));
+          },
+          error: () => this.bulkEditState.set('error'),
+        });
+      return;
+    }
+
+    // ── Single-page selected IDs update ───────────────────────────────────────
     const ids = [...this.selectedIds()];
     if (!ids.length) return;
     this.bulkEditState.set('saving');

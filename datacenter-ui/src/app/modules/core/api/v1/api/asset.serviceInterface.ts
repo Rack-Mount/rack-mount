@@ -43,6 +43,10 @@ import { Vendor } from '../model/models';
 import { Configuration }                                     from '../configuration';
 
 
+export interface AssetAssetBulkStatePartialUpdateRequestParams {
+    patchedAsset?: PatchedAsset;
+}
+
 export interface AssetAssetCreateRequestParams {
     asset: Asset;
 }
@@ -330,6 +334,14 @@ export interface AssetVendorUpdateRequestParams {
 export interface AssetServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
+
+    /**
+     * 
+     * PATCH /asset/asset/bulk_state?search&#x3D;...&amp;state&#x3D;...&amp;model__type&#x3D;... Body: { \&quot;state_id\&quot;: &lt;int&gt; }  Updates the state of ALL assets matching the current filter params. Returns: { \&quot;updated\&quot;: &lt;int&gt; }
+     * @endpoint patch /asset/asset/bulk_state
+* @param requestParameters
+     */
+    assetAssetBulkStatePartialUpdate(requestParameters: AssetAssetBulkStatePartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
 
     /**
      * 
