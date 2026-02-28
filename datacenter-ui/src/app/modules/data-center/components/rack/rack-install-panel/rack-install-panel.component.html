@@ -7,7 +7,9 @@
   (click)="$event.stopPropagation()"
 >
   <div class="rack-install__header">
-    <span class="rack-install__title">Installa in posizione {{ position() }}U</span>
+    <span class="rack-install__title"
+      >Installa in posizione {{ position() }}U</span
+    >
     <button class="rack-install__close" (click)="close()">✕</button>
   </div>
 
@@ -28,8 +30,7 @@
     } @else if (_assetsState().status === "error") {
       <div class="rack-install__empty">Errore nel caricamento</div>
     } @else if (
-      installableAssets().length === 0 &&
-      _assetsState().status === "loaded"
+      installableAssets().length === 0 && _assetsState().status === "loaded"
     ) {
       <div class="rack-install__empty">Nessun apparato da installare</div>
     } @else {
@@ -76,7 +77,10 @@
     @if (_saving()) {
       <span class="rack-install__saving">Installazione in corso…</span>
     }
-    <button class="rack-install__btn rack-install__btn--cancel" (click)="close()">
+    <button
+      class="rack-install__btn rack-install__btn--cancel"
+      (click)="close()"
+    >
       Annulla
     </button>
   </div>

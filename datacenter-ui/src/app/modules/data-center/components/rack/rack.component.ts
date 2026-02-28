@@ -11,8 +11,8 @@ import {
   signal,
 } from '@angular/core';
 import {
-  toObservable,
   takeUntilDestroyed,
+  toObservable,
   toSignal,
 } from '@angular/core/rxjs-interop';
 import {
@@ -24,13 +24,7 @@ import {
   of,
   switchMap,
 } from 'rxjs';
-import {
-  Asset,
-  AssetService,
-  AssetState,
-  Rack,
-  RackUnit,
-} from '../../../core/api/v1';
+import { AssetService, AssetState, Rack, RackUnit } from '../../../core/api/v1';
 import { RackRender } from '../../models/RackRender';
 import { DeviceComponent } from '../device/device.component';
 import { RackInstallPanelComponent } from './rack-install-panel/rack-install-panel.component';
