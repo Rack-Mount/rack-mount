@@ -25,13 +25,24 @@ export class TabService {
   // ── Persistence ───────────────────────────────────────────
 
   private loadTabsFromStorage(): PanelTab[] {
+    const STATIC_LABEL_KEYS: Partial<Record<string, string>> = {
+      assets: 'tabs.assets',
+      vendors: 'tabs.vendors',
+      models: 'tabs.models',
+    };
     try {
       const raw = localStorage.getItem(LS_TABS_KEY);
       // Filter out pinned tabs managed by AppComponent ('home', 'assets')
       // to avoid duplicate or closeable entries after a session restore.
       const RESERVED = new Set(['home']);
       return raw
-        ? (JSON.parse(raw) as PanelTab[]).filter((t) => !RESERVED.has(t.id))
+        ? (JSON.parse(raw) as PanelTab[])
+            .filter((t) => !RESERVED.has(t.id))
+            .map((t) =>
+              STATIC_LABEL_KEYS[t.id] && !t.labelKey
+                ? { ...t, labelKey: STATIC_LABEL_KEYS[t.id] }
+                : t,
+            )
         : [];
     } catch {
       return [];
@@ -105,7 +116,13 @@ export class TabService {
   private upsertAssetsTab(): boolean {
     if (this._tabs().some((t) => t.id === 'assets')) return false;
     this._tabs.update((tabs) => [
-      { id: 'assets', label: 'Asset', type: 'assets', pinned: false },
+      {
+        id: 'assets',
+        label: 'Asset',
+        labelKey: 'tabs.assets',
+        type: 'assets',
+        pinned: false,
+      },
       ...tabs,
     ]);
     return true;
@@ -129,7 +146,13 @@ export class TabService {
   private upsertVendorsTab(): boolean {
     if (this._tabs().some((t) => t.id === 'vendors')) return false;
     this._tabs.update((tabs) => [
-      { id: 'vendors', label: 'Vendor', type: 'vendors', pinned: false },
+      {
+        id: 'vendors',
+        label: 'Vendor',
+        labelKey: 'tabs.vendors',
+        type: 'vendors',
+        pinned: false,
+      },
       ...tabs,
     ]);
     return true;
@@ -150,7 +173,13 @@ export class TabService {
   private upsertModelsTab(): boolean {
     if (this._tabs().some((t) => t.id === 'models')) return false;
     this._tabs.update((tabs) => [
-      { id: 'models', label: 'Apparati', type: 'models', pinned: false },
+      {
+        id: 'models',
+        label: 'Apparati',
+        labelKey: 'tabs.models',
+        type: 'models',
+        pinned: false,
+      },
       ...tabs,
     ]);
     return true;

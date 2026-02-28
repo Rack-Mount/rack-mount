@@ -268,6 +268,12 @@
     "server": "Errore del server. Riprova più tardi.",
     "fallback": "Errore durante il salvataggio. Riprova."
   },
+  "tabs": {
+    "home": "Home",
+    "assets": "Asset",
+    "vendors": "Vendor",
+    "models": "Apparati"
+  },
   "asset_row": {
     "section_device": "Apparato",
     "section_lifecycle": "Ciclo di vita",

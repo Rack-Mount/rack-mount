@@ -35,7 +35,7 @@ export const appConfig: ApplicationConfig = {
     { provide: Configuration, useFactory: apiConfigFactory },
     provideHttpClient(withFetch(), withInterceptors([notFoundInterceptor])),
     provideTranslateService({
-      fallbackLang: 'it',
+      fallbackLang: 'en',
     }),
     provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
   ],

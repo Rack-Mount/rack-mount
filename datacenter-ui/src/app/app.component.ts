@@ -51,6 +51,7 @@ export class AppComponent implements OnInit {
   readonly homeTab: PanelTab = {
     id: 'home',
     label: 'Home',
+    labelKey: 'tabs.home',
     type: 'home',
     pinned: true,
   };

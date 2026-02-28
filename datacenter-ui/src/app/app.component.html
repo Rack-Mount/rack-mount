@@ -17,7 +17,7 @@
         (dragover)="onTabDragOver(tab.id, $event)"
         (drop)="onTabDrop(tab.id, $event)"
         (dragend)="onTabDragEnd()"
-        [title]="tab.label"
+        [title]="tab.labelKey ? (tab.labelKey | translate) : tab.label"
       >
         <span class="tab-icon">
           @if (tab.type === "rack") {
@@ -34,7 +34,9 @@
             🏠
           }
         </span>
-        <span class="tab-label">{{ tab.label }}</span>
+        <span class="tab-label">{{
+          tab.labelKey ? (tab.labelKey | translate) : tab.label
+        }}</span>
         @if (!tab.pinned) {
           <button
             class="tab-close"

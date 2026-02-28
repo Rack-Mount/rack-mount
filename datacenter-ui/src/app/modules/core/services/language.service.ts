@@ -12,6 +12,9 @@ const STORAGE_KEY = 'app_language';
 export const AVAILABLE_LANGUAGES: Language[] = [
   { code: 'it', label: 'Italiano', flag: '🇮🇹' },
   { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'zh', label: '中文', flag: '🇨🇳' },
 ];
 
 @Injectable({ providedIn: 'root' })
@@ -29,7 +32,7 @@ export class LanguageService {
   constructor() {
     const lang = this.currentLang();
     this.translate.addLangs(AVAILABLE_LANGUAGES.map((l) => l.code));
-    this.translate.setFallbackLang('it');
+    this.translate.setFallbackLang('en');
     this.translate.use(lang);
   }
 
@@ -62,6 +65,6 @@ export class LanguageService {
     } catch {
       // ignore
     }
-    return 'it';
+    return 'en';
   }
 }
