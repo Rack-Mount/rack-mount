@@ -18,8 +18,8 @@
   font-size: 0.62rem;
   padding: 1px 6px;
   border-radius: 999px;
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
+  background: var(--dc-accent-dim);
+  color: var(--dc-state-blue-color);
   font-weight: 600;
 }
 
@@ -41,8 +41,8 @@ $_type-colors: (
   border-collapse: collapse;
   font-size: 0.72rem;
   color: var(--dc-text-primary);
-  background: var(--dc-bg-elevated);
-  border: 1px solid var(--dc-border-chassis);
+  background: var(--dc-bg-surface);
+  border: 1px solid var(--dc-border-strong);
   border-radius: 6px;
   overflow: hidden;
   border-spacing: 0;
@@ -55,8 +55,8 @@ $_type-colors: (
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--dc-text-muted);
-  background: var(--dc-bg-card);
-  border-bottom: 1px solid var(--dc-border-chassis);
+  background: var(--dc-bg-surface);
+  border-bottom: 1px solid var(--dc-border-strong);
   white-space: nowrap;
   text-align: left;
 
@@ -82,7 +82,7 @@ $_type-colors: (
 }
 
 .device-table__row {
-  border-bottom: 1px solid var(--dc-border-panel);
+  border-bottom: 1px solid var(--dc-border);
 
   &:last-child {
     border-bottom: none;
@@ -94,7 +94,7 @@ $_type-colors: (
 }
 
 .device-table__row--selected td {
-  background: rgba(59, 130, 246, 0.07);
+  background: var(--dc-accent-dim);
 }
 
 .device-table__td {
@@ -107,7 +107,7 @@ $_type-colors: (
 
   &--num {
     text-align: center;
-    color: #6b7280;
+    color: var(--dc-text-muted);
     font-size: 0.64rem;
     max-width: none;
   }
@@ -120,14 +120,14 @@ $_type-colors: (
   &--mono {
     font-family: ui-monospace, monospace;
     font-size: 0.68rem;
-    color: #9ca3af;
+    color: var(--dc-text-secondary);
   }
 }
 
 .device-table__checkbox {
   width: 14px;
   height: 14px;
-  accent-color: #3b82f6;
+  accent-color: var(--dc-accent);
   cursor: pointer;
   vertical-align: middle;
 }
@@ -140,8 +140,8 @@ $_type-colors: (
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: capitalize;
-  background: rgba(107, 114, 128, 0.18);
-  color: #9ca3af;
+  background: var(--dc-hover-subtle);
+  color: var(--dc-text-secondary);
 
   @each $type, $color in $_type-colors {
     &.device-table__badge--#{$type} {
@@ -158,15 +158,15 @@ $_type-colors: (
   font-size: 0.6rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  background: rgba(34, 197, 94, 0.12);
-  color: #4ade80;
+  background: var(--dc-state-green-bg);
+  color: var(--dc-state-green-color);
   white-space: nowrap;
 
   &--clickable {
     cursor: pointer;
-    transition: background 100ms ease;
+    transition: filter 100ms ease;
     &:hover {
-      background: rgba(34, 197, 94, 0.26);
+      filter: brightness(1.15);
     }
   }
 }
@@ -181,7 +181,7 @@ $_type-colors: (
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: #4b5563;
+  color: var(--dc-text-muted);
   cursor: pointer;
   transition:
     background 80ms ease,
@@ -193,8 +193,8 @@ $_type-colors: (
   }
 
   &:hover {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
+    background: var(--dc-danger-bg);
+    color: var(--dc-danger-text);
   }
 }
 
@@ -204,8 +204,8 @@ $_type-colors: (
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.25);
+  background: var(--dc-accent-dim);
+  border: 1px solid var(--dc-border-detail);
   border-radius: 6px;
   margin-bottom: 6px;
   gap: 8px;
@@ -213,7 +213,7 @@ $_type-colors: (
   &__info {
     font-size: 0.72rem;
     font-weight: 600;
-    color: #93c5fd;
+    color: var(--dc-accent);
     white-space: nowrap;
   }
 
@@ -237,22 +237,22 @@ $_type-colors: (
   transition: background 80ms ease;
 
   &--remove {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
-    border-color: rgba(239, 68, 68, 0.3);
+    background: var(--dc-danger-bg);
+    color: var(--dc-danger-text);
+    border-color: var(--dc-danger-border);
     &:hover {
-      background: rgba(239, 68, 68, 0.28);
-      color: #fca5a5;
+      background: var(--dc-danger-bg-hover);
+      color: var(--dc-danger-text);
     }
   }
 
   &--clear {
-    background: #2c2c2e;
-    color: #9ca3af;
-    border-color: #3a3a3c;
+    background: var(--dc-bg-row);
+    color: var(--dc-text-secondary);
+    border-color: var(--dc-border-strong);
     &:hover {
-      background: #3a3a3c;
-      color: #d1d5db;
+      background: var(--dc-bg-row-hover);
+      color: var(--dc-text-primary);
     }
   }
 }

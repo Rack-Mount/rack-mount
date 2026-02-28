@@ -9,12 +9,10 @@ $text-muted: var(--dc-text-muted);
 :host {
   display: block;
   background: $bg-detail;
-  border-bottom: 2px solid var(--dc-accent);
 }
 
 .detail-panel {
   padding: 20px 24px 20px 16px;
-  border-left: 2px solid $accent;
 }
 
 .detail-grid {

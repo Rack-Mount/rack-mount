@@ -189,6 +189,9 @@ $text-muted: var(--dc-text-muted);
   flex: 1;
   overflow-y: auto;
   overflow-x: auto;
+  margin: 0 16px 16px;
+  border: 1px solid $border-strong;
+  border-radius: 6px;
 
   // Custom scrollbar
   scrollbar-width: thin;
@@ -208,7 +211,8 @@ $text-muted: var(--dc-text-muted);
 .assets-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.865rem;
+  font-size: 0.72rem;
+  background: var(--dc-bg-surface);
 
   thead {
     position: sticky;
@@ -220,11 +224,11 @@ $text-muted: var(--dc-text-muted);
     }
 
     th {
-      padding: 10px 14px;
+      padding: 6px 10px;
       text-align: left;
-      font-size: 0.75rem;
+      font-size: 0.6rem;
       font-weight: 600;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
       color: $text-muted;
       border-bottom: 1px solid $border-strong;
@@ -321,7 +325,7 @@ $text-muted: var(--dc-text-muted);
   transition: background 0.1s;
 
   td {
-    padding: 10px 14px;
+    padding: 5px 10px;
     color: $text-primary;
     vertical-align: middle;
   }
@@ -333,9 +337,9 @@ $text-muted: var(--dc-text-muted);
   &--expanded {
     background: $bg-row-hover;
 
-    td:first-child {
-      border-left: 2px solid $accent;
-    }
+    // td:first-child {
+    //   border-left: 2px solid $accent;
+    // }
   }
 
   &--selected {
@@ -348,7 +352,7 @@ $text-muted: var(--dc-text-muted);
 }
 
 .hostname {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--dc-hostname-color);
 }
 
@@ -549,7 +553,7 @@ $text-muted: var(--dc-text-muted);
 
 // ── Skeleton ──────────────────────────────────────────────────────────────────
 .skeleton-row td {
-  padding: 13px 14px;
+  padding: 8px 10px;
 }
 
 @keyframes shimmer {
@@ -624,17 +628,17 @@ $text-muted: var(--dc-text-muted);
 
 .btn-retry {
   background: $accent-dim;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid var(--dc-accent-dim);
   border-radius: 8px;
-  color: #93c5fd;
+  color: var(--dc-accent);
   font-size: 0.82rem;
   padding: 6px 16px;
   cursor: pointer;
   margin-top: 6px;
-  transition: background 0.15s;
+  transition: filter 0.15s;
 
   &:hover {
-    background: rgba(59, 130, 246, 0.25);
+    filter: brightness(1.15);
   }
 }
 
