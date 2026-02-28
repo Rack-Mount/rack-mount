@@ -1,61 +1,67 @@
+import { DecimalPipe } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  HostListener,
-  Input,
-  ViewChild,
   ElementRef,
-  AfterViewInit,
-  OnDestroy,
+  HostListener,
   inject,
+  Input,
+  OnDestroy,
+  ViewChild,
 } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TabService } from '../../../core/services/tab.service';
-import { SettingsService } from '../../../core/services/settings.service';
-import { ConfirmDialogService } from '../../../core/services/confirm-dialog.service';
-import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
-import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
-import { LocationService } from '../../../core/api/v1/api/location.service';
-import { Location as DjLocation } from '../../../core/api/v1/model/location';
-import { Room as DjRoom } from '../../../core/api/v1/model/room';
 import { forkJoin } from 'rxjs';
 import { AssetService } from '../../../core/api/v1/api/asset.service';
+import { LocationService } from '../../../core/api/v1/api/location.service';
+import { Location as DjLocation } from '../../../core/api/v1/model/location';
 import { Rack } from '../../../core/api/v1/model/rack';
 import { RackType } from '../../../core/api/v1/model/rackType';
+import { Room as DjRoom } from '../../../core/api/v1/model/room';
+import { ConfirmDialogService } from '../../../core/services/confirm-dialog.service';
+import { SettingsService } from '../../../core/services/settings.service';
+import { TabService } from '../../../core/services/tab.service';
+import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
+import { MapFloorPlanToolbarComponent } from './map-floor-plan-toolbar/map-floor-plan-toolbar.component';
 import { dist, distToSegment } from './map-geometry.utils';
+import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
+import { isRackPlacementValid } from './rack-placement.utils';
+import {
+  getRackSnapResult,
+  isObbBlocked,
+  ObbRect,
+  RackRect,
+} from './rack-snap.utils';
 import {
   updateWallDerived as _deriveWall,
-  computeWallSegments,
   computeWallAngles,
+  computeWallSegments,
 } from './wall-display.utils';
 import {
   computeRooms as _computeRooms,
-  computeRoomFaces,
   mergeWalls as _mergeWalls,
   computeJunctionAngles,
+  computeRoomFaces,
   restoreRoomNames,
   RoomFace,
 } from './wall-graph.utils';
-import { isRackPlacementValid } from './rack-placement.utils';
 import {
   checkIntersections,
   getClosestEdgeSnap,
   getClosestVertex,
 } from './wall-snap.utils';
-import {
-  getRackSnapResult,
-  RackRect,
-  ObbRect,
-  isObbBlocked,
-} from './rack-snap.utils';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [DecimalPipe, FormsModule, MapSidebarComponent],
+  imports: [
+    DecimalPipe,
+    FormsModule,
+    MapSidebarComponent,
+    MapFloorPlanToolbarComponent,
+  ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -139,6 +145,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   set autosave(value: boolean) {
     this.settingsService.setAutosave(value);
+  }
+
+  // ── Toolbar event handlers ────────────────────────────────────────────────
+
+  onAutosaveChange(value: boolean): void {
+    this.settingsService.setAutosave(value);
+  }
+
+  onRackTypeChange(rt: RackType | null): void {
+    this.selectedRackType = rt;
+    this.cdr.markForCheck();
+  }
+
+  onDoorWidthChange(w: number): void {
+    this.doorWidth = Number(w);
+    this.cdr.markForCheck();
   }
 
   isDrawing = false;
