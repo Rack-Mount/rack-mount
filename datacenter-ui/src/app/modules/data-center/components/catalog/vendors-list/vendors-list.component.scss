@@ -78,7 +78,7 @@ $text-muted: var(--dc-text-muted);
     }
     &:focus {
       border-color: $accent;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 0 2px var(--dc-accent-dim);
     }
   }
 
@@ -119,14 +119,14 @@ $text-muted: var(--dc-text-muted);
   font-weight: 500;
   padding: 7px 14px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: filter 0.15s;
 
   svg {
     width: 14px;
     height: 14px;
   }
   &:hover {
-    background: #2563eb;
+    filter: brightness(1.1);
   }
 }
 
@@ -135,6 +135,9 @@ $text-muted: var(--dc-text-muted);
   flex: 1;
   overflow-y: auto;
   overflow-x: auto;
+  margin: 0 16px 16px;
+  border: 1px solid $border-strong;
+  border-radius: 6px;
 
   scrollbar-width: thin;
   scrollbar-color: var(--dc-scrollbar-thumb) transparent;
@@ -159,7 +162,7 @@ $text-muted: var(--dc-text-muted);
   font-size: 0.9rem;
 
   &--error {
-    color: #f87171;
+    color: var(--dc-danger-text);
   }
 }
 
@@ -182,7 +185,8 @@ $text-muted: var(--dc-text-muted);
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.865rem;
+  background: #fff;
+  font-size: 0.72rem;
 
   thead {
     position: sticky;
@@ -196,11 +200,11 @@ $text-muted: var(--dc-text-muted);
   }
 
   th {
-    padding: 10px 14px;
+    padding: 6px 10px;
     text-align: left;
-    font-size: 0.75rem;
+    font-size: 0.6rem;
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: $text-muted;
     white-space: nowrap;
@@ -255,11 +259,11 @@ $text-muted: var(--dc-text-muted);
     background: $bg-row-hover;
   }
   &--deleting {
-    background: rgba(239, 68, 68, 0.07);
+    background: var(--dc-danger-bg);
   }
 
   td {
-    padding: 10px 14px;
+    padding: 5px 10px;
     vertical-align: middle;
     color: $text-primary;
   }
@@ -272,9 +276,9 @@ $text-muted: var(--dc-text-muted);
 
 // ── Inline edit row ────────────────────────────────────────────────────────
 .row-edit td {
-  padding: 8px 14px;
+  padding: 6px 10px;
   border-bottom: 1px solid $border;
-  background: rgba(59, 130, 246, 0.06);
+  background: var(--dc-accent-dim);
 }
 
 .inline-input {
@@ -289,7 +293,7 @@ $text-muted: var(--dc-text-muted);
   outline: none;
 
   &:focus {
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 0 0 2px var(--dc-accent-dim);
   }
 }
 
@@ -328,11 +332,11 @@ $text-muted: var(--dc-text-muted);
   }
 
   &--edit:hover {
-    background: rgba(59, 130, 246, 0.15);
+    background: var(--dc-accent-dim);
     color: $accent;
   }
   &--delete:hover {
-    background: rgba(239, 68, 68, 0.15);
+    background: var(--dc-danger-bg);
     color: $danger;
   }
 }
@@ -363,7 +367,7 @@ $text-muted: var(--dc-text-muted);
     border-color: $accent;
     color: #fff;
     &:hover:not(:disabled) {
-      background: #2563eb;
+      filter: brightness(1.1);
     }
   }
 
@@ -372,7 +376,7 @@ $text-muted: var(--dc-text-muted);
     border-color: $danger;
     color: #fff;
     &:hover:not(:disabled) {
-      background: #dc2626;
+      filter: brightness(1.1);
     }
   }
 }
@@ -400,31 +404,34 @@ $text-muted: var(--dc-text-muted);
 .pagination {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 16px 0;
   justify-content: center;
+  gap: 14px;
+  padding: 14px;
+  border-top: 1px solid $border;
+  flex-shrink: 0;
+  background: $bg-surface;
 }
 
 .page-btn {
-  background: $bg-surface;
-  border: 1px solid $border-strong;
-  border-radius: 6px;
-  color: $text-secondary;
-  font-size: 0.82rem;
-  min-width: 32px;
+  width: 32px;
   height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg-row;
+  border: 1px solid $border-strong;
+  border-radius: 8px;
+  color: $text-primary;
+  font-size: 1rem;
   cursor: pointer;
-  transition:
-    background 0.1s,
-    color 0.1s;
+  transition: background 0.15s;
 
   &:hover:not(:disabled) {
     background: $bg-row-hover;
-    color: $text-primary;
   }
   &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+    opacity: 0.3;
+    cursor: default;
   }
   &--active {
     background: $accent;
