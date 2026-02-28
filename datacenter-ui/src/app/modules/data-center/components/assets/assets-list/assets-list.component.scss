@@ -336,10 +336,6 @@ $text-muted: var(--dc-text-muted);
 
   &--expanded {
     background: $bg-row-hover;
-
-    // td:first-child {
-    //   border-left: 2px solid $accent;
-    // }
   }
 
   &--selected {
