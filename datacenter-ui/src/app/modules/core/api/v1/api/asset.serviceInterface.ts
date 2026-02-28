@@ -397,6 +397,13 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * GET /asset/export Accepts the same filters as AssetViewSet (search, state, model__type, ordering, ids). Returns an .xlsx file.
+     * @endpoint get /asset/asset/export
+*/
+    assetAssetExportRetrieve(extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
      * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
      * @endpoint get /asset/asset
 * @param requestParameters
