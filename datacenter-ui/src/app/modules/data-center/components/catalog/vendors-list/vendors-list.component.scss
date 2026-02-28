@@ -185,7 +185,7 @@ $text-muted: var(--dc-text-muted);
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--dc-bg-surface);
   font-size: 0.72rem;
 
   thead {
