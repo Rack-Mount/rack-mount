@@ -1,11 +1,7 @@
 <div class="overlay-backdrop" (click)="closed.emit()"></div>
 
-<div
-  class="state-picker"
-  [style.top.px]="y()"
-  [style.left.px]="x()"
->
-  @if (editState() === 'saving') {
+<div class="state-picker" [style.top.px]="y()" [style.left.px]="x()">
+  @if (editState() === "saving") {
     <div class="picker-loading">
       @if (bulkCount()) {
         Salvataggio {{ bulkCount() | number }} asset…
@@ -27,7 +23,7 @@
         {{ s.name }}
       </button>
     }
-    @if (editState() === 'error') {
+    @if (editState() === "error") {
       <p class="picker-error">Errore — riprova</p>
     }
   }

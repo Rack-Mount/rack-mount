@@ -45,19 +45,19 @@ $text-muted: #475569;
     flex-shrink: 0;
   }
 
-  &[data-color='green'] .state-dot {
+  &[data-color="green"] .state-dot {
     background: #4ade80;
   }
-  &[data-color='yellow'] .state-dot {
+  &[data-color="yellow"] .state-dot {
     background: #fbbf24;
   }
-  &[data-color='red'] .state-dot {
+  &[data-color="red"] .state-dot {
     background: #f87171;
   }
-  &[data-color='blue'] .state-dot {
+  &[data-color="blue"] .state-dot {
     background: #60a5fa;
   }
-  &[data-color='gray'] .state-dot {
+  &[data-color="gray"] .state-dot {
     background: #64748b;
   }
 }

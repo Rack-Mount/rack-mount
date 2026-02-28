@@ -16,7 +16,6 @@
   </div>
 
   <div class="drawer-body">
-
     <div class="form-group">
       <label>Modello <span class="required">*</span></label>
       <div class="autocomplete-wrap">
@@ -124,7 +123,9 @@
           min="0"
           placeholder="es. 2"
           [value]="createForm().power_supplies ?? ''"
-          (input)="patchForm('power_supplies', +$any($event.target).value || null)"
+          (input)="
+            patchForm('power_supplies', +$any($event.target).value || null)
+          "
         />
       </div>
       <div class="form-group">
@@ -135,7 +136,12 @@
           min="0"
           placeholder="es. 800"
           [value]="createForm().power_cosumption_watt ?? ''"
-          (input)="patchForm('power_cosumption_watt', +$any($event.target).value || null)"
+          (input)="
+            patchForm(
+              'power_cosumption_watt',
+              +$any($event.target).value || null
+            )
+          "
         />
       </div>
     </div>
@@ -192,12 +198,11 @@
       ></textarea>
     </div>
 
-    @if (createSaveState() === 'error') {
+    @if (createSaveState() === "error") {
       <p class="form-error">
         Errore nel salvataggio — ricontrolla i dati e riprova.
       </p>
     }
-
   </div>
 
   <div class="drawer-footer">
@@ -211,7 +216,7 @@
       "
       (click)="submit()"
     >
-      {{ createSaveState() === 'saving' ? 'Salvataggio…' : 'Crea asset' }}
+      {{ createSaveState() === "saving" ? "Salvataggio…" : "Crea asset" }}
     </button>
   </div>
 </div>

@@ -1,24 +1,23 @@
 <div class="detail-panel">
   <div class="detail-grid">
-
     <div class="detail-section">
       <h4 class="detail-section-title">Identificazione</h4>
       <dl class="detail-list">
         <div class="detail-item">
           <dt>Hostname</dt>
-          <dd>{{ asset().hostname || '—' }}</dd>
+          <dd>{{ asset().hostname || "—" }}</dd>
         </div>
         <div class="detail-item">
           <dt>Seriale</dt>
-          <dd class="mono">{{ asset().serial_number || '—' }}</dd>
+          <dd class="mono">{{ asset().serial_number || "—" }}</dd>
         </div>
         <div class="detail-item">
           <dt>SAP ID</dt>
-          <dd class="mono">{{ asset().sap_id || '—' }}</dd>
+          <dd class="mono">{{ asset().sap_id || "—" }}</dd>
         </div>
         <div class="detail-item">
           <dt>Order ID</dt>
-          <dd class="mono">{{ asset().order_id || '—' }}</dd>
+          <dd class="mono">{{ asset().order_id || "—" }}</dd>
         </div>
       </dl>
     </div>
@@ -28,7 +27,7 @@
       <dl class="detail-list">
         <div class="detail-item">
           <dt>Nome</dt>
-          <dd>{{ asset().model.name || '—' }}</dd>
+          <dd>{{ asset().model.name || "—" }}</dd>
         </div>
         <div class="detail-item">
           <dt>Vendor</dt>
@@ -86,15 +85,15 @@
       <dl class="detail-list">
         <div class="detail-item">
           <dt>Alimentatori</dt>
-          <dd>{{ asset().power_supplies ?? '—' }}</dd>
+          <dd>{{ asset().power_supplies ?? "—" }}</dd>
         </div>
         <div class="detail-item">
           <dt>Assorbimento</dt>
           <dd>
             {{
               asset().power_cosumption_watt
-                ? asset().power_cosumption_watt + ' W'
-                : '—'
+                ? asset().power_cosumption_watt + " W"
+                : "—"
             }}
           </dd>
         </div>
@@ -108,7 +107,6 @@
         </div>
       </dl>
     </div>
-
   </div>
 
   @if (asset().note) {
@@ -120,10 +118,7 @@
 
   <div class="detail-actions">
     @if (deleteConfirmId() !== asset().id) {
-      <button
-        class="btn-delete"
-        (click)="onDeleteRequest(asset().id, $event)"
-      >
+      <button class="btn-delete" (click)="onDeleteRequest(asset().id, $event)">
         <svg viewBox="0 0 16 16" fill="none">
           <path
             d="M3 4h10M6 4V2.5h4V4M5 4l.5 9h5L11 4"
@@ -136,21 +131,24 @@
         Elimina asset
       </button>
     } @else {
-      <span class="delete-confirm-text">Sei sicuro? L'operazione è irreversibile.</span>
+      <span class="delete-confirm-text"
+        >Sei sicuro? L'operazione è irreversibile.</span
+      >
       <button
         class="btn-delete-confirm"
         [disabled]="deleteSaveState() === 'saving'"
         (click)="onDeleteConfirm(asset().id, $event)"
       >
-        {{ deleteSaveState() === 'saving' ? 'Eliminazione…' : 'Conferma eliminazione' }}
+        {{
+          deleteSaveState() === "saving"
+            ? "Eliminazione…"
+            : "Conferma eliminazione"
+        }}
       </button>
-      <button
-        class="btn-delete-cancel"
-        (click)="onDeleteCancel($event)"
-      >
+      <button class="btn-delete-cancel" (click)="onDeleteCancel($event)">
         Annulla
       </button>
-      @if (deleteSaveState() === 'error') {
+      @if (deleteSaveState() === "error") {
         <span class="delete-error">Errore — riprova</span>
       }
     }

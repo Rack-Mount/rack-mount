@@ -28,15 +28,15 @@ import {
   AssetType,
 } from '../../../core/api/v1';
 import { TabService } from '../../../core/services/tab.service';
+import { AssetCreateDrawerComponent } from './asset-create-drawer/asset-create-drawer.component';
+import { AssetRowDetailComponent } from './asset-row-detail/asset-row-detail.component';
+import { AssetStatePickerComponent } from './asset-state-picker/asset-state-picker.component';
 import {
   EditState,
   ListState,
   PAGE_SIZE,
   stateColor,
 } from './assets-list-utils';
-import { AssetCreateDrawerComponent } from './asset-create-drawer/asset-create-drawer.component';
-import { AssetRowDetailComponent } from './asset-row-detail/asset-row-detail.component';
-import { AssetStatePickerComponent } from './asset-state-picker/asset-state-picker.component';
 
 @Component({
   selector: 'app-assets-list',
@@ -66,7 +66,9 @@ export class AssetsListComponent {
 
   // ── Delete confirmation ────────────────────────────────────────────────────
   protected readonly deleteConfirmId = signal<number | null>(null);
-  protected readonly deleteSaveState = signal<'idle' | 'saving' | 'error'>('idle');
+  protected readonly deleteSaveState = signal<'idle' | 'saving' | 'error'>(
+    'idle',
+  );
 
   // ── Filter params (single signal for reactivity) ──────────────────────────
   protected readonly params = signal({
