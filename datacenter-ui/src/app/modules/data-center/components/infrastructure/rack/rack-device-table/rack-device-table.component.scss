@@ -84,6 +84,10 @@ $_type-colors: (
 .device-table__row {
   border-bottom: 1px solid var(--dc-border);
 
+  &:nth-child(even) {
+    background: var(--dc-bg-row-alt);
+  }
+
   &:last-child {
     border-bottom: none;
   }

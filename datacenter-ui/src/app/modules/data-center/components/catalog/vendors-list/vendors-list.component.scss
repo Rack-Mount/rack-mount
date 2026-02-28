@@ -255,6 +255,10 @@ $text-muted: var(--dc-text-muted);
   border-bottom: 1px solid $border;
   transition: background 0.1s;
 
+  &:nth-child(even) {
+    background: var(--dc-bg-row-alt);
+  }
+
   &:hover {
     background: $bg-row-hover;
   }

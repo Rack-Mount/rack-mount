@@ -303,6 +303,11 @@ $text-muted: var(--dc-text-muted);
   border-bottom: 1px solid $border;
   transition: background 0.1s;
   cursor: pointer;
+
+  &:nth-child(even) {
+    background: var(--dc-bg-row-alt);
+  }
+
   &:hover td {
     background: $bg-row-hover;
   }
@@ -396,11 +401,11 @@ $text-muted: var(--dc-text-muted);
   @extend %btn-row-base;
   background: transparent;
   border: 1px solid var(--dc-accent-dim);
-  color: var(--dc-accent);
+  color: var(--dc-text-primary);
   &:hover {
     background: var(--dc-accent-dim);
-    border-color: var(--dc-accent);
-    color: var(--dc-accent);
+    border-color: var(--dc-text-primary);
+    color: var(--dc-text-primary);
   }
 }
 
@@ -704,16 +709,15 @@ $text-muted: var(--dc-text-muted);
   width: 220px;
 }
 
-.cell-images {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-}
+// .cell-images {
+//   display: flex;
+//   align-items: center;
+//   gap: 6px;
+//   padding: 6px 12px;
+// }
 
 .thumb {
   width: 36px;
-  height: 36px;
   object-fit: contain;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.06);
