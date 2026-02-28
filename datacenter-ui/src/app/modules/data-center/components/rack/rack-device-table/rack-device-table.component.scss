@@ -1,0 +1,259 @@
+.rack-aside__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+
+.rack-aside__title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.rack-aside__count {
+  font-size: 0.62rem;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+// ── Device detail table ──────────────────────────────────────────────────
+$_type-colors: (
+  server: #3b82f6,
+  switch: #22c55e,
+  router: #06b6d4,
+  firewall: #f59e0b,
+  storage: #a855f7,
+  pdu: #f97316,
+  kvm: #84cc16,
+  ups: #ec4899,
+  other: #6b7280,
+);
+
+.device-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+  color: #d1d5db;
+  background: #1c1c1e;
+  border: 1px solid #3a3a3c;
+  border-radius: 6px;
+  overflow: hidden;
+  border-spacing: 0;
+}
+
+.device-table__th {
+  padding: 6px 10px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #6b7280;
+  background: #2c2c2e;
+  border-bottom: 1px solid #3a3a3c;
+  white-space: nowrap;
+  text-align: left;
+
+  &--num {
+    text-align: center;
+    width: 40px;
+  }
+}
+
+.device-table__th--action,
+.device-table__td--action {
+  width: 32px;
+  padding: 4px 6px;
+  text-align: center;
+}
+
+.device-table__th--check,
+.device-table__td--check {
+  width: 32px;
+  padding: 4px 8px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.device-table__row {
+  border-bottom: 1px solid #2c2c2e;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover td {
+    background: #242426;
+  }
+}
+
+.device-table__row--selected td {
+  background: rgba(59, 130, 246, 0.07);
+}
+
+.device-table__td {
+  padding: 5px 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+
+  &--num {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.64rem;
+    max-width: none;
+  }
+
+  &--hostname {
+    font-weight: 600;
+    color: #f0f0f0;
+    max-width: 200px;
+  }
+
+  &--mono {
+    font-family: ui-monospace, monospace;
+    font-size: 0.68rem;
+    color: #9ca3af;
+  }
+}
+
+.device-table__checkbox {
+  width: 14px;
+  height: 14px;
+  accent-color: #3b82f6;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.device-table__badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+  background: rgba(107, 114, 128, 0.18);
+  color: #9ca3af;
+
+  @each $type, $color in $_type-colors {
+    &.device-table__badge--#{$type} {
+      background: rgba($color, 0.15);
+      color: $color;
+    }
+  }
+}
+
+.device-table__state-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  white-space: nowrap;
+
+  &--clickable {
+    cursor: pointer;
+    transition: background 100ms ease;
+    &:hover {
+      background: rgba(34, 197, 94, 0.26);
+    }
+  }
+}
+
+.device-table__remove-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #4b5563;
+  cursor: pointer;
+  transition:
+    background 80ms ease,
+    color 80ms ease;
+  opacity: 0;
+
+  .device-table__row:hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+  }
+}
+
+// ── Bulk action bar ───────────────────────────────────────────────────────
+.device-table__bulk-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  gap: 8px;
+
+  &__info {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #93c5fd;
+    white-space: nowrap;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+}
+
+.device-table__bulk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 80ms ease;
+
+  &--remove {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.3);
+    &:hover {
+      background: rgba(239, 68, 68, 0.28);
+      color: #fca5a5;
+    }
+  }
+
+  &--clear {
+    background: #2c2c2e;
+    color: #9ca3af;
+    border-color: #3a3a3c;
+    &:hover {
+      background: #3a3a3c;
+      color: #d1d5db;
+    }
+  }
+}

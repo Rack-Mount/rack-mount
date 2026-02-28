@@ -19,6 +19,12 @@ import { catchError, combineLatest, concat, map, of, switchMap } from 'rxjs';
 import { AssetService, AssetState, Rack, RackUnit } from '../../../core/api/v1';
 import { RackRender } from '../../models/RackRender';
 import { DeviceComponent } from '../device/device.component';
+import {
+  BulkRemoveRequest,
+  RackDeviceTableComponent,
+  RemoveRequest,
+  StatePickerRequest,
+} from './rack-device-table/rack-device-table.component';
 import { RackInstallPanelComponent } from './rack-install-panel/rack-install-panel.component';
 import { RackRemoveConfirmComponent } from './rack-remove-confirm/rack-remove-confirm.component';
 import { RackStatePickerComponent } from './rack-state-picker/rack-state-picker.component';
@@ -51,6 +57,7 @@ const RACK_OVERHEAD_PX = 72;
     RackInstallPanelComponent,
     RackStatePickerComponent,
     RackRemoveConfirmComponent,
+    RackDeviceTableComponent,
   ],
   templateUrl: './rack.component.html',
   styleUrl: './rack.component.scss',
@@ -75,7 +82,7 @@ export class RackComponent {
   private readonly _paneHeight = signal<number>(0);
 
   /** Bump to force re-fetch of rack units after a position update. */
-  private readonly _refresh = signal(0);
+  readonly _refresh = signal(0);
   /** True = show the rear face of the rack; false = front face (default). */
   readonly _rearView = signal(false);
   /** Device currently being dragged. */
@@ -97,46 +104,6 @@ export class RackComponent {
   readonly _installAnchorX = signal<number>(0);
 
   // ── Selection ─────────────────────────────────────────────────────────────
-
-  /** Set of selected rack-unit IDs. */
-  readonly _selectedIds = signal<ReadonlySet<number>>(new Set());
-
-  readonly selectedCount = computed(() => this._selectedIds().size);
-
-  readonly allSelected = computed(() => {
-    const rows = this.deviceRows();
-    return (
-      rows.length > 0 &&
-      rows.every((r) => this._selectedIds().has(r.device!.id))
-    );
-  });
-
-  readonly someSelected = computed(
-    () => this._selectedIds().size > 0 && !this.allSelected(),
-  );
-
-  protected toggleSelect(id: number, checked: boolean): void {
-    this._selectedIds.update((prev) => {
-      const next = new Set(prev);
-      if (checked) next.add(id);
-      else next.delete(id);
-      return next;
-    });
-  }
-
-  protected toggleSelectAll(checked: boolean): void {
-    if (checked) {
-      this._selectedIds.set(
-        new Set(this.deviceRows().map((r) => r.device!.id)),
-      );
-    } else {
-      this._selectedIds.set(new Set());
-    }
-  }
-
-  protected clearSelection(): void {
-    this._selectedIds.set(new Set());
-  }
 
   // ── Remove from rack ──────────────────────────────────────────────────────
 
@@ -328,47 +295,12 @@ export class RackComponent {
     this.rackRender().filter((row) => !!row.device),
   );
 
-  protected openBulkRemoveConfirm(): void {
-    const ids = [...this._selectedIds()];
-    const rows = this.deviceRows().filter((r) => !!r.device);
-    const ruToAsset = new Map(
-      rows.map((r) => [r.device!.id, +r.device!.device_id]),
-    );
-    const assetIds = ids
-      .map((id) => ruToAsset.get(id))
-      .filter((id): id is number => id !== undefined);
-    this._bulkRUIdsForConfirm.set(ids);
-    this._bulkAssetIdsForConfirm.set(assetIds);
-    this._bulkRemoveConfirm.set(true);
-  }
-
   protected closeBulkRemoveConfirm(): void {
     this._bulkRemoveConfirm.set(false);
   }
 
   protected onBulkRemoveConfirmed(): void {
     this.refreshRack();
-  }
-
-  protected openRemoveConfirm(
-    rackUnitId: number,
-    assetId: number,
-    event: MouseEvent,
-  ): void {
-    event.stopPropagation();
-    const el = event.currentTarget as HTMLElement;
-    const rect = el.getBoundingClientRect();
-    const popW = 240;
-    const popH = 110;
-    const idealX = rect.right + 6;
-    const x =
-      idealX + popW > window.innerWidth - 4 ? rect.left - popW - 4 : idealX;
-    const idealY = rect.top - 4;
-    const y = Math.max(4, Math.min(idealY, window.innerHeight - popH - 4));
-    this._removeConfirmX.set(x);
-    this._removeConfirmY.set(y);
-    this._removeConfirmId.set(rackUnitId);
-    this._removeConfirmAssetId.set(assetId);
   }
 
   protected closeRemoveConfirm(): void {
@@ -380,48 +312,32 @@ export class RackComponent {
     this.refreshRack();
   }
 
-  /** Clears selection and bumps the refresh counter. */
+  /** Bumps the refresh counter (child component clears its own selection via clearTrigger). */
   protected refreshRack(): void {
-    this._selectedIds.set(new Set());
     this._refresh.update((v) => v + 1);
   }
 
-  protected openStatePicker(deviceId: number, event: MouseEvent): void {
-    event.stopPropagation();
-    const el = event.currentTarget as HTMLElement;
-    const rect = el.getBoundingClientRect();
-    const pickerW = 180;
-    const pickerH = Math.min(this.availableStates().length * 34 + 8, 260);
-    const idealX = rect.right + 6;
-    const x =
-      idealX + pickerW > window.innerWidth - 4
-        ? rect.left - pickerW - 4
-        : idealX;
-    const idealY = rect.top - 4;
-    const y = Math.max(4, Math.min(idealY, window.innerHeight - pickerH - 4));
-    this._statePickerX.set(x);
-    this._statePickerY.set(y);
-    this._statePickerDeviceId.set(deviceId);
+  protected onRemoveRequest(e: RemoveRequest): void {
+    this._removeConfirmX.set(e.anchorX);
+    this._removeConfirmY.set(e.anchorY);
+    this._removeConfirmId.set(e.rackUnitId);
+    this._removeConfirmAssetId.set(e.assetId);
+  }
+
+  protected onStatePickerRequest(e: StatePickerRequest): void {
+    this._statePickerX.set(e.anchorX);
+    this._statePickerY.set(e.anchorY);
+    this._statePickerDeviceId.set(e.deviceId);
+  }
+
+  protected onBulkRemoveRequest(e: BulkRemoveRequest): void {
+    this._bulkRUIdsForConfirm.set(e.rackUnitIds);
+    this._bulkAssetIdsForConfirm.set(e.assetIds);
+    this._bulkRemoveConfirm.set(true);
   }
 
   protected closeStatePicker(): void {
     this._statePickerDeviceId.set(null);
-  }
-
-  /** Map a raw device_type string to the same CSS modifier key used by DeviceComponent. */
-  protected typeClass(type?: string): string {
-    const t = (type ?? '').toLowerCase();
-    const map: Record<string, string> = {
-      server: 'server',
-      switch: 'switch',
-      router: 'router',
-      firewall: 'firewall',
-      storage: 'storage',
-      pdu: 'pdu',
-      kvm: 'kvm',
-      ups: 'ups',
-    };
-    return map[t] ?? 'other';
   }
 
   readonly rackRender = computed<RackRender[]>(() => {

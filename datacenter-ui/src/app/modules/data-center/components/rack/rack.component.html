@@ -166,155 +166,14 @@
 
     <!-- Device table: visible only when data is ready -->
     @if (!loading() && !error() && deviceRows().length) {
-      <div class="rack-aside__header">
-        <span class="rack-aside__title">Apparati installati</span>
-        <span class="rack-aside__count">{{ deviceRows().length }}</span>
-      </div>
-
-      @if (selectedCount() > 0) {
-        <div class="device-table__bulk-bar">
-          <span class="device-table__bulk-bar__info"
-            >{{ selectedCount() }}
-            {{ selectedCount() === 1 ? "selezionato" : "selezionati" }}</span
-          >
-          <div class="device-table__bulk-bar__actions">
-            <button
-              class="device-table__bulk-btn device-table__bulk-btn--remove"
-              (click)="openBulkRemoveConfirm()"
-            >
-              <svg
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                width="12"
-                height="12"
-              >
-                <path
-                  d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66H13.5a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Z"
-                />
-              </svg>
-              Rimuovi dal rack
-            </button>
-            <button
-              class="device-table__bulk-btn device-table__bulk-btn--clear"
-              (click)="clearSelection()"
-            >
-              Annulla selezione
-            </button>
-          </div>
-        </div>
-      }
-      <table class="device-table">
-        <thead>
-          <tr>
-            <th class="device-table__th device-table__th--check">
-              <input
-                type="checkbox"
-                class="device-table__checkbox"
-                [checked]="allSelected()"
-                [indeterminate]="someSelected()"
-                (change)="toggleSelectAll($any($event.target).checked)"
-                title="Seleziona tutti"
-              />
-            </th>
-            <th class="device-table__th device-table__th--num">U</th>
-            <th class="device-table__th">Hostname</th>
-            <th class="device-table__th">Modello</th>
-            <th class="device-table__th">Vendor</th>
-            <th class="device-table__th">Tipo</th>
-            <th class="device-table__th">Seriale</th>
-            <th class="device-table__th">SAP ID</th>
-            <th class="device-table__th">Stato</th>
-            <th class="device-table__th device-table__th--num">Size</th>
-            <th class="device-table__th device-table__th--action"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of deviceRows(); track row.position) {
-            <tr
-              class="device-table__row"
-              [class.device-table__row--selected]="
-                _selectedIds().has(row.device!.id)
-              "
-            >
-              <td class="device-table__td device-table__td--check">
-                <input
-                  type="checkbox"
-                  class="device-table__checkbox"
-                  [checked]="_selectedIds().has(row.device!.id)"
-                  (change)="
-                    toggleSelect(row.device!.id, $any($event.target).checked)
-                  "
-                />
-              </td>
-              <td class="device-table__td device-table__td--num">
-                {{ row.position }}
-              </td>
-              <td class="device-table__td device-table__td--hostname">
-                {{ row.device!.device_hostname || "—" }}
-              </td>
-              <td class="device-table__td">
-                {{ row.device!.device_model || "—" }}
-              </td>
-              <td class="device-table__td">
-                {{ row.device!.device_vendor || "—" }}
-              </td>
-              <td class="device-table__td">
-                <span
-                  class="device-table__badge device-table__badge--{{
-                    typeClass(row.device!.device_type)
-                  }}"
-                >
-                  {{ row.device!.device_type || "—" }}
-                </span>
-              </td>
-              <td class="device-table__td device-table__td--mono">
-                {{ row.device!.device_serial_number || "—" }}
-              </td>
-              <td class="device-table__td device-table__td--mono">
-                {{ row.device!.device_sap_id || "—" }}
-              </td>
-              <td class="device-table__td">
-                @if (row.device!.device_state) {
-                  <span
-                    class="device-table__state-badge device-table__state-badge--clickable"
-                    (click)="openStatePicker(+row.device!.device_id, $event)"
-                    >{{ row.device!.device_state }}</span
-                  >
-                } @else {
-                  <span>—</span>
-                }
-              </td>
-              <td class="device-table__td device-table__td--num">
-                {{ row.device!.device_rack_units }}U
-              </td>
-              <td class="device-table__td device-table__td--action">
-                <button
-                  class="device-table__remove-btn"
-                  title="Rimuovi dal rack"
-                  (click)="
-                    openRemoveConfirm(
-                      row.device!.id,
-                      +row.device!.device_id,
-                      $event
-                    )
-                  "
-                >
-                  <svg
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
-                    width="13"
-                    height="13"
-                  >
-                    <path
-                      d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66H13.5a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"
-                    />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      <app-rack-device-table
+        [rows]="deviceRows()"
+        [clearTrigger]="_refresh()"
+        [availableStatesCount]="availableStates().length"
+        (removeRequest)="onRemoveRequest($event)"
+        (statePickerRequest)="onStatePickerRequest($event)"
+        (bulkRemoveRequest)="onBulkRemoveRequest($event)"
+      />
     }
   </div>
   <!-- /rack-aside -->
@@ -339,7 +198,7 @@
     mode="bulk"
     [bulkRackUnitIds]="_bulkRUIdsForConfirm()"
     [bulkAssetIds]="_bulkAssetIdsForConfirm()"
-    [selectedCount]="selectedCount()"
+    [selectedCount]="_bulkRUIdsForConfirm().length"
     [decommissionedStateId]="decommissionedStateId()"
     (confirmed)="onBulkRemoveConfirmed()"
     (closed)="closeBulkRemoveConfirm()"
