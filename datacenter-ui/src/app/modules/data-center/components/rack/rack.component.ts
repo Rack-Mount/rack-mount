@@ -19,12 +19,9 @@ import {
   catchError,
   combineLatest,
   concat,
-  debounceTime,
   forkJoin,
   map,
-  merge,
   of,
-  Subject,
   switchMap,
 } from 'rxjs';
 import {
@@ -36,17 +33,12 @@ import {
 } from '../../../core/api/v1';
 import { RackRender } from '../../models/RackRender';
 import { DeviceComponent } from '../device/device.component';
+import { RackInstallPanelComponent } from './rack-install-panel/rack-install-panel.component';
 
 type UnitsState =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'loaded'; results: RackUnit[] }
-  | { status: 'error' };
-
-type InstallAssetsState =
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'loaded'; results: Asset[] }
   | { status: 'error' };
 
 type RackLoadState =
@@ -66,7 +58,7 @@ const RACK_OVERHEAD_PX = 72;
 
 @Component({
   selector: 'app-rack',
-  imports: [DeviceComponent],
+  imports: [DeviceComponent, RackInstallPanelComponent],
   templateUrl: './rack.component.html',
   styleUrl: './rack.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -110,14 +102,6 @@ export class RackComponent {
   readonly _installAnchorY = signal<number>(0);
   /** Viewport left offset (px) for the install panel anchor. */
   readonly _installAnchorX = signal<number>(0);
-  /** Current search text in the install panel. */
-  readonly _installSearch = signal('');
-  /** ID of the asset selected in the install panel. */
-  readonly _installSelectedId = signal<number | null>(null);
-  /** True while the POST is in-flight. */
-  readonly _installSaving = signal(false);
-  /** Error from a failed install attempt. */
-  readonly _installError = signal<string | null>(null);
 
   // ── Selection ─────────────────────────────────────────────────────────────
 
@@ -206,110 +190,32 @@ export class RackComponent {
   /** All available asset states, loaded once. */
   readonly availableStates = signal<AssetState[]>([]);
 
-  // Two separate channels: immediate (no debounce, used on open) and typed (debounced)
-  private readonly _installImmediateSubject = new Subject<string>();
-  private readonly _installTypeSubject = new Subject<string>();
-
-  readonly _installAssetsState = signal<InstallAssetsState>({ status: 'idle' });
-
-  readonly installableAssets = computed<Asset[]>(() => {
-    const state = this._installAssetsState();
-    return state.status === 'loaded' ? state.results : [];
-  });
-
   protected openInstall(pos: number, event: MouseEvent): void {
     const el = event.currentTarget as HTMLElement;
     const rect = el.getBoundingClientRect();
     const panelW = 320;
     const panelH = Math.min(460, window.innerHeight * 0.8);
-    // vertical: center panel on the slot row, clamped to viewport
     const idealY = rect.top + rect.height / 2 - panelH / 2;
     this._installAnchorY.set(
       Math.max(8, Math.min(idealY, window.innerHeight - panelH - 8)),
     );
-    // horizontal: just to the right of the slot, fall back left if too close to edge
     const idealX = rect.right + 8;
     const clampedX =
       idealX + panelW > window.innerWidth - 4 ? rect.left - panelW - 8 : idealX;
     this._installAnchorX.set(Math.max(4, clampedX));
     this._installPos.set(pos);
-    this._installSelectedId.set(null);
-    this._installError.set(null);
-    this._installSearch.set('');
-    this._installImmediateSubject.next(''); // load all assets immediately, no debounce
   }
 
   protected closeInstall(): void {
     this._installPos.set(null);
-    this._installSelectedId.set(null);
-    this._installSearch.set('');
-    this._installError.set(null);
   }
 
-  protected onInstallSearch(value: string): void {
-    this._installSearch.set(value);
-    this._installTypeSubject.next(value); // debounced channel
-  }
-
-  protected installAsset(assetId: number): void {
-    this._installSelectedId.set(assetId);
-    this.confirmInstall();
-  }
-
-  protected confirmInstall(): void {
-    const pos = this._installPos();
-    const assetId = this._installSelectedId();
-    const rack = this.rack();
-    if (!pos || !assetId || !rack) return;
-    this._installSaving.set(true);
-    this._installError.set(null);
-    this.assetService
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .assetRackUnitCreate({
-        rackUnit: { rack: rack.id, device: assetId, position: pos } as any,
-      })
-      .subscribe({
-        next: () => {
-          this._installSaving.set(false);
-          this.closeInstall();
-          this.refreshRack();
-        },
-        error: () => {
-          this._installSaving.set(false);
-          this._installError.set(
-            "Installazione non riuscita: verificare che la posizione sia libera e l'apparato non sia già installato.",
-          );
-        },
-      });
+  protected onInstalled(): void {
+    this.closeInstall();
+    this.refreshRack();
   }
 
   constructor() {
-    // ── Install panel search ──────────────────────────────────────────────────
-    merge(
-      this._installImmediateSubject,
-      this._installTypeSubject.pipe(debounceTime(250)),
-    )
-      .pipe(
-        switchMap((search) =>
-          concat(
-            of<InstallAssetsState>({ status: 'loading' }),
-            this.assetService
-              .assetAssetList({ search, pageSize: 5, notInRack: true })
-              .pipe(
-                map(
-                  (r): InstallAssetsState => ({
-                    status: 'loaded',
-                    results: r.results,
-                  }),
-                ),
-                catchError(() => of<InstallAssetsState>({ status: 'error' })),
-              ),
-          ),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((state) => this._installAssetsState.set(state));
-
     afterNextRender(() => {
       // Observe :host itself (not the parent) — :host is flex:1 of rack-pane
       // so its clientHeight is the exact available content height.
