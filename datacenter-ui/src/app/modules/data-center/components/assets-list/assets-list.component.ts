@@ -8,7 +8,6 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 import {
   catchError,
   concat,
@@ -23,48 +22,31 @@ import {
 import { environment } from '../../../../../environments/environment';
 import {
   Asset,
+  AssetModel,
   AssetService,
   AssetState,
   AssetType,
 } from '../../../core/api/v1';
 import { TabService } from '../../../core/services/tab.service';
-
-type ListState =
-  | { status: 'loading' }
-  | { status: 'loaded'; results: Asset[]; count: number }
-  | { status: 'error' };
-
-type EditState = 'idle' | 'saving' | 'error';
-
-const PAGE_SIZE = 25;
-
-// Utility: map state name to a CSS colour token
-function stateColor(name: string): string {
-  const n = name.toLowerCase();
-  if (n.includes('attiv') || n.includes('activ') || n.includes('operativ'))
-    return 'green';
-  if (
-    n.includes('manut') ||
-    n.includes('maint') ||
-    n.includes('riserva') ||
-    n.includes('standby')
-  )
-    return 'yellow';
-  if (
-    n.includes('decomm') ||
-    n.includes('guasto') ||
-    n.includes('fault') ||
-    n.includes('dismess')
-  )
-    return 'red';
-  if (n.includes('install') || n.includes('transit')) return 'blue';
-  return 'gray';
-}
+import {
+  EditState,
+  ListState,
+  PAGE_SIZE,
+  stateColor,
+} from './assets-list-utils';
+import { AssetCreateDrawerComponent } from './asset-create-drawer/asset-create-drawer.component';
+import { AssetRowDetailComponent } from './asset-row-detail/asset-row-detail.component';
+import { AssetStatePickerComponent } from './asset-state-picker/asset-state-picker.component';
 
 @Component({
   selector: 'app-assets-list',
   standalone: true,
-  imports: [FormsModule, DecimalPipe],
+  imports: [
+    DecimalPipe,
+    AssetCreateDrawerComponent,
+    AssetRowDetailComponent,
+    AssetStatePickerComponent,
+  ],
   templateUrl: './assets-list.component.html',
   styleUrl: './assets-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,6 +59,14 @@ export class AssetsListComponent {
   // ── Filter options ────────────────────────────────────────────────────────
   protected readonly availableStates = signal<AssetState[]>([]);
   protected readonly availableTypes = signal<AssetType[]>([]);
+  protected readonly availableModels = signal<AssetModel[]>([]);
+
+  // ── Create drawer ─────────────────────────────────────────────────────────
+  protected readonly createDrawerOpen = signal(false);
+
+  // ── Delete confirmation ────────────────────────────────────────────────────
+  protected readonly deleteConfirmId = signal<number | null>(null);
+  protected readonly deleteSaveState = signal<'idle' | 'saving' | 'error'>('idle');
 
   // ── Filter params (single signal for reactivity) ──────────────────────────
   protected readonly params = signal({
@@ -277,6 +267,11 @@ export class AssetsListComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((r) => this.availableTypes.set(r.results ?? []));
 
+    this.assetService
+      .assetAssetModelList({ pageSize: 500 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((r) => this.availableModels.set(r.results ?? []));
+
     // ── Debounce search: update params, reset page ───────────────────────────
     this._searchInput
       .pipe(
@@ -443,6 +438,56 @@ export class AssetsListComponent {
     event.stopPropagation();
     this.tabService.openRack(rackName);
   }
+
+  // ── Create asset ──────────────────────────────────────────────────────────
+
+  protected openCreateDrawer(): void {
+    this.createDrawerOpen.set(true);
+  }
+
+  protected closeCreateDrawer(): void {
+    this.createDrawerOpen.set(false);
+  }
+
+  protected onDrawerSaved(): void {
+    this.closeCreateDrawer();
+    this.params.update((p) => ({ ...p, page: 1 }));
+  }
+
+  // ── Delete asset ──────────────────────────────────────────────────────────
+
+  protected requestDelete(id: number): void {
+    this.deleteSaveState.set('idle');
+    this.deleteConfirmId.set(id);
+  }
+
+  protected cancelDelete(): void {
+    this.deleteConfirmId.set(null);
+  }
+
+  protected confirmDelete(id: number): void {
+    this.deleteSaveState.set('saving');
+    this.assetService
+      .assetAssetDestroy({ id })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.deleteSaveState.set('idle');
+          this.deleteConfirmId.set(null);
+          this.expandedId.set(null);
+          this.listState.update((s) => {
+            if (s.status !== 'loaded') return s;
+            return {
+              ...s,
+              results: s.results.filter((a) => a.id !== id),
+              count: s.count - 1,
+            };
+          });
+        },
+        error: () => this.deleteSaveState.set('error'),
+      });
+  }
+
   // ── Excel export ─────────────────────────────────────────────────────────────────
   protected exportToExcel(onlySelected = false): void {
     const p = this.params();

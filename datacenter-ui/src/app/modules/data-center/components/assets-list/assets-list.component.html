@@ -65,6 +65,17 @@
     </div>
 
     <div class="toolbar-right">
+      <button class="btn-new-asset" (click)="openCreateDrawer()">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10M3 8h10"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        Nuovo asset
+      </button>
       @if (listState().status === "loaded") {
         <span class="count-badge"> {{ totalCount() | number }} asset </span>
         <button
@@ -436,126 +447,15 @@
             @if (expandedId() === asset.id) {
               <tr class="detail-row">
                 <td colspan="8">
-                  <div class="detail-panel">
-                    <div class="detail-grid">
-                      <div class="detail-section">
-                        <h4 class="detail-section-title">Identificazione</h4>
-                        <dl class="detail-list">
-                          <div class="detail-item">
-                            <dt>Hostname</dt>
-                            <dd>{{ asset.hostname || "—" }}</dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Seriale</dt>
-                            <dd class="mono">
-                              {{ asset.serial_number || "—" }}
-                            </dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>SAP ID</dt>
-                            <dd class="mono">{{ asset.sap_id || "—" }}</dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Order ID</dt>
-                            <dd class="mono">{{ asset.order_id || "—" }}</dd>
-                          </div>
-                        </dl>
-                      </div>
-
-                      <div class="detail-section">
-                        <h4 class="detail-section-title">Modello</h4>
-                        <dl class="detail-list">
-                          <div class="detail-item">
-                            <dt>Nome</dt>
-                            <dd>{{ asset.model.name || "—" }}</dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Vendor</dt>
-                            <dd>{{ asset.model.vendor.name }}</dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Tipo</dt>
-                            <dd>{{ asset.model.type.name }}</dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Rack units</dt>
-                            <dd>{{ asset.model.rack_units }}U</dd>
-                          </div>
-                        </dl>
-                      </div>
-
-                      <div class="detail-section">
-                        <h4 class="detail-section-title">Ciclo di vita</h4>
-                        <dl class="detail-list">
-                          <div class="detail-item">
-                            <dt>Acquisto</dt>
-                            <dd>{{ formatDate(asset.purchase_date) }}</dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Scad. garanzia</dt>
-                            <dd
-                              [class.date--expired]="
-                                asset.warranty_expiration &&
-                                $any(asset.warranty_expiration) < $any(today)
-                              "
-                            >
-                              {{ formatDate(asset.warranty_expiration) }}
-                            </dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Scad. supporto</dt>
-                            <dd
-                              [class.date--expired]="
-                                asset.support_expiration &&
-                                $any(asset.support_expiration) < $any(today)
-                              "
-                            >
-                              {{ formatDate(asset.support_expiration) }}
-                            </dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Dismissione</dt>
-                            <dd>{{ formatDate(asset.decommissioned_date) }}</dd>
-                          </div>
-                        </dl>
-                      </div>
-
-                      <div class="detail-section">
-                        <h4 class="detail-section-title">Hardware</h4>
-                        <dl class="detail-list">
-                          <div class="detail-item">
-                            <dt>Alimentatori</dt>
-                            <dd>{{ asset.power_supplies ?? "—" }}</dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Assorbimento</dt>
-                            <dd>
-                              {{
-                                asset.power_cosumption_watt
-                                  ? asset.power_cosumption_watt + " W"
-                                  : "—"
-                              }}
-                            </dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Creato</dt>
-                            <dd>{{ formatDate(asset.created_at) }}</dd>
-                          </div>
-                          <div class="detail-item">
-                            <dt>Aggiornato</dt>
-                            <dd>{{ formatDate(asset.updated_at) }}</dd>
-                          </div>
-                        </dl>
-                      </div>
-                    </div>
-
-                    @if (asset.note) {
-                      <div class="detail-note">
-                        <h4 class="detail-section-title">Note</h4>
-                        <p class="note-text">{{ asset.note }}</p>
-                      </div>
-                    }
-                  </div>
+                  <app-asset-row-detail
+                    [asset]="asset"
+                    [today]="today"
+                    [deleteConfirmId]="deleteConfirmId()"
+                    [deleteSaveState]="deleteSaveState()"
+                    (deleteRequested)="requestDelete($event)"
+                    (deleteConfirmed)="confirmDelete($event)"
+                    (deleteCancelled)="cancelDelete()"
+                  />
                 </td>
               </tr>
             }
@@ -595,61 +495,35 @@
 
 <!-- ── State picker overlay ────────────────────────────────────────────── -->
 @if (statePickerAssetId() !== null) {
-  <div class="overlay-backdrop" (click)="closeStatePicker()"></div>
-  <div
-    class="state-picker"
-    [style.top.px]="statePickerY()"
-    [style.left.px]="statePickerX()"
-  >
-    @if (stateEditState() === "saving") {
-      <div class="picker-loading">Salvataggio…</div>
-    } @else {
-      @for (s of availableStates(); track s.id) {
-        <button
-          class="state-option"
-          [attr.data-color]="stateColor(s.name)"
-          (click)="pickState(s.id)"
-        >
-          <span class="state-dot"></span>
-          {{ s.name }}
-        </button>
-      }
-      @if (stateEditState() === "error") {
-        <p class="picker-error">Errore — riprova</p>
-      }
-    }
-  </div>
+  <app-asset-state-picker
+    [states]="availableStates()"
+    [x]="statePickerX()"
+    [y]="statePickerY()"
+    [editState]="stateEditState()"
+    (picked)="pickState($event)"
+    (closed)="closeStatePicker()"
+  />
+}
+
+<!-- ── Create asset drawer ─────────────────────────────────────────────── -->
+@if (createDrawerOpen()) {
+  <app-asset-create-drawer
+    [availableStates]="availableStates()"
+    [availableModels]="availableModels()"
+    (saved)="onDrawerSaved()"
+    (cancelled)="closeCreateDrawer()"
+  />
 }
 
 <!-- ── Bulk state picker overlay ────────────────────────────────────────── -->
 @if (bulkPickerOpen()) {
-  <div class="overlay-backdrop" (click)="closeBulkPicker()"></div>
-  <div
-    class="state-picker"
-    [style.top.px]="bulkPickerY()"
-    [style.left.px]="bulkPickerX()"
-  >
-    @if (bulkEditState() === "saving") {
-      <div class="picker-loading">
-        Salvataggio {{ selectedCount() | number }} asset…
-      </div>
-    } @else {
-      <p class="picker-bulk-hint">
-        Applica a {{ selectedCount() | number }} asset
-      </p>
-      @for (s of availableStates(); track s.id) {
-        <button
-          class="state-option"
-          [attr.data-color]="stateColor(s.name)"
-          (click)="bulkPickState(s.id)"
-        >
-          <span class="state-dot"></span>
-          {{ s.name }}
-        </button>
-      }
-      @if (bulkEditState() === "error") {
-        <p class="picker-error">Errore — riprova</p>
-      }
-    }
-  </div>
+  <app-asset-state-picker
+    [states]="availableStates()"
+    [x]="bulkPickerX()"
+    [y]="bulkPickerY()"
+    [editState]="bulkEditState()"
+    [bulkCount]="selectedCount()"
+    (picked)="bulkPickState($event)"
+    (closed)="closeBulkPicker()"
+  />
 }

@@ -1,0 +1,158 @@
+<div class="detail-panel">
+  <div class="detail-grid">
+
+    <div class="detail-section">
+      <h4 class="detail-section-title">Identificazione</h4>
+      <dl class="detail-list">
+        <div class="detail-item">
+          <dt>Hostname</dt>
+          <dd>{{ asset().hostname || '—' }}</dd>
+        </div>
+        <div class="detail-item">
+          <dt>Seriale</dt>
+          <dd class="mono">{{ asset().serial_number || '—' }}</dd>
+        </div>
+        <div class="detail-item">
+          <dt>SAP ID</dt>
+          <dd class="mono">{{ asset().sap_id || '—' }}</dd>
+        </div>
+        <div class="detail-item">
+          <dt>Order ID</dt>
+          <dd class="mono">{{ asset().order_id || '—' }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="detail-section">
+      <h4 class="detail-section-title">Modello</h4>
+      <dl class="detail-list">
+        <div class="detail-item">
+          <dt>Nome</dt>
+          <dd>{{ asset().model.name || '—' }}</dd>
+        </div>
+        <div class="detail-item">
+          <dt>Vendor</dt>
+          <dd>{{ asset().model.vendor.name }}</dd>
+        </div>
+        <div class="detail-item">
+          <dt>Tipo</dt>
+          <dd>{{ asset().model.type.name }}</dd>
+        </div>
+        <div class="detail-item">
+          <dt>Rack units</dt>
+          <dd>{{ asset().model.rack_units }}U</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="detail-section">
+      <h4 class="detail-section-title">Ciclo di vita</h4>
+      <dl class="detail-list">
+        <div class="detail-item">
+          <dt>Acquisto</dt>
+          <dd>{{ formatDate(asset().purchase_date) }}</dd>
+        </div>
+        <div class="detail-item">
+          <dt>Scad. garanzia</dt>
+          <dd
+            [class.date--expired]="
+              asset().warranty_expiration &&
+              $any(asset().warranty_expiration) < $any(today())
+            "
+          >
+            {{ formatDate(asset().warranty_expiration) }}
+          </dd>
+        </div>
+        <div class="detail-item">
+          <dt>Scad. supporto</dt>
+          <dd
+            [class.date--expired]="
+              asset().support_expiration &&
+              $any(asset().support_expiration) < $any(today())
+            "
+          >
+            {{ formatDate(asset().support_expiration) }}
+          </dd>
+        </div>
+        <div class="detail-item">
+          <dt>Dismissione</dt>
+          <dd>{{ formatDate(asset().decommissioned_date) }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="detail-section">
+      <h4 class="detail-section-title">Hardware</h4>
+      <dl class="detail-list">
+        <div class="detail-item">
+          <dt>Alimentatori</dt>
+          <dd>{{ asset().power_supplies ?? '—' }}</dd>
+        </div>
+        <div class="detail-item">
+          <dt>Assorbimento</dt>
+          <dd>
+            {{
+              asset().power_cosumption_watt
+                ? asset().power_cosumption_watt + ' W'
+                : '—'
+            }}
+          </dd>
+        </div>
+        <div class="detail-item">
+          <dt>Creato</dt>
+          <dd>{{ formatDate(asset().created_at) }}</dd>
+        </div>
+        <div class="detail-item">
+          <dt>Aggiornato</dt>
+          <dd>{{ formatDate(asset().updated_at) }}</dd>
+        </div>
+      </dl>
+    </div>
+
+  </div>
+
+  @if (asset().note) {
+    <div class="detail-note">
+      <h4 class="detail-section-title">Note</h4>
+      <p class="note-text">{{ asset().note }}</p>
+    </div>
+  }
+
+  <div class="detail-actions">
+    @if (deleteConfirmId() !== asset().id) {
+      <button
+        class="btn-delete"
+        (click)="onDeleteRequest(asset().id, $event)"
+      >
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M3 4h10M6 4V2.5h4V4M5 4l.5 9h5L11 4"
+            stroke="currentColor"
+            stroke-width="1.3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Elimina asset
+      </button>
+    } @else {
+      <span class="delete-confirm-text">Sei sicuro? L'operazione è irreversibile.</span>
+      <button
+        class="btn-delete-confirm"
+        [disabled]="deleteSaveState() === 'saving'"
+        (click)="onDeleteConfirm(asset().id, $event)"
+      >
+        {{ deleteSaveState() === 'saving' ? 'Eliminazione…' : 'Conferma eliminazione' }}
+      </button>
+      <button
+        class="btn-delete-cancel"
+        (click)="onDeleteCancel($event)"
+      >
+        Annulla
+      </button>
+      @if (deleteSaveState() === 'error') {
+        <span class="delete-error">Errore — riprova</span>
+      }
+    }
+  </div>
+</div>

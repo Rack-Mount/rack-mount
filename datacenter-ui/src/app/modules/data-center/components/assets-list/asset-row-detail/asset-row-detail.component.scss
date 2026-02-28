@@ -1,0 +1,164 @@
+$bg-detail: #0d1628;
+$accent: #3b82f6;
+$border: rgba(255, 255, 255, 0.07);
+$border-strong: rgba(255, 255, 255, 0.13);
+$text-primary: #e2e8f0;
+$text-secondary: #94a3b8;
+$text-muted: #475569;
+
+:host {
+  display: block;
+  background: $bg-detail;
+}
+
+.detail-panel {
+  padding: 20px 24px 20px 16px;
+  border-left: 2px solid $accent;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px 32px;
+}
+
+.detail-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $text-muted;
+  margin-bottom: 10px;
+}
+
+.detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-item {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+
+  dt {
+    flex-shrink: 0;
+    min-width: 100px;
+    font-size: 0.78rem;
+    color: $text-muted;
+  }
+
+  dd {
+    font-size: 0.84rem;
+    color: $text-primary;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.date--expired {
+      color: #f87171;
+    }
+  }
+}
+
+.mono {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Menlo', monospace;
+  font-size: 0.8rem;
+  color: $text-secondary;
+}
+
+.detail-note {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid $border;
+
+  .note-text {
+    font-size: 0.85rem;
+    color: $text-secondary;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+}
+
+// ── Delete actions ────────────────────────────────────────────────────────────
+.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 0 2px;
+  border-top: 1px solid $border;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  background: rgba(239, 68, 68, 0.07);
+  color: #f87171;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.18);
+  }
+}
+
+.delete-confirm-text {
+  font-size: 0.82rem;
+  color: #fbbf24;
+  font-weight: 500;
+}
+
+.btn-delete-confirm {
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.25);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.btn-delete-cancel {
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  border-radius: 6px;
+  border: 1px solid $border-strong;
+  background: transparent;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: $text-primary;
+  }
+}
+
+.delete-error {
+  font-size: 0.78rem;
+  color: #f87171;
+}

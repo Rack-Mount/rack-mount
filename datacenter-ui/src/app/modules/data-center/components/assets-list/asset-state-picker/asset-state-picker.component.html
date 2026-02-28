@@ -1,0 +1,34 @@
+<div class="overlay-backdrop" (click)="closed.emit()"></div>
+
+<div
+  class="state-picker"
+  [style.top.px]="y()"
+  [style.left.px]="x()"
+>
+  @if (editState() === 'saving') {
+    <div class="picker-loading">
+      @if (bulkCount()) {
+        Salvataggio {{ bulkCount() | number }} asset…
+      } @else {
+        Salvataggio…
+      }
+    </div>
+  } @else {
+    @if (bulkCount()) {
+      <p class="picker-bulk-hint">Applica a {{ bulkCount() | number }} asset</p>
+    }
+    @for (s of states(); track s.id) {
+      <button
+        class="state-option"
+        [attr.data-color]="stateColor(s.name)"
+        (click)="picked.emit(s.id)"
+      >
+        <span class="state-dot"></span>
+        {{ s.name }}
+      </button>
+    }
+    @if (editState() === 'error') {
+      <p class="picker-error">Errore — riprova</p>
+    }
+  }
+</div>
