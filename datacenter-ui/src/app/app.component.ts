@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { merge } from 'rxjs';
 import { filter, startWith } from 'rxjs/operators';
 import { HeaderComponent } from './modules/core/components/header/header.component';
@@ -22,7 +23,6 @@ import { ModelsListComponent } from './modules/data-center/components/catalog/mo
 import { VendorsListComponent } from './modules/data-center/components/catalog/vendors-list/vendors-list.component';
 import { MapComponent } from './modules/data-center/components/infrastructure/map/map.component';
 import { RackComponent } from './modules/data-center/components/infrastructure/rack/rack.component';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',

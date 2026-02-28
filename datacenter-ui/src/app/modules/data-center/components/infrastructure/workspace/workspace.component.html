@@ -43,11 +43,15 @@
     @if (activeTab?.type === "rack") {
       <div class="content-pane rack-pane">
         @if (loadingTabId === activeTabId) {
-          <div class="loading-state">{{ 'common.loading_rack' | translate }}</div>
+          <div class="loading-state">
+            {{ "common.loading_rack" | translate }}
+          </div>
         } @else if (rackCache[activeTabId]) {
           <app-rack [rack]="rackCache[activeTabId]!" />
         } @else {
-          <div class="loading-state">{{ 'common.rack_not_found' | translate }}</div>
+          <div class="loading-state">
+            {{ "common.rack_not_found" | translate }}
+          </div>
         }
       </div>
     }
