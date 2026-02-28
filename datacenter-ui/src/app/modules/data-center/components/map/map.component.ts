@@ -26,6 +26,7 @@ import { TabService } from '../../../core/services/tab.service';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
 import { MapFloorPlanToolbarComponent } from './map-floor-plan-toolbar/map-floor-plan-toolbar.component';
 import { dist, distToSegment } from './map-geometry.utils';
+import { MapZoomControlsComponent } from './map-zoom-controls/map-zoom-controls.component';
 import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
 import { isRackPlacementValid } from './rack-placement.utils';
 import {
@@ -61,6 +62,7 @@ import {
     FormsModule,
     MapSidebarComponent,
     MapFloorPlanToolbarComponent,
+    MapZoomControlsComponent,
   ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',

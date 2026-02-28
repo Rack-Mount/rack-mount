@@ -1,0 +1,23 @@
+<div class="zoom-controls">
+  <button class="zoom-btn" (click)="zoomIn.emit()" title="Zoom in">+</button>
+  <button class="zoom-btn" (click)="zoomOut.emit()" title="Zoom out">−</button>
+  <div class="zoom-sep"></div>
+  <button class="zoom-btn" (click)="fitToView.emit()" title="Adatta alla vista">
+    ⊡
+  </button>
+  <button
+    class="zoom-btn"
+    (click)="centerAndSnap.emit()"
+    title="Centra e aggancia alla griglia"
+    [disabled]="!roomSelected()"
+  >
+    ⌖
+  </button>
+  <button
+    class="zoom-btn zoom-reset"
+    (click)="resetZoom.emit()"
+    title="Reset zoom"
+  >
+    {{ zoom() * 100 | number: "1.0-0" }}%
+  </button>
+</div>
