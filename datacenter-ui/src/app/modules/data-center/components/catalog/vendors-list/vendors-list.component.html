@@ -4,57 +4,87 @@
     <div class="toolbar-left">
       <div class="search-box">
         <svg class="search-icon" viewBox="0 0 20 20" fill="none">
-          <circle cx="8.5" cy="8.5" r="5" stroke="currentColor" stroke-width="1.5" />
-          <path d="M12.5 12.5L16 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <circle
+            cx="8.5"
+            cy="8.5"
+            r="5"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+          <path
+            d="M12.5 12.5L16 16"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
         </svg>
         <input
           class="search-input"
           type="text"
-          placeholder="Cerca vendor…"
+          placeholder="{{ 'vendors.search_placeholder' | translate }}"
           [value]="search()"
           (input)="onSearchInput($any($event.target).value)"
         />
         @if (search()) {
-          <button class="search-clear" (click)="resetSearch()" title="Cancella">×</button>
+          <button
+            class="search-clear"
+            (click)="resetSearch()"
+            [title]="'common.search_clear' | translate"
+          >
+            ×
+          </button>
         }
       </div>
     </div>
     <div class="toolbar-right">
-      @if (listState().status === 'loaded') {
-        <span class="count-badge">{{ totalCount() }} vendor</span>
+      @if (listState().status === "loaded") {
+        <span class="count-badge">{{
+          "vendors.count_badge" | translate: { count: totalCount() }
+        }}</span>
       }
       <button class="btn-new" (click)="openCreate()">
         <svg viewBox="0 0 16 16" fill="none">
-          <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          <path
+            d="M8 3v10M3 8h10"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
         </svg>
-        Nuovo vendor
+        {{ "vendors.new_btn" | translate }}
       </button>
     </div>
   </div>
 
   <!-- ── Table ────────────────────────────────────────────────── -->
   <div class="table-wrap">
-    @if (listState().status === 'loading') {
+    @if (listState().status === "loading") {
       <div class="state-full">
         <div class="spinner"></div>
-        <span>Caricamento…</span>
+        <span>{{ "common.loading" | translate }}</span>
       </div>
-    } @else if (listState().status === 'error') {
-      <div class="state-full state-full--error">Errore durante il caricamento.</div>
+    } @else if (listState().status === "error") {
+      <div class="state-full state-full--error">
+        {{ "common.error_loading" | translate }}
+      </div>
     } @else {
       <table class="data-table">
         <thead>
           <tr>
             <th
               class="col-name th-sortable"
-              [class.th-sortable--asc]="sortField() === 'name' && sortDir() === 'asc'"
-              [class.th-sortable--desc]="sortField() === 'name' && sortDir() === 'desc'"
+              [class.th-sortable--asc]="
+                sortField() === 'name' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'name' && sortDir() === 'desc'
+              "
               (click)="sort('name')"
             >
-              Nome
+              {{ "vendors.name_col" | translate }}
               <span class="sort-arrow">
-                @if (sortField() === 'name') {
-                  {{ sortDir() === 'asc' ? '↑' : '↓' }}
+                @if (sortField() === "name") {
+                  {{ sortDir() === "asc" ? "↑" : "↓" }}
                 } @else {
                   ↕
                 }
@@ -71,15 +101,17 @@
                 <input
                   class="inline-input"
                   type="text"
-                  placeholder="Nome vendor"
+                  placeholder="{{ 'vendors.name_placeholder' | translate }}"
                   [value]="createName()"
                   (input)="createName.set($any($event.target).value)"
                   (keydown.enter)="submitCreate()"
                   (keydown.escape)="cancelCreate()"
                   autofocus
                 />
-                @if (createSave() === 'error') {
-                  <span class="inline-error">Errore</span>
+                @if (createSave() === "error") {
+                  <span class="inline-error">{{
+                    "common.error" | translate
+                  }}</span>
                 }
               </td>
               <td class="actions">
@@ -88,9 +120,15 @@
                   [disabled]="createSave() === 'saving' || !createName().trim()"
                   (click)="submitCreate()"
                 >
-                  @if (createSave() === 'saving') { … } @else { Salva }
+                  @if (createSave() === "saving") {
+                    …
+                  } @else {
+                    {{ "common.save" | translate }}
+                  }
                 </button>
-                <button class="btn-action" (click)="cancelCreate()">Annulla</button>
+                <button class="btn-action" (click)="cancelCreate()">
+                  {{ "common.cancel" | translate }}
+                </button>
               </td>
             </tr>
           }
@@ -110,8 +148,10 @@
                     (keydown.escape)="cancelEdit()"
                     autofocus
                   />
-                  @if (editSave() === 'error') {
-                    <span class="inline-error">Errore</span>
+                  @if (editSave() === "error") {
+                    <span class="inline-error">{{
+                      "common.error" | translate
+                    }}</span>
                   }
                 </td>
                 <td class="actions">
@@ -120,37 +160,73 @@
                     [disabled]="editSave() === 'saving' || !editName().trim()"
                     (click)="submitEdit()"
                   >
-                    @if (editSave() === 'saving') { … } @else { Salva }
+                    @if (editSave() === "saving") {
+                      …
+                    } @else {
+                      {{ "common.save" | translate }}
+                    }
                   </button>
-                  <button class="btn-action" (click)="cancelEdit()">Annulla</button>
+                  <button class="btn-action" (click)="cancelEdit()">
+                    {{ "common.cancel" | translate }}
+                  </button>
                 </td>
               </tr>
             } @else {
               <!-- Display row -->
-              <tr class="row-data" [class.row-data--deleting]="deleteId() === v.id">
+              <tr
+                class="row-data"
+                [class.row-data--deleting]="deleteId() === v.id"
+              >
                 <td class="cell-name">{{ v.name }}</td>
                 <td class="actions">
                   @if (deleteId() === v.id) {
                     <span class="delete-confirm">
-                      <span class="delete-label">Eliminare?</span>
+                      <span class="delete-label">{{
+                        "vendors.confirm_delete" | translate
+                      }}</span>
                       <button
                         class="btn-action btn-action--danger"
                         [disabled]="deleteSave() === 'saving'"
                         (click)="submitDelete()"
                       >
-                        @if (deleteSave() === 'saving') { … } @else { Elimina }
+                        @if (deleteSave() === "saving") {
+                          …
+                        } @else {
+                          {{ "common.delete" | translate }}
+                        }
                       </button>
-                      <button class="btn-action" (click)="cancelDelete()">Annulla</button>
+                      <button class="btn-action" (click)="cancelDelete()">
+                        {{ "common.cancel" | translate }}
+                      </button>
                     </span>
                   } @else {
-                    <button class="btn-icon btn-icon--edit" title="Modifica" (click)="startEdit(v)">
+                    <button
+                      class="btn-icon btn-icon--edit"
+                      [title]="'common.edit' | translate"
+                      (click)="startEdit(v)"
+                    >
                       <svg viewBox="0 0 16 16" fill="none">
-                        <path d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                        <path
+                          d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linejoin="round"
+                        />
                       </svg>
                     </button>
-                    <button class="btn-icon btn-icon--delete" title="Elimina" (click)="confirmDelete(v.id)">
+                    <button
+                      class="btn-icon btn-icon--delete"
+                      [title]="'common.delete' | translate"
+                      (click)="confirmDelete(v.id)"
+                    >
                       <svg viewBox="0 0 16 16" fill="none">
-                        <path d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                          d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
                       </svg>
                     </button>
                   }
@@ -159,13 +235,13 @@
             }
           }
 
-          @if (vendors().length === 0 && listState().status === 'loaded') {
+          @if (vendors().length === 0 && listState().status === "loaded") {
             <tr>
               <td colspan="2" class="empty-row">
                 @if (search()) {
-                  Nessun vendor corrisponde alla ricerca.
+                  {{ "vendors.no_match" | translate }}
                 } @else {
-                  Nessun vendor trovato. Creane uno nuovo.
+                  {{ "vendors.no_data" | translate }}
                 }
               </td>
             </tr>
@@ -176,11 +252,29 @@
       <!-- Pagination -->
       @if (totalPages() > 1) {
         <div class="pagination">
-          <button class="page-btn" [disabled]="page() === 1" (click)="goPage(page() - 1)">‹</button>
+          <button
+            class="page-btn"
+            [disabled]="page() === 1"
+            (click)="goPage(page() - 1)"
+          >
+            ‹
+          </button>
           @for (n of pageNumbers(); track n) {
-            <button class="page-btn" [class.page-btn--active]="n === page()" (click)="goPage(n)">{{ n }}</button>
+            <button
+              class="page-btn"
+              [class.page-btn--active]="n === page()"
+              (click)="goPage(n)"
+            >
+              {{ n }}
+            </button>
           }
-          <button class="page-btn" [disabled]="page() === totalPages()" (click)="goPage(page() + 1)">›</button>
+          <button
+            class="page-btn"
+            [disabled]="page() === totalPages()"
+            (click)="goPage(page() + 1)"
+          >
+            ›
+          </button>
         </div>
       }
     }

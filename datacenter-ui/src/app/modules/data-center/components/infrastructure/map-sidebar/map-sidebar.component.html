@@ -1,5 +1,5 @@
 <div class="sidebar" [class.disabled]="disabled">
-  <div class="title">Strumenti Mappa</div>
+  <div class="title">{{ "map_sidebar.title" | translate }}</div>
   <div class="tools-container">
     @for (tool of tools; track tool.id) {
       <div
@@ -7,12 +7,14 @@
         [class.active]="activeTool === tool.id"
         [class.disabled]="disabled"
         (click)="selectTool(tool.id)"
-        title="{{
-          disabled ? 'Seleziona una Room per usare gli strumenti' : tool.label
-        }}"
+        [title]="
+          disabled
+            ? ('map_sidebar.disabled_hint' | translate)
+            : (tool.label | translate)
+        "
       >
         <div class="tool-icon">{{ tool.icon }}</div>
-        <div class="tool-label">{{ tool.label }}</div>
+        <div class="tool-label">{{ tool.label | translate }}</div>
       </div>
     }
   </div>

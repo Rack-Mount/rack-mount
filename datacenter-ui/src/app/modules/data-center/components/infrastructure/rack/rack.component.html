@@ -40,7 +40,7 @@
                 clip-rule="evenodd"
               />
             </svg>
-            <span>Errore nel caricamento delle unità rack</span>
+            <span>{{ "rack.error_loading" | translate }}</span>
           </div>
         } @else {
           @for (row of rackRender(); track row.position) {
@@ -120,17 +120,17 @@
             class="rack-face-toggle__btn"
             [class.rack-face-toggle__btn--active]="!_rearView()"
             (click)="_rearView.set(false)"
-            title="Vista fronte"
+            [title]="'rack.front_view' | translate"
           >
-            Fronte
+            {{ "rack.front" | translate }}
           </button>
           <button
             class="rack-face-toggle__btn"
             [class.rack-face-toggle__btn--active]="_rearView()"
             (click)="_rearView.set(true)"
-            title="Vista retro"
+            [title]="'rack.rear_view' | translate"
           >
-            Retro
+            {{ "rack.rear" | translate }}
           </button>
         </div>
       </div>
@@ -138,27 +138,37 @@
         <div class="rack-header__stats">
           <div class="rack-stat">
             <span class="rack-stat__value">{{ rack()!.model.capacity }}</span>
-            <span class="rack-stat__label">Unità totali</span>
+            <span class="rack-stat__label">{{
+              "rack.stat_total" | translate
+            }}</span>
           </div>
           <div class="rack-stat rack-stat--used">
             <span class="rack-stat__value">{{ occupiedUnits() }}</span>
-            <span class="rack-stat__label">Occupate</span>
+            <span class="rack-stat__label">{{
+              "rack.stat_used" | translate
+            }}</span>
           </div>
           <div class="rack-stat rack-stat--free">
             <span class="rack-stat__value">{{ freeUnits() }}</span>
-            <span class="rack-stat__label">Libere</span>
+            <span class="rack-stat__label">{{
+              "rack.stat_free" | translate
+            }}</span>
           </div>
           <div class="rack-stat rack-stat--power">
             <span class="rack-stat__value"
               >{{ totalPowerKw() }}<small> kW</small></span
             >
-            <span class="rack-stat__label">Potenza</span>
+            <span class="rack-stat__label">{{
+              "rack.stat_power" | translate
+            }}</span>
           </div>
           <div class="rack-stat rack-stat--ampere">
             <span class="rack-stat__value"
               >{{ totalPowerAmpere() }}<small> A</small></span
             >
-            <span class="rack-stat__label">Corrente</span>
+            <span class="rack-stat__label">{{
+              "rack.stat_ampere" | translate
+            }}</span>
           </div>
         </div>
       }

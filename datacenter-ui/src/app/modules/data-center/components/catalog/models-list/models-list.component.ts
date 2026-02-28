@@ -9,6 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import {
   catchError,
   concat,
@@ -65,7 +66,7 @@ function emptyForm(): ModelForm {
 @Component({
   selector: 'app-models-list',
   standalone: true,
-  imports: [SlicePipe],
+  imports: [SlicePipe, TranslatePipe],
   templateUrl: './models-list.component.html',
   styleUrl: './models-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

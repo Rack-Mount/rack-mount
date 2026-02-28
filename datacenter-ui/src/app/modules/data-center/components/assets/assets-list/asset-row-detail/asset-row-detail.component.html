@@ -1,58 +1,64 @@
 <div class="detail-panel">
   <div class="detail-grid">
     <div class="detail-section">
-      <h4 class="detail-section-title">Identificazione</h4>
+      <h4 class="detail-section-title">
+        {{ "asset_row.section_id" | translate }}
+      </h4>
       <dl class="detail-list">
         <div class="detail-item">
-          <dt>Hostname</dt>
+          <dt>{{ "asset_row.hostname" | translate }}</dt>
           <dd>{{ asset().hostname || "—" }}</dd>
         </div>
         <div class="detail-item">
-          <dt>Seriale</dt>
+          <dt>{{ "asset_row.serial" | translate }}</dt>
           <dd class="mono">{{ asset().serial_number || "—" }}</dd>
         </div>
         <div class="detail-item">
-          <dt>SAP ID</dt>
+          <dt>{{ "asset_row.sap_id" | translate }}</dt>
           <dd class="mono">{{ asset().sap_id || "—" }}</dd>
         </div>
         <div class="detail-item">
-          <dt>Order ID</dt>
+          <dt>{{ "asset_row.order_id" | translate }}</dt>
           <dd class="mono">{{ asset().order_id || "—" }}</dd>
         </div>
       </dl>
     </div>
 
     <div class="detail-section">
-      <h4 class="detail-section-title">Apparato</h4>
+      <h4 class="detail-section-title">
+        {{ "asset_row.section_device" | translate }}
+      </h4>
       <dl class="detail-list">
         <div class="detail-item">
-          <dt>Nome</dt>
+          <dt>{{ "asset_row.name" | translate }}</dt>
           <dd>{{ asset().model.name || "—" }}</dd>
         </div>
         <div class="detail-item">
-          <dt>Vendor</dt>
+          <dt>{{ "asset_row.vendor" | translate }}</dt>
           <dd>{{ asset().model.vendor.name }}</dd>
         </div>
         <div class="detail-item">
-          <dt>Tipo</dt>
+          <dt>{{ "asset_row.type" | translate }}</dt>
           <dd>{{ asset().model.type.name }}</dd>
         </div>
         <div class="detail-item">
-          <dt>Rack units</dt>
+          <dt>{{ "asset_row.rack_units" | translate }}</dt>
           <dd>{{ asset().model.rack_units }}U</dd>
         </div>
       </dl>
     </div>
 
     <div class="detail-section">
-      <h4 class="detail-section-title">Ciclo di vita</h4>
+      <h4 class="detail-section-title">
+        {{ "asset_row.section_lifecycle" | translate }}
+      </h4>
       <dl class="detail-list">
         <div class="detail-item">
-          <dt>Acquisto</dt>
+          <dt>{{ "asset_row.purchase" | translate }}</dt>
           <dd>{{ formatDate(asset().purchase_date) }}</dd>
         </div>
         <div class="detail-item">
-          <dt>Scad. garanzia</dt>
+          <dt>{{ "asset_row.warranty" | translate }}</dt>
           <dd
             [class.date--expired]="
               asset().warranty_expiration &&
@@ -63,7 +69,7 @@
           </dd>
         </div>
         <div class="detail-item">
-          <dt>Scad. supporto</dt>
+          <dt>{{ "asset_row.support" | translate }}</dt>
           <dd
             [class.date--expired]="
               asset().support_expiration &&
@@ -74,21 +80,23 @@
           </dd>
         </div>
         <div class="detail-item">
-          <dt>Dismissione</dt>
+          <dt>{{ "asset_row.decommission" | translate }}</dt>
           <dd>{{ formatDate(asset().decommissioned_date) }}</dd>
         </div>
       </dl>
     </div>
 
     <div class="detail-section">
-      <h4 class="detail-section-title">Hardware</h4>
+      <h4 class="detail-section-title">
+        {{ "asset_row.section_hardware" | translate }}
+      </h4>
       <dl class="detail-list">
         <div class="detail-item">
-          <dt>Alimentatori</dt>
+          <dt>{{ "asset_row.power_supplies" | translate }}</dt>
           <dd>{{ asset().power_supplies ?? "—" }}</dd>
         </div>
         <div class="detail-item">
-          <dt>Assorbimento</dt>
+          <dt>{{ "asset_row.power_consumption" | translate }}</dt>
           <dd>
             {{
               asset().power_cosumption_watt
@@ -98,11 +106,11 @@
           </dd>
         </div>
         <div class="detail-item">
-          <dt>Creato</dt>
+          <dt>{{ "asset_row.created" | translate }}</dt>
           <dd>{{ formatDate(asset().created_at) }}</dd>
         </div>
         <div class="detail-item">
-          <dt>Aggiornato</dt>
+          <dt>{{ "asset_row.updated" | translate }}</dt>
           <dd>{{ formatDate(asset().updated_at) }}</dd>
         </div>
       </dl>
@@ -111,7 +119,9 @@
 
   @if (asset().note) {
     <div class="detail-note">
-      <h4 class="detail-section-title">Note</h4>
+      <h4 class="detail-section-title">
+        {{ "asset_row.section_notes" | translate }}
+      </h4>
       <p class="note-text">{{ asset().note }}</p>
     </div>
   }
@@ -128,12 +138,12 @@
             stroke-linejoin="round"
           />
         </svg>
-        Elimina asset
+        {{ "asset_row.delete_btn" | translate }}
       </button>
     } @else {
-      <span class="delete-confirm-text"
-        >Sei sicuro? L'operazione è irreversibile.</span
-      >
+      <span class="delete-confirm-text">{{
+        "asset_row.delete_confirm_msg" | translate
+      }}</span>
       <button
         class="btn-delete-confirm"
         [disabled]="deleteSaveState() === 'saving'"
@@ -141,15 +151,17 @@
       >
         {{
           deleteSaveState() === "saving"
-            ? "Eliminazione…"
-            : "Conferma eliminazione"
+            ? ("asset_row.deleting" | translate)
+            : ("asset_row.confirm_delete" | translate)
         }}
       </button>
       <button class="btn-delete-cancel" (click)="onDeleteCancel($event)">
-        Annulla
+        {{ "asset_row.cancel" | translate }}
       </button>
       @if (deleteSaveState() === "error") {
-        <span class="delete-error">Errore — riprova</span>
+        <span class="delete-error">{{
+          "asset_row.delete_error" | translate
+        }}</span>
       }
     }
   </div>

@@ -7,9 +7,9 @@
   (click)="$event.stopPropagation()"
 >
   <div class="rack-install__header">
-    <span class="rack-install__title"
-      >Installa in posizione {{ position() }}U</span
-    >
+    <span class="rack-install__title">{{
+      "install_panel.title" | translate: { pos: position() }
+    }}</span>
     <button class="rack-install__close" (click)="close()">✕</button>
   </div>
 
@@ -17,7 +17,7 @@
     <input
       type="text"
       class="rack-install__input"
-      placeholder="Cerca per hostname, S/N, SAP…"
+      [placeholder]="'install_panel.search_placeholder' | translate"
       [value]="_search()"
       (input)="onSearch($any($event.target).value)"
       autofocus
@@ -26,13 +26,19 @@
 
   <div class="rack-install__list">
     @if (_assetsState().status === "loading") {
-      <div class="rack-install__loading">Caricamento…</div>
+      <div class="rack-install__loading">
+        {{ "install_panel.loading" | translate }}
+      </div>
     } @else if (_assetsState().status === "error") {
-      <div class="rack-install__empty">Errore nel caricamento</div>
+      <div class="rack-install__empty">
+        {{ "install_panel.error" | translate }}
+      </div>
     } @else if (
       installableAssets().length === 0 && _assetsState().status === "loaded"
     ) {
-      <div class="rack-install__empty">Nessun apparato da installare</div>
+      <div class="rack-install__empty">
+        {{ "install_panel.no_assets" | translate }}
+      </div>
     } @else {
       @for (asset of installableAssets(); track asset.id) {
         <div
@@ -65,9 +71,9 @@
               >
             }
             @if (isTooLarge(asset)) {
-              <span class="rack-install__too-large"
-                >Spazio insufficiente ({{ availableU() }}U libere)</span
-              >
+              <span class="rack-install__too-large">{{
+                "install_panel.too_large" | translate: { u: availableU() }
+              }}</span>
             }
           </div>
         </div>
@@ -81,13 +87,15 @@
 
   <div class="rack-install__footer">
     @if (_saving()) {
-      <span class="rack-install__saving">Installazione in corso…</span>
+      <span class="rack-install__saving">{{
+        "install_panel.installing" | translate
+      }}</span>
     }
     <button
       class="rack-install__btn rack-install__btn--cancel"
       (click)="close()"
     >
-      Annulla
+      {{ "install_panel.cancel" | translate }}
     </button>
   </div>
 </div>

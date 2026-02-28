@@ -6,6 +6,7 @@ import {
   output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Location as DjLocation } from '../../../../../core/api/v1/model/location';
 import { RackType } from '../../../../../core/api/v1/model/rackType';
 import { Room as DjRoom } from '../../../../../core/api/v1/model/room';
@@ -18,7 +19,7 @@ import { Room as DjRoom } from '../../../../../core/api/v1/model/room';
 @Component({
   selector: 'app-map-floor-plan-toolbar',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   templateUrl: './map-floor-plan-toolbar.component.html',
   styleUrl: './map-floor-plan-toolbar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

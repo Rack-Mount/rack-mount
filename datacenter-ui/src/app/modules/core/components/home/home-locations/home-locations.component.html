@@ -2,7 +2,7 @@
   <!-- ── Quick access ── -->
   <section class="section">
     <div class="section-header">
-      <h2 class="section-title">Accesso rapido</h2>
+      <h2 class="section-title">{{ "home.quick_access" | translate }}</h2>
     </div>
     <div class="quick-grid">
       <button class="quick-card" (click)="onAssetsClick()">
@@ -20,10 +20,12 @@
           </svg>
         </div>
         <div class="quick-card__body">
-          <span class="quick-card__title">Asset</span>
-          <span class="quick-card__desc"
-            >Cerca, filtra e gestisci tutti gli apparati</span
-          >
+          <span class="quick-card__title">{{
+            "home.assets_title" | translate
+          }}</span>
+          <span class="quick-card__desc">{{
+            "home.assets_desc" | translate
+          }}</span>
         </div>
         <svg class="quick-card__arrow" viewBox="0 0 16 16" fill="none">
           <path
@@ -49,10 +51,12 @@
           </svg>
         </div>
         <div class="quick-card__body">
-          <span class="quick-card__title">Vendor</span>
-          <span class="quick-card__desc"
-            >Gestisci i produttori degli apparati</span
-          >
+          <span class="quick-card__title">{{
+            "home.vendors_title" | translate
+          }}</span>
+          <span class="quick-card__desc">{{
+            "home.vendors_desc" | translate
+          }}</span>
         </div>
         <svg class="quick-card__arrow" viewBox="0 0 16 16" fill="none">
           <path
@@ -79,8 +83,12 @@
           </svg>
         </div>
         <div class="quick-card__body">
-          <span class="quick-card__title">Apparati</span>
-          <span class="quick-card__desc">Catalogo degli apparati</span>
+          <span class="quick-card__title">{{
+            "home.models_title" | translate
+          }}</span>
+          <span class="quick-card__desc">{{
+            "home.models_desc" | translate
+          }}</span>
         </div>
         <svg class="quick-card__arrow" viewBox="0 0 16 16" fill="none">
           <path
@@ -98,7 +106,7 @@
   <!-- ── Locations ── -->
   <section class="section">
     <div class="section-header">
-      <h2 class="section-title">Location</h2>
+      <h2 class="section-title">{{ "stats.locations" | translate }}</h2>
       @if (!loading() && locations().length > 0) {
         <span class="section-count">{{ locations().length }}</span>
       }
@@ -125,7 +133,7 @@
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
           <circle cx="12" cy="10" r="3" />
         </svg>
-        <p>Nessuna location trovata.</p>
+        <p>{{ "home.no_locations" | translate }}</p>
       </div>
     }
 
@@ -151,7 +159,11 @@
                 <div class="location-name">{{ loc.name }}</div>
                 <div class="location-meta">
                   {{ loc.rooms.length }}
-                  {{ loc.rooms.length === 1 ? "stanza" : "stanze" }}
+                  {{
+                    loc.rooms.length === 1
+                      ? ("common.room" | translate)
+                      : ("common.rooms" | translate)
+                  }}
                 </div>
               </div>
               <div class="location-badge">{{ loc.rooms.length }}</div>

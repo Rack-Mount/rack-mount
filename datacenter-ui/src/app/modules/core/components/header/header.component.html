@@ -4,4 +4,18 @@
       <img src="logo.svg" alt="Rack Mount" class="navbar-logo" />
     </a>
   </div>
+
+  <div class="lang-switcher">
+    @for (l of lang.availableLanguages; track l.code) {
+      <button
+        class="lang-btn"
+        [class.lang-btn--active]="lang.currentLang() === l.code"
+        (click)="lang.use(l.code)"
+        [title]="l.label"
+      >
+        <span class="lang-flag">{{ l.flag }}</span>
+        <span class="lang-code">{{ l.code.toUpperCase() }}</span>
+      </button>
+    }
+  </div>
 </nav>

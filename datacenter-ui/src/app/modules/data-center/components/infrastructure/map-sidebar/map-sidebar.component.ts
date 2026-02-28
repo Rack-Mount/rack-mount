@@ -5,13 +5,14 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-map-sidebar',
   templateUrl: './map-sidebar.component.html',
   styleUrls: ['./map-sidebar.component.scss'],
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapSidebarComponent {
@@ -20,12 +21,12 @@ export class MapSidebarComponent {
   @Output() toolChange = new EventEmitter<string>();
 
   tools = [
-    { id: 'select', label: 'Sposta', icon: '✥' },
-    { id: 'move', label: 'Modifica', icon: '📝' },
-    { id: 'wall', label: 'Aggiungi Muro', icon: '🧱' },
-    { id: 'door', label: 'Aggiungi Varco', icon: '🚪' },
-    { id: 'text', label: 'Aggiungi Testo', icon: '🔤' },
-    { id: 'rack', label: 'Aggiungi Rack', icon: '🖥️' },
+    { id: 'select', label: 'map_sidebar.tool_select', icon: '✥' },
+    { id: 'move', label: 'map_sidebar.tool_move', icon: '📝' },
+    { id: 'wall', label: 'map_sidebar.tool_wall', icon: '🧱' },
+    { id: 'door', label: 'map_sidebar.tool_door', icon: '🚪' },
+    { id: 'text', label: 'map_sidebar.tool_text', icon: '🔤' },
+    { id: 'rack', label: 'map_sidebar.tool_rack', icon: '🖥️' },
   ];
 
   selectTool(toolId: string): void {

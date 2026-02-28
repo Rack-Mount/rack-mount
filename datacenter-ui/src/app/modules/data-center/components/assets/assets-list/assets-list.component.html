@@ -21,7 +21,7 @@
         <input
           class="search-input"
           type="text"
-          placeholder="Cerca hostname, seriale, SAP…"
+          [placeholder]="'assets.search_placeholder' | translate"
           [value]="params().search"
           (input)="onSearchInput($any($event.target).value)"
         />
@@ -32,7 +32,7 @@
         [value]="params().stateId ?? ''"
         (change)="onStateFilter($any($event.target).value)"
       >
-        <option value="">Tutti gli stati</option>
+        <option value="">{{ "assets.all_states" | translate }}</option>
         @for (s of availableStates(); track s.id) {
           <option [value]="s.id">{{ s.name }}</option>
         }
@@ -43,7 +43,7 @@
         [value]="params().typeId ?? ''"
         (change)="onTypeFilter($any($event.target).value)"
       >
-        <option value="">Tutti i tipi</option>
+        <option value="">{{ "assets.all_types" | translate }}</option>
         @for (t of availableTypes(); track t.id) {
           <option [value]="t.id">{{ t.name }}</option>
         }
@@ -59,7 +59,7 @@
               stroke-linecap="round"
             />
           </svg>
-          Reset
+          {{ "common.reset" | translate }}
         </button>
       }
     </div>
@@ -74,14 +74,18 @@
             stroke-linecap="round"
           />
         </svg>
-        Nuovo asset
+        {{ "assets.new_btn" | translate }}
       </button>
       @if (listState().status === "loaded") {
-        <span class="count-badge"> {{ totalCount() | number }} asset </span>
+        <span class="count-badge">
+          {{
+            "assets.count_badge" | translate: { count: (totalCount() | number) }
+          }}
+        </span>
         <button
           class="btn-export"
           (click)="exportToExcel()"
-          title="Esporta in Excel (filtri correnti)"
+          [title]="'assets.export_excel_title' | translate"
         >
           <svg viewBox="0 0 16 16" fill="none">
             <rect
@@ -107,7 +111,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          Esporta Excel
+          {{ "assets.export_excel" | translate }}
         </button>
       }
     </div>
@@ -116,21 +120,29 @@
   <!-- ── Selection bar ───────────────────────────────────────────────────── -->
   @if (selectedCount() > 0) {
     <div class="selection-bar">
-      <span class="selection-count"
-        >{{ selectedCount() | number }} selezionati</span
-      >
+      <span class="selection-count">{{
+        "assets.selected" | translate: { count: (selectedCount() | number) }
+      }}</span>
 
       @if (canSelectAllPages()) {
         <span class="select-all-banner">
-          Hai selezionato i {{ selectedIds().size }} asset di questa pagina.
+          {{
+            "assets.select_all_msg" | translate: { page: selectedIds().size }
+          }}
           <button class="select-all-link" (click)="selectAcrossAllPages()">
-            Seleziona tutti i {{ totalCount() | number }} asset
+            {{
+              "assets.select_all_link"
+                | translate: { count: (totalCount() | number) }
+            }}
           </button>
         </span>
       }
       @if (selectAllPages()) {
         <span class="select-all-banner select-all-banner--active">
-          Tutti i {{ totalCount() | number }} asset sono selezionati.
+          {{
+            "assets.all_selected_msg"
+              | translate: { count: (totalCount() | number) }
+          }}
         </span>
       }
 
@@ -156,7 +168,11 @@
               stroke-linecap="round"
             />
           </svg>
-          {{ bulkEditState() === "saving" ? "Salvataggio…" : "Cambia stato" }}
+          {{
+            bulkEditState() === "saving"
+              ? ("assets.saving_state" | translate)
+              : ("assets.change_state" | translate)
+          }}
         </button>
         <button class="selection-action" (click)="clearSelection()">
           <svg viewBox="0 0 16 16" fill="none">
@@ -167,12 +183,12 @@
               stroke-linecap="round"
             />
           </svg>
-          Deseleziona tutti
+          {{ "assets.deselect_all" | translate }}
         </button>
         <button
           class="selection-action"
           (click)="exportToExcel(true)"
-          title="Esporta in Excel gli elementi selezionati"
+          [title]="'assets.export_selected_title' | translate"
         >
           <svg viewBox="0 0 16 16" fill="none">
             <rect
@@ -198,7 +214,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          Esporta Excel
+          {{ "assets.export_excel" | translate }}
         </button>
       </div>
     </div>
@@ -216,7 +232,7 @@
               [checked]="isAllSelected()"
               [indeterminate]="isSomeSelected()"
               (click)="toggleSelectAll()"
-              title="Seleziona tutto"
+              [title]="'assets.select_all_title' | translate"
             />
           </th>
           <th
@@ -227,7 +243,7 @@
             "
             (click)="sortBy('hostname')"
           >
-            Hostname
+            {{ "assets.col_hostname" | translate }}
           </th>
           <th
             class="col-model sortable"
@@ -239,7 +255,7 @@
             "
             (click)="sortBy('model__name')"
           >
-            Apparato
+            {{ "assets.col_model" | translate }}
           </th>
           <th
             class="col-vendor sortable"
@@ -251,7 +267,7 @@
             "
             (click)="sortBy('model__vendor__name')"
           >
-            Vendor
+            {{ "assets.col_vendor" | translate }}
           </th>
           <th
             class="col-type sortable"
@@ -263,7 +279,7 @@
             "
             (click)="sortBy('model__type__name')"
           >
-            Tipo
+            {{ "assets.col_type" | translate }}
           </th>
           <th
             class="col-state sortable"
@@ -275,7 +291,7 @@
             "
             (click)="sortBy('state__name')"
           >
-            Stato
+            {{ "assets.col_state" | translate }}
           </th>
           <th
             class="col-serial sortable"
@@ -287,7 +303,7 @@
             "
             (click)="sortBy('serial_number')"
           >
-            Seriale
+            {{ "assets.col_serial" | translate }}
           </th>
           <th
             class="col-updated sortable"
@@ -299,7 +315,7 @@
             "
             (click)="sortBy('updated_at')"
           >
-            Aggiornato
+            {{ "assets.col_updated" | translate }}
           </th>
           <th class="col-expand"></th>
         </tr>
@@ -343,9 +359,9 @@
                     stroke-linecap="round"
                   />
                 </svg>
-                <span>Errore nel caricamento degli asset</span>
+                <span>{{ "assets.error_loading" | translate }}</span>
                 <button class="btn-retry" (click)="resetFilters()">
-                  Riprova
+                  {{ "assets.retry" | translate }}
                 </button>
               </div>
             </td>
@@ -375,7 +391,7 @@
                       stroke-linecap="round"
                     />
                   </svg>
-                  <span>Nessun asset trovato</span>
+                  <span>{{ "assets.no_data" | translate }}</span>
                 </div>
               </td>
             </tr>
@@ -413,7 +429,7 @@
                   class="state-badge"
                   [attr.data-color]="stateColor(asset.state.name)"
                   (click)="openStatePicker(asset.id, $event)"
-                  title="Clicca per cambiare stato"
+                  [title]="'assets.state_change_title' | translate"
                   >{{ asset.state.name }}</span
                 >
               </td>
@@ -472,7 +488,7 @@
         class="page-btn"
         [disabled]="params().page === 1"
         (click)="goToPage(params().page - 1)"
-        title="Pagina precedente"
+        [title]="'assets.prev_page' | translate"
       >
         ‹
       </button>
@@ -485,7 +501,7 @@
         class="page-btn"
         [disabled]="params().page === totalPages()"
         (click)="goToPage(params().page + 1)"
-        title="Pagina successiva"
+        [title]="'assets.next_page' | translate"
       >
         ›
       </button>

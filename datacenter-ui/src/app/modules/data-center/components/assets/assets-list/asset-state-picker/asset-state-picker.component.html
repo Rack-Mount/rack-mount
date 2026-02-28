@@ -4,14 +4,21 @@
   @if (editState() === "saving") {
     <div class="picker-loading">
       @if (bulkCount()) {
-        Salvataggio {{ bulkCount() | number }} asset…
+        {{
+          "state_picker.saving_bulk"
+            | translate: { count: bulkCount() | number }
+        }}
       } @else {
-        Salvataggio…
+        {{ "state_picker.saving" | translate }}
       }
     </div>
   } @else {
     @if (bulkCount()) {
-      <p class="picker-bulk-hint">Applica a {{ bulkCount() | number }} asset</p>
+      <p class="picker-bulk-hint">
+        {{
+          "state_picker.apply_bulk" | translate: { count: bulkCount() | number }
+        }}
+      </p>
     }
     @for (s of states(); track s.id) {
       <button
@@ -24,7 +31,7 @@
       </button>
     }
     @if (editState() === "error") {
-      <p class="picker-error">Errore — riprova</p>
+      <p class="picker-error">{{ "state_picker.error" | translate }}</p>
     }
   }
 </div>

@@ -4,6 +4,7 @@ import {
   input,
   output,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Location as DjLocation } from '../../../api/v1/model/location';
 
 export interface RoomOpenEvent {
@@ -14,7 +15,7 @@ export interface RoomOpenEvent {
 @Component({
   selector: 'app-home-locations',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home-locations.component.html',
   styleUrl: './home-locations.component.scss',

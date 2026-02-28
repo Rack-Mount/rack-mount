@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import {
   catchError,
   concat,
@@ -30,7 +31,7 @@ type ListState =
 @Component({
   selector: 'app-vendors-list',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './vendors-list.component.html',
   styleUrl: './vendors-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,7 +46,9 @@ export class VendorsListComponent {
   protected readonly ordering = signal<string>('name');
   private readonly _searchInput = new Subject<string>();
 
-  protected readonly sortField = computed(() => this.ordering().replace(/^-/, ''));
+  protected readonly sortField = computed(() =>
+    this.ordering().replace(/^-/, ''),
+  );
   protected readonly sortDir = computed(() =>
     this.ordering().startsWith('-') ? 'desc' : 'asc',
   );

@@ -9,6 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import { skip } from 'rxjs';
 import { RackRender } from '../../../../models/RackRender';
 
@@ -32,7 +33,7 @@ export interface BulkRemoveRequest {
 
 @Component({
   selector: 'app-rack-device-table',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './rack-device-table.component.html',
   styleUrl: './rack-device-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

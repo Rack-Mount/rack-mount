@@ -21,7 +21,7 @@
         <input
           class="search-input"
           type="text"
-          placeholder="Cerca apparato…"
+          [placeholder]="'models.search_placeholder' | translate"
           [value]="search()"
           (input)="onSearchInput($any($event.target).value)"
         />
@@ -29,7 +29,7 @@
           <button
             class="search-clear"
             (click)="resetFilters()"
-            title="Cancella"
+            [title]="'common.search_clear' | translate"
           >
             ×
           </button>
@@ -41,7 +41,7 @@
         [value]="vendorFilter() ?? ''"
         (change)="onVendorFilter($any($event.target).value)"
       >
-        <option value="">Tutti i vendor</option>
+        <option value="">{{ "models.all_vendors" | translate }}</option>
         @for (v of vendors(); track v.id) {
           <option [value]="v.id">{{ v.name }}</option>
         }
@@ -52,7 +52,7 @@
         [value]="typeFilter() ?? ''"
         (change)="onTypeFilter($any($event.target).value)"
       >
-        <option value="">Tutti i tipi</option>
+        <option value="">{{ "models.all_types" | translate }}</option>
         @for (t of types(); track t.id) {
           <option [value]="t.id">{{ t.name }}</option>
         }
@@ -68,14 +68,16 @@
               stroke-linecap="round"
             />
           </svg>
-          Reset
+          {{ "common.reset" | translate }}
         </button>
       }
     </div>
 
     <div class="toolbar-right">
       @if (listState().status === "loaded") {
-        <span class="count-badge">{{ totalCount() }} apparati</span>
+        <span class="count-badge">{{
+          "models.count_badge" | translate: { count: totalCount() }
+        }}</span>
       }
       <button class="btn-new" (click)="openCreate()">
         <svg viewBox="0 0 16 16" fill="none">
@@ -86,7 +88,7 @@
             stroke-linecap="round"
           />
         </svg>
-        Nuovo apparato
+        {{ "models.new_btn" | translate }}
       </button>
     </div>
   </div>
@@ -96,11 +98,11 @@
     @if (listState().status === "loading") {
       <div class="state-full">
         <div class="spinner"></div>
-        <span>Caricamento…</span>
+        <span>{{ "common.loading" | translate }}</span>
       </div>
     } @else if (listState().status === "error") {
       <div class="state-full state-full--error">
-        Errore durante il caricamento.
+        {{ "common.error_loading" | translate }}
       </div>
     } @else {
       <table class="data-table">
@@ -116,7 +118,7 @@
               "
               (click)="sort('name')"
             >
-              Apparato
+              {{ "models.col_name" | translate }}
               <span class="sort-arrow">
                 @if (sortField() === "name") {
                   {{ sortDir() === "asc" ? "↑" : "↓" }}
@@ -135,7 +137,7 @@
               "
               (click)="sort('vendor__name')"
             >
-              Vendor
+              {{ "models.col_vendor" | translate }}
               <span class="sort-arrow">
                 @if (sortField() === "vendor__name") {
                   {{ sortDir() === "asc" ? "↑" : "↓" }}
@@ -154,7 +156,7 @@
               "
               (click)="sort('type__name')"
             >
-              Tipo
+              {{ "models.col_type" | translate }}
               <span class="sort-arrow">
                 @if (sortField() === "type__name") {
                   {{ sortDir() === "asc" ? "↑" : "↓" }}
@@ -211,7 +213,7 @@
                     class="thumb"
                     [src]="imgW(m.front_image, 120)"
                     alt="Front"
-                    title="Fronte"
+                    [title]="'models.front' | translate"
                     loading="lazy"
                   />
                 }
@@ -220,7 +222,7 @@
                     class="thumb"
                     [src]="imgW(m.rear_image, 120)"
                     alt="Rear"
-                    title="Retro"
+                    [title]="'models.rear' | translate"
                     loading="lazy"
                   />
                 }
@@ -257,7 +259,7 @@
                         Apparato in uso — non eliminabile
                       </span>
                       <button class="btn-confirm" (click)="cancelDelete()">
-                        Chiudi
+                        {{ "common.close" | translate }}
                       </button>
                     } @else {
                       <span class="delete-label">
@@ -277,9 +279,9 @@
                           />
                         </svg>
                         @if (deleteSave() === "error") {
-                          Errore — riprova
+                          {{ "models.error_retry" | translate }}
                         } @else {
-                          Conferma eliminazione
+                          {{ "models.confirm_delete" | translate }}
                         }
                       </span>
                       <button
@@ -288,13 +290,13 @@
                         (click)="submitDelete()"
                       >
                         @if (deleteSave() === "saving") {
-                          Eliminazione…
+                          {{ "models.deleting" | translate }}
                         } @else {
-                          Elimina
+                          {{ "common.delete" | translate }}
                         }
                       </button>
                       <button class="btn-confirm" (click)="cancelDelete()">
-                        Annulla
+                        {{ "common.cancel" | translate }}
                       </button>
                     }
                   </div>
@@ -302,7 +304,7 @@
                   <div class="action-group">
                     <button
                       class="btn-edit"
-                      title="Modifica"
+                      [title]="'common.edit' | translate"
                       (click)="openEdit(m)"
                     >
                       <svg viewBox="0 0 16 16" fill="none">
@@ -313,11 +315,11 @@
                           stroke-linejoin="round"
                         />
                       </svg>
-                      Modifica
+                      {{ "common.edit" | translate }}
                     </button>
                     <button
                       class="btn-delete"
-                      title="Elimina"
+                      [title]="'common.delete' | translate"
                       (click)="confirmDelete(m.id)"
                     >
                       <svg viewBox="0 0 16 16" fill="none">
@@ -329,7 +331,7 @@
                           stroke-linejoin="round"
                         />
                       </svg>
-                      Elimina
+                      {{ "common.delete" | translate }}
                     </button>
                   </div>
                 }
@@ -341,9 +343,9 @@
             <tr>
               <td colspan="7" class="empty-row">
                 @if (hasFilters()) {
-                  Nessun apparato corrisponde ai filtri.
+                  {{ "models.no_match" | translate }}
                 } @else {
-                  Nessun apparato trovato. Creane uno nuovo.
+                  {{ "models.no_data" | translate }}
                 }
               </td>
             </tr>
@@ -389,7 +391,7 @@
         <div class="preview-header-actions">
           <button
             class="btn-preview-edit"
-            title="Modifica"
+            [title]="'common.edit' | translate"
             (click)="previewEdit()"
           >
             <svg viewBox="0 0 16 16" fill="none">
@@ -400,7 +402,7 @@
                 stroke-linejoin="round"
               />
             </svg>
-            Modifica
+            {{ "models.preview_edit" | translate }}
           </button>
           <button class="drawer-close" (click)="closePreview()">&#215;</button>
         </div>
@@ -421,7 +423,9 @@
           <div class="preview-images">
             @if (m.front_image) {
               <div class="preview-img-block">
-                <span class="preview-img-label">Fronte</span>
+                <span class="preview-img-label">{{
+                  "models.preview_front" | translate
+                }}</span>
                 <img
                   class="preview-img"
                   [src]="imgW(m.front_image, 640)"
@@ -432,7 +436,9 @@
             }
             @if (m.rear_image) {
               <div class="preview-img-block">
-                <span class="preview-img-label">Retro</span>
+                <span class="preview-img-label">{{
+                  "models.preview_rear" | translate
+                }}</span>
                 <img
                   class="preview-img"
                   [src]="imgW(m.rear_image, 640)"
@@ -447,24 +453,24 @@
         <!-- Details grid -->
         <dl class="preview-dl">
           <div class="preview-row">
-            <dt>Nome</dt>
+            <dt>{{ "models.preview_name" | translate }}</dt>
             <dd>{{ m.name }}</dd>
           </div>
           <div class="preview-row">
-            <dt>Vendor</dt>
+            <dt>{{ "models.preview_vendor" | translate }}</dt>
             <dd>{{ m.vendor.name }}</dd>
           </div>
           <div class="preview-row">
-            <dt>Tipo</dt>
+            <dt>{{ "models.preview_type" | translate }}</dt>
             <dd>{{ m.type.name }}</dd>
           </div>
           <div class="preview-row">
-            <dt>Unit&#224; rack</dt>
+            <dt>{{ "models.preview_rack_units" | translate }}</dt>
             <dd>{{ m.rack_units ? m.rack_units + " U" : "—" }}</dd>
           </div>
           @if (m.note) {
             <div class="preview-row preview-row--full">
-              <dt>Note</dt>
+              <dt>{{ "models.preview_notes" | translate }}</dt>
               <dd class="preview-note">{{ m.note }}</dd>
             </div>
           }
@@ -479,7 +485,9 @@
       <div class="drawer-header">
         <h2 class="drawer-title">
           {{
-            drawerMode() === "create" ? "Nuovo apparato" : "Modifica apparato"
+            drawerMode() === "create"
+              ? ("models.drawer_create" | translate)
+              : ("models.drawer_edit" | translate)
           }}
         </h2>
         <button class="drawer-close" (click)="closeDrawer()">×</button>
@@ -487,18 +495,24 @@
 
       <div class="drawer-body">
         <label class="field">
-          <span class="field-label">Nome <span class="req">*</span></span>
+          <span class="field-label"
+            >{{ "models.field_name" | translate }}
+            <span class="req">*</span></span
+          >
           <input
             class="field-input"
             type="text"
-            placeholder="Nome apparato"
+            [placeholder]="'models.field_name_ph' | translate"
             [value]="form().name"
             (input)="setField('name', $any($event.target).value)"
           />
         </label>
 
         <label class="field">
-          <span class="field-label">Vendor <span class="req">*</span></span>
+          <span class="field-label"
+            >{{ "models.col_vendor" | translate }}
+            <span class="req">*</span></span
+          >
           <select
             class="field-select"
             (change)="
@@ -509,7 +523,7 @@
             "
           >
             <option value="" [selected]="!form().vendor_id">
-              Seleziona vendor…
+              {{ "models.field_vendor_ph" | translate }}
             </option>
             @for (v of vendors(); track v.id) {
               <option [value]="v.id" [selected]="v.id === form().vendor_id">
@@ -520,7 +534,10 @@
         </label>
 
         <label class="field">
-          <span class="field-label">Tipo <span class="req">*</span></span>
+          <span class="field-label"
+            >{{ "models.col_type" | translate }}
+            <span class="req">*</span></span
+          >
           <select
             class="field-select"
             (change)="
@@ -531,7 +548,7 @@
             "
           >
             <option value="" [selected]="!form().type_id">
-              Seleziona tipo…
+              {{ "models.field_type_ph" | translate }}
             </option>
             @for (t of types(); track t.id) {
               <option [value]="t.id" [selected]="t.id === form().type_id">
@@ -542,13 +559,15 @@
         </label>
 
         <label class="field">
-          <span class="field-label">Unità rack (U)</span>
+          <span class="field-label">{{
+            "models.field_rack_units" | translate
+          }}</span>
           <input
             class="field-input field-input--short"
             type="number"
             min="1"
             max="42"
-            placeholder="es. 1"
+            [placeholder]="'models.field_rack_units_ph' | translate"
             [value]="form().rack_units ?? ''"
             (input)="
               setField(
@@ -560,11 +579,13 @@
         </label>
 
         <label class="field">
-          <span class="field-label">Note</span>
+          <span class="field-label">{{
+            "models.field_notes" | translate
+          }}</span>
           <textarea
             class="field-textarea"
             rows="3"
-            placeholder="Informazioni aggiuntive…"
+            [placeholder]="'models.field_notes_ph' | translate"
             [value]="form().note"
             (input)="setField('note', $any($event.target).value)"
           ></textarea>
@@ -572,7 +593,9 @@
 
         <!-- Front image -->
         <div class="field">
-          <span class="field-label">Immagine fronte</span>
+          <span class="field-label">{{
+            "models.field_front_img" | translate
+          }}</span>
           @if (form().front_image_file || form().front_image_url) {
             <div class="img-preview-wrap">
               <img
@@ -587,7 +610,7 @@
               <button
                 class="img-clear-btn"
                 type="button"
-                title="Rimuovi immagine"
+                [title]="'models.remove_img' | translate"
                 (click)="
                   clearImage('front_image_url');
                   setField('front_image_file', null)
@@ -609,7 +632,7 @@
             {{
               form().front_image_file
                 ? form().front_image_file!.name
-                : "Carica immagine…"
+                : ("models.upload_img" | translate)
             }}
             <input
               type="file"
@@ -622,7 +645,9 @@
 
         <!-- Rear image -->
         <div class="field">
-          <span class="field-label">Immagine retro</span>
+          <span class="field-label">{{
+            "models.field_rear_img" | translate
+          }}</span>
           @if (form().rear_image_file || form().rear_image_url) {
             <div class="img-preview-wrap">
               <img
@@ -637,7 +662,7 @@
               <button
                 class="img-clear-btn"
                 type="button"
-                title="Rimuovi immagine"
+                [title]="'models.remove_img' | translate"
                 (click)="
                   clearImage('rear_image_url');
                   setField('rear_image_file', null)
@@ -659,7 +684,7 @@
             {{
               form().rear_image_file
                 ? form().rear_image_file!.name
-                : "Carica immagine…"
+                : ("models.upload_img" | translate)
             }}
             <input
               type="file"
@@ -671,21 +696,23 @@
         </div>
 
         @if (drawerSave() === "error") {
-          <div class="save-error">Errore durante il salvataggio. Riprova.</div>
+          <div class="save-error">{{ "models.save_error" | translate }}</div>
         }
       </div>
 
       <div class="drawer-footer">
-        <button class="btn-cancel" (click)="closeDrawer()">Annulla</button>
+        <button class="btn-cancel" (click)="closeDrawer()">
+          {{ "common.cancel" | translate }}
+        </button>
         <button
           class="btn-save"
           [disabled]="!canSave() || drawerSave() === 'saving'"
           (click)="submitDrawer()"
         >
           @if (drawerSave() === "saving") {
-            Salvataggio…
+            {{ "models.saving_form" | translate }}
           } @else {
-            Salva
+            {{ "common.save" | translate }}
           }
         </button>
       </div>

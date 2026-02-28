@@ -5,10 +5,11 @@ import {
   input,
   output,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-map-zoom-controls',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, TranslatePipe],
   templateUrl: './map-zoom-controls.component.html',
   styleUrl: './map-zoom-controls.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

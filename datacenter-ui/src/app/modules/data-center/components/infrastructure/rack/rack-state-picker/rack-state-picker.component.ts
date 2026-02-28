@@ -6,11 +6,12 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AssetService, AssetState } from '../../../../../core/api/v1';
 
 @Component({
   selector: 'app-rack-state-picker',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './rack-state-picker.component.html',
   styleUrl: './rack-state-picker.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

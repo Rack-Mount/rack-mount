@@ -2,8 +2,12 @@
 
 <div class="create-drawer">
   <div class="drawer-header">
-    <h3>Nuovo asset</h3>
-    <button class="drawer-close" (click)="cancelled.emit()" title="Chiudi">
+    <h3>{{ "asset_form.title" | translate }}</h3>
+    <button
+      class="drawer-close"
+      (click)="cancelled.emit()"
+      [title]="'common.close' | translate"
+    >
       <svg viewBox="0 0 16 16" fill="none">
         <path
           d="M12 4L4 12M4 4l8 8"
@@ -17,12 +21,15 @@
 
   <div class="drawer-body">
     <div class="form-group">
-      <label>Apparato <span class="required">*</span></label>
+      <label
+        >{{ "asset_form.model" | translate }}
+        <span class="required">*</span></label
+      >
       <div class="autocomplete-wrap">
         <input
           class="form-input"
           type="text"
-          placeholder="Cerca apparato o vendor…"
+          [placeholder]="'asset_form.model_search' | translate"
           autocomplete="off"
           [value]="modelSearch()"
           (input)="onModelSearch($any($event.target).value)"
@@ -33,7 +40,7 @@
           <button
             class="autocomplete-clear"
             type="button"
-            title="Rimuovi apparato"
+            [title]="'asset_form.model_remove' | translate"
             (mousedown)="$event.preventDefault(); clearModel()"
           >
             ×
@@ -57,13 +64,18 @@
     </div>
 
     <div class="form-group">
-      <label>Stato <span class="required">*</span></label>
+      <label
+        >{{ "asset_form.state" | translate }}
+        <span class="required">*</span></label
+      >
       <select
         class="form-select"
         [value]="createForm().state_id ?? ''"
         (change)="patchForm('state_id', +$any($event.target).value || null)"
       >
-        <option value="">— Seleziona stato —</option>
+        <option value="">
+          {{ "asset_form.state_placeholder" | translate }}
+        </option>
         @for (s of availableStates(); track s.id) {
           <option [value]="s.id">{{ s.name }}</option>
         }
@@ -71,29 +83,29 @@
     </div>
 
     <div class="form-group">
-      <label>Hostname</label>
+      <label>{{ "asset_form.hostname" | translate }}</label>
       <input
         class="form-input"
         type="text"
-        placeholder="es. srv-prod-01"
+        [placeholder]="'asset_form.hostname_placeholder' | translate"
         [value]="createForm().hostname"
         (input)="patchForm('hostname', $any($event.target).value)"
       />
     </div>
 
     <div class="form-group">
-      <label>Seriale</label>
+      <label>{{ "asset_form.serial" | translate }}</label>
       <input
         class="form-input"
         type="text"
-        placeholder="Numero seriale"
+        [placeholder]="'asset_form.serial_placeholder' | translate"
         [value]="createForm().serial_number"
         (input)="patchForm('serial_number', $any($event.target).value)"
       />
     </div>
 
     <div class="form-group">
-      <label>SAP ID</label>
+      <label>{{ "asset_form.sap_id" | translate }}</label>
       <input
         class="form-input"
         type="text"
@@ -104,7 +116,7 @@
     </div>
 
     <div class="form-group">
-      <label>Order ID</label>
+      <label>{{ "asset_form.order_id" | translate }}</label>
       <input
         class="form-input"
         type="text"
@@ -116,12 +128,12 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label>Alimentatori</label>
+        <label>{{ "asset_form.power_supplies" | translate }}</label>
         <input
           class="form-input"
           type="number"
           min="0"
-          placeholder="es. 2"
+          [placeholder]="'asset_form.power_placeholder' | translate"
           [value]="createForm().power_supplies ?? ''"
           (input)="
             patchForm('power_supplies', +$any($event.target).value || null)
@@ -129,12 +141,12 @@
         />
       </div>
       <div class="form-group">
-        <label>Assorbimento (W)</label>
+        <label>{{ "asset_form.power_consumption" | translate }}</label>
         <input
           class="form-input"
           type="number"
           min="0"
-          placeholder="es. 800"
+          [placeholder]="'asset_form.power_watt_placeholder' | translate"
           [value]="createForm().power_cosumption_watt ?? ''"
           (input)="
             patchForm(
@@ -148,7 +160,7 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label>Data acquisto</label>
+        <label>{{ "asset_form.purchase_date" | translate }}</label>
         <input
           class="form-input"
           type="date"
@@ -157,7 +169,7 @@
         />
       </div>
       <div class="form-group">
-        <label>Data dismissione</label>
+        <label>{{ "asset_form.decommission_date" | translate }}</label>
         <input
           class="form-input"
           type="date"
@@ -169,7 +181,7 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label>Scad. garanzia</label>
+        <label>{{ "asset_form.warranty" | translate }}</label>
         <input
           class="form-input"
           type="date"
@@ -178,7 +190,7 @@
         />
       </div>
       <div class="form-group">
-        <label>Scad. supporto</label>
+        <label>{{ "asset_form.support" | translate }}</label>
         <input
           class="form-input"
           type="date"
@@ -189,10 +201,10 @@
     </div>
 
     <div class="form-group">
-      <label>Note</label>
+      <label>{{ "asset_form.notes" | translate }}</label>
       <textarea
         class="form-textarea"
-        placeholder="Note aggiuntive…"
+        [placeholder]="'asset_form.notes_placeholder' | translate"
         [value]="createForm().note"
         (input)="patchForm('note', $any($event.target).value)"
       ></textarea>
@@ -200,13 +212,15 @@
 
     @if (createSaveState() === "error") {
       <p class="form-error">
-        Errore nel salvataggio — ricontrolla i dati e riprova.
+        {{ "asset_form.error" | translate }}
       </p>
     }
   </div>
 
   <div class="drawer-footer">
-    <button class="btn-cancel" (click)="cancelled.emit()">Annulla</button>
+    <button class="btn-cancel" (click)="cancelled.emit()">
+      {{ "common.cancel" | translate }}
+    </button>
     <button
       class="btn-save"
       [disabled]="
@@ -216,7 +230,11 @@
       "
       (click)="submit()"
     >
-      {{ createSaveState() === "saving" ? "Salvataggio…" : "Crea asset" }}
+      {{
+        createSaveState() === "saving"
+          ? ("asset_form.saving" | translate)
+          : ("asset_form.save" | translate)
+      }}
     </button>
   </div>
 </div>

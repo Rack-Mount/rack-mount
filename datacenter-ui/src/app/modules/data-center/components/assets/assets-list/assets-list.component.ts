@@ -9,6 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import {
   catchError,
   concat,
@@ -44,6 +45,7 @@ import {
   standalone: true,
   imports: [
     DecimalPipe,
+    TranslatePipe,
     AssetCreateDrawerComponent,
     AssetRowDetailComponent,
     AssetStatePickerComponent,

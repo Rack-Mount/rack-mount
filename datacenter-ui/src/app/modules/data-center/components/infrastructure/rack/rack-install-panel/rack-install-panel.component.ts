@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import {
   Subject,
   catchError,
@@ -38,6 +39,7 @@ type InstallAssetsState =
 @Component({
   selector: 'app-rack-install-panel',
   standalone: true,
+  imports: [TranslatePipe],
   templateUrl: './rack-install-panel.component.html',
   styleUrl: './rack-install-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

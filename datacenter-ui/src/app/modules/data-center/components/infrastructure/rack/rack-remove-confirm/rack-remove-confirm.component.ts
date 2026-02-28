@@ -6,12 +6,13 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { forkJoin, of } from 'rxjs';
 import { AssetService } from '../../../../../core/api/v1';
 
 @Component({
   selector: 'app-rack-remove-confirm',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './rack-remove-confirm.component.html',
   styleUrl: './rack-remove-confirm.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

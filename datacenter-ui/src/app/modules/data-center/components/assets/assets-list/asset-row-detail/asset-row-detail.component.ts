@@ -4,12 +4,13 @@ import {
   input,
   output,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Asset } from '../../../../../core/api/v1';
 
 @Component({
   selector: 'app-asset-row-detail',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './asset-row-detail.component.html',
   styleUrl: './asset-row-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

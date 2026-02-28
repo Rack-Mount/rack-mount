@@ -9,12 +9,17 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AssetModel, AssetService, AssetState } from '../../../../../core/api/v1';
+import { TranslatePipe } from '@ngx-translate/core';
+import {
+  AssetModel,
+  AssetService,
+  AssetState,
+} from '../../../../../core/api/v1';
 
 @Component({
   selector: 'app-asset-create-drawer',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './asset-create-drawer.component.html',
   styleUrl: './asset-create-drawer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

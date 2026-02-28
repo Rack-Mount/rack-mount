@@ -12,7 +12,9 @@
       [ngModel]="selectedLocationId()"
       (ngModelChange)="locationChange.emit($event)"
     >
-      <option [ngValue]="null">-- Seleziona Location --</option>
+      <option [ngValue]="null">
+        {{ "map_toolbar.select_location" | translate }}
+      </option>
       @for (loc of locations(); track loc.id) {
         <option [ngValue]="loc.id">{{ loc.name }}</option>
       }
@@ -24,7 +26,9 @@
       [ngModel]="selectedRoomId()"
       (ngModelChange)="roomChange.emit($event)"
     >
-      <option [ngValue]="null">-- Seleziona Room --</option>
+      <option [ngValue]="null">
+        {{ "map_toolbar.select_room" | translate }}
+      </option>
       @for (room of rooms(); track room.id) {
         <option [ngValue]="room.id">{{ room.name }}</option>
       }
@@ -36,7 +40,11 @@
     (click)="save.emit()"
     [disabled]="!selectedRoomId() || saveStatus() === 'saving'"
   >
-    {{ saveStatus() === "saving" ? "Salvataggio..." : "Salva Planimetria" }}
+    {{
+      saveStatus() === "saving"
+        ? ("map_toolbar.saving" | translate)
+        : ("map_toolbar.save" | translate)
+    }}
   </button>
 
   <label class="autosave-toggle">
@@ -48,21 +56,29 @@
     <span class="switch-track">
       <span class="switch-thumb"></span>
     </span>
-    <span class="switch-label">Autosalvataggio</span>
+    <span class="switch-label">{{ "map_toolbar.autosave" | translate }}</span>
   </label>
 
   @if (saveStatus() === "saved") {
-    <span class="save-feedback save-ok">✓ Salvato</span>
+    <span class="save-feedback save-ok">{{
+      "map_toolbar.saved_ok" | translate
+    }}</span>
   }
   @if (saveStatus() === "error") {
-    <span class="save-feedback save-err">✗ Errore nel salvataggio</span>
+    <span class="save-feedback save-err">{{
+      "map_toolbar.save_error" | translate
+    }}</span>
   }
 
   @if (activeTool() === "rack") {
     <span class="rack-picker-sep"></span>
-    <label for="rack-select" class="rack-picker-label">🖥️ Modello rack:</label>
+    <label for="rack-select" class="rack-picker-label"
+      >🖥️ {{ "map_toolbar.rack_model_label" | translate }}</label
+    >
     @if (rackTypes().length === 0) {
-      <span class="rack-picker-empty">Nessun modello rack disponibile</span>
+      <span class="rack-picker-empty">{{
+        "map_toolbar.no_rack_models" | translate
+      }}</span>
     } @else {
       <select
         id="rack-select"
@@ -82,7 +98,9 @@
 
   @if (activeTool() === "door") {
     <span class="rack-picker-sep"></span>
-    <label class="rack-picker-label">🚪 Larghezza varco:</label>
+    <label class="rack-picker-label"
+      >🚪 {{ "map_toolbar.door_label" | translate }}</label
+    >
     <input
       type="number"
       class="door-width-input"
@@ -92,6 +110,8 @@
       max="2000"
       step="10"
     />
-    <span class="rack-picker-label">cm</span>
+    <span class="rack-picker-label">{{
+      "map_toolbar.door_unit" | translate
+    }}</span>
   }
 </div>

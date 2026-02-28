@@ -1,14 +1,16 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
-import { routes } from './app.routes';
-import { Configuration, ConfigurationParameters } from './modules/core/api/v1';
-import { environment } from '../environments/environment';
 import {
   provideHttpClient,
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { environment } from '../environments/environment';
+import { routes } from './app.routes';
+import { Configuration, ConfigurationParameters } from './modules/core/api/v1';
 import { notFoundInterceptor } from './modules/core/interceptors/not-found.interceptor';
 
 export function apiConfigFactory(): Configuration {
@@ -32,5 +34,10 @@ export const appConfig: ApplicationConfig = {
     ),
     { provide: Configuration, useFactory: apiConfigFactory },
     provideHttpClient(withFetch(), withInterceptors([notFoundInterceptor])),
+    provideTranslateService({
+      defaultLanguage: 'it',
+      fallbackLang: 'it',
+    }),
+    provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
   ],
 };

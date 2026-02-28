@@ -6,7 +6,9 @@
   (click)="$event.stopPropagation()"
 >
   @if (_saving()) {
-    <div class="rack-state-picker__saving">Salvataggio…</div>
+    <div class="rack-state-picker__saving">
+      {{ "rack_state.saving" | translate }}
+    </div>
   } @else {
     @for (s of states(); track s.id) {
       <button class="rack-state-picker__item" (click)="pickState(s.id)">

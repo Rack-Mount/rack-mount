@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,7 +9,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AssetService, Rack } from '../../../../core/api/v1';
 import { RackComponent } from '../../infrastructure/rack/rack.component';
 import { PanelTab } from './detail-panel.types';
@@ -16,7 +17,7 @@ import { PanelTab } from './detail-panel.types';
 @Component({
   selector: 'app-detail-panel',
   standalone: true,
-  imports: [CommonModule, RackComponent],
+  imports: [CommonModule, RackComponent, TranslatePipe],
   templateUrl: './detail-panel.component.html',
   styleUrl: './detail-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

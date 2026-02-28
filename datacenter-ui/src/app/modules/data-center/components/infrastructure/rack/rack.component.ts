@@ -15,6 +15,7 @@ import {
   toObservable,
   toSignal,
 } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, combineLatest, concat, map, of, switchMap } from 'rxjs';
 import {
   AssetService,
@@ -63,6 +64,7 @@ const RACK_OVERHEAD_PX = 72;
     RackStatePickerComponent,
     RackRemoveConfirmComponent,
     RackDeviceTableComponent,
+    TranslatePipe,
   ],
   templateUrl: './rack.component.html',
   styleUrl: './rack.component.scss',
