@@ -294,6 +294,15 @@ export class ModelsListComponent {
     return URL.createObjectURL(file);
   }
 
+  /**
+   * Appends a ?w=<width> query param to an image URL so the backend
+   * serves a resized variant instead of the full-resolution original.
+   */
+  protected imgW(url: string | null | undefined, w: number): string {
+    if (!url) return '';
+    return url.includes('?') ? `${url}&w=${w}` : `${url}?w=${w}`;
+  }
+
   protected onFileChange(
     field: 'front_image_file' | 'rear_image_file',
     event: Event,

@@ -16,8 +16,9 @@
       <div class="device__panel">
         <img
           class="device__panel-img"
-          [src]="serviceUrl + '/files/' + img"
+          [src]="serviceUrl + '/files/' + img + '?w=320'"
           [alt]="dev.device_hostname"
+          loading="lazy"
         />
       </div>
       <!-- Overlay lives outside device__panel to escape its overflow:hidden -->

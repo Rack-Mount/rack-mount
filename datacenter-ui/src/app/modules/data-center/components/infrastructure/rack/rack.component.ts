@@ -16,7 +16,12 @@ import {
   toSignal,
 } from '@angular/core/rxjs-interop';
 import { catchError, combineLatest, concat, map, of, switchMap } from 'rxjs';
-import { AssetService, AssetState, Rack, RackUnit } from '../../../../core/api/v1';
+import {
+  AssetService,
+  AssetState,
+  Rack,
+  RackUnit,
+} from '../../../../core/api/v1';
 import { RackRender } from '../../../models/RackRender';
 import { DeviceComponent } from '../device/device.component';
 import {
@@ -147,6 +152,25 @@ export class RackComponent {
   readonly _statePickerY = signal<number>(0);
   /** All available asset states, loaded once. */
   readonly availableStates = signal<AssetState[]>([]);
+
+  /**
+   * Number of consecutive free U-slots available downward from the install
+   * target position (inclusive). Used to prevent installing an oversized device.
+   *
+   * Rack positions are 1-based from bottom; a device with rack_units=N placed
+   * at pos occupies pos, pos-1, ..., pos-N+1.
+   */
+  readonly _installAvailableU = computed(() => {
+    const pos = this._installPos();
+    if (!pos) return 0;
+    const occ = this._occupancyMap();
+    let count = 0;
+    for (let p = pos; p >= 1; p--) {
+      if (occ.has(p)) break;
+      count++;
+    }
+    return count;
+  });
 
   protected openInstall(pos: number, event: MouseEvent): void {
     const el = event.currentTarget as HTMLElement;

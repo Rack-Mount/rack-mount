@@ -51,6 +51,8 @@ export class RackInstallPanelComponent implements OnInit {
   readonly anchorY = input<number>(0);
   /** Rack DB id – required to POST the rack-unit record. */
   readonly rackId = input.required<number>();
+  /** Number of consecutive free U-slots at the target position (0 = unknown). */
+  readonly availableU = input<number>(0);
 
   /** Emitted when the user closes the panel without installing. */
   readonly closed = output<void>();
@@ -72,6 +74,13 @@ export class RackInstallPanelComponent implements OnInit {
     const s = this._assetsState();
     return s.status === 'loaded' ? s.results : [];
   });
+
+  /** Returns true when the asset is too large for the available space. */
+  protected isTooLarge(asset: Asset): boolean {
+    const avail = this.availableU();
+    if (!avail) return false; // unknown – allow
+    return (asset.model.rack_units ?? 1) > avail;
+  }
 
   // Two rx subjects: one debounced (typed search), one immediate (panel open)
   private readonly _immediateSearch$ = new Subject<string>();

@@ -38,12 +38,13 @@
         <div
           class="rack-install__item"
           [class.rack-install__item--selected]="_selectedId() === asset.id"
-          (click)="selectAndInstall(asset.id)"
+          [class.rack-install__item--disabled]="isTooLarge(asset)"
+          (click)="!isTooLarge(asset) && selectAndInstall(asset.id)"
         >
           @if (asset.model.front_image) {
             <img
               class="rack-install__thumb"
-              [src]="asset.model.front_image"
+              [src]="asset.model.front_image + '?w=80'"
               alt=""
               loading="lazy"
             />
@@ -61,6 +62,11 @@
             @if (asset.serial_number) {
               <span class="rack-install__serial"
                 >S/N: {{ asset.serial_number }}</span
+              >
+            }
+            @if (isTooLarge(asset)) {
+              <span class="rack-install__too-large"
+                >Spazio insufficiente ({{ availableU() }}U libere)</span
               >
             }
           </div>

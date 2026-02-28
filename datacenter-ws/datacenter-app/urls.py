@@ -22,6 +22,7 @@ from asset import urls as asset_urls
 from django.urls import path, include
 from django.contrib import admin
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from asset.views.ImageView import ImageView
 
 admin.site.site_header = "Rack-Mount Data Center Admin"
 admin.site.site_title = "Rack-Mount Data Center Admin Portal"
@@ -48,14 +49,12 @@ urlpatterns = [
     path('openapi', SpectacularAPIView.as_view(), name='schema'),
     path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger'),
     path('', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # Image serving with on-the-fly resize support (?w=<width>)
+    path('files/<path:filename>', ImageView.as_view(), name='image-serve'),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(
-        settings.MEDIA_URL,
-        document_root=settings.MEDIA_ROOT
-    )
     urlpatterns += static(
         settings.STATIC_URL,
         document_root=settings.STATIC_ROOT

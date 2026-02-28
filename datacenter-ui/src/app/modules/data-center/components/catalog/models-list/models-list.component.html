@@ -209,17 +209,19 @@
                 @if (m.front_image) {
                   <img
                     class="thumb"
-                    [src]="m.front_image"
+                    [src]="imgW(m.front_image, 120)"
                     alt="Front"
                     title="Fronte"
+                    loading="lazy"
                   />
                 }
                 @if (m.rear_image) {
                   <img
                     class="thumb"
-                    [src]="m.rear_image"
+                    [src]="imgW(m.rear_image, 120)"
                     alt="Rear"
                     title="Retro"
+                    loading="lazy"
                   />
                 }
               </td>
@@ -420,13 +422,23 @@
             @if (m.front_image) {
               <div class="preview-img-block">
                 <span class="preview-img-label">Fronte</span>
-                <img class="preview-img" [src]="m.front_image" alt="Fronte" />
+                <img
+                  class="preview-img"
+                  [src]="imgW(m.front_image, 640)"
+                  alt="Fronte"
+                  loading="lazy"
+                />
               </div>
             }
             @if (m.rear_image) {
               <div class="preview-img-block">
                 <span class="preview-img-label">Retro</span>
-                <img class="preview-img" [src]="m.rear_image" alt="Retro" />
+                <img
+                  class="preview-img"
+                  [src]="imgW(m.rear_image, 640)"
+                  alt="Retro"
+                  loading="lazy"
+                />
               </div>
             }
           </div>
