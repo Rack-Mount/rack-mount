@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 from asset.serializers import AssetModelSerializer
 from asset.models import AssetModel
 from rest_framework import filters
@@ -27,6 +28,23 @@ class AssetModelViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.OrderingFilter, filters.SearchFilter,
                        DjangoFilterBackend)
 
-    ordering_fields = ['name', 'vendor', 'type']
+    ordering_fields = ['name', 'vendor__name', 'type__name', 'rack_units']
     ordering = ['name']
     filterset_fields = ['name', 'vendor', 'type']
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.assets.exists():
+            asset_count = instance.assets.count()
+            return Response(
+                {
+                    'detail': (
+                        f'Impossibile eliminare: questo modello è utilizzato da '
+                        f'{asset_count} asset.'
+                    ),
+                    'code': 'in_use',
+                    'asset_count': asset_count,
+                },
+                status=status.HTTP_409_CONFLICT,
+            )
+        return super().destroy(request, *args, **kwargs)

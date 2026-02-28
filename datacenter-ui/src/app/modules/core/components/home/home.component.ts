@@ -63,4 +63,12 @@ export class HomeComponent implements OnInit {
   protected onAssetsOpen(): void {
     this.tabService.openAssets();
   }
+
+  protected onVendorsOpen(): void {
+    this.tabService.openVendors();
+  }
+
+  protected onModelsOpen(): void {
+    this.tabService.openModels();
+  }
 }

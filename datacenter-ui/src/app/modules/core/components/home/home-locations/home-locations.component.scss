@@ -91,6 +91,18 @@
       border: 1px solid rgba(96, 165, 250, 0.22);
       color: #60a5fa;
     }
+
+    &--vendors {
+      background: rgba(167, 139, 250, 0.12);
+      border: 1px solid rgba(167, 139, 250, 0.22);
+      color: #a78bfa;
+    }
+
+    &--models {
+      background: rgba(52, 211, 153, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.22);
+      color: #34d399;
+    }
   }
 
   &__body {

@@ -1,0 +1,682 @@
+<div class="models-page">
+  <!-- ── Toolbar ──────────────────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+          <circle
+            cx="8.5"
+            cy="8.5"
+            r="5"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+          <path
+            d="M12.5 12.5L16 16"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Cerca apparato…"
+          [value]="search()"
+          (input)="onSearchInput($any($event.target).value)"
+        />
+        @if (search()) {
+          <button
+            class="search-clear"
+            (click)="resetFilters()"
+            title="Cancella"
+          >
+            ×
+          </button>
+        }
+      </div>
+
+      <select
+        class="filter-select"
+        [value]="vendorFilter() ?? ''"
+        (change)="onVendorFilter($any($event.target).value)"
+      >
+        <option value="">Tutti i vendor</option>
+        @for (v of vendors(); track v.id) {
+          <option [value]="v.id">{{ v.name }}</option>
+        }
+      </select>
+
+      <select
+        class="filter-select"
+        [value]="typeFilter() ?? ''"
+        (change)="onTypeFilter($any($event.target).value)"
+      >
+        <option value="">Tutti i tipi</option>
+        @for (t of types(); track t.id) {
+          <option [value]="t.id">{{ t.name }}</option>
+        }
+      </select>
+
+      @if (hasFilters()) {
+        <button class="btn-reset" (click)="resetFilters()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4l8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          Reset
+        </button>
+      }
+    </div>
+
+    <div class="toolbar-right">
+      @if (listState().status === "loaded") {
+        <span class="count-badge">{{ totalCount() }} apparati</span>
+      }
+      <button class="btn-new" (click)="openCreate()">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10M3 8h10"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        Nuovo apparato
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Table ────────────────────────────────────────────────── -->
+  <div class="table-wrap">
+    @if (listState().status === "loading") {
+      <div class="state-full">
+        <div class="spinner"></div>
+        <span>Caricamento…</span>
+      </div>
+    } @else if (listState().status === "error") {
+      <div class="state-full state-full--error">
+        Errore durante il caricamento.
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th
+              class="col-name th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'name' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'name' && sortDir() === 'desc'
+              "
+              (click)="sort('name')"
+            >
+              Apparato
+              <span class="sort-arrow">
+                @if (sortField() === "name") {
+                  {{ sortDir() === "asc" ? "↑" : "↓" }}
+                } @else {
+                  ↕
+                }
+              </span>
+            </th>
+            <th
+              class="col-vendor th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'vendor__name' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'vendor__name' && sortDir() === 'desc'
+              "
+              (click)="sort('vendor__name')"
+            >
+              Vendor
+              <span class="sort-arrow">
+                @if (sortField() === "vendor__name") {
+                  {{ sortDir() === "asc" ? "↑" : "↓" }}
+                } @else {
+                  ↕
+                }
+              </span>
+            </th>
+            <th
+              class="col-type th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'type__name' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'type__name' && sortDir() === 'desc'
+              "
+              (click)="sort('type__name')"
+            >
+              Tipo
+              <span class="sort-arrow">
+                @if (sortField() === "type__name") {
+                  {{ sortDir() === "asc" ? "↑" : "↓" }}
+                } @else {
+                  ↕
+                }
+              </span>
+            </th>
+            <th
+              class="col-units th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'rack_units' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'rack_units' && sortDir() === 'desc'
+              "
+              (click)="sort('rack_units')"
+            >
+              U
+              <span class="sort-arrow">
+                @if (sortField() === "rack_units") {
+                  {{ sortDir() === "asc" ? "↑" : "↓" }}
+                } @else {
+                  ↕
+                }
+              </span>
+            </th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of models(); track m.id) {
+            <tr
+              class="row-data"
+              [class.row-data--deleting]="deleteId() === m.id"
+              [class.row-data--selected]="previewModel()?.id === m.id"
+              (click)="openPreview(m)"
+            >
+              <td class="cell-name">{{ m.name }}</td>
+              <td class="cell-vendor">
+                <span class="badge badge--vendor">{{ m.vendor.name }}</span>
+              </td>
+              <td class="cell-type">
+                <span class="badge badge--type">{{ m.type.name }}</span>
+              </td>
+              <td class="cell-units">
+                @if (m.rack_units) {
+                  {{ m.rack_units }}U
+                }
+              </td>
+              <td class="cell-images">
+                @if (m.front_image) {
+                  <img
+                    class="thumb"
+                    [src]="m.front_image"
+                    alt="Front"
+                    title="Fronte"
+                  />
+                }
+                @if (m.rear_image) {
+                  <img
+                    class="thumb"
+                    [src]="m.rear_image"
+                    alt="Rear"
+                    title="Retro"
+                  />
+                }
+              </td>
+              <td class="cell-note" [title]="m.note ?? ''">
+                {{
+                  m.note && m.note.length > 60
+                    ? (m.note | slice: 0 : 60) + "…"
+                    : (m.note ?? "")
+                }}
+              </td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                @if (deleteId() === m.id) {
+                  <div
+                    class="delete-confirm"
+                    [class.delete-confirm--blocked]="deleteSave() === 'in_use'"
+                  >
+                    @if (deleteSave() === "in_use") {
+                      <span class="delete-label delete-label--warning">
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M8 2L1 14h14L8 2z"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linejoin="round"
+                          />
+                          <path
+                            d="M8 6v4M8 11v1"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linecap="round"
+                          />
+                        </svg>
+                        Apparato in uso — non eliminabile
+                      </span>
+                      <button class="btn-confirm" (click)="cancelDelete()">
+                        Chiudi
+                      </button>
+                    } @else {
+                      <span class="delete-label">
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M8 7v5M8 4v1"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linecap="round"
+                          />
+                          <circle
+                            cx="8"
+                            cy="8"
+                            r="6.25"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          />
+                        </svg>
+                        @if (deleteSave() === "error") {
+                          Errore — riprova
+                        } @else {
+                          Conferma eliminazione
+                        }
+                      </span>
+                      <button
+                        class="btn-confirm btn-confirm--danger"
+                        [disabled]="deleteSave() === 'saving'"
+                        (click)="submitDelete()"
+                      >
+                        @if (deleteSave() === "saving") {
+                          Eliminazione…
+                        } @else {
+                          Elimina
+                        }
+                      </button>
+                      <button class="btn-confirm" (click)="cancelDelete()">
+                        Annulla
+                      </button>
+                    }
+                  </div>
+                } @else {
+                  <div class="action-group">
+                    <button
+                      class="btn-edit"
+                      title="Modifica"
+                      (click)="openEdit(m)"
+                    >
+                      <svg viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      Modifica
+                    </button>
+                    <button
+                      class="btn-delete"
+                      title="Elimina"
+                      (click)="confirmDelete(m.id)"
+                    >
+                      <svg viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      Elimina
+                    </button>
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+
+          @if (models().length === 0) {
+            <tr>
+              <td colspan="7" class="empty-row">
+                @if (hasFilters()) {
+                  Nessun apparato corrisponde ai filtri.
+                } @else {
+                  Nessun apparato trovato. Creane uno nuovo.
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button
+            class="page-btn"
+            [disabled]="page() === 1"
+            (click)="goPage(page() - 1)"
+          >
+            ‹
+          </button>
+          @for (n of pageNumbers(); track n) {
+            <button
+              class="page-btn"
+              [class.page-btn--active]="n === page()"
+              (click)="goPage(n)"
+            >
+              {{ n }}
+            </button>
+          }
+          <button
+            class="page-btn"
+            [disabled]="page() === totalPages()"
+            (click)="goPage(page() + 1)"
+          >
+            ›
+          </button>
+        </div>
+      }
+    }
+  </div>
+  <!-- ── Preview panel ─────────────────────────────────────────── -->
+  @if (previewModel(); as m) {
+    <div class="drawer-overlay" (click)="closePreview()"></div>
+    <aside class="drawer preview-panel">
+      <div class="drawer-header">
+        <h2 class="drawer-title">{{ m.name }}</h2>
+        <div class="preview-header-actions">
+          <button
+            class="btn-preview-edit"
+            title="Modifica"
+            (click)="previewEdit()"
+          >
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Modifica
+          </button>
+          <button class="drawer-close" (click)="closePreview()">&#215;</button>
+        </div>
+      </div>
+
+      <div class="drawer-body preview-body">
+        <!-- Badges -->
+        <div class="preview-badges">
+          <span class="badge badge--vendor">{{ m.vendor.name }}</span>
+          <span class="badge badge--type">{{ m.type.name }}</span>
+          @if (m.rack_units) {
+            <span class="badge badge--units">{{ m.rack_units }}&thinsp;U</span>
+          }
+        </div>
+
+        <!-- Images -->
+        @if (m.front_image || m.rear_image) {
+          <div class="preview-images">
+            @if (m.front_image) {
+              <div class="preview-img-block">
+                <span class="preview-img-label">Fronte</span>
+                <img class="preview-img" [src]="m.front_image" alt="Fronte" />
+              </div>
+            }
+            @if (m.rear_image) {
+              <div class="preview-img-block">
+                <span class="preview-img-label">Retro</span>
+                <img class="preview-img" [src]="m.rear_image" alt="Retro" />
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Details grid -->
+        <dl class="preview-dl">
+          <div class="preview-row">
+            <dt>Nome</dt>
+            <dd>{{ m.name }}</dd>
+          </div>
+          <div class="preview-row">
+            <dt>Vendor</dt>
+            <dd>{{ m.vendor.name }}</dd>
+          </div>
+          <div class="preview-row">
+            <dt>Tipo</dt>
+            <dd>{{ m.type.name }}</dd>
+          </div>
+          <div class="preview-row">
+            <dt>Unit&#224; rack</dt>
+            <dd>{{ m.rack_units ? m.rack_units + " U" : "—" }}</dd>
+          </div>
+          @if (m.note) {
+            <div class="preview-row preview-row--full">
+              <dt>Note</dt>
+              <dd class="preview-note">{{ m.note }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+    </aside>
+  }
+  <!-- ── Drawer overlay ───────────────────────────────────────── -->
+  @if (drawerOpen()) {
+    <div class="drawer-overlay" (click)="closeDrawer()"></div>
+    <aside class="drawer">
+      <div class="drawer-header">
+        <h2 class="drawer-title">
+          {{
+            drawerMode() === "create" ? "Nuovo apparato" : "Modifica apparato"
+          }}
+        </h2>
+        <button class="drawer-close" (click)="closeDrawer()">×</button>
+      </div>
+
+      <div class="drawer-body">
+        <label class="field">
+          <span class="field-label">Nome <span class="req">*</span></span>
+          <input
+            class="field-input"
+            type="text"
+            placeholder="Nome apparato"
+            [value]="form().name"
+            (input)="setField('name', $any($event.target).value)"
+          />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Vendor <span class="req">*</span></span>
+          <select
+            class="field-select"
+            (change)="
+              setField(
+                'vendor_id',
+                $any($event.target).value ? +$any($event.target).value : null
+              )
+            "
+          >
+            <option value="" [selected]="!form().vendor_id">
+              Seleziona vendor…
+            </option>
+            @for (v of vendors(); track v.id) {
+              <option [value]="v.id" [selected]="v.id === form().vendor_id">
+                {{ v.name }}
+              </option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Tipo <span class="req">*</span></span>
+          <select
+            class="field-select"
+            (change)="
+              setField(
+                'type_id',
+                $any($event.target).value ? +$any($event.target).value : null
+              )
+            "
+          >
+            <option value="" [selected]="!form().type_id">
+              Seleziona tipo…
+            </option>
+            @for (t of types(); track t.id) {
+              <option [value]="t.id" [selected]="t.id === form().type_id">
+                {{ t.name }}
+              </option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Unità rack (U)</span>
+          <input
+            class="field-input field-input--short"
+            type="number"
+            min="1"
+            max="42"
+            placeholder="es. 1"
+            [value]="form().rack_units ?? ''"
+            (input)="
+              setField(
+                'rack_units',
+                $any($event.target).value ? +$any($event.target).value : null
+              )
+            "
+          />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Note</span>
+          <textarea
+            class="field-textarea"
+            rows="3"
+            placeholder="Informazioni aggiuntive…"
+            [value]="form().note"
+            (input)="setField('note', $any($event.target).value)"
+          ></textarea>
+        </label>
+
+        <!-- Front image -->
+        <div class="field">
+          <span class="field-label">Immagine fronte</span>
+          @if (form().front_image_file || form().front_image_url) {
+            <div class="img-preview-wrap">
+              <img
+                class="img-preview"
+                [src]="
+                  form().front_image_file
+                    ? objectUrl(form().front_image_file!)
+                    : form().front_image_url!
+                "
+                alt="Front preview"
+              />
+              <button
+                class="img-clear-btn"
+                type="button"
+                title="Rimuovi immagine"
+                (click)="
+                  clearImage('front_image_url');
+                  setField('front_image_file', null)
+                "
+              >
+                ×
+              </button>
+            </div>
+          }
+          <label class="file-input-label">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M8 3v10M3 8h10"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              />
+            </svg>
+            {{
+              form().front_image_file
+                ? form().front_image_file!.name
+                : "Carica immagine…"
+            }}
+            <input
+              type="file"
+              accept="image/*"
+              class="file-input-hidden"
+              (change)="onFileChange('front_image_file', $event)"
+            />
+          </label>
+        </div>
+
+        <!-- Rear image -->
+        <div class="field">
+          <span class="field-label">Immagine retro</span>
+          @if (form().rear_image_file || form().rear_image_url) {
+            <div class="img-preview-wrap">
+              <img
+                class="img-preview"
+                [src]="
+                  form().rear_image_file
+                    ? objectUrl(form().rear_image_file!)
+                    : form().rear_image_url!
+                "
+                alt="Rear preview"
+              />
+              <button
+                class="img-clear-btn"
+                type="button"
+                title="Rimuovi immagine"
+                (click)="
+                  clearImage('rear_image_url');
+                  setField('rear_image_file', null)
+                "
+              >
+                ×
+              </button>
+            </div>
+          }
+          <label class="file-input-label">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M8 3v10M3 8h10"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              />
+            </svg>
+            {{
+              form().rear_image_file
+                ? form().rear_image_file!.name
+                : "Carica immagine…"
+            }}
+            <input
+              type="file"
+              accept="image/*"
+              class="file-input-hidden"
+              (change)="onFileChange('rear_image_file', $event)"
+            />
+          </label>
+        </div>
+
+        @if (drawerSave() === "error") {
+          <div class="save-error">Errore durante il salvataggio. Riprova.</div>
+        }
+      </div>
+
+      <div class="drawer-footer">
+        <button class="btn-cancel" (click)="closeDrawer()">Annulla</button>
+        <button
+          class="btn-save"
+          [disabled]="!canSave() || drawerSave() === 'saving'"
+          (click)="submitDrawer()"
+        >
+          @if (drawerSave() === "saving") {
+            Salvataggio…
+          } @else {
+            Salva
+          }
+        </button>
+      </div>
+    </aside>
+  }
+</div>

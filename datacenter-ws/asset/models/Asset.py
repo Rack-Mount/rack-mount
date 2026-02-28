@@ -40,7 +40,8 @@ class Asset(models.Model):
         db_table: The database table name for the asset.
     """
     hostname = models.CharField(max_length=100, default='', null=False)
-    model = models.ForeignKey(AssetModel, on_delete=models.CASCADE)
+    model = models.ForeignKey(
+        AssetModel, on_delete=models.PROTECT, related_name='assets')
     serial_number = models.CharField(
         null=False, max_length=50, default='', unique=True)
     sap_id = models.CharField(blank=True, max_length=50, unique=True)

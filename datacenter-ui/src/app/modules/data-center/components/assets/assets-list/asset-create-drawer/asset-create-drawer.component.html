@@ -1,0 +1,222 @@
+<div class="drawer-backdrop" (click)="cancelled.emit()"></div>
+
+<div class="create-drawer">
+  <div class="drawer-header">
+    <h3>Nuovo asset</h3>
+    <button class="drawer-close" (click)="cancelled.emit()" title="Chiudi">
+      <svg viewBox="0 0 16 16" fill="none">
+        <path
+          d="M12 4L4 12M4 4l8 8"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <div class="drawer-body">
+    <div class="form-group">
+      <label>Apparato <span class="required">*</span></label>
+      <div class="autocomplete-wrap">
+        <input
+          class="form-input"
+          type="text"
+          placeholder="Cerca apparato o vendor…"
+          autocomplete="off"
+          [value]="modelSearch()"
+          (input)="onModelSearch($any($event.target).value)"
+          (focus)="modelDropdownOpen.set(true)"
+          (blur)="modelDropdownOpen.set(false)"
+        />
+        @if (createForm().model_id) {
+          <button
+            class="autocomplete-clear"
+            type="button"
+            title="Rimuovi apparato"
+            (mousedown)="$event.preventDefault(); clearModel()"
+          >
+            ×
+          </button>
+        }
+        @if (modelDropdownOpen() && filteredModels().length > 0) {
+          <div class="autocomplete-dropdown">
+            @for (m of filteredModels(); track m.id) {
+              <button
+                class="autocomplete-option"
+                type="button"
+                (mousedown)="$event.preventDefault(); selectModel(m)"
+              >
+                <span class="ac-model-name">{{ m.name }}</span>
+                <span class="ac-vendor-name">{{ m.vendor.name }}</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Stato <span class="required">*</span></label>
+      <select
+        class="form-select"
+        [value]="createForm().state_id ?? ''"
+        (change)="patchForm('state_id', +$any($event.target).value || null)"
+      >
+        <option value="">— Seleziona stato —</option>
+        @for (s of availableStates(); track s.id) {
+          <option [value]="s.id">{{ s.name }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Hostname</label>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="es. srv-prod-01"
+        [value]="createForm().hostname"
+        (input)="patchForm('hostname', $any($event.target).value)"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Seriale</label>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="Numero seriale"
+        [value]="createForm().serial_number"
+        (input)="patchForm('serial_number', $any($event.target).value)"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>SAP ID</label>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="SAP ID"
+        [value]="createForm().sap_id"
+        (input)="patchForm('sap_id', $any($event.target).value)"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Order ID</label>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="Order ID"
+        [value]="createForm().order_id"
+        (input)="patchForm('order_id', $any($event.target).value)"
+      />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Alimentatori</label>
+        <input
+          class="form-input"
+          type="number"
+          min="0"
+          placeholder="es. 2"
+          [value]="createForm().power_supplies ?? ''"
+          (input)="
+            patchForm('power_supplies', +$any($event.target).value || null)
+          "
+        />
+      </div>
+      <div class="form-group">
+        <label>Assorbimento (W)</label>
+        <input
+          class="form-input"
+          type="number"
+          min="0"
+          placeholder="es. 800"
+          [value]="createForm().power_cosumption_watt ?? ''"
+          (input)="
+            patchForm(
+              'power_cosumption_watt',
+              +$any($event.target).value || null
+            )
+          "
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data acquisto</label>
+        <input
+          class="form-input"
+          type="date"
+          [value]="createForm().purchase_date"
+          (change)="patchForm('purchase_date', $any($event.target).value)"
+        />
+      </div>
+      <div class="form-group">
+        <label>Data dismissione</label>
+        <input
+          class="form-input"
+          type="date"
+          [value]="createForm().decommissioned_date"
+          (change)="patchForm('decommissioned_date', $any($event.target).value)"
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Scad. garanzia</label>
+        <input
+          class="form-input"
+          type="date"
+          [value]="createForm().warranty_expiration"
+          (change)="patchForm('warranty_expiration', $any($event.target).value)"
+        />
+      </div>
+      <div class="form-group">
+        <label>Scad. supporto</label>
+        <input
+          class="form-input"
+          type="date"
+          [value]="createForm().support_expiration"
+          (change)="patchForm('support_expiration', $any($event.target).value)"
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Note</label>
+      <textarea
+        class="form-textarea"
+        placeholder="Note aggiuntive…"
+        [value]="createForm().note"
+        (input)="patchForm('note', $any($event.target).value)"
+      ></textarea>
+    </div>
+
+    @if (createSaveState() === "error") {
+      <p class="form-error">
+        Errore nel salvataggio — ricontrolla i dati e riprova.
+      </p>
+    }
+  </div>
+
+  <div class="drawer-footer">
+    <button class="btn-cancel" (click)="cancelled.emit()">Annulla</button>
+    <button
+      class="btn-save"
+      [disabled]="
+        !createForm().model_id ||
+        !createForm().state_id ||
+        createSaveState() === 'saving'
+      "
+      (click)="submit()"
+    >
+      {{ createSaveState() === "saving" ? "Salvataggio…" : "Crea asset" }}
+    </button>
+  </div>
+</div>

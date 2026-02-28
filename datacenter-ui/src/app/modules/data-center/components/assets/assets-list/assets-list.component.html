@@ -1,0 +1,529 @@
+<div class="assets-page">
+  <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
+  <div class="assets-toolbar">
+    <div class="toolbar-left">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+          <circle
+            cx="8.5"
+            cy="8.5"
+            r="5"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+          <path
+            d="M12.5 12.5L16 16"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Cerca hostname, seriale, SAP…"
+          [value]="params().search"
+          (input)="onSearchInput($any($event.target).value)"
+        />
+      </div>
+
+      <select
+        class="filter-select"
+        [value]="params().stateId ?? ''"
+        (change)="onStateFilter($any($event.target).value)"
+      >
+        <option value="">Tutti gli stati</option>
+        @for (s of availableStates(); track s.id) {
+          <option [value]="s.id">{{ s.name }}</option>
+        }
+      </select>
+
+      <select
+        class="filter-select"
+        [value]="params().typeId ?? ''"
+        (change)="onTypeFilter($any($event.target).value)"
+      >
+        <option value="">Tutti i tipi</option>
+        @for (t of availableTypes(); track t.id) {
+          <option [value]="t.id">{{ t.name }}</option>
+        }
+      </select>
+
+      @if (params().search || params().stateId || params().typeId) {
+        <button class="btn-reset" (click)="resetFilters()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4l8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          Reset
+        </button>
+      }
+    </div>
+
+    <div class="toolbar-right">
+      <button class="btn-new-asset" (click)="openCreateDrawer()">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10M3 8h10"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        Nuovo asset
+      </button>
+      @if (listState().status === "loaded") {
+        <span class="count-badge"> {{ totalCount() | number }} asset </span>
+        <button
+          class="btn-export"
+          (click)="exportToExcel()"
+          title="Esporta in Excel (filtri correnti)"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect
+              x="2"
+              y="1"
+              width="9"
+              height="12"
+              rx="1"
+              stroke="currentColor"
+              stroke-width="1.3"
+            />
+            <path
+              d="M5 5h5M5 7.5h5M5 10h3"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M11 9v5m0 0l-1.5-1.5M11 14l1.5-1.5"
+              stroke="currentColor"
+              stroke-width="1.3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Esporta Excel
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ── Selection bar ───────────────────────────────────────────────────── -->
+  @if (selectedCount() > 0) {
+    <div class="selection-bar">
+      <span class="selection-count"
+        >{{ selectedCount() | number }} selezionati</span
+      >
+
+      @if (canSelectAllPages()) {
+        <span class="select-all-banner">
+          Hai selezionato i {{ selectedIds().size }} asset di questa pagina.
+          <button class="select-all-link" (click)="selectAcrossAllPages()">
+            Seleziona tutti i {{ totalCount() | number }} asset
+          </button>
+        </span>
+      }
+      @if (selectAllPages()) {
+        <span class="select-all-banner select-all-banner--active">
+          Tutti i {{ totalCount() | number }} asset sono selezionati.
+        </span>
+      }
+
+      <div class="selection-actions">
+        <button
+          class="selection-action selection-action--primary"
+          [class.is-saving]="bulkEditState() === 'saving'"
+          [disabled]="bulkEditState() === 'saving'"
+          (click)="openBulkStatePicker($event)"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <circle
+              cx="8"
+              cy="8"
+              r="5"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <path
+              d="M8 5v3l2 1"
+              stroke="currentColor"
+              stroke-width="1.3"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{ bulkEditState() === "saving" ? "Salvataggio…" : "Cambia stato" }}
+        </button>
+        <button class="selection-action" (click)="clearSelection()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4l8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          Deseleziona tutti
+        </button>
+        <button
+          class="selection-action"
+          (click)="exportToExcel(true)"
+          title="Esporta in Excel gli elementi selezionati"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect
+              x="2"
+              y="1"
+              width="9"
+              height="12"
+              rx="1"
+              stroke="currentColor"
+              stroke-width="1.3"
+            />
+            <path
+              d="M5 5h5M5 7.5h5M5 10h3"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M11 9v5m0 0l-1.5-1.5M11 14l1.5-1.5"
+              stroke="currentColor"
+              stroke-width="1.3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Esporta Excel
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── Table ───────────────────────────────────────────────────────────── -->
+  <div class="assets-table-wrapper">
+    <table class="assets-table">
+      <thead>
+        <tr>
+          <th class="col-check">
+            <input
+              type="checkbox"
+              class="row-check"
+              [checked]="isAllSelected()"
+              [indeterminate]="isSomeSelected()"
+              (click)="toggleSelectAll()"
+              title="Seleziona tutto"
+            />
+          </th>
+          <th
+            class="col-hostname sortable"
+            [class.sort-asc]="sortField() === 'hostname' && sortDir() === 'asc'"
+            [class.sort-desc]="
+              sortField() === 'hostname' && sortDir() === 'desc'
+            "
+            (click)="sortBy('hostname')"
+          >
+            Hostname
+          </th>
+          <th
+            class="col-model sortable"
+            [class.sort-asc]="
+              sortField() === 'model__name' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'model__name' && sortDir() === 'desc'
+            "
+            (click)="sortBy('model__name')"
+          >
+            Apparato
+          </th>
+          <th
+            class="col-vendor sortable"
+            [class.sort-asc]="
+              sortField() === 'model__vendor__name' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'model__vendor__name' && sortDir() === 'desc'
+            "
+            (click)="sortBy('model__vendor__name')"
+          >
+            Vendor
+          </th>
+          <th
+            class="col-type sortable"
+            [class.sort-asc]="
+              sortField() === 'model__type__name' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'model__type__name' && sortDir() === 'desc'
+            "
+            (click)="sortBy('model__type__name')"
+          >
+            Tipo
+          </th>
+          <th
+            class="col-state sortable"
+            [class.sort-asc]="
+              sortField() === 'state__name' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'state__name' && sortDir() === 'desc'
+            "
+            (click)="sortBy('state__name')"
+          >
+            Stato
+          </th>
+          <th
+            class="col-serial sortable"
+            [class.sort-asc]="
+              sortField() === 'serial_number' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'serial_number' && sortDir() === 'desc'
+            "
+            (click)="sortBy('serial_number')"
+          >
+            Seriale
+          </th>
+          <th
+            class="col-updated sortable"
+            [class.sort-asc]="
+              sortField() === 'updated_at' && sortDir() === 'asc'
+            "
+            [class.sort-desc]="
+              sortField() === 'updated_at' && sortDir() === 'desc'
+            "
+            (click)="sortBy('updated_at')"
+          >
+            Aggiornato
+          </th>
+          <th class="col-expand"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- Loading skeleton -->
+        @if (listState().status === "loading") {
+          @for (i of skeletonRows; track i) {
+            <tr class="skeleton-row">
+              <td></td>
+              <td><span class="skel skel--hostname"></span></td>
+              <td><span class="skel skel--model"></span></td>
+              <td><span class="skel skel--vendor"></span></td>
+              <td><span class="skel skel--type"></span></td>
+              <td><span class="skel skel--state"></span></td>
+              <td><span class="skel skel--serial"></span></td>
+              <td><span class="skel skel--date"></span></td>
+              <td></td>
+            </tr>
+          }
+        }
+
+        <!-- Error -->
+        @if (listState().status === "error") {
+          <tr>
+            <td colspan="8" class="empty-cell">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="9"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M12 8v4M12 16h.01"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <span>Errore nel caricamento degli asset</span>
+                <button class="btn-retry" (click)="resetFilters()">
+                  Riprova
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+
+        <!-- Data rows -->
+        @if (listState().status === "loaded") {
+          @if (assets().length === 0) {
+            <tr>
+              <td colspan="8" class="empty-cell">
+                <div class="empty-state">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <rect
+                      x="3"
+                      y="6"
+                      width="18"
+                      height="13"
+                      rx="2"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  <span>Nessun asset trovato</span>
+                </div>
+              </td>
+            </tr>
+          }
+
+          @for (asset of assets(); track asset.id) {
+            <!-- Main row -->
+            <tr
+              class="asset-row"
+              [class.asset-row--expanded]="expandedId() === asset.id"
+              [class.asset-row--selected]="selectedIds().has(asset.id)"
+              (click)="toggleExpand(asset.id)"
+            >
+              <td class="col-check" (click)="toggleSelectRow(asset.id, $event)">
+                <input
+                  type="checkbox"
+                  class="row-check"
+                  [checked]="selectedIds().has(asset.id)"
+                  (click)="toggleSelectRow(asset.id, $event)"
+                />
+              </td>
+              <td class="col-hostname">
+                <span class="hostname">{{ asset.hostname || "—" }}</span>
+              </td>
+              <td class="col-model">
+                <span class="model-name">{{ asset.model.name || "—" }}</span>
+                <span class="rack-units">{{ asset.model.rack_units }}U</span>
+              </td>
+              <td class="col-vendor">{{ asset.model.vendor.name }}</td>
+              <td class="col-type">
+                <span class="type-chip">{{ asset.model.type.name }}</span>
+              </td>
+              <td class="col-state">
+                <span
+                  class="state-badge"
+                  [attr.data-color]="stateColor(asset.state.name)"
+                  (click)="openStatePicker(asset.id, $event)"
+                  title="Clicca per cambiare stato"
+                  >{{ asset.state.name }}</span
+                >
+              </td>
+              <td class="col-serial">
+                <span class="mono">{{ asset.serial_number || "—" }}</span>
+              </td>
+              <td class="col-updated">
+                <span [title]="formatDate(asset.updated_at)">
+                  {{ relativeDate(asset.updated_at) }}
+                </span>
+              </td>
+              <td class="col-expand">
+                <svg
+                  class="chevron"
+                  [class.chevron--open]="expandedId() === asset.id"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    d="M4 6l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </td>
+            </tr>
+
+            <!-- Expanded detail row -->
+            @if (expandedId() === asset.id) {
+              <tr class="detail-row">
+                <td colspan="8">
+                  <app-asset-row-detail
+                    [asset]="asset"
+                    [today]="today"
+                    [deleteConfirmId]="deleteConfirmId()"
+                    [deleteSaveState]="deleteSaveState()"
+                    (deleteRequested)="requestDelete($event)"
+                    (deleteConfirmed)="confirmDelete($event)"
+                    (deleteCancelled)="cancelDelete()"
+                  />
+                </td>
+              </tr>
+            }
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Pagination ──────────────────────────────────────────────────────── -->
+  @if (listState().status === "loaded" && totalPages() > 1) {
+    <div class="pagination">
+      <button
+        class="page-btn"
+        [disabled]="params().page === 1"
+        (click)="goToPage(params().page - 1)"
+        title="Pagina precedente"
+      >
+        ‹
+      </button>
+
+      <span class="page-info">
+        {{ startIndex() }}–{{ endIndex() }} di {{ totalCount() | number }}
+      </span>
+
+      <button
+        class="page-btn"
+        [disabled]="params().page === totalPages()"
+        (click)="goToPage(params().page + 1)"
+        title="Pagina successiva"
+      >
+        ›
+      </button>
+    </div>
+  }
+</div>
+
+<!-- ── State picker overlay ────────────────────────────────────────────── -->
+@if (statePickerAssetId() !== null) {
+  <app-asset-state-picker
+    [states]="availableStates()"
+    [x]="statePickerX()"
+    [y]="statePickerY()"
+    [editState]="stateEditState()"
+    (picked)="pickState($event)"
+    (closed)="closeStatePicker()"
+  />
+}
+
+<!-- ── Create asset drawer ─────────────────────────────────────────────── -->
+@if (createDrawerOpen()) {
+  <app-asset-create-drawer
+    [availableStates]="availableStates()"
+    [availableModels]="availableModels()"
+    (saved)="onDrawerSaved()"
+    (cancelled)="closeCreateDrawer()"
+  />
+}
+
+<!-- ── Bulk state picker overlay ────────────────────────────────────────── -->
+@if (bulkPickerOpen()) {
+  <app-asset-state-picker
+    [states]="availableStates()"
+    [x]="bulkPickerX()"
+    [y]="bulkPickerY()"
+    [editState]="bulkEditState()"
+    [bulkCount]="selectedCount()"
+    (picked)="bulkPickState($event)"
+    (closed)="closeBulkPicker()"
+  />
+}

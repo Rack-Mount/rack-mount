@@ -15,10 +15,12 @@ import { HeaderComponent } from './modules/core/components/header/header.compone
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
 import { TabService } from './modules/core/services/tab.service';
-import { AssetsListComponent } from './modules/data-center/components/assets-list/assets-list.component';
-import { PanelTab } from './modules/data-center/components/detail-panel/detail-panel.types';
-import { MapComponent } from './modules/data-center/components/map/map.component';
-import { RackComponent } from './modules/data-center/components/rack/rack.component';
+import { AssetsListComponent } from './modules/data-center/components/assets/assets-list/assets-list.component';
+import { PanelTab } from './modules/data-center/components/assets/detail-panel/detail-panel.types';
+import { ModelsListComponent } from './modules/data-center/components/catalog/models-list/models-list.component';
+import { VendorsListComponent } from './modules/data-center/components/catalog/vendors-list/vendors-list.component';
+import { MapComponent } from './modules/data-center/components/infrastructure/map/map.component';
+import { RackComponent } from './modules/data-center/components/infrastructure/rack/rack.component';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +32,8 @@ import { RackComponent } from './modules/data-center/components/rack/rack.compon
     RackComponent,
     NotFoundComponent,
     AssetsListComponent,
+    VendorsListComponent,
+    ModelsListComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -156,6 +160,12 @@ export class AppComponent implements OnInit {
     } else if (segments[0]?.path === 'assets') {
       this.tabService.ensureAssetsTab();
       this.activeTabId.set('assets');
+    } else if (segments[0]?.path === 'vendors') {
+      this.tabService.ensureVendorsTab();
+      this.activeTabId.set('vendors');
+    } else if (segments[0]?.path === 'models') {
+      this.tabService.ensureModelsTab();
+      this.activeTabId.set('models');
     } else if (segments[0]?.path === 'not-found') {
       this.activeTabId.set('not-found');
     } else {
@@ -199,6 +209,14 @@ export class AppComponent implements OnInit {
     }
     if (tabId === 'assets') {
       this.router.navigate(['/assets']);
+      return;
+    }
+    if (tabId === 'vendors') {
+      this.router.navigate(['/vendors']);
+      return;
+    }
+    if (tabId === 'models') {
+      this.router.navigate(['/models']);
       return;
     }
     if (tabId.startsWith('room-')) {

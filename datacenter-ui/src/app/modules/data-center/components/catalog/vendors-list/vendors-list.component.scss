@@ -1,0 +1,335 @@
+// ── Variables ──────────────────────────────────────────────────────────────
+$bg-base: #0b1120;
+$bg-surface: #131c2e;
+$bg-row: #111827;
+$bg-row-hover: #1a2540;
+$border: rgba(255, 255, 255, 0.07);
+$border-strong: rgba(255, 255, 255, 0.13);
+$accent: #3b82f6;
+$danger: #ef4444;
+$text-primary: #e2e8f0;
+$text-secondary: #94a3b8;
+$text-muted: #475569;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: $bg-base;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  color: $text-primary;
+}
+
+// ── Toolbar ────────────────────────────────────────────────────────────────
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  background: $bg-surface;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// ── Search ─────────────────────────────────────────────────────────────────
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    width: 16px;
+    height: 16px;
+    color: $text-muted;
+    pointer-events: none;
+  }
+
+  .search-input {
+    background: $bg-row;
+    border: 1px solid $border-strong;
+    border-radius: 8px;
+    color: $text-primary;
+    font-size: 0.85rem;
+    padding: 7px 30px 7px 32px;
+    width: 240px;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &::placeholder { color: $text-muted; }
+    &:focus { border-color: $accent; box-shadow: 0 0 0 2px rgba(59,130,246,.2); }
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    color: $text-muted;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 2px;
+    &:hover { color: $text-primary; }
+  }
+}
+
+.count-badge {
+  font-size: 0.78rem;
+  color: $text-secondary;
+  background: rgba(255,255,255,.06);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.btn-new {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: $accent;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.83rem;
+  font-weight: 500;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  svg { width: 14px; height: 14px; }
+  &:hover { background: #2563eb; }
+}
+
+// ── Table wrap ─────────────────────────────────────────────────────────────
+.table-wrap {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 20px 20px;
+}
+
+.state-full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 0;
+  color: $text-secondary;
+  font-size: 0.9rem;
+
+  &--error { color: #f87171; }
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid $border-strong;
+  border-top-color: $accent;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── Data table ─────────────────────────────────────────────────────────────
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.875rem;
+
+  thead tr {
+    border-bottom: 1px solid $border-strong;
+  }
+
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    color: $text-secondary;
+    font-weight: 500;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .col-name { width: 100%; }
+  .col-actions { width: 120px; }
+}
+
+// ── Sortable headers ──────────────────────────────────────────────────
+.th-sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  .sort-arrow {
+    display: inline-block;
+    margin-left: 4px;
+    opacity: 0.35;
+    font-size: 0.75rem;
+    transition: opacity 0.15s, color 0.15s;
+  }
+
+  &:hover {
+    color: $text-primary;
+    .sort-arrow { opacity: 0.6; }
+  }
+
+  &--asc,
+  &--desc {
+    color: $text-primary;
+    .sort-arrow { opacity: 1; color: $accent; }
+  }
+}
+
+.row-data {
+  border-bottom: 1px solid $border;
+  transition: background 0.1s;
+
+  &:hover { background: $bg-row-hover; }
+  &--deleting { background: rgba(239, 68, 68, 0.07); }
+
+  td { padding: 10px 14px; }
+}
+
+.cell-name {
+  color: $text-primary;
+  font-weight: 500;
+}
+
+// ── Inline edit row ────────────────────────────────────────────────────────
+.row-edit td {
+  padding: 8px 14px;
+  border-bottom: 1px solid $border;
+  background: rgba(59,130,246,.06);
+}
+
+.inline-input {
+  background: $bg-row;
+  border: 1px solid $accent;
+  border-radius: 6px;
+  color: $text-primary;
+  font-size: 0.875rem;
+  padding: 6px 10px;
+  width: 100%;
+  max-width: 360px;
+  outline: none;
+
+  &:focus { box-shadow: 0 0 0 2px rgba(59,130,246,.25); }
+}
+
+.inline-error {
+  font-size: 0.75rem;
+  color: #f87171;
+  margin-left: 8px;
+}
+
+// ── Actions ────────────────────────────────────────────────────────────────
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: $text-muted;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+
+  svg { width: 14px; height: 14px; }
+
+  &--edit:hover  { background: rgba(59,130,246,.15); color: $accent; }
+  &--delete:hover { background: rgba(239,68,68,.15); color: $danger; }
+}
+
+.btn-action {
+  border: 1px solid $border-strong;
+  background: transparent;
+  border-radius: 6px;
+  color: $text-secondary;
+  font-size: 0.78rem;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+
+  &:hover:not(:disabled) { background: rgba(255,255,255,.07); color: $text-primary; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  &--save {
+    background: $accent;
+    border-color: $accent;
+    color: #fff;
+    &:hover:not(:disabled) { background: #2563eb; }
+  }
+
+  &--danger {
+    background: $danger;
+    border-color: $danger;
+    color: #fff;
+    &:hover:not(:disabled) { background: #dc2626; }
+  }
+}
+
+.delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.delete-label {
+  font-size: 0.8rem;
+  color: $danger;
+}
+
+// ── Empty row ──────────────────────────────────────────────────────────────
+.empty-row {
+  text-align: center;
+  padding: 40px 0 !important;
+  color: $text-muted;
+  font-size: 0.875rem;
+}
+
+// ── Pagination ─────────────────────────────────────────────────────────────
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 0;
+  justify-content: center;
+}
+
+.page-btn {
+  background: $bg-surface;
+  border: 1px solid $border-strong;
+  border-radius: 6px;
+  color: $text-secondary;
+  font-size: 0.82rem;
+  min-width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+
+  &:hover:not(:disabled) { background: $bg-row-hover; color: $text-primary; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+  &--active { background: $accent; border-color: $accent; color: #fff; }
+}

@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Subject } from 'rxjs';
-import { PanelTab } from '../../data-center/components/detail-panel/detail-panel.types';
+import { PanelTab } from '../../data-center/components/assets/detail-panel/detail-panel.types';
 
 const LS_TABS_KEY = 'dc:tabs';
 
@@ -122,6 +122,48 @@ export class TabService {
     if (this.upsertAssetsTab()) {
       this.persistTabs();
     }
+  }
+
+  // ── Vendors tab ─────────────────────────────────────────
+
+  private upsertVendorsTab(): boolean {
+    if (this._tabs().some((t) => t.id === 'vendors')) return false;
+    this._tabs.update((tabs) => [
+      { id: 'vendors', label: 'Vendor', type: 'vendors', pinned: false },
+      ...tabs,
+    ]);
+    return true;
+  }
+
+  openVendors(): void {
+    this.upsertVendorsTab();
+    this.persistTabs();
+    this._activate$.next('vendors');
+  }
+
+  ensureVendorsTab(): void {
+    if (this.upsertVendorsTab()) this.persistTabs();
+  }
+
+  // ── Models tab ──────────────────────────────────────────
+
+  private upsertModelsTab(): boolean {
+    if (this._tabs().some((t) => t.id === 'models')) return false;
+    this._tabs.update((tabs) => [
+      { id: 'models', label: 'Apparati', type: 'models', pinned: false },
+      ...tabs,
+    ]);
+    return true;
+  }
+
+  openModels(): void {
+    this.upsertModelsTab();
+    this.persistTabs();
+    this._activate$.next('models');
+  }
+
+  ensureModelsTab(): void {
+    if (this.upsertModelsTab()) this.persistTabs();
   }
 
   reportRackNotFound(rackName: string): void {
