@@ -9,6 +9,8 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+from drf_spectacular.types import OpenApiTypes
 
 from asset.models import Asset
 from asset.views.AssetViewSet import AssetFilter
@@ -78,6 +80,15 @@ class AssetExportView(APIView):
             queryset = backend().filter_queryset(self.request, queryset, self)
         return queryset
 
+    @extend_schema(
+        summary='Export assets as Excel (.xlsx)',
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description='Excel spreadsheet download',
+            ),
+        },
+    )
     def get(self, request):
         qs = self.get_queryset()
 

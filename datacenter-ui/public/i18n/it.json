@@ -199,7 +199,11 @@
     "stat_used": "Occupate",
     "stat_free": "Libere",
     "stat_power": "Potenza",
-    "stat_ampere": "Corrente"
+    "stat_ampere": "Corrente",
+    "delete_confirm_title": "Elimina rack",
+    "delete_confirm_msg": "Eliminare il rack \"{{name}}\"?",
+    "delete_has_devices": "Il rack \"{{name}}\" contiene apparati installati — rimuoverli prima di eliminarlo.",
+    "delete_error_msg": "Impossibile eliminare il rack \"{{name}}\"."
   },
   "rack_table": {
     "installed": "Apparati installati",

@@ -199,7 +199,11 @@
     "stat_used": "Belegt",
     "stat_free": "Frei",
     "stat_power": "Leistung",
-    "stat_ampere": "Strom"
+    "stat_ampere": "Strom",
+    "delete_confirm_title": "Rack löschen",
+    "delete_confirm_msg": "Rack \"{{name}}\" löschen?",
+    "delete_has_devices": "Rack \"{{name}}\" enthält installierte Geräte — entfernen Sie diese vor dem Löschen.",
+    "delete_error_msg": "Rack \"{{name}}\" kann nicht gelöscht werden."
   },
   "rack_table": {
     "installed": "Installierte Geräte",

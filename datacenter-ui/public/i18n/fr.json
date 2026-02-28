@@ -199,7 +199,11 @@
     "stat_used": "Occupées",
     "stat_free": "Disponibles",
     "stat_power": "Puissance",
-    "stat_ampere": "Courant"
+    "stat_ampere": "Courant",
+    "delete_confirm_title": "Supprimer la baie",
+    "delete_confirm_msg": "Supprimer la baie \"{{name}}\" ?",
+    "delete_has_devices": "La baie \"{{name}}\" contient des équipements installés — retirez-les avant de la supprimer.",
+    "delete_error_msg": "Impossible de supprimer la baie \"{{name}}\"."
   },
   "rack_table": {
     "installed": "Équipements installés",

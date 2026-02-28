@@ -199,7 +199,11 @@
     "stat_used": "Used",
     "stat_free": "Free",
     "stat_power": "Power",
-    "stat_ampere": "Current"
+    "stat_ampere": "Current",
+    "delete_confirm_title": "Delete rack",
+    "delete_confirm_msg": "Delete rack \"{{name}}\"?",
+    "delete_has_devices": "Rack \"{{name}}\" has installed devices — remove them before deleting.",
+    "delete_error_msg": "Cannot delete rack \"{{name}}\"."
   },
   "rack_table": {
     "installed": "Installed devices",

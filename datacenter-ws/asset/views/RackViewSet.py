@@ -1,8 +1,9 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework import filters
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from asset.serializers import RackSerializer
-from asset.models import Rack
+from asset.models import Rack, RackUnit
 from asset.paginations import StandardResultsSetPagination
 
 
@@ -32,3 +33,12 @@ class RackViewSet(viewsets.ModelViewSet):
     ordering = ['name']
     filterset_fields = ['name', 'room']
     lookup_field = 'name'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if RackUnit.objects.filter(rack=instance, device__isnull=False).exists():
+            return Response(
+                {'detail': 'Rack has installed devices — remove them before deleting.'},
+                status=status.HTTP_409_CONFLICT,
+            )
+        return super().destroy(request, *args, **kwargs)

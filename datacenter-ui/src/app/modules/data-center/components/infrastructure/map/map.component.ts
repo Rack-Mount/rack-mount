@@ -1,4 +1,5 @@
 import { DecimalPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -13,6 +14,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 import { AssetService } from '../../../../core/api/v1/api/asset.service';
 import { LocationService } from '../../../../core/api/v1/api/location.service';
@@ -72,6 +74,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly tabService = inject(TabService);
   readonly settingsService = inject(SettingsService);
   private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly translate = inject(TranslateService);
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -2187,8 +2190,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         if (el?.type === 'rack') {
           const rackName = el.rackName ?? el.id;
           const confirmed = await this.confirmDialog.confirm(
-            `Eliminare il rack "${rackName}"?`,
-            { title: 'Elimina rack', confirmLabel: 'Elimina', danger: true },
+            this.translate.instant('rack.delete_confirm_msg', {
+              name: rackName,
+            }),
+            {
+              title: this.translate.instant('rack.delete_confirm_title'),
+              confirmLabel: this.translate.instant('common.delete'),
+              danger: true,
+            },
           );
           if (!confirmed) return;
           const deletedId = this.selectedElementId;
@@ -2202,11 +2211,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
               this.scheduleAutosave();
               this.cdr.markForCheck();
             },
-            error: (err) => {
-              console.error("Errore durante l'eliminazione del rack:", err);
+            error: (err: HttpErrorResponse) => {
+              const msg =
+                err.status === 409
+                  ? this.translate.instant('rack.delete_has_devices', {
+                      name: rackName,
+                    })
+                  : this.translate.instant('rack.delete_error_msg', {
+                      name: rackName,
+                    });
               this.confirmDialog.alert(
-                `Impossibile eliminare il rack "${rackName}".`,
-                'Errore',
+                msg,
+                this.translate.instant('common.error'),
               );
             },
           });

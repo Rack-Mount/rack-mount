@@ -408,11 +408,11 @@ export interface AssetServiceInterface {
     assetAssetDestroy(requestParameters: AssetAssetDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * 
+     * Export assets as Excel (.xlsx)
      * GET /asset/export Accepts the same filters as AssetViewSet (search, state, model__type, ordering, ids). Returns an .xlsx file.
      * @endpoint get /asset/asset/export
 */
-    assetAssetExportRetrieve(extraHttpRequestParams?: any): Observable<{}>;
+    assetAssetExportRetrieve(extraHttpRequestParams?: any): Observable<Blob>;
 
     /**
      * 

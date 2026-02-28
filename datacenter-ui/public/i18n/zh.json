@@ -199,7 +199,11 @@
     "stat_used": "已使用",
     "stat_free": "空闲",
     "stat_power": "功率",
-    "stat_ampere": "电流"
+    "stat_ampere": "电流",
+    "delete_confirm_title": "删除机柜",
+    "delete_confirm_msg": "删除机柜 \"{{name}}\" ？",
+    "delete_has_devices": "机柜 \"{{name}}\" 中有已安装的设备 — 请先将其移除再删除机柜。",
+    "delete_error_msg": "无法删除机柜 \"{{name}}\"。"
   },
   "rack_table": {
     "installed": "已安装设备",
