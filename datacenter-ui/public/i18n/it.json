@@ -294,6 +294,7 @@
     "deleting": "Eliminazione\u2026",
     "confirm_delete": "Conferma eliminazione",
     "cancel": "Annulla",
-    "delete_error": "Errore — riprova"
+    "delete_error": "Errore — riprova",
+    "delete_mounted": "Apparato montato su rack — rimuoverlo prima di eliminarlo"
   }
 }

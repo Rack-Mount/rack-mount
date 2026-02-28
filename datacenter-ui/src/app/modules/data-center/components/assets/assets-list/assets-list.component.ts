@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -70,9 +70,7 @@ export class AssetsListComponent {
 
   // ── Delete confirmation ────────────────────────────────────────────────────
   protected readonly deleteConfirmId = signal<number | null>(null);
-  protected readonly deleteSaveState = signal<'idle' | 'saving' | 'error'>(
-    'idle',
-  );
+  protected readonly deleteSaveState = signal<'idle' | 'saving' | 'error' | 'mounted'>('idle');
 
   // ── Filter params (single signal for reactivity) ──────────────────────────
   protected readonly params = signal({
@@ -519,7 +517,11 @@ export class AssetsListComponent {
             };
           });
         },
-        error: () => this.deleteSaveState.set('error'),
+        error: (err: HttpErrorResponse) => {
+          this.deleteSaveState.set(
+            err.status === 409 ? 'mounted' : 'error',
+          );
+        },
       });
   }
 

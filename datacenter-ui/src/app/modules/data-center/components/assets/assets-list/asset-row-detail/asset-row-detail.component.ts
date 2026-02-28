@@ -19,7 +19,7 @@ export class AssetRowDetailComponent {
   readonly asset = input.required<Asset>();
   readonly today = input.required<string>();
   readonly deleteConfirmId = input<number | null>(null);
-  readonly deleteSaveState = input<'idle' | 'saving' | 'error'>('idle');
+  readonly deleteSaveState = input<'idle' | 'saving' | 'error' | 'mounted'>('idle');
 
   readonly deleteRequested = output<number>();
   readonly deleteConfirmed = output<number>();

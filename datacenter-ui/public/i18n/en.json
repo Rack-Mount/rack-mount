@@ -294,6 +294,7 @@
     "deleting": "Deleting\u2026",
     "confirm_delete": "Confirm delete",
     "cancel": "Cancel",
-    "delete_error": "Error — try again"
+    "delete_error": "Error — try again",
+    "delete_mounted": "Asset mounted on rack — uninstall it before deleting"
   }
 }

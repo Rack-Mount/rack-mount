@@ -141,6 +141,12 @@
         {{ "asset_row.delete_btn" | translate }}
       </button>
     } @else {
+      @if (deleteSaveState() === 'mounted') {
+        <span class="delete-error">{{ "asset_row.delete_mounted" | translate }}</span>
+        <button class="btn-delete-cancel" (click)="onDeleteCancel($event)">
+          {{ "asset_row.cancel" | translate }}
+        </button>
+      } @else {
       <span class="delete-confirm-text">{{
         "asset_row.delete_confirm_msg" | translate
       }}</span>
@@ -162,6 +168,7 @@
         <span class="delete-error">{{
           "asset_row.delete_error" | translate
         }}</span>
+      }
       }
     }
   </div>

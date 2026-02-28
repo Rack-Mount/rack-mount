@@ -405,7 +405,7 @@ $text-muted: var(--dc-text-muted);
   &:hover {
     background: var(--dc-accent-dim);
     border-color: var(--dc-text-primary);
-    color: var(--dc-text-primary);
+    color: var(--dc-accent);
   }
 }
 
@@ -824,19 +824,22 @@ $text-muted: var(--dc-text-muted);
   align-items: center;
   gap: 6px;
   background: var(--dc-accent-dim);
-  border: 1px solid var(--dc-border-detail);
+  border: 1px solid rgba(96, 165, 250, 0.3);
   border-radius: 7px;
-  color: var(--dc-accent);
+  color: var(--dc-accent-text);
   font-size: 0.82rem;
   padding: 5px 12px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   svg {
     width: 13px;
     height: 13px;
   }
   &:hover {
-    filter: brightness(1.1);
+    background: rgba(96, 165, 250, 0.22);
+    border-color: rgba(96, 165, 250, 0.55);
   }
 }
 

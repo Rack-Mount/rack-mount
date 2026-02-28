@@ -54,13 +54,9 @@
 
   // ── Accent / Status ───────────────────────────────────────────────────────
   --dc-accent: #2e2e2e;
+  --dc-accent-text: #60a5fa;
   --dc-accent-hover: #2563eb;
-  --dc-accent-dim: rgba(59, 130, 246, 0.15);
   --dc-danger: #ef4444;
-  --dc-danger-text: #f87171;
-  --dc-danger-bg: rgba(239, 68, 68, 0.12);
-  --dc-danger-border: rgba(239, 68, 68, 0.28);
-  --dc-danger-bg-hover: rgba(239, 68, 68, 0.22);
   --dc-close-hover-bg: rgba(220, 53, 69, 0.25);
   --dc-close-hover-color: #ff6b6b;
 
@@ -215,8 +211,8 @@
 
   // ── Accent / Status ───────────────────────────────────────────────────────
   --dc-accent: #2e2e2e;
+  --dc-accent-text: #2563eb;
   --dc-accent-hover: #1d4ed8;
-  --dc-accent-dim: rgba(37, 99, 235, 0.12);
   --dc-danger: #dc2626;
   --dc-danger-text: #dc2626;
   --dc-danger-bg: rgba(220, 38, 38, 0.08);

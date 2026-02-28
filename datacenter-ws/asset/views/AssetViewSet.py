@@ -2,7 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from asset.serializers import AssetSerializer
-from asset.models import Asset
+from asset.models import Asset, RackUnit
 from rest_framework import filters
 from django_filters import rest_framework as df_filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -58,6 +58,15 @@ class AssetViewSet(viewsets.ModelViewSet):
         'state__name',
     ]
     ordering = ['hostname']
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if RackUnit.objects.filter(device=instance).exists():
+            return Response(
+                {"detail": "asset_mounted", "code": "mounted"},
+                status=status.HTTP_409_CONFLICT,
+            )
+        return super().destroy(request, *args, **kwargs)
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     @action(detail=False, methods=['patch'], url_path='bulk_state')
