@@ -68,7 +68,9 @@
     background: var(--dc-success-bg);
     color: var(--dc-success-text);
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    transition:
+      background 0.15s,
+      border-color 0.15s;
 
     &:hover:not(:disabled) {
       background: var(--dc-success-bg-hover);

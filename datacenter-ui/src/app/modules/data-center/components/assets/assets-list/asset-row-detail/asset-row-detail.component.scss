@@ -102,7 +102,9 @@ $text-muted: var(--dc-text-muted);
   background: var(--dc-danger-bg);
   color: var(--dc-danger-text);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 
   svg {
     width: 13px;
@@ -130,7 +132,9 @@ $text-muted: var(--dc-text-muted);
   color: var(--dc-danger-text);
   cursor: pointer;
   font-weight: 500;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 
   &:hover:not(:disabled) {
     background: var(--dc-danger-bg-hover);

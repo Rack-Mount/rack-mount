@@ -690,7 +690,9 @@ $text-muted: var(--dc-text-muted);
   font-weight: 500;
   padding: 8px 20px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   &:hover:not(:disabled) {
     background: var(--dc-action-bg-hover);
   }
