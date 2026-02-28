@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   catchError,
   concat,
@@ -42,6 +42,7 @@ export class VendorsListComponent {
   private readonly svc = inject(AssetService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
+  private readonly translate = inject(TranslateService);
 
   // ── Search ────────────────────────────────────────────────────────────────
   protected readonly search = signal('');
@@ -88,6 +89,7 @@ export class VendorsListComponent {
   // ── Delete confirmation ───────────────────────────────────────────────────
   protected readonly deleteId = signal<number | null>(null);
   protected readonly deleteSave = signal<SaveState>('idle');
+  protected readonly deleteErrorMsg = signal('');
 
   constructor() {
     // Debounce search → reset page
@@ -250,6 +252,7 @@ export class VendorsListComponent {
   protected confirmDelete(id: number): void {
     this.deleteId.set(id);
     this.deleteSave.set('idle');
+    this.deleteErrorMsg.set('');
   }
 
   protected cancelDelete(): void {
@@ -276,7 +279,14 @@ export class VendorsListComponent {
             };
           });
         },
-        error: () => this.deleteSave.set('error'),
+        error: (err: HttpErrorResponse) => {
+          this.deleteSave.set('error');
+          this.deleteErrorMsg.set(
+            err.status === 409
+              ? this.translate.instant('vendors.in_use')
+              : this.backendErr.parse(err),
+          );
+        },
       });
   }
 

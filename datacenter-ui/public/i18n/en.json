@@ -48,7 +48,8 @@
     "name_placeholder": "Vendor name",
     "no_match": "No vendor matches the search.",
     "no_data": "No vendors found. Create one.",
-    "confirm_delete": "Delete?"
+    "confirm_delete": "Delete?",
+    "in_use": "Vendor in use — has linked models"
   },
   "models": {
     "search_placeholder": "Search device…",

@@ -177,23 +177,30 @@
                 <td class="actions">
                   @if (deleteId() === v.id) {
                     <span class="delete-confirm">
-                      <span class="delete-label">{{
-                        "vendors.confirm_delete" | translate
-                      }}</span>
-                      <button
-                        class="btn-action btn-action--danger"
-                        [disabled]="deleteSave() === 'saving'"
-                        (click)="submitDelete()"
-                      >
-                        @if (deleteSave() === "saving") {
-                          …
-                        } @else {
-                          {{ "common.delete" | translate }}
-                        }
-                      </button>
-                      <button class="btn-action" (click)="cancelDelete()">
-                        {{ "common.cancel" | translate }}
-                      </button>
+                      @if (deleteSave() === "error") {
+                        <span class="delete-error">{{ deleteErrorMsg() }}</span>
+                        <button class="btn-action" (click)="cancelDelete()">
+                          {{ "common.cancel" | translate }}
+                        </button>
+                      } @else {
+                        <span class="delete-label">{{
+                          "vendors.confirm_delete" | translate
+                        }}</span>
+                        <button
+                          class="btn-action btn-action--danger"
+                          [disabled]="deleteSave() === 'saving'"
+                          (click)="submitDelete()"
+                        >
+                          @if (deleteSave() === "saving") {
+                            …
+                          } @else {
+                            {{ "common.delete" | translate }}
+                          }
+                        </button>
+                        <button class="btn-action" (click)="cancelDelete()">
+                          {{ "common.cancel" | translate }}
+                        </button>
+                      }
                     </span>
                   } @else {
                     <button

@@ -32,7 +32,7 @@ class AssetModel(models.Model):
     """
     name = models.CharField(max_length=100, default='', null=False)
     vendor = models.ForeignKey(
-        Vendor, on_delete=models.CASCADE, related_name='asset_vendor')
+        Vendor, on_delete=models.PROTECT, related_name='asset_vendor')
     type = models.ForeignKey(
         AssetType, on_delete=models.CASCADE, related_name='asset_type')
     rack_units = models.PositiveIntegerField(

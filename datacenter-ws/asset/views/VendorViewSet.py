@@ -1,4 +1,6 @@
-from rest_framework import viewsets, filters
+from django.db.models import ProtectedError
+from rest_framework import viewsets, filters, status
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from asset.serializers import VendorSerializer
 from asset.models import Vendor
@@ -18,3 +20,12 @@ class VendorViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name']
     filterset_fields = ['name']
     search_fields = ['name']
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            return super().destroy(request, *args, **kwargs)
+        except ProtectedError:
+            return Response(
+                {"detail": "vendor_in_use"},
+                status=status.HTTP_409_CONFLICT,
+            )

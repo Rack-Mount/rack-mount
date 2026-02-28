@@ -396,6 +396,12 @@ $text-muted: var(--dc-text-muted);
   color: $danger;
 }
 
+.delete-error {
+  font-size: 0.78rem;
+  color: var(--dc-danger-text);
+  font-style: italic;
+}
+
 // ── Empty row ──────────────────────────────────────────────────────────────
 .empty-row {
   text-align: center;

@@ -48,7 +48,8 @@
     "name_placeholder": "Nome vendor",
     "no_match": "Nessun vendor corrisponde alla ricerca.",
     "no_data": "Nessun vendor trovato. Creane uno nuovo.",
-    "confirm_delete": "Eliminare?"
+    "confirm_delete": "Eliminare?",
+    "in_use": "Vendor in uso — ha modelli collegati"
   },
   "models": {
     "search_placeholder": "Cerca apparato…",
