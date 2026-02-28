@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { Asset } from '../model/models';
+import { AssetAssetAssetModelImportCreateRequest } from '../model/models';
 import { AssetCustomField } from '../model/models';
 import { AssetModel } from '../model/models';
 import { AssetState } from '../model/models';
@@ -42,6 +43,10 @@ import { Vendor } from '../model/models';
 
 import { Configuration }                                     from '../configuration';
 
+
+export interface AssetAssetAssetModelImportCreateRequestParams {
+    assetAssetAssetModelImportCreateRequest?: AssetAssetAssetModelImportCreateRequest;
+}
 
 export interface AssetAssetBulkStatePartialUpdateRequestParams {
     patchedAsset?: PatchedAsset;
@@ -334,6 +339,14 @@ export interface AssetVendorUpdateRequestParams {
 export interface AssetServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
+
+    /**
+     * Import an AssetModel from JSON (with optional base64 images)
+     * POST /asset/asset-model/import  Import an AssetModel from a JSON payload.  Accepts the same fields as the standard form, but &#x60;&#x60;vendor&#x60;&#x60; and &#x60;&#x60;type&#x60;&#x60; are provided as **name strings** (not IDs) and images are optional **Data URL (base64)** strings.  Request body (JSON): &#x60;&#x60;&#x60;json {   \&quot;name\&quot;: \&quot;PowerEdge R750\&quot;,   \&quot;vendor\&quot;: \&quot;Dell\&quot;,   \&quot;type\&quot;: \&quot;Server\&quot;,   \&quot;rack_units\&quot;: 2,   \&quot;note\&quot;: \&quot;...\&quot;,   \&quot;front_image\&quot;: \&quot;data:image/jpeg;base64,...\&quot;,   \&quot;rear_image\&quot;:  \&quot;data:image/jpeg;base64,...\&quot; } &#x60;&#x60;&#x60;  Responses: - 201: model created, returns AssetModelSerializer data. - 400: missing/invalid fields. - 409: a model with the same (name, vendor, type) already exists.
+     * @endpoint post /asset/asset/asset-model/import
+* @param requestParameters
+     */
+    assetAssetAssetModelImportCreate(requestParameters: AssetAssetAssetModelImportCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
 
     /**
      * 

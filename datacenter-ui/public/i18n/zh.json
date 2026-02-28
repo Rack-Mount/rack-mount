@@ -94,7 +94,12 @@
     "upload_img": "上传图片…",
     "remove_img": "删除图片",
     "save_error": "保存时出错，请重试。",
-    "saving_form": "保存中…"
+    "saving_form": "保存中…",
+    "import_btn": "导入 JSON",
+    "import_success": "型号导入成功。",
+    "import_conflict": "相同名称、厂商及类型的型号已存在。",
+    "import_error": "导入时出错。",
+    "import_bad_format": "JSON 格式无效。"
   },
   "assets": {
     "search_placeholder": "搜索主机名、序列号、SAP…",

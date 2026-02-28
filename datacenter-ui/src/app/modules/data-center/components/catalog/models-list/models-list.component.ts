@@ -33,6 +33,7 @@ import { BackendErrorService } from '../../../../core/services/backend-error.ser
 const PAGE_SIZE = 50;
 
 type SaveState = 'idle' | 'saving' | 'error' | 'in_use';
+type ImportState = 'idle' | 'importing' | 'error' | 'conflict' | 'bad_format';
 type ListState =
   | { status: 'loading' }
   | { status: 'error' }
@@ -128,6 +129,9 @@ export class ModelsListComponent {
   // ── Delete ────────────────────────────────────────────────────────────────
   protected readonly deleteId = signal<number | null>(null);
   protected readonly deleteSave = signal<SaveState>('idle');
+
+  // ── Import ────────────────────────────────────────────────────────────────
+  protected readonly importState = signal<ImportState>('idle');
 
   constructor() {
     // Load reference data
@@ -434,4 +438,49 @@ export class ModelsListComponent {
     }
     return pages;
   });
+
+  // ── JSON Import ───────────────────────────────────────────────────────────
+  protected onImportJson(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      let payload: unknown;
+      try {
+        payload = JSON.parse(reader.result as string);
+      } catch {
+        this.importState.set('bad_format');
+        return;
+      }
+
+      this.importState.set('importing');
+      this.http
+        .post<AssetModel>(
+          `${environment.service_url}/asset/asset-model/import`,
+          payload,
+        )
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (saved) => {
+            this.importState.set('idle');
+            this.listState.update((s) => {
+              if (s.status !== 'loaded') return s;
+              return {
+                ...s,
+                results: [saved, ...s.results],
+                count: s.count + 1,
+              };
+            });
+            this.previewModel.set(saved);
+          },
+          error: (err: HttpErrorResponse) => {
+            this.importState.set(err.status === 409 ? 'conflict' : 'error');
+          },
+        });
+    };
+    reader.readAsText(file);
+  }
 }

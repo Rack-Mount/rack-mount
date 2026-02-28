@@ -94,7 +94,12 @@
     "upload_img": "Upload image\u2026",
     "remove_img": "Remove image",
     "save_error": "Error while saving. Please try again.",
-    "saving_form": "Saving\u2026"
+    "saving_form": "Saving…",
+    "import_btn": "Import JSON",
+    "import_success": "Model imported successfully.",
+    "import_conflict": "A model with this name, vendor and type already exists.",
+    "import_error": "Error during import.",
+    "import_bad_format": "Invalid JSON format."
   },
   "assets": {
     "search_placeholder": "Search hostname, serial, SAP…",

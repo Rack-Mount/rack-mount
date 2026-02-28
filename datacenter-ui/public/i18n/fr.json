@@ -94,7 +94,12 @@
     "upload_img": "Télécharger une image…",
     "remove_img": "Supprimer l'image",
     "save_error": "Erreur lors de l'enregistrement. Veuillez réessayer.",
-    "saving_form": "Enregistrement…"
+    "saving_form": "Enregistrement…",
+    "import_btn": "Importer JSON",
+    "import_success": "Modèle importé avec succès.",
+    "import_conflict": "Un modèle avec ce nom, ce fabricant et ce type existe déjà.",
+    "import_error": "Erreur lors de l'importation.",
+    "import_bad_format": "Format JSON invalide."
   },
   "assets": {
     "search_placeholder": "Rechercher hostname, numéro de série, SAP…",

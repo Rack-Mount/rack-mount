@@ -79,6 +79,46 @@
           "models.count_badge" | translate: { count: totalCount() }
         }}</span>
       }
+      @if (importState() === "error") {
+        <span class="import-msg import-msg--error">{{
+          "models.import_error" | translate
+        }}</span>
+      }
+      @if (importState() === "bad_format") {
+        <span class="import-msg import-msg--error">{{
+          "models.import_bad_format" | translate
+        }}</span>
+      }
+      @if (importState() === "conflict") {
+        <span class="import-msg import-msg--error">{{
+          "models.import_conflict" | translate
+        }}</span>
+      }
+      <label
+        class="btn-import"
+        [class.btn-import--busy]="importState() === 'importing'"
+      >
+        @if (importState() === "importing") {
+          <span class="spinner-xs"></span>
+        } @else {
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 13V3M4 9l4 4 4-4"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        }
+        {{ "models.import_btn" | translate }}
+        <input
+          type="file"
+          accept=".json,application/json"
+          class="file-input-hidden"
+          (change)="onImportJson($event)"
+        />
+      </label>
       <button class="btn-new" (click)="openCreate()">
         <svg viewBox="0 0 16 16" fill="none">
           <path
