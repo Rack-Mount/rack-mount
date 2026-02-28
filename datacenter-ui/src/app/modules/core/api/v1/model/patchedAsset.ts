@@ -12,13 +12,14 @@ import { AssetState } from './assetState';
 
 
 /**
- * Serializer for the Asset model.  This serializer uses HyperlinkedModelSerializer to serialize the Asset model with the following fields: - id: Read-only field representing the unique identifier of the asset. - model: Nested serializer for the asset model. - state: Nested serializer for the asset state.  Meta:     model: The model class that is being serialized.     fields: Specifies that all fields in the model should be included in the serialization.
+ * Serializer for the Asset model.  This serializer uses HyperlinkedModelSerializer to serialize the Asset model with the following fields: - id: Read-only field representing the unique identifier of the asset. - model: Nested serializer for the asset model (read-only). - state: Nested serializer for the asset state (read-only). - model_id: Write-only PK field for setting the model on create/update. - state_id: Write-only PK field for setting the state on create/update.  Meta:     model: The model class that is being serialized.     fields: Specifies that all fields in the model should be included in the serialization.
  */
 export interface PatchedAsset { 
     readonly url?: string;
     readonly id?: number;
-    model?: AssetModel;
-    state?: AssetState;
+    readonly model?: AssetModel;
+    readonly state?: AssetState;
+    model_id?: number;
     state_id?: number;
     hostname?: string;
     serial_number?: string;
