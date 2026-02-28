@@ -28,6 +28,7 @@ import {
   AssetType,
   Vendor,
 } from '../../../../core/api/v1';
+import { BackendErrorService } from '../../../../core/services/backend-error.service';
 
 const PAGE_SIZE = 50;
 
@@ -75,6 +76,7 @@ export class ModelsListComponent {
   private readonly svc = inject(AssetService);
   private readonly http = inject(HttpClient);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly backendErr = inject(BackendErrorService);
 
   // ── Reference data ────────────────────────────────────────────────────────
   protected readonly vendors = signal<Vendor[]>([]);
@@ -118,6 +120,7 @@ export class ModelsListComponent {
   protected readonly drawerEditId = signal<number | null>(null);
   protected readonly form = signal<ModelForm>(emptyForm());
   protected readonly drawerSave = signal<SaveState>('idle');
+  protected readonly drawerSaveMsg = signal('');
 
   // ── Preview ───────────────────────────────────────────────────────────────
   protected readonly previewModel = signal<AssetModel | null>(null);
@@ -236,6 +239,7 @@ export class ModelsListComponent {
   protected openCreate(): void {
     this.form.set(emptyForm());
     this.drawerSave.set('idle');
+    this.drawerSaveMsg.set('');
     this.drawerMode.set('create');
     this.drawerEditId.set(null);
     this.drawerOpen.set(true);
@@ -254,6 +258,7 @@ export class ModelsListComponent {
       rear_image_url: m.rear_image ?? null,
     });
     this.drawerSave.set('idle');
+    this.drawerSaveMsg.set('');
     this.drawerMode.set('edit');
     this.drawerEditId.set(m.id);
     this.drawerOpen.set(true);
@@ -368,7 +373,10 @@ export class ModelsListComponent {
           });
         }
       },
-      error: () => this.drawerSave.set('error'),
+      error: (err: HttpErrorResponse) => {
+        this.drawerSave.set('error');
+        this.drawerSaveMsg.set(this.backendErr.parse(err));
+      },
     });
   }
 

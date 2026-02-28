@@ -10,7 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   Subject,
   catchError,
@@ -58,6 +58,8 @@ export class RackInstallPanelComponent implements OnInit {
 
   /** Emitted when the user closes the panel without installing. */
   readonly closed = output<void>();
+
+  private readonly translate = inject(TranslateService);
   /** Emitted after a successful install; parent should refresh the rack. */
   readonly installed = output<void>();
 
@@ -154,7 +156,7 @@ export class RackInstallPanelComponent implements OnInit {
         error: () => {
           this._saving.set(false);
           this._error.set(
-            "Installazione non riuscita: verificare che la posizione sia libera e l'apparato non sia già installato.",
+            this.translate.instant('install_panel.install_error'),
           );
         },
       });

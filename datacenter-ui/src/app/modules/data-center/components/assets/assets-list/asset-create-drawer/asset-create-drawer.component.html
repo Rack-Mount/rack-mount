@@ -212,7 +212,7 @@
 
     @if (createSaveState() === "error") {
       <p class="form-error">
-        {{ "asset_form.error" | translate }}
+        {{ createSaveMsg() }}
       </p>
     }
   </div>

@@ -109,9 +109,7 @@
                   autofocus
                 />
                 @if (createSave() === "error") {
-                  <span class="inline-error">{{
-                    "common.error" | translate
-                  }}</span>
+                  <span class="inline-error">{{ createSaveMsg() }}</span>
                 }
               </td>
               <td class="actions">
@@ -149,9 +147,7 @@
                     autofocus
                   />
                   @if (editSave() === "error") {
-                    <span class="inline-error">{{
-                      "common.error" | translate
-                    }}</span>
+                    <span class="inline-error">{{ editSaveMsg() }}</span>
                   }
                 </td>
                 <td class="actions">

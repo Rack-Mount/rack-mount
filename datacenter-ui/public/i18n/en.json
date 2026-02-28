@@ -189,6 +189,7 @@
   },
   "rack": {
     "error_loading": "Error loading rack units",
+    "move_error": "Cannot move {{hostname}} to position {{pos}}U",
     "front_view": "Front view",
     "rear_view": "Rear view",
     "front": "Front",
@@ -248,8 +249,25 @@
     "center": "Centre and snap to grid",
     "reset": "Reset zoom"
   },
+  "backend_errors": {
+    "blank": "This field may not be blank.",
+    "null": "This field may not be null.",
+    "required": "This field is required.",
+    "unique": "This value is already in use.",
+    "unique_together": "This combination of values already exists.",
+    "max_length": "The value is too long.",
+    "min_length": "The value is too short.",
+    "invalid": "Invalid value.",
+    "does_not_exist": "The selected value does not exist.",
+    "conflict": "Cannot modify: the record is in use.",
+    "permission_denied": "Permission denied.",
+    "authentication": "Authentication required.",
+    "throttled": "Too many requests. Please try again later.",
+    "network": "Unable to reach the server.",
+    "server": "Server error. Please try again later.",
+    "fallback": "An error occurred while saving. Please try again."
+  },
   "asset_row": {
-    "section_id": "Identification",
     "section_device": "Device",
     "section_lifecycle": "Lifecycle",
     "section_hardware": "Hardware",

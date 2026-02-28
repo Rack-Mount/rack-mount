@@ -8,6 +8,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 import {
@@ -15,6 +16,7 @@ import {
   AssetService,
   AssetState,
 } from '../../../../../core/api/v1';
+import { BackendErrorService } from '../../../../../core/services/backend-error.service';
 
 @Component({
   selector: 'app-asset-create-drawer',
@@ -27,6 +29,7 @@ import {
 export class AssetCreateDrawerComponent {
   private readonly assetService = inject(AssetService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly backendErr = inject(BackendErrorService);
 
   readonly availableStates = input.required<AssetState[]>();
   readonly availableModels = input.required<AssetModel[]>();
@@ -56,6 +59,7 @@ export class AssetCreateDrawerComponent {
   protected readonly createSaveState = signal<'idle' | 'saving' | 'error'>(
     'idle',
   );
+  protected readonly createSaveMsg = signal('');
 
   // ── Model autocomplete ────────────────────────────────────────────────────
   protected readonly modelSearch = signal('');
@@ -128,7 +132,10 @@ export class AssetCreateDrawerComponent {
           this.createSaveState.set('idle');
           this.saved.emit();
         },
-        error: () => this.createSaveState.set('error'),
+        error: (err: HttpErrorResponse) => {
+          this.createSaveState.set('error');
+          this.createSaveMsg.set(this.backendErr.parse(err));
+        },
       });
   }
 }

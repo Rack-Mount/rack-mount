@@ -189,6 +189,7 @@
   },
   "rack": {
     "error_loading": "Errore nel caricamento delle unit\u00e0 rack",
+    "move_error": "Impossibile spostare {{hostname}} in posizione {{pos}}U",
     "front_view": "Vista fronte",
     "rear_view": "Vista retro",
     "front": "Fronte",
@@ -248,8 +249,25 @@
     "center": "Centra e aggancia alla griglia",
     "reset": "Reset zoom"
   },
+  "backend_errors": {
+    "blank": "Questo campo non può essere vuoto.",
+    "null": "Questo campo non può essere null.",
+    "required": "Questo campo è obbligatorio.",
+    "unique": "Questo valore è già in uso.",
+    "unique_together": "Questa combinazione di valori esiste già.",
+    "max_length": "Il valore è troppo lungo.",
+    "min_length": "Il valore è troppo corto.",
+    "invalid": "Valore non valido.",
+    "does_not_exist": "Il valore selezionato non esiste.",
+    "conflict": "Impossibile modificare: il dato è in uso.",
+    "permission_denied": "Permesso negato.",
+    "authentication": "Autenticazione richiesta.",
+    "throttled": "Troppe richieste. Riprova tra qualche istante.",
+    "network": "Impossibile contattare il server.",
+    "server": "Errore del server. Riprova più tardi.",
+    "fallback": "Errore durante il salvataggio. Riprova."
+  },
   "asset_row": {
-    "section_id": "Identificazione",
     "section_device": "Apparato",
     "section_lifecycle": "Ciclo di vita",
     "section_hardware": "Hardware",

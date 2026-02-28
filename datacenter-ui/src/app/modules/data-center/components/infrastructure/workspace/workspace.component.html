@@ -22,7 +22,7 @@
             <button
               class="tab-close"
               (click)="closeTab(tab.id, $event)"
-              title="Chiudi scheda"
+              [title]="'common.close_tab' | translate"
             >
               ×
             </button>
@@ -43,11 +43,11 @@
     @if (activeTab?.type === "rack") {
       <div class="content-pane rack-pane">
         @if (loadingTabId === activeTabId) {
-          <div class="loading-state">Caricamento rack…</div>
+          <div class="loading-state">{{ 'common.loading_rack' | translate }}</div>
         } @else if (rackCache[activeTabId]) {
           <app-rack [rack]="rackCache[activeTabId]!" />
         } @else {
-          <div class="loading-state">Rack non trovato.</div>
+          <div class="loading-state">{{ 'common.rack_not_found' | translate }}</div>
         }
       </div>
     }

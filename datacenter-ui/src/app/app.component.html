@@ -39,7 +39,7 @@
           <button
             class="tab-close"
             (click)="closeTab(tab.id, $event)"
-            title="Chiudi scheda"
+            [title]="'common.close_tab' | translate"
           >
             ×
           </button>

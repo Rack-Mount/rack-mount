@@ -6,6 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 import {
@@ -19,6 +20,7 @@ import {
   switchMap,
 } from 'rxjs';
 import { AssetService, Vendor } from '../../../../core/api/v1';
+import { BackendErrorService } from '../../../../core/services/backend-error.service';
 
 const PAGE_SIZE = 50;
 
@@ -39,6 +41,7 @@ type ListState =
 export class VendorsListComponent {
   private readonly svc = inject(AssetService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly backendErr = inject(BackendErrorService);
 
   // ── Search ────────────────────────────────────────────────────────────────
   protected readonly search = signal('');
@@ -74,11 +77,13 @@ export class VendorsListComponent {
   protected readonly createOpen = signal(false);
   protected readonly createName = signal('');
   protected readonly createSave = signal<SaveState>('idle');
+  protected readonly createSaveMsg = signal('');
 
-  // ── Inline edit ───────────────────────────────────────────────────────────
+  // ── Inline edit ─────────────────────────────────────────────────────────────
   protected readonly editId = signal<number | null>(null);
   protected readonly editName = signal('');
   protected readonly editSave = signal<SaveState>('idle');
+  protected readonly editSaveMsg = signal('');
 
   // ── Delete confirmation ───────────────────────────────────────────────────
   protected readonly deleteId = signal<number | null>(null);
@@ -160,6 +165,7 @@ export class VendorsListComponent {
   protected openCreate(): void {
     this.createName.set('');
     this.createSave.set('idle');
+    this.createSaveMsg.set('');
     this.createOpen.set(true);
     this.editId.set(null);
   }
@@ -188,7 +194,10 @@ export class VendorsListComponent {
             };
           });
         },
-        error: () => this.createSave.set('error'),
+        error: (err: HttpErrorResponse) => {
+          this.createSave.set('error');
+          this.createSaveMsg.set(this.backendErr.parse(err));
+        },
       });
   }
 
@@ -198,6 +207,7 @@ export class VendorsListComponent {
     this.editId.set(v.id);
     this.editName.set(v.name);
     this.editSave.set('idle');
+    this.editSaveMsg.set('');
   }
 
   protected cancelEdit(): void {
@@ -229,7 +239,10 @@ export class VendorsListComponent {
             };
           });
         },
-        error: () => this.editSave.set('error'),
+        error: (err: HttpErrorResponse) => {
+          this.editSave.set('error');
+          this.editSaveMsg.set(this.backendErr.parse(err));
+        },
       });
   }
 

@@ -15,7 +15,7 @@ import {
   toObservable,
   toSignal,
 } from '@angular/core/rxjs-interop';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { catchError, combineLatest, concat, map, of, switchMap } from 'rxjs';
 import {
   AssetService,
@@ -84,6 +84,7 @@ export class RackComponent {
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly assetService = inject(AssetService);
+  private readonly translate = inject(TranslateService);
 
   /** Height of the parent pane element in px (kept up-to-date by ResizeObserver). */
   private readonly _paneHeight = signal<number>(0);
@@ -489,7 +490,10 @@ export class RackComponent {
         error: () => {
           this._saving.set(false);
           this._moveError.set(
-            `Impossibile spostare ${device.device_hostname || 'apparato'} in posizione ${targetPos}U`,
+            this.translate.instant('rack.move_error', {
+              hostname: device.device_hostname || 'apparato',
+              pos: targetPos,
+            }),
           );
           setTimeout(() => this._moveError.set(null), 4000);
         },

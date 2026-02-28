@@ -212,7 +212,7 @@
                   <img
                     class="thumb"
                     [src]="imgW(m.front_image, 120)"
-                    alt="Front"
+                    [attr.alt]="'models.front' | translate"
                     [title]="'models.front' | translate"
                     loading="lazy"
                   />
@@ -221,7 +221,7 @@
                   <img
                     class="thumb"
                     [src]="imgW(m.rear_image, 120)"
-                    alt="Rear"
+                    [attr.alt]="'models.rear' | translate"
                     [title]="'models.rear' | translate"
                     loading="lazy"
                   />
@@ -256,7 +256,7 @@
                             stroke-linecap="round"
                           />
                         </svg>
-                        Apparato in uso — non eliminabile
+                        {{ "models.in_use" | translate }}
                       </span>
                       <button class="btn-confirm" (click)="cancelDelete()">
                         {{ "common.close" | translate }}
@@ -430,7 +430,7 @@
                 <img
                   class="preview-img"
                   [src]="imgW(m.front_image, 640)"
-                  alt="Fronte"
+                  [attr.alt]="'models.front' | translate"
                   loading="lazy"
                 />
               </div>
@@ -443,7 +443,7 @@
                 <img
                   class="preview-img"
                   [src]="imgW(m.rear_image, 640)"
-                  alt="Retro"
+                  [attr.alt]="'models.rear' | translate"
                   loading="lazy"
                 />
               </div>
@@ -606,7 +606,7 @@
                     ? objectUrl(form().front_image_file!)
                     : form().front_image_url!
                 "
-                alt="Front preview"
+                [attr.alt]="'models.preview_front' | translate"
               />
               <button
                 class="img-clear-btn"
@@ -658,7 +658,7 @@
                     ? objectUrl(form().rear_image_file!)
                     : form().rear_image_url!
                 "
-                alt="Rear preview"
+                [attr.alt]="'models.preview_rear' | translate"
               />
               <button
                 class="img-clear-btn"
@@ -697,7 +697,7 @@
         </div>
 
         @if (drawerSave() === "error") {
-          <div class="save-error">{{ "models.save_error" | translate }}</div>
+          <div class="save-error">{{ drawerSaveMsg() }}</div>
         }
       </div>
 
