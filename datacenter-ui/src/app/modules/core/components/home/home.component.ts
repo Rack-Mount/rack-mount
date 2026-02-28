@@ -1,20 +1,26 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  Component,
   DestroyRef,
   inject,
+  OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocationService } from '../../api/v1/api/location.service';
 import { Location as DjLocation } from '../../api/v1/model/location';
 import { TabService } from '../../services/tab.service';
+import { HomeHeroComponent } from './home-hero/home-hero.component';
+import {
+  HomeLocationsComponent,
+  RoomOpenEvent,
+} from './home-locations/home-locations.component';
+import { HomeStatsComponent } from './home-stats/home-stats.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [HomeHeroComponent, HomeStatsComponent, HomeLocationsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -50,11 +56,11 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  openRoom(roomId: number, roomName: string): void {
-    this.tabService.openRoom(roomId, roomName);
+  protected onRoomOpen(e: RoomOpenEvent): void {
+    this.tabService.openRoom(e.id, e.name);
   }
 
-  openAssets(): void {
+  protected onAssetsOpen(): void {
     this.tabService.openAssets();
   }
 }
