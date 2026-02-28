@@ -1,11 +1,11 @@
-$bg-surface: #131c2e;
-$bg-row: #111827;
-$border: rgba(255, 255, 255, 0.07);
-$border-strong: rgba(255, 255, 255, 0.13);
-$accent: #3b82f6;
-$text-primary: #e2e8f0;
-$text-secondary: #94a3b8;
-$text-muted: #475569;
+$bg-surface: var(--dc-bg-surface);
+$bg-row: var(--dc-bg-row);
+$border: var(--dc-border);
+$border-strong: var(--dc-border-strong);
+$accent: var(--dc-accent);
+$text-primary: var(--dc-text-primary);
+$text-secondary: var(--dc-text-secondary);
+$text-muted: var(--dc-text-muted);
 
 // ── Backdrop ──────────────────────────────────────────────────────────────────
 .drawer-backdrop {
@@ -153,7 +153,7 @@ $text-muted: #475569;
   cursor: pointer;
 
   option {
-    background: #1e2840;
+    background: var(--dc-bg-option);
   }
 }
 

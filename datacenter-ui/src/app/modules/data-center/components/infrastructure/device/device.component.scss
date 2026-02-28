@@ -29,19 +29,17 @@ $type-colors: (
   align-items: stretch;
   width: 100%;
   height: 100%;
-  // No min-height — slot height is driven by --u-height from ResizeObserver;
-  // a fixed min would cause overflow when u-height < 28px (e.g. large racks)
   min-height: 0;
-  background: #2a2a2c;
-  border: 1px solid #3c3c3e;
+  background: var(--dc-device-bg);
+  border: 1px solid var(--dc-device-border);
   border-radius: 2px;
-  overflow: visible; // allow tooltip to overflow
+  overflow: visible;
   position: relative;
   cursor: default;
   transition: background 120ms ease;
 
   &:not(.device--has-image):hover {
-    background: #323235;
+    background: var(--dc-device-bg-hover);
   }
 
   // Generate --type-color CSS var for each device type
@@ -64,11 +62,10 @@ $type-colors: (
 .device__panel {
   flex: 1 1 auto;
   position: relative;
-  overflow: hidden; // clip image inside slot
+  overflow: hidden;
   display: flex;
   align-items: stretch;
-  // Dark chassis background for areas not covered by the image
-  background: #1c1c1e;
+  background: var(--dc-device-chassis-bg);
 }
 
 .device__panel-img {
@@ -162,7 +159,7 @@ $type-colors: (
 .device__hostname {
   font-size: 0.7rem;
   font-weight: 600;
-  color: #f0f0f0;
+  color: var(--dc-device-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -171,7 +168,7 @@ $type-colors: (
 
 .device__model {
   font-size: 0.6rem;
-  color: #8e8e93;
+  color: var(--dc-device-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -180,19 +177,17 @@ $type-colors: (
 // ─── Hover tooltip (fixed-position, escapes all overflow containers) ──────────
 .device__tooltip {
   position: fixed;
-  // top/left set via [style] binding from getBoundingClientRect()
   transform: translateY(-50%);
   z-index: 9999;
   min-width: 180px;
   max-width: 260px;
-  background: #1c1c1e;
-  border: 1px solid #48484a;
+  background: var(--dc-device-tooltip-bg);
+  border: 1px solid var(--dc-device-tooltip-border);
   border-radius: 6px;
   padding: 8px 10px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   pointer-events: none;
 
-  // Arrow pointing left (tooltip is to the right of the device)
   &::before {
     content: "";
     position: absolute;
@@ -200,7 +195,7 @@ $type-colors: (
     top: 50%;
     transform: translateY(-50%);
     border: 5px solid transparent;
-    border-right-color: #48484a;
+    border-right-color: var(--dc-device-tooltip-border);
   }
 
   &::after {
@@ -210,23 +205,22 @@ $type-colors: (
     top: 50%;
     transform: translateY(-50%);
     border: 5px solid transparent;
-    border-right-color: #1c1c1e;
+    border-right-color: var(--dc-device-tooltip-bg);
   }
 
-  // Flipped: tooltip is to the left of the device — arrow points right
   &.device__tooltip--flipped {
     &::before {
       right: auto;
       left: 100%;
       border-right-color: transparent;
-      border-left-color: #48484a;
+      border-left-color: var(--dc-device-tooltip-border);
     }
 
     &::after {
       right: auto;
       left: calc(100% - 1px);
       border-right-color: transparent;
-      border-left-color: #1c1c1e;
+      border-left-color: var(--dc-device-tooltip-bg);
     }
   }
 }
@@ -238,14 +232,14 @@ $type-colors: (
   padding: 2px 0;
 
   & + & {
-    border-top: 1px solid #2c2c2e;
+    border-top: 1px solid var(--dc-device-tooltip-row-border);
   }
 }
 
 .device__tooltip-label {
   flex: 0 0 48px;
   font-size: 0.6rem;
-  color: #8e8e93;
+  color: var(--dc-device-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -253,12 +247,12 @@ $type-colors: (
 .device__tooltip-value {
   flex: 1;
   font-size: 0.7rem;
-  color: #f0f0f0;
+  color: var(--dc-device-text);
   word-break: break-word;
 
   &--mono {
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
     font-size: 0.65rem;
-    color: #d1d5db;
+    color: var(--dc-device-text-secondary);
   }
 }

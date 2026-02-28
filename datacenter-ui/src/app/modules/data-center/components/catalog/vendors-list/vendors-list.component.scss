@@ -1,15 +1,15 @@
 // ── Variables ──────────────────────────────────────────────────────────────
-$bg-base: #0b1120;
-$bg-surface: #131c2e;
-$bg-row: #111827;
-$bg-row-hover: #1a2540;
-$border: rgba(255, 255, 255, 0.07);
-$border-strong: rgba(255, 255, 255, 0.13);
-$accent: #3b82f6;
-$danger: #ef4444;
-$text-primary: #e2e8f0;
-$text-secondary: #94a3b8;
-$text-muted: #475569;
+$bg-base: var(--dc-bg-base);
+$bg-surface: var(--dc-bg-surface);
+$bg-row: var(--dc-bg-row);
+$bg-row-hover: var(--dc-bg-row-hover);
+$border: var(--dc-border);
+$border-strong: var(--dc-border-strong);
+$accent: var(--dc-accent);
+$danger: var(--dc-danger);
+$text-primary: var(--dc-text-primary);
+$text-secondary: var(--dc-text-secondary);
+$text-muted: var(--dc-text-muted);
 
 :host {
   display: flex;
@@ -66,8 +66,13 @@ $text-muted: #475569;
     outline: none;
     transition: border-color 0.15s;
 
-    &::placeholder { color: $text-muted; }
-    &:focus { border-color: $accent; box-shadow: 0 0 0 2px rgba(59,130,246,.2); }
+    &::placeholder {
+      color: $text-muted;
+    }
+    &:focus {
+      border-color: $accent;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
   }
 
   .search-clear {
@@ -80,14 +85,17 @@ $text-muted: #475569;
     font-size: 1rem;
     line-height: 1;
     padding: 2px;
-    &:hover { color: $text-primary; }
+    &:hover {
+      color: $text-primary;
+    }
   }
 }
 
 .count-badge {
   font-size: 0.78rem;
   color: $text-secondary;
-  background: rgba(255,255,255,.06);
+  background: var(--dc-count-badge-bg);
+  border: 1px solid var(--dc-count-badge-border);
   padding: 4px 10px;
   border-radius: 12px;
 }
@@ -106,8 +114,13 @@ $text-muted: #475569;
   cursor: pointer;
   transition: background 0.15s;
 
-  svg { width: 14px; height: 14px; }
-  &:hover { background: #2563eb; }
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+  &:hover {
+    background: #2563eb;
+  }
 }
 
 // ── Table wrap ─────────────────────────────────────────────────────────────
@@ -127,7 +140,9 @@ $text-muted: #475569;
   color: $text-secondary;
   font-size: 0.9rem;
 
-  &--error { color: #f87171; }
+  &--error {
+    color: #f87171;
+  }
 }
 
 .spinner {
@@ -136,10 +151,14 @@ $text-muted: #475569;
   border: 2px solid $border-strong;
   border-top-color: $accent;
   border-radius: 50%;
-  animation: spin .7s linear infinite;
+  animation: spin 0.7s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 // ── Data table ─────────────────────────────────────────────────────────────
 .data-table {
@@ -163,8 +182,12 @@ $text-muted: #475569;
     white-space: nowrap;
   }
 
-  .col-name { width: 100%; }
-  .col-actions { width: 120px; }
+  .col-name {
+    width: 100%;
+  }
+  .col-actions {
+    width: 120px;
+  }
 }
 
 // ── Sortable headers ──────────────────────────────────────────────────
@@ -178,18 +201,25 @@ $text-muted: #475569;
     margin-left: 4px;
     opacity: 0.35;
     font-size: 0.75rem;
-    transition: opacity 0.15s, color 0.15s;
+    transition:
+      opacity 0.15s,
+      color 0.15s;
   }
 
   &:hover {
     color: $text-primary;
-    .sort-arrow { opacity: 0.6; }
+    .sort-arrow {
+      opacity: 0.6;
+    }
   }
 
   &--asc,
   &--desc {
     color: $text-primary;
-    .sort-arrow { opacity: 1; color: $accent; }
+    .sort-arrow {
+      opacity: 1;
+      color: $accent;
+    }
   }
 }
 
@@ -197,10 +227,16 @@ $text-muted: #475569;
   border-bottom: 1px solid $border;
   transition: background 0.1s;
 
-  &:hover { background: $bg-row-hover; }
-  &--deleting { background: rgba(239, 68, 68, 0.07); }
+  &:hover {
+    background: $bg-row-hover;
+  }
+  &--deleting {
+    background: rgba(239, 68, 68, 0.07);
+  }
 
-  td { padding: 10px 14px; }
+  td {
+    padding: 10px 14px;
+  }
 }
 
 .cell-name {
@@ -212,7 +248,7 @@ $text-muted: #475569;
 .row-edit td {
   padding: 8px 14px;
   border-bottom: 1px solid $border;
-  background: rgba(59,130,246,.06);
+  background: rgba(59, 130, 246, 0.06);
 }
 
 .inline-input {
@@ -226,7 +262,9 @@ $text-muted: #475569;
   max-width: 360px;
   outline: none;
 
-  &:focus { box-shadow: 0 0 0 2px rgba(59,130,246,.25); }
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+  }
 }
 
 .inline-error {
@@ -254,12 +292,23 @@ $text-muted: #475569;
   background: transparent;
   color: $text-muted;
   cursor: pointer;
-  transition: background 0.1s, color 0.1s;
+  transition:
+    background 0.1s,
+    color 0.1s;
 
-  svg { width: 14px; height: 14px; }
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 
-  &--edit:hover  { background: rgba(59,130,246,.15); color: $accent; }
-  &--delete:hover { background: rgba(239,68,68,.15); color: $danger; }
+  &--edit:hover {
+    background: rgba(59, 130, 246, 0.15);
+    color: $accent;
+  }
+  &--delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: $danger;
+  }
 }
 
 .btn-action {
@@ -270,23 +319,35 @@ $text-muted: #475569;
   font-size: 0.78rem;
   padding: 4px 12px;
   cursor: pointer;
-  transition: background 0.1s, color 0.1s;
+  transition:
+    background 0.1s,
+    color 0.1s;
 
-  &:hover:not(:disabled) { background: rgba(255,255,255,.07); color: $text-primary; }
-  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &:hover:not(:disabled) {
+    background: var(--dc-hover-subtle);
+    color: $text-primary;
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
   &--save {
     background: $accent;
     border-color: $accent;
     color: #fff;
-    &:hover:not(:disabled) { background: #2563eb; }
+    &:hover:not(:disabled) {
+      background: #2563eb;
+    }
   }
 
   &--danger {
     background: $danger;
     border-color: $danger;
     color: #fff;
-    &:hover:not(:disabled) { background: #dc2626; }
+    &:hover:not(:disabled) {
+      background: #dc2626;
+    }
   }
 }
 
@@ -327,9 +388,21 @@ $text-muted: #475569;
   min-width: 32px;
   height: 32px;
   cursor: pointer;
-  transition: background 0.1s, color 0.1s;
+  transition:
+    background 0.1s,
+    color 0.1s;
 
-  &:hover:not(:disabled) { background: $bg-row-hover; color: $text-primary; }
-  &:disabled { opacity: 0.4; cursor: not-allowed; }
-  &--active { background: $accent; border-color: $accent; color: #fff; }
+  &:hover:not(:disabled) {
+    background: $bg-row-hover;
+    color: $text-primary;
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  &--active {
+    background: $accent;
+    border-color: $accent;
+    color: #fff;
+  }
 }

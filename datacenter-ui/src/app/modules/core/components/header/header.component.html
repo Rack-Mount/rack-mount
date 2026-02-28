@@ -5,17 +5,65 @@
     </a>
   </div>
 
-  <div class="lang-switcher">
-    @for (l of lang.availableLanguages; track l.code) {
-      <button
-        class="lang-btn"
-        [class.lang-btn--active]="lang.currentLang() === l.code"
-        (click)="lang.use(l.code)"
-        [title]="l.label"
-      >
-        <span class="lang-flag">{{ l.flag }}</span>
-        <span class="lang-code">{{ l.code.toUpperCase() }}</span>
-      </button>
-    }
+  <div class="navbar-actions">
+    <!-- Theme toggle -->
+    <button
+      class="theme-btn"
+      (click)="theme.toggle()"
+      [title]="theme.isDark() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+      [attr.aria-label]="
+        theme.isDark() ? 'Switch to Light Mode' : 'Switch to Dark Mode'
+      "
+    >
+      @if (theme.isDark()) {
+        <!-- Sun icon -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path
+            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+          />
+        </svg>
+      } @else {
+        <!-- Moon icon -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      }
+    </button>
+
+    <!-- Language switcher -->
+    <div class="lang-switcher">
+      @for (l of lang.availableLanguages; track l.code) {
+        <button
+          class="lang-btn"
+          [class.lang-btn--active]="lang.currentLang() === l.code"
+          (click)="lang.use(l.code)"
+          [title]="l.label"
+        >
+          <span class="lang-flag">{{ l.flag }}</span>
+          <span class="lang-code">{{ l.code.toUpperCase() }}</span>
+        </button>
+      }
+    </div>
   </div>
 </nav>

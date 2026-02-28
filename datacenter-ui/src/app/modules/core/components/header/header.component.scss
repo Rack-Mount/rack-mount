@@ -6,14 +6,17 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(11, 17, 32, 0.92);
+  background: var(--dc-navbar-bg);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--dc-navbar-border);
   padding: 0 20px;
   height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .navbar-brand {
@@ -31,6 +34,13 @@
 .navbar-logo {
   height: 50px;
   width: auto;
+  background: var(--dc-logo-bg);
+  border-radius: var(--dc-logo-radius);
+  padding: var(--dc-logo-padding);
+  transition:
+    background 0.25s ease,
+    border-radius 0.25s ease,
+    padding 0.25s ease;
 }
 
 .navbar-links {
@@ -38,12 +48,44 @@
   gap: 4px;
 }
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// ── Theme toggle ──────────────────────────────────────────────────────────────
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0;
+  cursor: pointer;
+  color: var(--dc-lang-btn-color);
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+
+  &:hover {
+    background: var(--dc-lang-btn-hover-bg);
+    color: var(--dc-navbar-link-active-color);
+    border-color: var(--dc-lang-btn-active-border);
+  }
+}
+
 .navbar-link {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 0.84rem;
-  color: rgba(226, 232, 240, 0.55);
+  color: var(--dc-navbar-link-color);
   text-decoration: none;
   padding: 6px 12px;
   border-radius: 8px;
@@ -53,8 +95,8 @@
 
   &:hover,
   &.active {
-    background: rgba(255, 255, 255, 0.06);
-    color: #e2e8f0;
+    background: var(--dc-navbar-link-hover-bg);
+    color: var(--dc-navbar-link-active-color);
   }
 }
 
@@ -75,7 +117,7 @@
   border-radius: 8px;
   padding: 4px 8px;
   cursor: pointer;
-  color: rgba(226, 232, 240, 0.45);
+  color: var(--dc-lang-btn-color);
   font-size: 0.75rem;
   font-weight: 500;
   transition:
@@ -84,14 +126,14 @@
     border-color 0.15s;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: #e2e8f0;
+    background: var(--dc-lang-btn-hover-bg);
+    color: var(--dc-navbar-link-active-color);
   }
 
   &--active {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.12);
-    color: #e2e8f0;
+    background: var(--dc-lang-btn-active-bg);
+    border-color: var(--dc-lang-btn-active-border);
+    color: var(--dc-navbar-link-active-color);
   }
 }
 

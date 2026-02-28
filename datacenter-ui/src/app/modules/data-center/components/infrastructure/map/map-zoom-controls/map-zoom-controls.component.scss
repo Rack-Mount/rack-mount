@@ -9,8 +9,8 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background: #fff;
-  border: 1px solid #d0d0d0;
+  background: var(--dc-bg-surface);
+  border: 1px solid var(--dc-border-strong);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   overflow: hidden;
@@ -20,7 +20,7 @@
   width: 36px;
   height: 36px;
   border: none;
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid var(--dc-border);
   background: transparent;
   font-size: 18px;
   font-weight: bold;
@@ -30,30 +30,30 @@
   align-items: center;
   justify-content: center;
   transition: background 0.12s;
-  color: #444;
+  color: var(--dc-text-secondary);
 
   &:last-child {
     border-bottom: none;
   }
 
   &:hover {
-    background: #f5f5f5;
+    background: var(--dc-bg-row-hover);
   }
 
   &:active {
-    background: #eaeaea;
+    background: var(--dc-border);
   }
 
   &.zoom-reset {
     font-size: 10px;
     font-weight: 700;
-    color: #555;
+    color: var(--dc-text-secondary);
     letter-spacing: -0.3px;
   }
 }
 
 .zoom-sep {
   height: 1px;
-  background: #d0d0d0;
+  background: var(--dc-border-strong);
   margin: 2px 6px;
 }

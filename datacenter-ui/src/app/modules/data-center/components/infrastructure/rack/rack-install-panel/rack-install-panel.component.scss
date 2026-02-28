@@ -18,10 +18,10 @@
   height: min(460px, 80vh);
   display: flex;
   flex-direction: column;
-  background: #1c1c1e;
-  border: 1px solid #3a3a3c;
+  background: var(--dc-bg-elevated);
+  border: 1px solid var(--dc-border-chassis);
   border-radius: 12px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 
   &__header {
@@ -29,27 +29,27 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px 10px;
-    border-bottom: 1px solid #2c2c2e;
+    border-bottom: 1px solid var(--dc-border-panel);
     flex-shrink: 0;
   }
 
   &__title {
     font-size: 0.8rem;
     font-weight: 600;
-    color: #e5e7eb;
+    color: var(--dc-text-primary);
   }
 
   &__close {
     background: none;
     border: none;
-    color: #6b7280;
+    color: var(--dc-text-muted);
     cursor: pointer;
     font-size: 0.8rem;
     padding: 2px 6px;
     border-radius: 4px;
     &:hover {
-      background: #2c2c2e;
-      color: #e5e7eb;
+      background: var(--dc-bg-card);
+      color: var(--dc-text-primary);
     }
   }
 
@@ -61,18 +61,18 @@
   &__input {
     width: 100%;
     box-sizing: border-box;
-    background: #2c2c2e;
-    border: 1px solid #3a3a3c;
+    background: var(--dc-bg-card);
+    border: 1px solid var(--dc-border-chassis);
     border-radius: 8px;
-    color: #e5e7eb;
+    color: var(--dc-text-primary);
     font-size: 0.78rem;
     padding: 7px 10px;
     outline: none;
     &:focus {
-      border-color: #5b6eff;
+      border-color: var(--dc-accent);
     }
     &::placeholder {
-      color: #4b5563;
+      color: var(--dc-text-muted);
     }
   }
 
@@ -81,7 +81,7 @@
     min-height: 0;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #3a3a3c transparent;
+    scrollbar-color: var(--dc-scrollbar-thumb) transparent;
     padding: 4px 0;
   }
 
@@ -94,10 +94,10 @@
     cursor: pointer;
     transition: background 80ms ease;
     &:hover {
-      background: #2c2c2e;
+      background: var(--dc-bg-card);
     }
     &--selected {
-      background: rgba(91, 110, 255, 0.18);
+      background: var(--dc-accent-dim);
     }
     &--disabled {
       cursor: not-allowed;

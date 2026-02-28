@@ -15,6 +15,7 @@ import { HeaderComponent } from './modules/core/components/header/header.compone
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
 import { TabService } from './modules/core/services/tab.service';
+import { ThemeService } from './modules/core/services/theme.service';
 import { AssetsListComponent } from './modules/data-center/components/assets/assets-list/assets-list.component';
 import { PanelTab } from './modules/data-center/components/assets/detail-panel/detail-panel.types';
 import { ModelsListComponent } from './modules/data-center/components/catalog/models-list/models-list.component';
@@ -43,6 +44,7 @@ export class AppComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   readonly tabService = inject(TabService);
+  private readonly themeService = inject(ThemeService);
 
   readonly homeTab: PanelTab = {
     id: 'home',
@@ -108,6 +110,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Apply the persisted or OS-default theme immediately
+    this.themeService.init();
+
     // Sync active tab from URL on every navigation
     this.router.events
       .pipe(

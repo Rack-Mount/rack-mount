@@ -9,6 +9,7 @@ $u-label-w: 28px;
 $rack-aspect: 10.86;
 $rack-width: 240px; // fallback only (static builds / SSR)
 $rail-strip-w: 8px; // narrow mounting-rail overlay on each side
+// Dark-mode fallback values (used in color.adjust() calls which need real colors):
 $chassis-bg: #1c1c1e;
 $chassis-border: #3a3a3c;
 $panel-bg: #2c2c2e;
@@ -26,6 +27,8 @@ $u-label-color: #e8eaed;
   display: flex;
   flex-direction: column;
   font-family: "SF Mono", "Fira Code", ui-monospace, monospace;
+  color: var(--dc-text-primary);
+  background: var(--dc-rack-pane-bg);
 }
 
 // ── Outer view: chassis on the left, table on the right ──────────────────────
@@ -52,7 +55,7 @@ $u-label-color: #e8eaed;
   // can visually overflow into the aside area without triggering a horizontal scrollbar
   overflow-x: clip;
   scrollbar-width: thin;
-  scrollbar-color: #3a3a3c transparent;
+  scrollbar-color: var(--dc-scrollbar-thumb) transparent;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -61,7 +64,7 @@ $u-label-color: #e8eaed;
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: #3a3a3c;
+    background: var(--dc-scrollbar-thumb);
     border-radius: 2px;
   }
 }
@@ -71,7 +74,7 @@ $u-label-color: #e8eaed;
   display: flex;
   align-items: center;
   gap: 0;
-  background: #2c2c2e;
+  background: var(--dc-bg-card);
   border-radius: 8px;
   padding: 3px;
   margin-left: auto;
@@ -85,7 +88,7 @@ $u-label-color: #e8eaed;
     border: none;
     border-radius: 6px;
     background: transparent;
-    color: #9ca3af;
+    color: var(--dc-text-secondary);
     font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.04em;
@@ -101,15 +104,15 @@ $u-label-color: #e8eaed;
     }
 
     &:hover:not(&--active) {
-      color: #d1d5db;
+      color: var(--dc-text-primary);
       svg {
         opacity: 0.8;
       }
     }
 
     &--active {
-      background: #3a3a3c;
-      color: #f5f5f5;
+      background: var(--dc-border-chassis);
+      color: var(--dc-text-primary);
       svg {
         opacity: 1;
       }
@@ -138,7 +141,7 @@ $u-label-color: #e8eaed;
   &__name {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #f5f5f5;
+    color: var(--dc-text-primary);
     letter-spacing: 0.01em;
     white-space: nowrap;
     overflow: hidden;
@@ -512,7 +515,7 @@ $u-label-color: #e8eaed;
   gap: 8px;
   // Thin custom scrollbar
   scrollbar-width: thin;
-  scrollbar-color: #3a3a3c transparent;
+  scrollbar-color: var(--dc-scrollbar-thumb) transparent;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -521,8 +524,84 @@ $u-label-color: #e8eaed;
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: #3a3a3c;
+    background: var(--dc-scrollbar-thumb);
     border-radius: 2px;
   }
 }
 
+// ── Light theme overrides ───────────────────────────────────────────────────
+// These selectors override rules compiled from the dark-mode SCSS $variables
+// above (which can't use CSS custom properties because color.adjust() is
+// a compile-time function).
+:host-context([data-theme="light"]) {
+  .rack-chassis {
+    border-color: #d1d5db;
+    background: #e5e7eb;
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.04) inset,
+      0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .rack-panel {
+    background: #e9ecef;
+    border-bottom-color: #d1d5db;
+
+    &--bottom {
+      border-top-color: #d1d5db;
+    }
+
+    &__label {
+      color: #6b7280;
+    }
+
+    &__screw {
+      background: radial-gradient(circle at 35% 35%, #a0a0a0, #6b7280);
+    }
+  }
+
+  .rack-row {
+    box-shadow: inset 0 -1px 0 #c1c8d1;
+  }
+
+  .rack-slot__empty {
+    background: #e5e7eb;
+
+    &:hover {
+      background: #d1d5db;
+    }
+  }
+
+  .rack-slot__install-hint {
+    color: #6b7280;
+  }
+
+  .rack-slot__rail {
+    background: repeating-linear-gradient(
+      to bottom,
+      #9ca3af 0px,
+      #9ca3af 2px,
+      transparent 2px,
+      transparent 5px
+    );
+  }
+
+  .rack-u-num {
+    background: #e9ecef;
+    border-right-color: #d1d5db;
+    color: #374151;
+
+    &::after {
+      background: #9ca3af;
+    }
+
+    &--r {
+      border-left-color: #d1d5db;
+    }
+  }
+
+  // Shimmer animation in light mode
+  .rack-row--skeleton .rack-slot--skeleton {
+    background: linear-gradient(90deg, #e5e7eb 0%, #f0f2f5 50%, #e5e7eb 100%);
+    background-size: 200% 100%;
+  }
+}

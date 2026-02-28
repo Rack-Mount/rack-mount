@@ -1,0 +1,321 @@
+// ── Design-token CSS custom properties ────────────────────────────────────
+// Dark is the default (matches the existing look).
+// Light overrides are applied when [data-theme="light"] is set on <html>.
+
+:root,
+[data-theme="dark"] {
+  // ── Backgrounds ──────────────────────────────────────────────────────────
+  --dc-bg-base: #0b1120;
+  --dc-bg-surface: #131c2e;
+  --dc-bg-row: #111827;
+  --dc-bg-row-hover: #1a2540;
+  --dc-bg-expanded: #0e1929;
+  --dc-bg-elevated: #1c1c1e;
+  --dc-bg-card: #2c2c2e;
+  --dc-bg-option: #1e2840;
+  --dc-bg-panel: #2c2c2e;
+  --dc-bg-chassis: #1c1c1e;
+
+  // ── Tab bar ───────────────────────────────────────────────────────────────
+  --dc-tab-bar-bg: #2c2c2c;
+  --dc-tab-bar-border: #111111;
+  --dc-tab-color: #adb5bd;
+  --dc-tab-hover-bg: #3a3a3a;
+  --dc-tab-hover-color: #f8f9fa;
+  --dc-tab-active-bg: #1a1a2e;
+  --dc-tab-active-color: #ffffff;
+  --dc-tab-drag-bg: #2a3550;
+  --dc-tab-accent: #4a9eff;
+
+  // ── Borders ───────────────────────────────────────────────────────────────
+  --dc-border: rgba(255, 255, 255, 0.07);
+  --dc-border-strong: rgba(255, 255, 255, 0.13);
+  --dc-border-panel: #2c2c2e;
+  --dc-border-chassis: #3a3a3c;
+  --dc-border-detail: #2a3550;
+
+  // ── Text ──────────────────────────────────────────────────────────────────
+  --dc-text-primary: #e2e8f0;
+  --dc-text-secondary: #94a3b8;
+  --dc-text-muted: #475569;
+  --dc-text-label: #e8eaed;
+
+  // ── Navigation ────────────────────────────────────────────────────────────
+  --dc-navbar-bg: rgba(11, 17, 32, 0.92);
+  --dc-navbar-border: rgba(255, 255, 255, 0.06);
+  --dc-navbar-link-color: rgba(226, 232, 240, 0.55);
+  --dc-navbar-link-hover-bg: rgba(255, 255, 255, 0.06);
+  --dc-navbar-link-active-color: #e2e8f0;
+  --dc-lang-btn-color: rgba(226, 232, 240, 0.45);
+  --dc-lang-btn-hover-bg: rgba(255, 255, 255, 0.06);
+  --dc-lang-btn-active-bg: rgba(255, 255, 255, 0.08);
+  --dc-lang-btn-active-border: rgba(255, 255, 255, 0.12);
+
+  // ── Accent / Status ───────────────────────────────────────────────────────
+  --dc-accent: #3b82f6;
+  --dc-accent-hover: #2563eb;
+  --dc-accent-dim: rgba(59, 130, 246, 0.15);
+  --dc-danger: #ef4444;
+  --dc-danger-text: #f87171;
+  --dc-danger-bg: rgba(239, 68, 68, 0.12);
+  --dc-danger-border: rgba(239, 68, 68, 0.28);
+  --dc-danger-bg-hover: rgba(239, 68, 68, 0.22);
+  --dc-close-hover-bg: rgba(220, 53, 69, 0.25);
+  --dc-close-hover-color: #ff6b6b;
+
+  // ── Misc ──────────────────────────────────────────────────────────────────
+  --dc-scrollbar-thumb: #3a3a3c;
+  --dc-rack-pane-bg: #1a1a1a;
+  --dc-workspace-bg: #f1f3f5;
+  --dc-map-bg: #f8f9fa;
+  --dc-drawing-area-bg: #ffffff;
+  --dc-rack-col-slot-empty: #2c2c30;
+  --dc-upright-bg: #222224;
+  --dc-rail-color: #3a3a3c;
+  --dc-loading-color: #6c757d;
+  --dc-spinner-border: rgba(255, 255, 255, 0.13);
+
+  // ── Logo ─────────────────────────────────────────────────────────────────
+  --dc-logo-bg: transparent;
+  --dc-logo-radius: 0px;
+  --dc-logo-padding: 0px;
+
+  // ── Hero ─────────────────────────────────────────────────────────────────
+  --dc-hero-gradient: linear-gradient(
+    135deg,
+    #0d1525 0%,
+    #142040 60%,
+    #1a2a50 100%
+  );
+  --dc-hero-grid: rgba(0, 212, 255, 0.045);
+  --dc-hero-title-color: #f0f4ff;
+  --dc-hero-subtitle-color: rgba(226, 232, 240, 0.5);
+  --dc-hero-badge-color: #00d4ff;
+  --dc-hero-badge-bg: rgba(0, 212, 255, 0.1);
+  --dc-hero-badge-border: rgba(0, 212, 255, 0.22);
+
+  // ── Home page ─────────────────────────────────────────────────────────────
+  --dc-home-stats-bg: #0e1828;
+  --dc-home-stats-border: rgba(255, 255, 255, 0.06);
+  --dc-home-stat-number: #f0f4ff;
+  --dc-home-stat-online: #00ff88;
+  --dc-home-stat-label: rgba(226, 232, 240, 0.35);
+  --dc-home-stat-divider: rgba(255, 255, 255, 0.07);
+  --dc-home-section-title: rgba(226, 232, 240, 0.3);
+  --dc-home-card-bg: #111d35;
+  --dc-home-card-border: rgba(255, 255, 255, 0.07);
+  --dc-home-card-bg-hover: #162240;
+  --dc-home-card-border-hover: rgba(59, 130, 246, 0.35);
+  --dc-home-card-title: #e2e8f0;
+  --dc-home-card-desc: rgba(226, 232, 240, 0.38);
+  --dc-home-card-arrow: rgba(226, 232, 240, 0.3);
+  --dc-home-cyan: #00d4ff;
+  --dc-home-cyan-bg: rgba(0, 212, 255, 0.1);
+  --dc-home-cyan-border: rgba(0, 212, 255, 0.22);
+  --dc-home-loc-meta: rgba(226, 232, 240, 0.35);
+  --dc-home-chip-color: rgba(226, 232, 240, 0.6);
+  --dc-home-chip-bg: rgba(255, 255, 255, 0.05);
+  --dc-home-chip-border: rgba(255, 255, 255, 0.08);
+  --dc-home-chip-hover-bg: rgba(0, 212, 255, 0.1);
+  --dc-home-chip-hover-border: rgba(0, 212, 255, 0.3);
+  --dc-home-chip-hover-color: #00d4ff;
+  --dc-home-skeleton-from: #111d35;
+  --dc-home-skeleton-mid: #182745;
+  --dc-home-empty-color: rgba(226, 232, 240, 0.3);
+
+  // ── Table elements ────────────────────────────────────────────────────────
+  --dc-hostname-color: #dbeafe;
+  --dc-export-color: #4ade80;
+  --dc-export-bg: rgba(74, 222, 128, 0.08);
+  --dc-export-bg-hover: rgba(74, 222, 128, 0.16);
+  --dc-export-border: rgba(74, 222, 128, 0.35);
+  --dc-badge-vendor-color: #a5b4fc;
+  --dc-badge-vendor-bg: rgba(99, 102, 241, 0.15);
+  --dc-badge-vendor-border: rgba(165, 180, 252, 0.2);
+  --dc-badge-type-color: #6ee7b7;
+  --dc-badge-type-bg: rgba(16, 185, 129, 0.13);
+  --dc-badge-type-border: rgba(110, 231, 183, 0.2);
+  --dc-hover-subtle: rgba(255, 255, 255, 0.08);
+  --dc-count-badge-bg: rgba(255, 255, 255, 0.06);
+  --dc-count-badge-border: transparent;
+  --dc-state-green-color: #4ade80;
+  --dc-state-green-bg: rgba(74, 222, 128, 0.12);
+  --dc-state-green-border: rgba(74, 222, 128, 0.25);
+  --dc-state-yellow-color: #fbbf24;
+  --dc-state-yellow-bg: rgba(251, 191, 36, 0.12);
+  --dc-state-yellow-border: rgba(251, 191, 36, 0.25);
+  --dc-state-red-color: #f87171;
+  --dc-state-red-bg: rgba(248, 113, 113, 0.12);
+  --dc-state-red-border: rgba(248, 113, 113, 0.25);
+  --dc-state-blue-color: #60a5fa;
+  --dc-state-blue-bg: rgba(96, 165, 250, 0.12);
+  --dc-state-blue-border: rgba(96, 165, 250, 0.25);
+
+  // ── Device faceplate ──────────────────────────────────────────────────────
+  --dc-device-bg: #2a2a2c;
+  --dc-device-bg-hover: #323235;
+  --dc-device-border: #3c3c3e;
+  --dc-device-chassis-bg: #1c1c1e;
+  --dc-device-text: #f0f0f0;
+  --dc-device-text-secondary: #8e8e93;
+  --dc-device-tooltip-bg: #1c1c1e;
+  --dc-device-tooltip-border: #48484a;
+  --dc-device-tooltip-row-border: #2c2c2e;
+}
+
+[data-theme="light"] {
+  // ── Backgrounds ──────────────────────────────────────────────────────────
+  --dc-bg-base: #f0f4f8;
+  --dc-bg-surface: #ffffff;
+  --dc-bg-row: #f8fafc;
+  --dc-bg-row-hover: #e8f0fe;
+  --dc-bg-expanded: #f1f5f9;
+  --dc-bg-elevated: #f8fafc;
+  --dc-bg-card: #e9ecef;
+  --dc-bg-option: #f1f5f9;
+  --dc-bg-panel: #e9ecef;
+  --dc-bg-chassis: #e5e7eb;
+
+  // ── Tab bar ───────────────────────────────────────────────────────────────
+  --dc-tab-bar-bg: #e4e8ed;
+  --dc-tab-bar-border: #c9d0d9;
+  --dc-tab-color: #6b7280;
+  --dc-tab-hover-bg: #d1d5db;
+  --dc-tab-hover-color: #111827;
+  --dc-tab-active-bg: #ffffff;
+  --dc-tab-active-color: #111827;
+  --dc-tab-drag-bg: #dbeafe;
+  --dc-tab-accent: #2563eb;
+
+  // ── Borders ───────────────────────────────────────────────────────────────
+  --dc-border: rgba(0, 0, 0, 0.07);
+  --dc-border-strong: rgba(0, 0, 0, 0.13);
+  --dc-border-panel: #d1d5db;
+  --dc-border-chassis: #d1d5db;
+  --dc-border-detail: #dbeafe;
+
+  // ── Text ──────────────────────────────────────────────────────────────────
+  --dc-text-primary: #1e293b;
+  --dc-text-secondary: #64748b;
+  --dc-text-muted: #94a3b8;
+  --dc-text-label: #374151;
+
+  // ── Navigation — dark header on light page ────────────────────────────────
+  --dc-navbar-bg: rgba(13, 20, 38, 0.96);
+  --dc-navbar-border: rgba(255, 255, 255, 0.07);
+  --dc-navbar-link-color: rgba(226, 232, 240, 0.55);
+  --dc-navbar-link-hover-bg: rgba(255, 255, 255, 0.07);
+  --dc-navbar-link-active-color: #e2e8f0;
+  --dc-lang-btn-color: rgba(226, 232, 240, 0.45);
+  --dc-lang-btn-hover-bg: rgba(255, 255, 255, 0.07);
+  --dc-lang-btn-active-bg: rgba(255, 255, 255, 0.1);
+  --dc-lang-btn-active-border: rgba(255, 255, 255, 0.14);
+
+  // ── Accent / Status ───────────────────────────────────────────────────────
+  --dc-accent: #2563eb;
+  --dc-accent-hover: #1d4ed8;
+  --dc-accent-dim: rgba(37, 99, 235, 0.12);
+  --dc-danger: #dc2626;
+  --dc-danger-text: #dc2626;
+  --dc-danger-bg: rgba(220, 38, 38, 0.08);
+  --dc-danger-border: rgba(220, 38, 38, 0.25);
+  --dc-danger-bg-hover: rgba(220, 38, 38, 0.15);
+  --dc-close-hover-bg: rgba(220, 38, 38, 0.12);
+  --dc-close-hover-color: #dc2626;
+
+  // ── Misc ──────────────────────────────────────────────────────────────────
+  --dc-scrollbar-thumb: #c1c8d1;
+  --dc-rack-pane-bg: #f1f3f5;
+  --dc-workspace-bg: #f1f3f5;
+  --dc-map-bg: #f8f9fa;
+  --dc-drawing-area-bg: #ffffff;
+  --dc-rack-col-slot-empty: #e5e7eb;
+  --dc-upright-bg: #d1d5db;
+  --dc-rail-color: #9ca3af;
+  --dc-loading-color: #6b7280;
+  --dc-spinner-border: rgba(0, 0, 0, 0.13);
+
+  // ── Hero ──────────────────────────────────────────────────────────────────
+  // Keep hero dark-blue — brand identity preserved on light pages
+  --dc-hero-gradient: linear-gradient(
+    135deg,
+    #1b3461 0%,
+    #152a55 60%,
+    #1a3068 100%
+  );
+  --dc-hero-grid: rgba(60, 130, 220, 0.06);
+  --dc-hero-title-color: #f0f4ff;
+  --dc-hero-subtitle-color: rgba(226, 232, 240, 0.65);
+  --dc-hero-badge-color: #7ec8ff;
+  --dc-hero-badge-bg: rgba(126, 200, 255, 0.14);
+  --dc-hero-badge-border: rgba(126, 200, 255, 0.3);
+
+  // ── Home page ─────────────────────────────────────────────────────────────
+  --dc-home-stats-bg: #ffffff;
+  --dc-home-stats-border: rgba(0, 0, 0, 0.06);
+  --dc-home-stat-number: #1e293b;
+  --dc-home-stat-online: #16a34a;
+  --dc-home-stat-label: #94a3b8;
+  --dc-home-stat-divider: rgba(0, 0, 0, 0.08);
+  --dc-home-section-title: #94a3b8;
+  --dc-home-card-bg: #ffffff;
+  --dc-home-card-border: rgba(0, 0, 0, 0.08);
+  --dc-home-card-bg-hover: #f0f5ff;
+  --dc-home-card-border-hover: rgba(37, 99, 235, 0.35);
+  --dc-home-card-title: #1e293b;
+  --dc-home-card-desc: #64748b;
+  --dc-home-card-arrow: #94a3b8;
+  --dc-home-cyan: #2563eb;
+  --dc-home-cyan-bg: rgba(37, 99, 235, 0.08);
+  --dc-home-cyan-border: rgba(37, 99, 235, 0.2);
+  --dc-home-loc-meta: #94a3b8;
+  --dc-home-chip-color: #475569;
+  --dc-home-chip-bg: #f1f5f9;
+  --dc-home-chip-border: #e2e8f0;
+  --dc-home-chip-hover-bg: rgba(37, 99, 235, 0.08);
+  --dc-home-chip-hover-border: rgba(37, 99, 235, 0.28);
+  --dc-home-chip-hover-color: #2563eb;
+  --dc-home-skeleton-from: #e2e8f0;
+  --dc-home-skeleton-mid: #d1dae8;
+  --dc-home-empty-color: #94a3b8;
+
+  // ── Table elements ────────────────────────────────────────────────────────
+  --dc-hostname-color: #1d4ed8;
+  --dc-export-color: #16a34a;
+  --dc-export-bg: rgba(22, 163, 74, 0.08);
+  --dc-export-bg-hover: rgba(22, 163, 74, 0.16);
+  --dc-export-border: rgba(22, 163, 74, 0.35);
+  --dc-badge-vendor-color: #4338ca;
+  --dc-badge-vendor-bg: rgba(99, 102, 241, 0.12);
+  --dc-badge-vendor-border: rgba(67, 56, 202, 0.25);
+  --dc-badge-type-color: #059669;
+  --dc-badge-type-bg: rgba(16, 185, 129, 0.1);
+  --dc-badge-type-border: rgba(5, 150, 105, 0.25);
+  --dc-hover-subtle: rgba(0, 0, 0, 0.05);
+  --dc-count-badge-bg: rgba(0, 0, 0, 0.04);
+  --dc-count-badge-border: rgba(0, 0, 0, 0.08);
+  --dc-state-green-color: #15803d;
+  --dc-state-green-bg: rgba(21, 128, 61, 0.1);
+  --dc-state-green-border: rgba(21, 128, 61, 0.25);
+  --dc-state-yellow-color: #b45309;
+  --dc-state-yellow-bg: rgba(180, 83, 9, 0.1);
+  --dc-state-yellow-border: rgba(180, 83, 9, 0.25);
+  --dc-state-red-color: #b91c1c;
+  --dc-state-red-bg: rgba(185, 28, 28, 0.1);
+  --dc-state-red-border: rgba(185, 28, 28, 0.25);
+  --dc-state-blue-color: #1d4ed8;
+  --dc-state-blue-bg: rgba(29, 78, 216, 0.1);
+  --dc-state-blue-border: rgba(29, 78, 216, 0.25);
+
+  // ── Device faceplate ──────────────────────────────────────────────────────
+  // Devices live on a dark chassis — keep faceplates dark-blue for contrast
+  --dc-device-bg: #2b3350;
+  --dc-device-bg-hover: #35405e;
+  --dc-device-border: #4a5575;
+  --dc-device-chassis-bg: #1e2540;
+  --dc-device-text: #e8edf8;
+  --dc-device-text-secondary: #8fa3c8;
+  --dc-device-tooltip-bg: #1e293b;
+  --dc-device-tooltip-border: #3b4f6a;
+  --dc-device-tooltip-row-border: #2d3f57;
+}

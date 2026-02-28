@@ -1,14 +1,15 @@
-$bg-detail: #0d1628;
-$accent: #3b82f6;
-$border: rgba(255, 255, 255, 0.07);
-$border-strong: rgba(255, 255, 255, 0.13);
-$text-primary: #e2e8f0;
-$text-secondary: #94a3b8;
-$text-muted: #475569;
+$bg-detail: var(--dc-bg-expanded);
+$accent: var(--dc-accent);
+$border: var(--dc-border);
+$border-strong: var(--dc-border-strong);
+$text-primary: var(--dc-text-primary);
+$text-secondary: var(--dc-text-secondary);
+$text-muted: var(--dc-text-muted);
 
 :host {
   display: block;
   background: $bg-detail;
+  border-bottom: 2px solid var(--dc-accent);
 }
 
 .detail-panel {

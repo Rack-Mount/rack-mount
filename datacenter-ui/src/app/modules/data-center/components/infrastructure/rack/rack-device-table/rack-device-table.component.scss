@@ -9,7 +9,7 @@
 .rack-aside__title {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--dc-text-secondary);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -40,9 +40,9 @@ $_type-colors: (
   width: 100%;
   border-collapse: collapse;
   font-size: 0.72rem;
-  color: #d1d5db;
-  background: #1c1c1e;
-  border: 1px solid #3a3a3c;
+  color: var(--dc-text-primary);
+  background: var(--dc-bg-elevated);
+  border: 1px solid var(--dc-border-chassis);
   border-radius: 6px;
   overflow: hidden;
   border-spacing: 0;
@@ -54,9 +54,9 @@ $_type-colors: (
   font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: #6b7280;
-  background: #2c2c2e;
-  border-bottom: 1px solid #3a3a3c;
+  color: var(--dc-text-muted);
+  background: var(--dc-bg-card);
+  border-bottom: 1px solid var(--dc-border-chassis);
   white-space: nowrap;
   text-align: left;
 
@@ -82,14 +82,14 @@ $_type-colors: (
 }
 
 .device-table__row {
-  border-bottom: 1px solid #2c2c2e;
+  border-bottom: 1px solid var(--dc-border-panel);
 
   &:last-child {
     border-bottom: none;
   }
 
   &:hover td {
-    background: #242426;
+    background: var(--dc-bg-row-hover);
   }
 }
 

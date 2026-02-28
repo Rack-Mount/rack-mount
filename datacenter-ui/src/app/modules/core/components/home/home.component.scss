@@ -8,7 +8,10 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #0b1120;
+  background: var(--dc-bg-base);
   font-family: "Inter", "Segoe UI", sans-serif;
-  color: #e2e8f0;
+  color: var(--dc-text-primary);
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
 }

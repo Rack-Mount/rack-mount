@@ -6,20 +6,21 @@
 .hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #0d1525 0%, #142040 60%, #1a2a50 100%);
+  background: var(--dc-hero-gradient);
   padding: 16px 48px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 48px;
+  transition: background 0.25s ease;
 
   &::after {
     content: "";
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(0, 212, 255, 0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 212, 255, 0.045) 1px, transparent 1px);
+      linear-gradient(var(--dc-hero-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--dc-hero-grid) 1px, transparent 1px);
     background-size: 44px 44px;
     pointer-events: none;
   }
@@ -36,9 +37,9 @@
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.09em;
-  color: #00d4ff;
-  background: rgba(0, 212, 255, 0.1);
-  border: 1px solid rgba(0, 212, 255, 0.22);
+  color: var(--dc-hero-badge-color);
+  background: var(--dc-hero-badge-bg);
+  border: 1px solid var(--dc-hero-badge-border);
   border-radius: 20px;
   padding: 3px 10px;
   margin-bottom: 12px;
@@ -51,16 +52,16 @@
   line-height: 1.15;
   letter-spacing: -0.04em;
   margin: 0 0 10px;
-  color: #f0f4ff;
+  color: var(--dc-hero-title-color);
 
   .accent {
-    color: #00d4ff;
+    color: var(--dc-hero-badge-color);
   }
 }
 
 .hero-subtitle {
   font-size: 0.9rem;
-  color: rgba(226, 232, 240, 0.5);
+  color: var(--dc-hero-subtitle-color);
   margin: 0;
   line-height: 1.65;
 }

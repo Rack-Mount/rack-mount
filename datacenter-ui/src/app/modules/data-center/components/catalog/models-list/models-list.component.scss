@@ -1,15 +1,15 @@
 // ── Variables ──────────────────────────────────────────────────────────────
-$bg-base: #0b1120;
-$bg-surface: #131c2e;
-$bg-row: #111827;
-$bg-row-hover: #1a2540;
-$border: rgba(255, 255, 255, 0.07);
-$border-strong: rgba(255, 255, 255, 0.13);
-$accent: #3b82f6;
-$danger: #ef4444;
-$text-primary: #e2e8f0;
-$text-secondary: #94a3b8;
-$text-muted: #475569;
+$bg-base: var(--dc-bg-base);
+$bg-surface: var(--dc-bg-surface);
+$bg-row: var(--dc-bg-row);
+$bg-row-hover: var(--dc-bg-row-hover);
+$border: var(--dc-border);
+$border-strong: var(--dc-border-strong);
+$accent: var(--dc-accent);
+$danger: var(--dc-danger);
+$text-primary: var(--dc-text-primary);
+$text-secondary: var(--dc-text-secondary);
+$text-muted: var(--dc-text-muted);
 
 :host {
   display: flex;
@@ -133,7 +133,7 @@ $text-muted: #475569;
     height: 13px;
   }
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--dc-hover-subtle);
     color: $text-primary;
   }
 }
@@ -141,7 +141,8 @@ $text-muted: #475569;
 .count-badge {
   font-size: 0.78rem;
   color: $text-secondary;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--dc-count-badge-bg);
+  border: 1px solid var(--dc-count-badge-border);
   padding: 4px 10px;
   border-radius: 12px;
 }
@@ -317,13 +318,13 @@ $text-muted: #475569;
   border-radius: 4px;
 
   &--vendor {
-    background: rgba(99, 102, 241, 0.15);
-    color: #a5b4fc;
+    background: var(--dc-badge-vendor-bg);
+    color: var(--dc-badge-vendor-color);
   }
 
   &--type {
-    background: rgba(16, 185, 129, 0.13);
-    color: #6ee7b7;
+    background: var(--dc-badge-type-bg);
+    color: var(--dc-badge-type-color);
   }
 }
 
@@ -372,24 +373,24 @@ $text-muted: #475569;
 .btn-edit {
   @extend %btn-row-base;
   background: transparent;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  color: #93c5fd;
+  border: 1px solid var(--dc-accent-dim);
+  color: var(--dc-accent);
   &:hover {
-    background: rgba(59, 130, 246, 0.18);
-    border-color: rgba(59, 130, 246, 0.6);
-    color: #bfdbfe;
+    background: var(--dc-accent-dim);
+    border-color: var(--dc-accent);
+    color: var(--dc-accent);
   }
 }
 
 .btn-delete {
   @extend %btn-row-base;
   background: transparent;
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  color: #fca5a5;
+  border: 1px solid var(--dc-danger-border);
+  color: var(--dc-danger-text);
   &:hover {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.55);
-    color: #fecaca;
+    background: var(--dc-danger-bg);
+    border-color: var(--dc-danger);
+    color: var(--dc-danger-text);
   }
 }
 
@@ -435,7 +436,7 @@ $text-muted: #475569;
   border: 1px solid $border-strong;
   color: $text-secondary;
   &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--dc-hover-subtle);
     color: $text-primary;
   }
   &:disabled {
