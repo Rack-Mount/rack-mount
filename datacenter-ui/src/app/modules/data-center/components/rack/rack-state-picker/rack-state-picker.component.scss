@@ -1,0 +1,42 @@
+.rack-state-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9992;
+  background: transparent;
+}
+
+.rack-state-picker {
+  position: fixed;
+  z-index: 9993;
+  width: 180px;
+  background: #1c1c1e;
+  border: 1px solid #3a3a3c;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  padding: 4px 0;
+
+  &__item {
+    display: block;
+    width: 100%;
+    padding: 7px 14px;
+    background: none;
+    border: none;
+    color: #e5e7eb;
+    font-size: 0.75rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 80ms ease;
+    &:hover {
+      background: #2c2c2e;
+      color: #fff;
+    }
+  }
+
+  &__saving {
+    padding: 10px 14px;
+    font-size: 0.72rem;
+    color: #9ca3af;
+    text-align: center;
+  }
+}

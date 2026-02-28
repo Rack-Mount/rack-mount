@@ -1,0 +1,178 @@
+// ── Bulk remove modal ─────────────────────────────────────────────────────
+
+.rack-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9994;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.rack-modal {
+  position: fixed;
+  z-index: 9995;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(400px, calc(100vw - 32px));
+  background: #1c1c1e;
+  border: 1px solid #3a3a3c;
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.75);
+  padding: 24px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  &__icon {
+    color: #f59e0b;
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #f0f0f0;
+    line-height: 1.3;
+  }
+
+  &__sub {
+    margin: 0 0 20px;
+    font-size: 0.73rem;
+    color: #9ca3af;
+    line-height: 1.5;
+
+    strong {
+      color: #d1d5db;
+      font-weight: 600;
+    }
+  }
+
+  &__saving {
+    padding: 12px 0;
+    font-size: 0.78rem;
+    color: #9ca3af;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  &__btn {
+    flex: 1;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 80ms ease;
+
+    &--cancel {
+      background: #2c2c2e;
+      color: #9ca3af;
+      border-color: #3a3a3c;
+      &:hover {
+        background: #3a3a3c;
+        color: #d1d5db;
+      }
+    }
+
+    &--confirm {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.35);
+      &:hover {
+        background: rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+      }
+    }
+  }
+}
+
+// ── Single remove confirmation popover ───────────────────────────────────────
+
+.rack-remove-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9992;
+  background: transparent;
+}
+
+.rack-remove-confirm {
+  position: fixed;
+  z-index: 9993;
+  width: 220px;
+  background: #1c1c1e;
+  border: 1px solid #3a3a3c;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  padding: 12px 14px 10px;
+
+  &__msg {
+    margin: 0 0 6px;
+    font-size: 0.75rem;
+    color: #e5e7eb;
+    line-height: 1.4;
+  }
+
+  &__note {
+    margin: 0 0 10px;
+    font-size: 0.68rem;
+    color: #9ca3af;
+    line-height: 1.4;
+
+    strong {
+      color: #d1d5db;
+      font-weight: 600;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+
+  &__btn {
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 80ms ease;
+
+    &--cancel {
+      background: #2c2c2e;
+      color: #9ca3af;
+      border-color: #3a3a3c;
+      &:hover {
+        background: #3a3a3c;
+        color: #d1d5db;
+      }
+    }
+
+    &--confirm {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.35);
+      &:hover {
+        background: rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+      }
+    }
+  }
+
+  &__saving {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    text-align: center;
+    padding: 4px 0;
+  }
+}

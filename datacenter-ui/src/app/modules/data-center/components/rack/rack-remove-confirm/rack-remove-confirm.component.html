@@ -1,0 +1,81 @@
+@if (mode() === "single") {
+  <!-- ── Single-remove popover ─────────────────────── -->
+  <div class="rack-remove-backdrop" (click)="close()"></div>
+  <div
+    class="rack-remove-confirm"
+    [style.top.px]="anchorY()"
+    [style.left.px]="anchorX()"
+    (click)="$event.stopPropagation()"
+  >
+    @if (_saving()) {
+      <div class="rack-remove-confirm__saving">Rimozione in corso…</div>
+    } @else {
+      <p class="rack-remove-confirm__msg">Rimuovere l'apparato dal rack?</p>
+      @if (decommissionedStateId()) {
+        <p class="rack-remove-confirm__note">
+          Lo stato sarà impostato a <strong>Decommissionato</strong>.
+        </p>
+      }
+      <div class="rack-remove-confirm__actions">
+        <button
+          class="rack-remove-confirm__btn rack-remove-confirm__btn--cancel"
+          (click)="close()"
+        >
+          Annulla
+        </button>
+        <button
+          class="rack-remove-confirm__btn rack-remove-confirm__btn--confirm"
+          (click)="executeSingleRemove()"
+        >
+          Rimuovi
+        </button>
+      </div>
+    }
+  </div>
+}
+
+@if (mode() === "bulk") {
+  <!-- ── Bulk-remove modal ─────────────────────────── -->
+  <div class="rack-modal-backdrop" (click)="close()"></div>
+  <div class="rack-modal" (click)="$event.stopPropagation()">
+    @if (_saving()) {
+      <div class="rack-modal__saving">
+        Rimozione in corso ({{ selectedCount() }} apparati)…
+      </div>
+    } @else {
+      <div class="rack-modal__icon">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="28" height="28">
+          <path
+            fill-rule="evenodd"
+            d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+      <p class="rack-modal__title">
+        Rimuovere {{ selectedCount() }} apparati dal rack?
+      </p>
+      <p class="rack-modal__sub">
+        Questa azione rimuove gli apparati selezionati dalle loro posizioni.
+        @if (decommissionedStateId()) {
+          Lo stato di ciascun apparato sarà impostato a
+          <strong>Decommissionato</strong>.
+        }
+      </p>
+      <div class="rack-modal__actions">
+        <button
+          class="rack-modal__btn rack-modal__btn--cancel"
+          (click)="close()"
+        >
+          Annulla
+        </button>
+        <button
+          class="rack-modal__btn rack-modal__btn--confirm"
+          (click)="executeBulkRemove()"
+        >
+          Rimuovi {{ selectedCount() }} apparati
+        </button>
+      </div>
+    }
+  </div>
+}

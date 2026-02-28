@@ -15,19 +15,13 @@ import {
   toObservable,
   toSignal,
 } from '@angular/core/rxjs-interop';
-import {
-  catchError,
-  combineLatest,
-  concat,
-  forkJoin,
-  map,
-  of,
-  switchMap,
-} from 'rxjs';
+import { catchError, combineLatest, concat, map, of, switchMap } from 'rxjs';
 import { AssetService, AssetState, Rack, RackUnit } from '../../../core/api/v1';
 import { RackRender } from '../../models/RackRender';
 import { DeviceComponent } from '../device/device.component';
 import { RackInstallPanelComponent } from './rack-install-panel/rack-install-panel.component';
+import { RackRemoveConfirmComponent } from './rack-remove-confirm/rack-remove-confirm.component';
+import { RackStatePickerComponent } from './rack-state-picker/rack-state-picker.component';
 
 type UnitsState =
   | { status: 'idle' }
@@ -52,7 +46,12 @@ const RACK_OVERHEAD_PX = 72;
 
 @Component({
   selector: 'app-rack',
-  imports: [DeviceComponent, RackInstallPanelComponent],
+  imports: [
+    DeviceComponent,
+    RackInstallPanelComponent,
+    RackStatePickerComponent,
+    RackRemoveConfirmComponent,
+  ],
   templateUrl: './rack.component.html',
   styleUrl: './rack.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -149,8 +148,6 @@ export class RackComponent {
   readonly _removeConfirmY = signal<number>(0);
   /** Asset (device) ID associated with the rack unit pending removal. */
   readonly _removeConfirmAssetId = signal<number | null>(null);
-  /** True while the single DELETE request is in flight. */
-  readonly _removeSaving = signal(false);
 
   /**
    * ID of the state whose name contains "decomm" or "dismess" (case-insensitive).
@@ -168,8 +165,10 @@ export class RackComponent {
 
   /** True when the bulk-remove confirmation modal is open. */
   readonly _bulkRemoveConfirm = signal(false);
-  /** True while bulk DELETE requests are in flight. */
-  readonly _bulkRemoving = signal(false);
+  /** Rack-unit IDs pre-computed when the bulk-remove modal opens. */
+  readonly _bulkRUIdsForConfirm = signal<number[]>([]);
+  /** Asset IDs pre-computed when the bulk-remove modal opens. */
+  readonly _bulkAssetIdsForConfirm = signal<number[]>([]);
 
   // ── State picker ──────────────────────────────────────────────────────────
 
@@ -179,8 +178,6 @@ export class RackComponent {
   readonly _statePickerX = signal<number>(0);
   /** Viewport Y offset for the state picker. */
   readonly _statePickerY = signal<number>(0);
-  /** True while the state PATCH is in flight. */
-  readonly _stateUpdateSaving = signal(false);
   /** All available asset states, loaded once. */
   readonly availableStates = signal<AssetState[]>([]);
 
@@ -332,6 +329,16 @@ export class RackComponent {
   );
 
   protected openBulkRemoveConfirm(): void {
+    const ids = [...this._selectedIds()];
+    const rows = this.deviceRows().filter((r) => !!r.device);
+    const ruToAsset = new Map(
+      rows.map((r) => [r.device!.id, +r.device!.device_id]),
+    );
+    const assetIds = ids
+      .map((id) => ruToAsset.get(id))
+      .filter((id): id is number => id !== undefined);
+    this._bulkRUIdsForConfirm.set(ids);
+    this._bulkAssetIdsForConfirm.set(assetIds);
     this._bulkRemoveConfirm.set(true);
   }
 
@@ -339,46 +346,8 @@ export class RackComponent {
     this._bulkRemoveConfirm.set(false);
   }
 
-  protected executeBulkRemove(): void {
-    const ids = [...this._selectedIds()];
-    if (!ids.length) return;
-    const stateId = this.decommissionedStateId();
-
-    // Build rack-unit-id → asset-id map from current rendered rows
-    const ruToAsset = new Map<number, number>(
-      this.deviceRows()
-        .filter((r) => !!r.device)
-        .map((r) => [r.device!.id, +r.device!.device_id]),
-    );
-
-    this._bulkRemoving.set(true);
-
-    const destroys = ids.map((id) =>
-      this.assetService.assetRackUnitDestroy({ id }),
-    );
-    const patches = stateId
-      ? ids
-          .map((id) => ruToAsset.get(id))
-          .filter((assetId): assetId is number => !!assetId)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .map((assetId) =>
-            this.assetService.assetAssetPartialUpdate({
-              id: assetId,
-              patchedAsset: { state_id: stateId } as any,
-            }),
-          )
-      : [];
-
-    forkJoin([...destroys, ...patches]).subscribe({
-      next: () => {
-        this._bulkRemoving.set(false);
-        this.closeBulkRemoveConfirm();
-        this.refreshRack();
-      },
-      error: () => {
-        this._bulkRemoving.set(false);
-      },
-    });
+  protected onBulkRemoveConfirmed(): void {
+    this.refreshRack();
   }
 
   protected openRemoveConfirm(
@@ -407,37 +376,12 @@ export class RackComponent {
     this._removeConfirmAssetId.set(null);
   }
 
-  protected executeRemove(): void {
-    const id = this._removeConfirmId();
-    const assetId = this._removeConfirmAssetId();
-    const stateId = this.decommissionedStateId();
-    if (!id) return;
-    this._removeSaving.set(true);
-
-    const destroy$ = this.assetService.assetRackUnitDestroy({ id });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const patch$ =
-      assetId && stateId
-        ? this.assetService.assetAssetPartialUpdate({
-            id: assetId,
-            patchedAsset: { state_id: stateId } as any,
-          })
-        : of(null);
-
-    forkJoin([destroy$, patch$]).subscribe({
-      next: () => {
-        this._removeSaving.set(false);
-        this.closeRemoveConfirm();
-        this.refreshRack();
-      },
-      error: () => {
-        this._removeSaving.set(false);
-      },
-    });
+  protected onSingleRemoveConfirmed(): void {
+    this.refreshRack();
   }
 
   /** Clears selection and bumps the refresh counter. */
-  private refreshRack(): void {
+  protected refreshRack(): void {
     this._selectedIds.set(new Set());
     this._refresh.update((v) => v + 1);
   }
@@ -462,27 +406,6 @@ export class RackComponent {
 
   protected closeStatePicker(): void {
     this._statePickerDeviceId.set(null);
-  }
-
-  protected pickState(stateId: number): void {
-    const deviceId = this._statePickerDeviceId();
-    if (!deviceId) return;
-    this._stateUpdateSaving.set(true);
-    this.assetService
-      .assetAssetPartialUpdate({
-        id: deviceId,
-        patchedAsset: { state_id: stateId } as any,
-      })
-      .subscribe({
-        next: () => {
-          this._stateUpdateSaving.set(false);
-          this.closeStatePicker();
-          this.refreshRack();
-        },
-        error: () => {
-          this._stateUpdateSaving.set(false);
-        },
-      });
   }
 
   /** Map a raw device_type string to the same CSS modifier key used by DeviceComponent. */

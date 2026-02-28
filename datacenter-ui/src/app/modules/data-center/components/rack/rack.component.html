@@ -333,105 +333,41 @@
 </div>
 <!-- /rack-view -->
 
-<!-- ── Bulk remove confirmation modal ────────────────────────── -->
+<!-- ── Bulk remove confirmation modal ─────────────────────── -->
 @if (_bulkRemoveConfirm()) {
-  <div class="rack-modal-backdrop" (click)="closeBulkRemoveConfirm()"></div>
-  <div class="rack-modal" (click)="$event.stopPropagation()">
-    @if (_bulkRemoving()) {
-      <div class="rack-modal__saving">
-        Rimozione in corso ({{ selectedCount() }} apparati)…
-      </div>
-    } @else {
-      <div class="rack-modal__icon">
-        <svg viewBox="0 0 20 20" fill="currentColor" width="28" height="28">
-          <path
-            fill-rule="evenodd"
-            d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </div>
-      <p class="rack-modal__title">
-        Rimuovere {{ selectedCount() }} apparati dal rack?
-      </p>
-      <p class="rack-modal__sub">
-        Questa azione rimuove gli apparati selezionati dalle loro posizioni.
-        @if (decommissionedStateId()) {
-          Lo stato di ciascun apparato sarà impostato a
-          <strong>Decommissionato</strong>.
-        }
-      </p>
-      <div class="rack-modal__actions">
-        <button
-          class="rack-modal__btn rack-modal__btn--cancel"
-          (click)="closeBulkRemoveConfirm()"
-        >
-          Annulla
-        </button>
-        <button
-          class="rack-modal__btn rack-modal__btn--confirm"
-          (click)="executeBulkRemove()"
-        >
-          Rimuovi {{ selectedCount() }} apparati
-        </button>
-      </div>
-    }
-  </div>
+  <app-rack-remove-confirm
+    mode="bulk"
+    [bulkRackUnitIds]="_bulkRUIdsForConfirm()"
+    [bulkAssetIds]="_bulkAssetIdsForConfirm()"
+    [selectedCount]="selectedCount()"
+    [decommissionedStateId]="decommissionedStateId()"
+    (confirmed)="onBulkRemoveConfirmed()"
+    (closed)="closeBulkRemoveConfirm()"
+  />
 }
 
-<!-- ── Remove confirmation popover ───────────────────────────── -->
+<!-- ── Remove confirmation popover ─────────────────────── -->
 @if (_removeConfirmId()) {
-  <div class="rack-remove-backdrop" (click)="closeRemoveConfirm()"></div>
-  <div
-    class="rack-remove-confirm"
-    [style.top.px]="_removeConfirmY()"
-    [style.left.px]="_removeConfirmX()"
-    (click)="$event.stopPropagation()"
-  >
-    @if (_removeSaving()) {
-      <div class="rack-remove-confirm__saving">Rimozione in corso…</div>
-    } @else {
-      <p class="rack-remove-confirm__msg">Rimuovere l'apparato dal rack?</p>
-      @if (decommissionedStateId()) {
-        <p class="rack-remove-confirm__note">
-          Lo stato sarà impostato a <strong>Decommissionato</strong>.
-        </p>
-      }
-      <div class="rack-remove-confirm__actions">
-        <button
-          class="rack-remove-confirm__btn rack-remove-confirm__btn--cancel"
-          (click)="closeRemoveConfirm()"
-        >
-          Annulla
-        </button>
-        <button
-          class="rack-remove-confirm__btn rack-remove-confirm__btn--confirm"
-          (click)="executeRemove()"
-        >
-          Rimuovi
-        </button>
-      </div>
-    }
-  </div>
+  <app-rack-remove-confirm
+    mode="single"
+    [rackUnitId]="_removeConfirmId()!"
+    [assetId]="_removeConfirmAssetId()"
+    [anchorX]="_removeConfirmX()"
+    [anchorY]="_removeConfirmY()"
+    [decommissionedStateId]="decommissionedStateId()"
+    (confirmed)="onSingleRemoveConfirmed()"
+    (closed)="closeRemoveConfirm()"
+  />
 }
 
 <!-- ── State picker popover ───────────────────────────────────── -->
 @if (_statePickerDeviceId()) {
-  <div class="rack-state-backdrop" (click)="closeStatePicker()"></div>
-  <div
-    class="rack-state-picker"
-    [style.top.px]="_statePickerY()"
-    [style.left.px]="_statePickerX()"
-    (click)="$event.stopPropagation()"
-  >
-    @if (_stateUpdateSaving()) {
-      <div class="rack-state-picker__saving">Salvataggio…</div>
-    } @else {
-      @for (s of availableStates(); track s.id) {
-        <button class="rack-state-picker__item" (click)="pickState(s.id)">
-          {{ s.name }}
-        </button>
-      }
-    }
-  </div>
+  <app-rack-state-picker
+    [states]="availableStates()"
+    [anchorX]="_statePickerX()"
+    [anchorY]="_statePickerY()"
+    [deviceId]="_statePickerDeviceId()!"
+    (stateChanged)="refreshRack()"
+    (closed)="closeStatePicker()"
+  />
 }
