@@ -21,6 +21,13 @@ $text-muted: var(--dc-text-muted);
   color: $text-primary;
 }
 
+.vendors-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
 // ── Toolbar ────────────────────────────────────────────────────────────────
 .toolbar {
   display: flex;
@@ -127,8 +134,19 @@ $text-muted: var(--dc-text-muted);
 .table-wrap {
   flex: 1;
   overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0 20px 20px;
+  overflow-x: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--dc-scrollbar-thumb) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--dc-scrollbar-thumb);
+    border-radius: 3px;
+  }
 }
 
 .state-full {
@@ -164,21 +182,27 @@ $text-muted: var(--dc-text-muted);
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 12px;
-  font-size: 0.875rem;
+  font-size: 0.865rem;
 
-  thead tr {
-    border-bottom: 1px solid $border-strong;
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    tr {
+      background: $bg-surface;
+      border-bottom: 1px solid $border-strong;
+    }
   }
 
   th {
     padding: 10px 14px;
     text-align: left;
-    color: $text-secondary;
-    font-weight: 500;
-    font-size: 0.78rem;
-    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
     letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $text-muted;
     white-space: nowrap;
   }
 
@@ -236,6 +260,8 @@ $text-muted: var(--dc-text-muted);
 
   td {
     padding: 10px 14px;
+    vertical-align: middle;
+    color: $text-primary;
   }
 }
 
@@ -269,7 +295,7 @@ $text-muted: var(--dc-text-muted);
 
 .inline-error {
   font-size: 0.75rem;
-  color: #f87171;
+  color: var(--dc-danger-text);
   margin-left: 8px;
 }
 

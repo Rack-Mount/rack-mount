@@ -22,6 +22,13 @@ $text-muted: var(--dc-text-muted);
   position: relative;
 }
 
+.models-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
 // ── Toolbar ────────────────────────────────────────────────────────────────
 .toolbar {
   display: flex;
@@ -120,21 +127,20 @@ $text-muted: var(--dc-text-muted);
   display: flex;
   align-items: center;
   gap: 4px;
-  background: transparent;
-  border: 1px solid $border-strong;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.28);
   border-radius: 8px;
-  color: $text-secondary;
-  font-size: 0.8rem;
-  padding: 6px 10px;
+  color: var(--dc-danger-text);
+  font-size: 0.82rem;
+  padding: 7px 12px;
   cursor: pointer;
-  transition: background 0.1s;
+  transition: background 0.15s;
   svg {
     width: 13px;
     height: 13px;
   }
   &:hover {
-    background: var(--dc-hover-subtle);
-    color: $text-primary;
+    background: rgba(239, 68, 68, 0.22);
   }
 }
 
@@ -174,7 +180,18 @@ $text-muted: var(--dc-text-muted);
   flex: 1;
   overflow-y: auto;
   overflow-x: auto;
-  padding: 0 20px 20px;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--dc-scrollbar-thumb) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--dc-scrollbar-thumb);
+    border-radius: 3px;
+  }
 }
 
 .state-full {
@@ -295,6 +312,7 @@ $text-muted: var(--dc-text-muted);
   td {
     padding: 10px 14px;
     vertical-align: middle;
+    color: $text-primary;
   }
 }
 
@@ -513,7 +531,7 @@ $text-muted: var(--dc-text-muted);
   height: 100%;
   width: 380px;
   max-width: 95vw;
-  background: #0e1929;
+  background: $bg-surface;
   border-left: 1px solid $border-strong;
   display: flex;
   flex-direction: column;
@@ -548,7 +566,7 @@ $text-muted: var(--dc-text-muted);
   border-radius: 4px;
   &:hover {
     color: $text-primary;
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--dc-hover-subtle);
   }
 }
 
@@ -572,7 +590,7 @@ $text-muted: var(--dc-text-muted);
   font-weight: 500;
   color: $text-secondary;
   .req {
-    color: #f87171;
+    color: var(--dc-danger-text);
   }
 }
 
@@ -644,7 +662,7 @@ $text-muted: var(--dc-text-muted);
   padding: 8px 16px;
   cursor: pointer;
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--dc-hover-subtle);
     color: $text-primary;
   }
 }

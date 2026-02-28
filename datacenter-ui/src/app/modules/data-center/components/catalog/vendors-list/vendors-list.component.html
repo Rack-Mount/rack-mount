@@ -248,35 +248,35 @@
           }
         </tbody>
       </table>
-
-      <!-- Pagination -->
-      @if (totalPages() > 1) {
-        <div class="pagination">
-          <button
-            class="page-btn"
-            [disabled]="page() === 1"
-            (click)="goPage(page() - 1)"
-          >
-            ‹
-          </button>
-          @for (n of pageNumbers(); track n) {
-            <button
-              class="page-btn"
-              [class.page-btn--active]="n === page()"
-              (click)="goPage(n)"
-            >
-              {{ n }}
-            </button>
-          }
-          <button
-            class="page-btn"
-            [disabled]="page() === totalPages()"
-            (click)="goPage(page() + 1)"
-          >
-            ›
-          </button>
-        </div>
-      }
     }
   </div>
+
+  <!-- Pagination -->
+  @if (totalPages() > 1) {
+    <div class="pagination">
+      <button
+        class="page-btn"
+        [disabled]="page() === 1"
+        (click)="goPage(page() - 1)"
+      >
+        ‹
+      </button>
+      @for (n of pageNumbers(); track n) {
+        <button
+          class="page-btn"
+          [class.page-btn--active]="n === page()"
+          (click)="goPage(n)"
+        >
+          {{ n }}
+        </button>
+      }
+      <button
+        class="page-btn"
+        [disabled]="page() === totalPages()"
+        (click)="goPage(page() + 1)"
+      >
+        ›
+      </button>
+    </div>
+  }
 </div>
