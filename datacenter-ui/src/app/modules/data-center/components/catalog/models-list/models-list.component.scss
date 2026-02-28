@@ -400,12 +400,12 @@ $text-muted: var(--dc-text-muted);
 .btn-edit {
   @extend %btn-row-base;
   background: transparent;
-  border: 1px solid var(--dc-accent-dim);
-  color: var(--dc-text-primary);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  color: var(--dc-accent-text);
   &:hover {
     background: var(--dc-accent-dim);
-    border-color: var(--dc-text-primary);
-    color: var(--dc-accent);
+    border-color: rgba(96, 165, 250, 0.6);
+    color: var(--dc-accent-text);
   }
 }
 
@@ -682,17 +682,17 @@ $text-muted: var(--dc-text-muted);
 }
 
 .btn-save {
-  background: $accent;
-  border: none;
+  background: var(--dc-action-bg);
+  border: 1px solid transparent;
   border-radius: 8px;
-  color: #fff;
+  color: var(--dc-action-text);
   font-size: 0.85rem;
   font-weight: 500;
   padding: 8px 20px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s;
   &:hover:not(:disabled) {
-    filter: brightness(1.1);
+    background: var(--dc-action-bg-hover);
   }
   &:disabled {
     opacity: 0.5;

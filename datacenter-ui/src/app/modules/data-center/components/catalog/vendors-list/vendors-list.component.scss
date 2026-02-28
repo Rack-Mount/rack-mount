@@ -335,13 +335,23 @@ $text-muted: var(--dc-text-muted);
     height: 14px;
   }
 
-  &--edit:hover {
-    background: var(--dc-accent-dim);
-    color: $accent;
+  &--edit {
+    border: 1px solid rgba(96, 165, 250, 0.25);
+    color: var(--dc-accent-text);
+    &:hover {
+      background: var(--dc-accent-dim);
+      border-color: rgba(96, 165, 250, 0.55);
+      color: var(--dc-accent-text);
+    }
   }
-  &--delete:hover {
-    background: var(--dc-danger-bg);
-    color: $danger;
+  &--delete {
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: var(--dc-danger-text);
+    &:hover {
+      background: var(--dc-danger-bg);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: var(--dc-danger-text);
+    }
   }
 }
 
