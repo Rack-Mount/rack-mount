@@ -59,8 +59,14 @@
   <div class="content-pane home-pane" [hidden]="activeTabId() !== 'home'">
     @defer (on idle) {
       <app-home />
+    } @loading (minimum 150ms) {
+      <div class="loading-state">Caricamento…</div>
     } @placeholder {
       <div class="loading-state">Caricamento…</div>
+    } @error {
+      <div class="loading-state loading-state--error">
+        Impossibile caricare la pagina.
+      </div>
     }
   </div>
 
@@ -68,8 +74,14 @@
   <div class="content-pane" [hidden]="activeTabId() !== 'assets'">
     @defer (when activeTabId() === 'assets'; prefetch on idle) {
       <app-assets-list />
+    } @loading (minimum 150ms) {
+      <div class="loading-state">Caricamento asset…</div>
     } @placeholder {
-      <div class="loading-state">Caricamento…</div>
+      <div class="loading-state">Caricamento asset…</div>
+    } @error {
+      <div class="loading-state loading-state--error">
+        Impossibile caricare gli asset.
+      </div>
     }
   </div>
 
@@ -79,8 +91,14 @@
       <div class="content-pane" [hidden]="activeTabId() !== tab.id">
         @defer (when activeTabId() === tab.id; prefetch on idle) {
           <app-map [roomId]="tab.roomId" />
+        } @loading (minimum 150ms) {
+          <div class="loading-state">Apertura room…</div>
         } @placeholder {
           <div class="loading-state">Apertura room…</div>
+        } @error {
+          <div class="loading-state loading-state--error">
+            Impossibile caricare la mappa.
+          </div>
         }
       </div>
     }
@@ -95,8 +113,14 @@
             [rackName]="tab.rackName!"
             (rackNotFound)="onRackNotFound($event)"
           />
+        } @loading (minimum 150ms) {
+          <div class="loading-state">Caricamento rack…</div>
         } @placeholder {
           <div class="loading-state">Caricamento rack…</div>
+        } @error {
+          <div class="loading-state loading-state--error">
+            Impossibile caricare il rack.
+          </div>
         }
       </div>
     }
@@ -106,6 +130,14 @@
   <div class="content-pane" [hidden]="activeTabId() !== 'not-found'">
     @defer (when activeTabId() === 'not-found'; prefetch on idle) {
       <app-not-found />
+    } @loading (minimum 150ms) {
+      <div class="loading-state">Caricamento…</div>
+    } @placeholder {
+      <div class="loading-state">Caricamento…</div>
+    } @error {
+      <div class="loading-state loading-state--error">
+        Pagina non disponibile.
+      </div>
     }
   </div>
 </div>

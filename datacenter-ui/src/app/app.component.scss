@@ -152,4 +152,9 @@
   color: #6c757d;
   font-size: 14px;
   font-style: italic;
+
+  &--error {
+    color: #f87171;
+    font-style: normal;
+  }
 }

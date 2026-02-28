@@ -7,18 +7,18 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { merge } from 'rxjs';
 import { filter, startWith } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HeaderComponent } from './modules/core/components/header/header.component';
 import { HomeComponent } from './modules/core/components/home/home.component';
+import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
+import { TabService } from './modules/core/services/tab.service';
+import { AssetsListComponent } from './modules/data-center/components/assets-list/assets-list.component';
+import { PanelTab } from './modules/data-center/components/detail-panel/detail-panel.types';
 import { MapComponent } from './modules/data-center/components/map/map.component';
 import { RackComponent } from './modules/data-center/components/rack/rack.component';
-import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
-import { AssetsListComponent } from './modules/data-center/components/assets-list/assets-list.component';
-import { TabService } from './modules/core/services/tab.service';
-import { PanelTab } from './modules/data-center/components/detail-panel/detail-panel.types';
 
 @Component({
   selector: 'app-root',
