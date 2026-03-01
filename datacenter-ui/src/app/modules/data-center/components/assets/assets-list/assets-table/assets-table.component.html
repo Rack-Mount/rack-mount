@@ -172,6 +172,7 @@
         >
           {{ "assets.col_serial" | translate }}
         </th>
+        <th class="col-rack">{{ "assets.col_rack" | translate }}</th>
         <th
           class="col-updated sortable"
           [class.sort-asc]="sortField === 'updated_at' && sortDir === 'asc'"
@@ -196,6 +197,7 @@
             <td><span class="skel skel--type"></span></td>
             <td><span class="skel skel--state"></span></td>
             <td><span class="skel skel--serial"></span></td>
+            <td><span class="skel skel--rack"></span></td>
             <td><span class="skel skel--date"></span></td>
             <td></td>
           </tr>
@@ -205,7 +207,7 @@
       <!-- Error -->
       @if (listState.status === "error") {
         <tr>
-          <td colspan="9" class="empty-cell">
+          <td colspan="10" class="empty-cell">
             <div class="empty-state">
               <svg viewBox="0 0 24 24" fill="none">
                 <circle
@@ -299,6 +301,33 @@
             <td class="col-serial">
               <span class="mono">{{ asset.serial_number || "—" }}</span>
             </td>
+            <td class="col-rack">
+              @if (asset.rack; as r) {
+                <span class="rack-chip">
+                  <svg viewBox="0 0 12 12" fill="none">
+                    <rect
+                      x="1"
+                      y="2"
+                      width="10"
+                      height="8"
+                      rx="1"
+                      stroke="currentColor"
+                      stroke-width="1.2"
+                    />
+                    <path
+                      d="M3 5h6M3 7.5h4"
+                      stroke="currentColor"
+                      stroke-width="1"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  {{ r.name }}
+                  <span class="rack-chip__pos">U{{ r.position }}</span>
+                </span>
+              } @else {
+                <span class="rack-empty">—</span>
+              }
+            </td>
             <td class="col-updated">
               <span [title]="formatDate(asset.updated_at)">
                 {{ relativeDate(asset.updated_at) }}
@@ -325,7 +354,7 @@
           <!-- Expanded detail row -->
           @if (expandedId === asset.id) {
             <tr class="detail-row">
-              <td colspan="9">
+              <td colspan="10">
                 <app-asset-row-detail
                   [asset]="asset"
                   [today]="today"

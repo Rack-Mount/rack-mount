@@ -121,6 +121,43 @@ $text-muted: mx.$text-muted;
 .col-serial {
   min-width: 140px;
 }
+.col-rack {
+  min-width: 130px;
+}
+
+// ── Rack chip ─────────────────────────────────────────────────────────────────
+.rack-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 5px;
+  border-radius: 6px;
+  background: var(--dc-bg-row-alt);
+  border: 1px solid var(--dc-border);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--dc-text-secondary);
+  white-space: nowrap;
+
+  svg {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+    color: var(--dc-text-muted);
+  }
+
+  &__pos {
+    color: var(--dc-text-muted);
+    font-size: 0.7rem;
+    margin-left: 2px;
+  }
+}
+
+.rack-empty {
+  color: var(--dc-text-muted);
+  font-size: 0.85rem;
+}
+
 .col-updated {
   width: 90px;
   text-align: right;
@@ -374,6 +411,10 @@ $text-muted: mx.$text-muted;
   }
   &--serial {
     width: 110px;
+  }
+  &--rack {
+    width: 90px;
+    border-radius: 8px;
   }
   &--date {
     width: 50px;

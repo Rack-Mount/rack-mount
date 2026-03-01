@@ -7,6 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AssetRack } from './assetRack';
 import { AssetModel } from './assetModel';
 import { AssetState } from './assetState';
 
@@ -21,6 +22,7 @@ export interface PatchedAsset {
     readonly state?: AssetState;
     model_id?: number;
     state_id?: number;
+    rack?: AssetRack;
     hostname?: string;
     serial_number?: string;
     sap_id?: string;

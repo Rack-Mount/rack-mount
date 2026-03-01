@@ -172,6 +172,7 @@
     "col_type": "Type",
     "col_state": "État",
     "col_serial": "Numéro de série",
+    "col_rack": "Rack",
     "col_updated": "Mis à jour",
     "error_loading": "Erreur lors du chargement des équipements",
     "retry": "Réessayer",

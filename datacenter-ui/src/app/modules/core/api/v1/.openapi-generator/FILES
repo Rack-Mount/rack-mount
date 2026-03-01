@@ -15,6 +15,7 @@ model/asset.ts
 model/assetAssetModelImportCreateRequest.ts
 model/assetCustomField.ts
 model/assetModel.ts
+model/assetRack.ts
 model/assetState.ts
 model/assetType.ts
 model/location.ts

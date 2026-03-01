@@ -145,6 +145,7 @@
     "col_type": "Typ",
     "col_state": "Status",
     "col_serial": "Seriennummer",
+    "col_rack": "Rack",
     "col_updated": "Aktualisiert",
     "error_loading": "Fehler beim Laden der Geräte",
     "retry": "Erneut versuchen",

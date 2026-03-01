@@ -174,6 +174,7 @@
     "col_type": "Tipo",
     "col_state": "Stato",
     "col_serial": "Seriale",
+    "col_rack": "Rack",
     "col_updated": "Aggiornato",
     "error_loading": "Errore nel caricamento degli asset",
     "retry": "Riprova",

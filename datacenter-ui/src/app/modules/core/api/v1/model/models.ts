@@ -2,6 +2,7 @@ export * from './asset';
 export * from './assetAssetModelImportCreateRequest';
 export * from './assetCustomField';
 export * from './assetModel';
+export * from './assetRack';
 export * from './assetState';
 export * from './assetType';
 export * from './location';

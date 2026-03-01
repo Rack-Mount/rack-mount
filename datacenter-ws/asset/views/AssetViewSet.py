@@ -43,7 +43,7 @@ class AssetViewSet(viewsets.ModelViewSet):
         filterset_fields (list): The fields that can be used for filtering the results.
     """
     queryset = Asset.objects.select_related(
-        'model', 'model__vendor', 'model__type', 'state'
+        'model', 'model__vendor', 'model__type', 'state', 'rackunit__rack'
     ).all()
     serializer_class = AssetSerializer
     pagination_class = StandardResultsSetPagination

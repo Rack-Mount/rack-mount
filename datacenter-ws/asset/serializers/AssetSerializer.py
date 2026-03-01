@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from asset.models import Asset, AssetModel, AssetState
 from asset.serializers import AssetModelSerializer, AssetStateSerializer
+from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.types import OpenApiTypes
 
 
 class AssetSerializer(serializers.HyperlinkedModelSerializer):
@@ -32,6 +34,24 @@ class AssetSerializer(serializers.HyperlinkedModelSerializer):
         source='state',
         write_only=True,
     )
+    rack = serializers.SerializerMethodField()
+
+    @extend_schema_field({
+        'type': 'object',
+        'nullable': True,
+        'required': ['id', 'name', 'position'],
+        'properties': {
+            'id':       {'type': 'integer'},
+            'name':     {'type': 'string'},
+            'position': {'type': 'integer'},
+        },
+    })
+    def get_rack(self, obj):
+        try:
+            ru = obj.rackunit
+            return {'id': ru.rack.id, 'name': ru.rack.name, 'position': ru.position}
+        except Exception:
+            return None
 
     class Meta:
         model = Asset

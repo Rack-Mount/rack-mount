@@ -86,6 +86,10 @@ export interface AssetAssetDestroyRequestParams {
     id: number;
 }
 
+export interface AssetAssetImportCsvCreateRequestParams {
+    file: Blob;
+}
+
 export interface AssetAssetListRequestParams {
     hostname?: string;
     model?: number;
@@ -419,6 +423,21 @@ export interface AssetServiceInterface {
      * @endpoint get /asset/asset/export
 */
     assetAssetExportRetrieve(extraHttpRequestParams?: any): Observable<Blob>;
+
+    /**
+     * Import assets from a CSV file
+     * Process a CSV file and create Asset records.
+     * @endpoint post /asset/asset/import-csv
+* @param requestParameters
+     */
+    assetAssetImportCsvCreate(requestParameters: AssetAssetImportCsvCreateRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * Download template CSV for asset import
+     * Return a blank CSV template with the correct headers and one example row.
+     * @endpoint get /asset/asset/import-csv
+*/
+    assetAssetImportCsvRetrieve(extraHttpRequestParams?: any): Observable<Blob>;
 
     /**
      * 
