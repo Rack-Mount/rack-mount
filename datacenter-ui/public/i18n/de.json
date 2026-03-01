@@ -290,6 +290,7 @@
     "filter_all_dc": "Alle Rechenzentren",
     "filter_all_rooms": "Alle Räume",
     "open_visualizer": "Visualisierer öffnen",
+    "open_preview": "Rack-Vorschau",
     "no_match": "Kein Rack entspricht der Suche.",
     "no_data": "Keine Racks gefunden. Erstellen Sie eines.",
     "delete_confirm": "Rack \u00ab{{name}}\u00bb löschen?",

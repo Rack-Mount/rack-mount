@@ -116,6 +116,7 @@
     "filter_all_dc": "Tutti i datacenter",
     "filter_all_rooms": "Tutte le stanze",
     "open_visualizer": "Apri visualizzatore",
+    "open_preview": "Anteprima rack",
     "no_match": "Nessun rack corrisponde alla ricerca.",
     "no_data": "Nessun rack trovato. Creane uno nuovo.",
     "delete_confirm": "Eliminare il rack \u00ab{{name}}\u00bb?",

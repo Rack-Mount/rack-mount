@@ -114,6 +114,7 @@
     "filter_all_dc": "Tous les datacenters",
     "filter_all_rooms": "Toutes les salles",
     "open_visualizer": "Ouvrir le visualiseur",
+    "open_preview": "Aperçu de la baie",
     "no_match": "Aucune baie ne correspond \u00e0 la recherche.",
     "no_data": "Aucune baie trouv\u00e9e. Cr\u00e9ez-en une.",
     "delete_confirm": "Supprimer la baie \u00ab{{name}}\u00bb\u00a0?",

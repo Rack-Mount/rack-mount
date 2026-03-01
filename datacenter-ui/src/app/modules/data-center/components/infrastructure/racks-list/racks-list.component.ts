@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, Subject, switchMap } from 'rxjs';
 import {
@@ -47,6 +48,7 @@ export class RacksListComponent implements OnInit {
   private readonly assetService = inject(AssetService);
   private readonly locationService = inject(LocationService);
   private readonly tabService = inject(TabService);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly listState = signal<ListState>({ status: 'loading' });
@@ -221,6 +223,10 @@ export class RacksListComponent implements OnInit {
 
   protected onOpenVisualizer(rack: Rack): void {
     this.tabService.openRack(rack.name);
+  }
+
+  protected onOpenPreview(rack: Rack): void {
+    this.router.navigate(['/rack', rack.name]);
   }
 
   protected capacityLabel(model: RackType): string {

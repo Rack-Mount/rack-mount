@@ -116,6 +116,7 @@
     "filter_all_dc": "全部数据中心",
     "filter_all_rooms": "全部房间",
     "open_visualizer": "打开可视化器",
+    "open_preview": "机柜预览",
     "no_match": "没有与搜索匹配的机柜。",
     "no_data": "未找到机柜，请创建一个。",
     "delete_confirm": "删除机柜《{{name}}》？",
