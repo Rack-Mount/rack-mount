@@ -1127,6 +1127,7 @@ export class LocationService extends BaseService implements LocationServiceInter
         const ordering = requestParameters?.ordering;
         const page = requestParameters?.page;
         const pageSize = requestParameters?.pageSize;
+        const roomType = requestParameters?.roomType;
         const search = requestParameters?.search;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
@@ -1162,6 +1163,15 @@ export class LocationService extends BaseService implements LocationServiceInter
             localVarQueryParameters,
             'page_size',
             <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'room_type',
+            <any>roomType,
             QueryParamStyle.Form,
             true,
         );

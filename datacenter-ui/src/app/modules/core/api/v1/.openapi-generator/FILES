@@ -48,6 +48,7 @@ model/rack.ts
 model/rackType.ts
 model/rackUnit.ts
 model/room.ts
+model/roomTypeEnum.ts
 model/vendor.ts
 param.ts
 provide-api.ts

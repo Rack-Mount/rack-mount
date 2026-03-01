@@ -12,6 +12,7 @@ class Room(models.Model):
     Represents a physical room within a datacenter location.
 
     Attributes:
+        room_type (str): The type of room (datacenter, warehouse, laboratory, technical_office).
         location (Location): The location to which this room belongs.
         name (str): The name of the room.
         floor (int): The floor number where the room is located (optional).
@@ -33,6 +34,20 @@ class Room(models.Model):
         verbose_name (str): Human-readable name for the model.
         verbose_name_plural (str): Human-readable plural name for the model.
     """
+
+    class RoomType(models.TextChoices):
+        DATACENTER = 'datacenter', 'Datacenter'
+        WAREHOUSE = 'warehouse', 'Magazzino'
+        LABORATORY = 'laboratory', 'Laboratorio'
+        TECHNICAL_OFFICE = 'technical_office', 'Ufficio Tecnico'
+
+    room_type = models.CharField(
+        max_length=20,
+        choices=RoomType.choices,
+        default=RoomType.DATACENTER,
+        verbose_name='Tipo di stanza',
+    )
+
     location = models.ForeignKey(
         Location,
         related_name='rooms',

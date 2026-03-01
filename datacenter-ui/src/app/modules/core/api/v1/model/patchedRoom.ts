@@ -7,6 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { RoomTypeEnum } from './roomTypeEnum';
 
 
 /**
@@ -17,6 +18,7 @@ export interface PatchedRoom {
     readonly id?: number;
     readonly floor_plan_url?: string | null;
     floor_plan_data?: Array<{ [key: string]: any; }> | null;
+    room_type?: RoomTypeEnum;
     name?: string;
     floor?: number | null;
     description?: string | null;
@@ -28,4 +30,7 @@ export interface PatchedRoom {
     readonly updated_at?: string;
     location?: string;
 }
+export namespace PatchedRoom {
+}
+
 

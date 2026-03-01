@@ -34,4 +34,5 @@ export * from './rack';
 export * from './rackType';
 export * from './rackUnit';
 export * from './room';
+export * from './roomTypeEnum';
 export * from './vendor';

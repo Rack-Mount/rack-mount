@@ -27,5 +27,5 @@ class RoomViewSet(viewsets.ModelViewSet):
                       parsers.MultiPartParser, parsers.FormParser]
     filter_backends = (filters.OrderingFilter,
                        filters.SearchFilter, DjangoFilterBackend)
-    filterset_fields = ['location']
+    filterset_fields = ['location', 'room_type']
     search_fields = ['name', 'description', 'manager']

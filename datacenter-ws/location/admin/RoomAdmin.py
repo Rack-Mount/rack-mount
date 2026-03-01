@@ -6,7 +6,7 @@ from location.models import Room
 class RoomInline(admin.TabularInline):
     model = Room
     extra = 0
-    fields = ['name', 'floor', 'capacity', 'manager',
+    fields = ['room_type', 'name', 'floor', 'capacity', 'manager',
               'manager_mail', 'description', 'floor_plan']
     show_change_link = True
 
@@ -16,6 +16,7 @@ class RoomAdmin(VersionAdmin):
     save_on_top = True
     fields = [
         ('location',),
+        ('room_type',),
         ('name', 'floor'),
         ('capacity',),
         ('manager', 'manager_mail'),
@@ -25,6 +26,7 @@ class RoomAdmin(VersionAdmin):
 
     list_display = (
         'name',
+        'room_type',
         'location',
         'floor',
         'capacity',
@@ -32,10 +34,10 @@ class RoomAdmin(VersionAdmin):
         'created_at',
         'updated_at',
     )
-    list_filter = ('location',)
+    list_filter = ('location', 'room_type')
     search_fields = ['name', 'location__name']
     readonly_fields = ['created_at', 'updated_at']
-    ordering = ('location', 'name')
+    ordering = ('location', 'room_type', 'name')
 
     def has_delete_permission(self, request, obj=None):
         return True

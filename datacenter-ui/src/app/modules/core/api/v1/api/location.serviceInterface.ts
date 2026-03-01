@@ -99,6 +99,7 @@ export interface LocationRoomListRequestParams {
     ordering?: string;
     page?: number;
     pageSize?: number;
+    roomType?: 'datacenter' | 'laboratory' | 'technical_office' | 'warehouse';
     search?: string;
 }
 
