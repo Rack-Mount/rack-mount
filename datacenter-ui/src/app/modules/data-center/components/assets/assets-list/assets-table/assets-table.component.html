@@ -95,6 +95,17 @@
         </svg>
         {{ "assets.export_excel" | translate }}
       </button>
+      <button
+        class="selection-action"
+        (click)="bulkCloneRequested.emit()"
+        [title]="'assets.clone_selected_title' | translate"
+      >
+        <svg viewBox="0 0 16 16" fill="none">
+          <rect x="5" y="1" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <rect x="2" y="4" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3" fill="var(--dc-bg-panel, #1e1e2e)"/>
+        </svg>
+        {{ "assets.clone_selected" | translate }}
+      </button>
     </div>
   </div>
 }
@@ -360,10 +371,12 @@
                   [today]="today"
                   [deleteConfirmId]="deleteConfirmId"
                   [deleteSaveState]="deleteSaveState"
+                  [cloneInProgress]="cloneInProgressId === asset.id"
                   (editRequested)="editRequested.emit($event)"
                   (deleteRequested)="deleteRequested.emit($event)"
                   (deleteConfirmed)="deleteConfirmed.emit($event)"
                   (deleteCancelled)="deleteCancelled.emit()"
+                  (cloneRequested)="cloneRequested.emit($event)"
                 />
               </td>
             </tr>

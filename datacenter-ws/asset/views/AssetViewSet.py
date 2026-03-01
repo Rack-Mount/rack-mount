@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -88,3 +90,62 @@ class AssetViewSet(viewsets.ModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         updated_count = queryset.update(state_id=state_id)
         return Response({'updated': updated_count})
+
+    # ── Helper ────────────────────────────────────────────────────────────────
+    @staticmethod
+    def _clone_asset(original: Asset) -> Asset:
+        """Create and save a copy of *original*, generating unique placeholder values
+        for the fields that carry a UNIQUE constraint (serial_number, sap_id)."""
+        suffix = uuid4().hex[:8].upper()
+        clone = Asset(
+            hostname=f"(CLONE) {original.hostname}",
+            model=original.model,
+            serial_number=f"CLONE-{suffix}",
+            sap_id=f"CLONE-{suffix}",
+            order_id=original.order_id,
+            purchase_date=original.purchase_date,
+            state=original.state,
+            decommissioned_date=original.decommissioned_date,
+            warranty_expiration=original.warranty_expiration,
+            support_expiration=original.support_expiration,
+            power_supplies=original.power_supplies,
+            power_cosumption_watt=original.power_cosumption_watt,
+            note=original.note,
+        )
+        clone.save()
+        return clone
+
+    # ── Single-asset clone ────────────────────────────────────────────────────
+    @action(detail=True, methods=['post'], url_path='clone')
+    def clone(self, request, pk=None):
+        """
+        POST /asset/asset/{id}/clone
+        Creates a copy of the given asset (unique fields get CLONE-* placeholders).
+        Returns the newly created asset.
+        """
+        original = self.get_object()
+        clone = self._clone_asset(original)
+        serializer = self.get_serializer(clone)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # ── Bulk clone ────────────────────────────────────────────────────────────
+    @action(detail=False, methods=['post'], url_path='bulk_clone')
+    def bulk_clone(self, request):
+        """
+        POST /asset/asset/bulk_clone
+        Body: { "ids": [1, 2, 3] }
+        Clones each listed asset.
+        Returns: { "created": <int> }
+        """
+        ids = request.data.get('ids', [])
+        if not ids or not isinstance(ids, list):
+            return Response(
+                {'error': _('ids must be a non-empty list')},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        assets = Asset.objects.filter(id__in=ids)
+        created = 0
+        for asset in assets:
+            self._clone_asset(asset)
+            created += 1
+        return Response({'created': created})

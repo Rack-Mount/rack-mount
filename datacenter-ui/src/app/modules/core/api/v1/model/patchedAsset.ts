@@ -22,10 +22,10 @@ export interface PatchedAsset {
     readonly state?: AssetState;
     model_id?: number;
     state_id?: number;
+    serial_number?: string | null;
+    sap_id?: string | null;
     rack?: AssetRack;
     hostname?: string;
-    serial_number?: string;
-    sap_id?: string;
     order_id?: string;
     purchase_date?: string | null;
     decommissioned_date?: string | null;

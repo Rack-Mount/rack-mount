@@ -62,6 +62,9 @@ export class AssetsTableComponent {
   @Input() deleteConfirmId: number | null = null;
   @Input() deleteSaveState: 'idle' | 'saving' | 'error' | 'mounted' = 'idle';
 
+  // ── Clone ──────────────────────────────────────────────────────────────────
+  @Input() cloneInProgressId: number | null = null;
+
   // ── Misc ──────────────────────────────────────────────────────────────────
   @Input() today = '';
 
@@ -77,6 +80,8 @@ export class AssetsTableComponent {
   @Output() deleteRequested = new EventEmitter<number>();
   @Output() deleteConfirmed = new EventEmitter<number>();
   @Output() deleteCancelled = new EventEmitter<void>();
+  @Output() cloneRequested = new EventEmitter<number>();
+  @Output() bulkCloneRequested = new EventEmitter<void>();
   @Output() bulkPickerOpen = new EventEmitter<BulkPickerOpenEvent>();
   @Output() pageChange = new EventEmitter<number>();
   @Output() exportRequested = new EventEmitter<void>();

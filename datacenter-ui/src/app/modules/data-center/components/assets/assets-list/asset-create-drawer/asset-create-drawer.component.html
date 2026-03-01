@@ -144,7 +144,7 @@
           [placeholder]="'asset_form.power_placeholder' | translate"
           [value]="createForm().power_supplies ?? ''"
           (input)="
-            patchForm('power_supplies', +$any($event.target).value || null)
+            patchForm('power_supplies', $any($event.target).value === '' ? null : +$any($event.target).value)
           "
         />
       </div>
@@ -159,7 +159,7 @@
           (input)="
             patchForm(
               'power_cosumption_watt',
-              +$any($event.target).value || null
+              $any($event.target).value === '' ? null : +$any($event.target).value
             )
           "
         />

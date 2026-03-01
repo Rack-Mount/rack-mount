@@ -44,8 +44,8 @@ class Asset(models.Model):
     model = models.ForeignKey(
         AssetModel, on_delete=models.PROTECT, related_name='assets')
     serial_number = models.CharField(
-        null=False, max_length=50, default='', unique=True)
-    sap_id = models.CharField(blank=True, max_length=50, unique=True)
+        null=True, blank=True, max_length=50, default=None, unique=True)
+    sap_id = models.CharField(blank=True, null=True, max_length=50, unique=True, default=None)
     order_id = models.CharField(blank=True, max_length=50)
     purchase_date = models.DateField(null=True, blank=True)
     state = models.ForeignKey(

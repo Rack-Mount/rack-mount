@@ -44,8 +44,17 @@ import { Vendor } from '../model/models';
 import { Configuration }                                     from '../configuration';
 
 
+export interface AssetAssetBulkCloneCreateRequestParams {
+    asset: Asset;
+}
+
 export interface AssetAssetBulkStatePartialUpdateRequestParams {
     patchedAsset?: PatchedAsset;
+}
+
+export interface AssetAssetCloneCreateRequestParams {
+    id: number;
+    asset: Asset;
 }
 
 export interface AssetAssetCreateRequestParams {
@@ -347,11 +356,27 @@ export interface AssetServiceInterface {
 
     /**
      * 
+     * POST /asset/asset/bulk_clone Body: { \&quot;ids\&quot;: [1, 2, 3] } Clones each listed asset. Returns: { \&quot;created\&quot;: &lt;int&gt; }
+     * @endpoint post /asset/asset/bulk_clone
+* @param requestParameters
+     */
+    assetAssetBulkCloneCreate(requestParameters: AssetAssetBulkCloneCreateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
      * PATCH /asset/asset/bulk_state?search&#x3D;...&amp;state&#x3D;...&amp;model__type&#x3D;... Body: { \&quot;state_id\&quot;: &lt;int&gt; }  Updates the state of ALL assets matching the current filter params. Returns: { \&quot;updated\&quot;: &lt;int&gt; }
      * @endpoint patch /asset/asset/bulk_state
 * @param requestParameters
      */
     assetAssetBulkStatePartialUpdate(requestParameters: AssetAssetBulkStatePartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
+     * POST /asset/asset/{id}/clone Creates a copy of the given asset (unique fields get CLONE-* placeholders). Returns the newly created asset.
+     * @endpoint post /asset/asset/{id}/clone
+* @param requestParameters
+     */
+    assetAssetCloneCreate(requestParameters: AssetAssetCloneCreateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
 
     /**
      * 

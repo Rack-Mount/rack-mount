@@ -22,15 +22,22 @@ export class AssetRowDetailComponent {
   readonly deleteSaveState = input<'idle' | 'saving' | 'error' | 'mounted'>(
     'idle',
   );
+  readonly cloneInProgress = input(false);
 
   readonly editRequested = output<Asset>();
   readonly deleteRequested = output<number>();
   readonly deleteConfirmed = output<number>();
   readonly deleteCancelled = output<void>();
+  readonly cloneRequested = output<number>();
 
   protected onEditRequest(event: MouseEvent): void {
     event.stopPropagation();
     this.editRequested.emit(this.asset());
+  }
+
+  protected onCloneRequest(event: MouseEvent): void {
+    event.stopPropagation();
+    this.cloneRequested.emit(this.asset().id);
   }
 
   protected onDeleteRequest(id: number, event: MouseEvent): void {

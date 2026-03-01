@@ -84,7 +84,9 @@ export class AssetsListComponent {
   protected readonly deleteSaveState = signal<
     'idle' | 'saving' | 'error' | 'mounted'
   >('idle');
-
+  // ── Clone ───────────────────────────────────────────────────────────────────────
+  protected readonly cloneInProgressId = signal<number | null>(null);
+  protected readonly bulkCloneState = signal<'idle' | 'saving'>('idle');
   // ── Edit asset ─────────────────────────────────────────────────────────────
   protected readonly editingAsset = signal<Asset | null>(null);
 
@@ -573,6 +575,60 @@ export class AssetsListComponent {
         },
         error: (err: HttpErrorResponse) => {
           this.deleteSaveState.set(err.status === 409 ? 'mounted' : 'error');
+        },
+      });
+  }
+
+  // ── Clone asset ───────────────────────────────────────────────────────────
+
+  protected cloneAsset(id: number): void {
+    if (this.cloneInProgressId() !== null) return;
+    this.cloneInProgressId.set(id);
+    this.http
+      .post<Asset>(
+        `${environment.service_url}/asset/asset/${id}/clone`,
+        {},
+      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (cloned) => {
+          this.cloneInProgressId.set(null);
+          // Prepend cloned asset to list and bump count
+          this.listState.update((s) => {
+            if (s.status !== 'loaded') return s;
+            return {
+              ...s,
+              results: [cloned, ...s.results],
+              count: s.count + 1,
+            };
+          });
+        },
+        error: () => {
+          this.cloneInProgressId.set(null);
+        },
+      });
+  }
+
+  protected bulkCloneSelected(): void {
+    if (this.bulkCloneState() === 'saving') return;
+    const ids = [...this.selectedIds()];
+    if (!ids.length) return;
+    this.bulkCloneState.set('saving');
+    this.http
+      .post<{ created: number }>(
+        `${environment.service_url}/asset/asset/bulk_clone`,
+        { ids },
+      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.bulkCloneState.set('idle');
+          this.clearSelection();
+          // Reload page 1 to show cloned assets
+          this.params.update((p) => ({ ...p, page: 1 }));
+        },
+        error: () => {
+          this.bulkCloneState.set('idle');
         },
       });
   }

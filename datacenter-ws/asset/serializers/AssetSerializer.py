@@ -5,6 +5,13 @@ from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
 
 
+class NullableCharField(serializers.CharField):
+    """CharField that converts an empty string to None (for unique nullable fields)."""
+    def to_internal_value(self, data):
+        value = super().to_internal_value(data)
+        return value if value else None
+
+
 class AssetSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for the Asset model.
@@ -34,6 +41,10 @@ class AssetSerializer(serializers.HyperlinkedModelSerializer):
         source='state',
         write_only=True,
     )
+    serial_number = NullableCharField(
+        max_length=50, required=False, allow_null=True, allow_blank=True)
+    sap_id = NullableCharField(
+        max_length=50, required=False, allow_null=True, allow_blank=True)
     rack = serializers.SerializerMethodField()
 
     @extend_schema_field({
