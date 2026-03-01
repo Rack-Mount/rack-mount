@@ -1,0 +1,91 @@
+<div class="assets-toolbar">
+  <div class="toolbar-left">
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+        <circle
+          cx="8.5"
+          cy="8.5"
+          r="5"
+          stroke="currentColor"
+          stroke-width="1.5"
+        />
+        <path
+          d="M12.5 12.5L16 16"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      <input
+        class="search-input"
+        type="text"
+        [placeholder]="'assets.search_placeholder' | translate"
+        [value]="params.search"
+        (input)="searchChange.emit($any($event.target).value)"
+      />
+    </div>
+
+    <select
+      class="filter-select"
+      [value]="params.stateId ?? ''"
+      (change)="
+        stateFilterChange.emit(
+          $any($event.target).value ? +$any($event.target).value : null
+        )
+      "
+    >
+      <option value="">{{ "assets.all_states" | translate }}</option>
+      @for (s of availableStates; track s.id) {
+        <option [value]="s.id">{{ s.name }}</option>
+      }
+    </select>
+
+    <select
+      class="filter-select"
+      [value]="params.typeId ?? ''"
+      (change)="
+        typeFilterChange.emit(
+          $any($event.target).value ? +$any($event.target).value : null
+        )
+      "
+    >
+      <option value="">{{ "assets.all_types" | translate }}</option>
+      @for (t of availableTypes; track t.id) {
+        <option [value]="t.id">{{ t.name }}</option>
+      }
+    </select>
+
+    @if (hasFilters) {
+      <button class="btn-reset" (click)="filtersReset.emit()">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M12 4L4 12M4 4l8 8"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{ "common.reset" | translate }}
+      </button>
+    }
+  </div>
+
+  <div class="toolbar-right">
+    <button class="btn-new-asset" (click)="newClick.emit()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <path
+          d="M8 3v10M3 8h10"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        />
+      </svg>
+      {{ "assets.new_btn" | translate }}
+    </button>
+    @if (totalCount !== null) {
+      <span class="count-badge">
+        {{ "assets.count_badge" | translate: { count: (totalCount | number) } }}
+      </span>
+    }
+  </div>
+</div>

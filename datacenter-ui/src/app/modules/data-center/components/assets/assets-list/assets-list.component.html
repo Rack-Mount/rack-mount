@@ -1,485 +1,58 @@
 <div class="assets-page">
   <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
-  <div class="assets-toolbar">
-    <div class="toolbar-left">
-      <div class="search-box">
-        <svg class="search-icon" viewBox="0 0 20 20" fill="none">
-          <circle
-            cx="8.5"
-            cy="8.5"
-            r="5"
-            stroke="currentColor"
-            stroke-width="1.5"
-          />
-          <path
-            d="M12.5 12.5L16 16"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
-        <input
-          class="search-input"
-          type="text"
-          [placeholder]="'assets.search_placeholder' | translate"
-          [value]="params().search"
-          (input)="onSearchInput($any($event.target).value)"
-        />
-      </div>
+  <app-assets-toolbar
+    [params]="filterParams()"
+    [availableStates]="availableStates()"
+    [availableTypes]="availableTypes()"
+    [totalCount]="listState().status === 'loaded' ? totalCount() : null"
+    (searchChange)="onSearchInput($event)"
+    (stateFilterChange)="onStateFilter($event)"
+    (typeFilterChange)="onTypeFilter($event)"
+    (filtersReset)="resetFilters()"
+    (newClick)="openCreateDrawer()"
+  />
 
-      <select
-        class="filter-select"
-        [value]="params().stateId ?? ''"
-        (change)="onStateFilter($any($event.target).value)"
-      >
-        <option value="">{{ "assets.all_states" | translate }}</option>
-        @for (s of availableStates(); track s.id) {
-          <option [value]="s.id">{{ s.name }}</option>
-        }
-      </select>
-
-      <select
-        class="filter-select"
-        [value]="params().typeId ?? ''"
-        (change)="onTypeFilter($any($event.target).value)"
-      >
-        <option value="">{{ "assets.all_types" | translate }}</option>
-        @for (t of availableTypes(); track t.id) {
-          <option [value]="t.id">{{ t.name }}</option>
-        }
-      </select>
-
-      @if (params().search || params().stateId || params().typeId) {
-        <button class="btn-reset" (click)="resetFilters()">
-          <svg viewBox="0 0 16 16" fill="none">
-            <path
-              d="M12 4L4 12M4 4l8 8"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
-          {{ "common.reset" | translate }}
-        </button>
-      }
-    </div>
-
-    <div class="toolbar-right">
-      <button class="btn-new-asset" (click)="openCreateDrawer()">
-        <svg viewBox="0 0 16 16" fill="none">
-          <path
-            d="M8 3v10M3 8h10"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-          />
-        </svg>
-        {{ "assets.new_btn" | translate }}
-      </button>
-      @if (listState().status === "loaded") {
-        <span class="count-badge">
-          {{
-            "assets.count_badge" | translate: { count: (totalCount() | number) }
-          }}
-        </span>
-      }
-    </div>
-  </div>
-
-  <!-- ── Selection bar ───────────────────────────────────────────────────── -->
-  @if (selectedCount() > 0) {
-    <div class="selection-bar">
-      <span class="selection-count">{{
-        "assets.selected" | translate: { count: (selectedCount() | number) }
-      }}</span>
-
-      @if (canSelectAllPages()) {
-        <span class="select-all-banner">
-          {{
-            "assets.select_all_msg" | translate: { page: selectedIds().size }
-          }}
-          <button class="select-all-link" (click)="selectAcrossAllPages()">
-            {{
-              "assets.select_all_link"
-                | translate: { count: (totalCount() | number) }
-            }}
-          </button>
-        </span>
-      }
-      @if (selectAllPages()) {
-        <span class="select-all-banner select-all-banner--active">
-          {{
-            "assets.all_selected_msg"
-              | translate: { count: (totalCount() | number) }
-          }}
-        </span>
-      }
-
-      <div class="selection-actions">
-        <button
-          class="selection-action selection-action--primary"
-          [class.is-saving]="bulkEditState() === 'saving'"
-          [disabled]="bulkEditState() === 'saving'"
-          (click)="openBulkStatePicker($event)"
-        >
-          <svg viewBox="0 0 16 16" fill="none">
-            <circle
-              cx="8"
-              cy="8"
-              r="5"
-              stroke="currentColor"
-              stroke-width="1.5"
-            />
-            <path
-              d="M8 5v3l2 1"
-              stroke="currentColor"
-              stroke-width="1.3"
-              stroke-linecap="round"
-            />
-          </svg>
-          {{
-            bulkEditState() === "saving"
-              ? ("assets.saving_state" | translate)
-              : ("assets.change_state" | translate)
-          }}
-        </button>
-        <button class="selection-action" (click)="clearSelection()">
-          <svg viewBox="0 0 16 16" fill="none">
-            <path
-              d="M12 4L4 12M4 4l8 8"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
-          {{ "assets.deselect_all" | translate }}
-        </button>
-        <button
-          class="selection-action"
-          (click)="exportToExcel(true)"
-          [title]="'assets.export_selected_title' | translate"
-        >
-          <svg viewBox="0 0 16 16" fill="none">
-            <rect
-              x="2"
-              y="1"
-              width="9"
-              height="12"
-              rx="1"
-              stroke="currentColor"
-              stroke-width="1.3"
-            />
-            <path
-              d="M5 5h5M5 7.5h5M5 10h3"
-              stroke="currentColor"
-              stroke-width="1.2"
-              stroke-linecap="round"
-            />
-            <path
-              d="M11 9v5m0 0l-1.5-1.5M11 14l1.5-1.5"
-              stroke="currentColor"
-              stroke-width="1.3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          {{ "assets.export_excel" | translate }}
-        </button>
-      </div>
-    </div>
-  }
-
-  <!-- ── Table ───────────────────────────────────────────────────────────── -->
-  <div class="assets-table-wrapper">
-    <table class="assets-table">
-      <thead>
-        <tr>
-          <th class="col-check">
-            <input
-              type="checkbox"
-              class="row-check"
-              [checked]="isAllSelected()"
-              [indeterminate]="isSomeSelected()"
-              (click)="toggleSelectAll()"
-              [title]="'assets.select_all_title' | translate"
-            />
-          </th>
-          <th
-            class="col-hostname sortable"
-            [class.sort-asc]="sortField() === 'hostname' && sortDir() === 'asc'"
-            [class.sort-desc]="
-              sortField() === 'hostname' && sortDir() === 'desc'
-            "
-            (click)="sortBy('hostname')"
-          >
-            {{ "assets.col_hostname" | translate }}
-          </th>
-          <th
-            class="col-model sortable"
-            [class.sort-asc]="
-              sortField() === 'model__name' && sortDir() === 'asc'
-            "
-            [class.sort-desc]="
-              sortField() === 'model__name' && sortDir() === 'desc'
-            "
-            (click)="sortBy('model__name')"
-          >
-            {{ "assets.col_model" | translate }}
-          </th>
-          <th
-            class="col-vendor sortable"
-            [class.sort-asc]="
-              sortField() === 'model__vendor__name' && sortDir() === 'asc'
-            "
-            [class.sort-desc]="
-              sortField() === 'model__vendor__name' && sortDir() === 'desc'
-            "
-            (click)="sortBy('model__vendor__name')"
-          >
-            {{ "assets.col_vendor" | translate }}
-          </th>
-          <th
-            class="col-type sortable"
-            [class.sort-asc]="
-              sortField() === 'model__type__name' && sortDir() === 'asc'
-            "
-            [class.sort-desc]="
-              sortField() === 'model__type__name' && sortDir() === 'desc'
-            "
-            (click)="sortBy('model__type__name')"
-          >
-            {{ "assets.col_type" | translate }}
-          </th>
-          <th
-            class="col-state sortable"
-            [class.sort-asc]="
-              sortField() === 'state__name' && sortDir() === 'asc'
-            "
-            [class.sort-desc]="
-              sortField() === 'state__name' && sortDir() === 'desc'
-            "
-            (click)="sortBy('state__name')"
-          >
-            {{ "assets.col_state" | translate }}
-          </th>
-          <th
-            class="col-serial sortable"
-            [class.sort-asc]="
-              sortField() === 'serial_number' && sortDir() === 'asc'
-            "
-            [class.sort-desc]="
-              sortField() === 'serial_number' && sortDir() === 'desc'
-            "
-            (click)="sortBy('serial_number')"
-          >
-            {{ "assets.col_serial" | translate }}
-          </th>
-          <th
-            class="col-updated sortable"
-            [class.sort-asc]="
-              sortField() === 'updated_at' && sortDir() === 'asc'
-            "
-            [class.sort-desc]="
-              sortField() === 'updated_at' && sortDir() === 'desc'
-            "
-            (click)="sortBy('updated_at')"
-          >
-            {{ "assets.col_updated" | translate }}
-          </th>
-          <th class="col-expand"></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <!-- Loading skeleton -->
-        @if (listState().status === "loading") {
-          @for (i of skeletonRows; track i) {
-            <tr class="skeleton-row">
-              <td></td>
-              <td><span class="skel skel--hostname"></span></td>
-              <td><span class="skel skel--model"></span></td>
-              <td><span class="skel skel--vendor"></span></td>
-              <td><span class="skel skel--type"></span></td>
-              <td><span class="skel skel--state"></span></td>
-              <td><span class="skel skel--serial"></span></td>
-              <td><span class="skel skel--date"></span></td>
-              <td></td>
-            </tr>
-          }
-        }
-
-        <!-- Error -->
-        @if (listState().status === "error") {
-          <tr>
-            <td colspan="8" class="empty-cell">
-              <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="9"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                  />
-                  <path
-                    d="M12 8v4M12 16h.01"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                <span>{{ "assets.error_loading" | translate }}</span>
-                <button class="btn-retry" (click)="resetFilters()">
-                  {{ "assets.retry" | translate }}
-                </button>
-              </div>
-            </td>
-          </tr>
-        }
-
-        <!-- Data rows -->
-        @if (listState().status === "loaded") {
-          @if (assets().length === 0) {
-            <tr>
-              <td colspan="8" class="empty-cell">
-                <div class="empty-state">
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <rect
-                      x="3"
-                      y="6"
-                      width="18"
-                      height="13"
-                      rx="2"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                    />
-                    <path
-                      d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                  <span>{{ "assets.no_data" | translate }}</span>
-                </div>
-              </td>
-            </tr>
-          }
-
-          @for (asset of assets(); track asset.id) {
-            <!-- Main row -->
-            <tr
-              class="asset-row"
-              [class.asset-row--expanded]="expandedId() === asset.id"
-              [class.asset-row--selected]="selectedIds().has(asset.id)"
-              (click)="toggleExpand(asset.id)"
-            >
-              <td class="col-check" (click)="toggleSelectRow(asset.id, $event)">
-                <input
-                  type="checkbox"
-                  class="row-check"
-                  [checked]="selectedIds().has(asset.id)"
-                  (click)="toggleSelectRow(asset.id, $event)"
-                />
-              </td>
-              <td class="col-hostname">
-                <span class="hostname">{{ asset.hostname || "—" }}</span>
-              </td>
-              <td class="col-model">
-                <span class="model-name">{{ asset.model.name || "—" }}</span>
-                <span class="rack-units">{{ asset.model.rack_units }}U</span>
-              </td>
-              <td class="col-vendor">{{ asset.model.vendor.name }}</td>
-              <td class="col-type">
-                <span class="type-chip">{{ asset.model.type.name }}</span>
-              </td>
-              <td class="col-state">
-                <span
-                  class="state-badge"
-                  [attr.data-color]="stateColor(asset.state.name)"
-                  (click)="openStatePicker(asset.id, $event)"
-                  [title]="'assets.state_change_title' | translate"
-                  >{{ asset.state.name }}</span
-                >
-              </td>
-              <td class="col-serial">
-                <span class="mono">{{ asset.serial_number || "—" }}</span>
-              </td>
-              <td class="col-updated">
-                <span [title]="formatDate(asset.updated_at)">
-                  {{ relativeDate(asset.updated_at) }}
-                </span>
-              </td>
-              <td class="col-expand">
-                <svg
-                  class="chevron"
-                  [class.chevron--open]="expandedId() === asset.id"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                >
-                  <path
-                    d="M4 6l4 4 4-4"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </td>
-            </tr>
-
-            <!-- Expanded detail row -->
-            @if (expandedId() === asset.id) {
-              <tr class="detail-row">
-                <td colspan="8">
-                  <app-asset-row-detail
-                    [asset]="asset"
-                    [today]="today"
-                    [deleteConfirmId]="deleteConfirmId()"
-                    [deleteSaveState]="deleteSaveState()"
-                    (editRequested)="openEditDrawer($event)"
-                    (deleteRequested)="requestDelete($event)"
-                    (deleteConfirmed)="confirmDelete($event)"
-                    (deleteCancelled)="cancelDelete()"
-                  />
-                </td>
-              </tr>
-            }
-          }
-        }
-      </tbody>
-    </table>
-  </div>
-
-  <!-- ── Pagination ──────────────────────────────────────────────────────── -->
-  @if (listState().status === "loaded" && totalPages() > 1) {
-    <div class="pagination">
-      <button
-        class="page-btn"
-        [disabled]="params().page === 1"
-        (click)="goToPage(params().page - 1)"
-        [title]="'assets.prev_page' | translate"
-      >
-        ‹
-      </button>
-
-      <span class="page-info">
-        {{ startIndex() }}–{{ endIndex() }} di {{ totalCount() | number }}
-      </span>
-
-      <button
-        class="page-btn"
-        [disabled]="params().page === totalPages()"
-        (click)="goToPage(params().page + 1)"
-        [title]="'assets.next_page' | translate"
-      >
-        ›
-      </button>
-    </div>
-  }
+  <!-- ── Table + selection bar + pagination ─────────────────────────────── -->
+  <app-assets-table
+    [listState]="listState()"
+    [availableStates]="availableStates()"
+    [sortField]="sortField()"
+    [sortDir]="sortDir()"
+    [selectedIds]="selectedIds()"
+    [selectAllPages]="selectAllPages()"
+    [isAllSelected]="isAllSelected()"
+    [isSomeSelected]="isSomeSelected()"
+    [canSelectAllPages]="canSelectAllPages()"
+    [selectedCount]="selectedCount()"
+    [totalCount]="totalCount()"
+    [bulkEditState]="bulkEditState()"
+    [expandedId]="expandedId()"
+    [totalPages]="totalPages()"
+    [startIndex]="startIndex()"
+    [endIndex]="endIndex()"
+    [currentPage]="params().page"
+    [deleteConfirmId]="deleteConfirmId()"
+    [deleteSaveState]="deleteSaveState()"
+    [today]="today"
+    (sortChange)="sortBy($event)"
+    (expandToggle)="toggleExpand($event)"
+    (selectAllToggle)="toggleSelectAll()"
+    (selectRowToggle)="toggleSelectRow($event)"
+    (selectionCleared)="clearSelection()"
+    (allPagesSelected)="selectAcrossAllPages()"
+    (statePickerOpen)="onStatePickerOpen($event)"
+    (editRequested)="openEditDrawer($event)"
+    (deleteRequested)="requestDelete($event)"
+    (deleteConfirmed)="confirmDelete($event)"
+    (deleteCancelled)="cancelDelete()"
+    (bulkPickerOpen)="onBulkPickerOpen($event)"
+    (pageChange)="goToPage($event)"
+    (exportRequested)="exportToExcel(true)"
+    (retryLoad)="resetFilters()"
+  />
 </div>
 
-<!-- ── State picker overlay ────────────────────────────────────────────── -->
+<!-- ── State picker overlay ────────────────────────────────────────────────── -->
 @if (statePickerAssetId() !== null) {
   <app-asset-state-picker
     [states]="availableStates()"
@@ -491,7 +64,7 @@
   />
 }
 
-<!-- ── Create asset drawer ─────────────────────────────────────────────── -->
+<!-- ── Create asset drawer ──────────────────────────────────────────────────── -->
 @if (createDrawerOpen()) {
   <app-asset-create-drawer
     [availableStates]="availableStates()"
@@ -500,7 +73,8 @@
     (cancelled)="closeCreateDrawer()"
   />
 }
-<!-- ── Edit asset drawer ────────────────────────────────────────────────── -->
+
+<!-- ── Edit asset drawer ────────────────────────────────────────────────────── -->
 @if (editingAsset() !== null) {
   <app-asset-create-drawer
     mode="edit"
@@ -511,7 +85,8 @@
     (cancelled)="closeEditDrawer()"
   />
 }
-<!-- ── Bulk state picker overlay ────────────────────────────────────────── -->
+
+<!-- ── Bulk state picker overlay ────────────────────────────────────────────── -->
 @if (bulkPickerOpen()) {
   <app-asset-state-picker
     [states]="availableStates()"

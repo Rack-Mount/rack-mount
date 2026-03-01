@@ -1,4 +1,3 @@
-import { DecimalPipe } from '@angular/common';
 import {
   HttpClient,
   HttpErrorResponse,
@@ -13,7 +12,6 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { TranslatePipe } from '@ngx-translate/core';
 import {
   catchError,
   concat,
@@ -35,23 +33,22 @@ import {
 } from '../../../../core/api/v1';
 import { TabService } from '../../../../core/services/tab.service';
 import { AssetCreateDrawerComponent } from './asset-create-drawer/asset-create-drawer.component';
-import { AssetRowDetailComponent } from './asset-row-detail/asset-row-detail.component';
 import { AssetStatePickerComponent } from './asset-state-picker/asset-state-picker.component';
+import { EditState, ListState, PAGE_SIZE } from './assets-list-utils';
 import {
-  EditState,
-  ListState,
-  PAGE_SIZE,
-  stateColor,
-} from './assets-list-utils';
+  AssetsTableComponent,
+  BulkPickerOpenEvent,
+  StatePickerOpenEvent,
+} from './assets-table/assets-table.component';
+import { AssetsToolbarComponent } from './assets-toolbar/assets-toolbar.component';
 
 @Component({
   selector: 'app-assets-list',
   standalone: true,
   imports: [
-    DecimalPipe,
-    TranslatePipe,
+    AssetsToolbarComponent,
+    AssetsTableComponent,
     AssetCreateDrawerComponent,
-    AssetRowDetailComponent,
     AssetStatePickerComponent,
   ],
   templateUrl: './assets-list.component.html',
@@ -101,6 +98,13 @@ export class AssetsListComponent {
     this.params().ordering?.startsWith('-') ? 'desc' : 'asc',
   );
 
+  /** Slice of params passed to the toolbar component */
+  protected readonly filterParams = computed(() => ({
+    search: this.params().search,
+    stateId: this.params().stateId,
+    typeId: this.params().typeId,
+  }));
+
   // Debounced search subject
   private readonly _searchInput = new Subject<string>();
 
@@ -146,8 +150,7 @@ export class AssetsListComponent {
     }
   }
 
-  protected toggleSelectRow(id: number, event: MouseEvent): void {
-    event.stopPropagation();
+  protected toggleSelectRow(id: number): void {
     this.selectAllPages.set(false);
     this.selectedIds.update((cur) => {
       const next = new Set(cur);
@@ -166,19 +169,9 @@ export class AssetsListComponent {
     this.selectAllPages.set(true);
   }
 
-  protected openBulkStatePicker(event: MouseEvent): void {
-    event.stopPropagation();
-    const el = event.currentTarget as HTMLElement;
-    const rect = el.getBoundingClientRect();
-    const pickerW = 200;
-    const pickerH = Math.min(this.availableStates().length * 36 + 8, 280);
-    const idealX = rect.left;
-    const x =
-      idealX + pickerW > window.innerWidth - 4 ? rect.right - pickerW : idealX;
-    const idealY = rect.bottom + 6;
-    const y = Math.max(4, Math.min(idealY, window.innerHeight - pickerH - 4));
-    this.bulkPickerX.set(x);
-    this.bulkPickerY.set(y);
+  protected onBulkPickerOpen(e: BulkPickerOpenEvent): void {
+    this.bulkPickerX.set(e.x);
+    this.bulkPickerY.set(e.y);
     this.bulkPickerOpen.set(true);
     this.bulkEditState.set('idle');
   }
@@ -291,10 +284,6 @@ export class AssetsListComponent {
     Math.min(this.params().page * PAGE_SIZE, this.totalCount()),
   );
 
-  protected readonly skeletonRows = Array.from({ length: 10 }, (_, i) => i);
-
-  // ── Utility exposed to template ───────────────────────────────────────────
-  protected readonly stateColor = stateColor;
   protected readonly today = new Date().toISOString().slice(0, 10);
 
   constructor() {
@@ -363,18 +352,18 @@ export class AssetsListComponent {
     this._searchInput.next(value);
   }
 
-  protected onStateFilter(id: string): void {
+  protected onStateFilter(id: number | null): void {
     this.params.update((p) => ({
       ...p,
-      stateId: id ? +id : null,
+      stateId: id,
       page: 1,
     }));
   }
 
-  protected onTypeFilter(id: string): void {
+  protected onTypeFilter(id: number | null): void {
     this.params.update((p) => ({
       ...p,
-      typeId: id ? +id : null,
+      typeId: id,
       page: 1,
     }));
   }
@@ -420,22 +409,10 @@ export class AssetsListComponent {
 
   // ── State picker ──────────────────────────────────────────────────────────
 
-  protected openStatePicker(assetId: number, event: MouseEvent): void {
-    event.stopPropagation();
-    const el = event.currentTarget as HTMLElement;
-    const rect = el.getBoundingClientRect();
-    const pickerW = 200;
-    const pickerH = Math.min(this.availableStates().length * 36 + 8, 280);
-    const idealX = rect.right + 6;
-    const x =
-      idealX + pickerW > window.innerWidth - 4
-        ? rect.left - pickerW - 4
-        : idealX;
-    const idealY = rect.top - 4;
-    const y = Math.max(4, Math.min(idealY, window.innerHeight - pickerH - 4));
-    this.statePickerX.set(x);
-    this.statePickerY.set(y);
-    this.statePickerAssetId.set(assetId);
+  protected onStatePickerOpen(e: StatePickerOpenEvent): void {
+    this.statePickerX.set(e.x);
+    this.statePickerY.set(e.y);
+    this.statePickerAssetId.set(e.assetId);
     this.stateEditState.set('idle');
   }
 
@@ -569,26 +546,5 @@ export class AssetsListComponent {
     a.href = url;
     a.download = '';
     a.click();
-  }
-  // ── Format helpers ────────────────────────────────────────────────────────
-
-  protected formatDate(iso: string | null | undefined): string {
-    if (!iso) return '—';
-    return new Intl.DateTimeFormat('it-IT', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(new Date(iso));
-  }
-
-  protected relativeDate(iso: string): string {
-    const diff = Date.now() - new Date(iso).getTime();
-    const days = Math.floor(diff / 86_400_000);
-    if (days === 0) return 'oggi';
-    if (days === 1) return 'ieri';
-    if (days < 30) return `${days}g fa`;
-    const months = Math.floor(days / 30);
-    if (months < 12) return `${months}m fa`;
-    return `${Math.floor(months / 12)}a fa`;
   }
 }
