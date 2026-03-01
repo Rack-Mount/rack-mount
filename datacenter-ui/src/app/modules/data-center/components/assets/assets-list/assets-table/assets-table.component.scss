@@ -1,39 +1,21 @@
-$bg-surface: var(--dc-bg-surface);
-$bg-row: var(--dc-bg-row);
-$bg-row-hover: var(--dc-bg-row-hover);
-$border: var(--dc-border);
-$border-strong: var(--dc-border-strong);
-$accent: var(--dc-accent-text);
-$accent-dim: var(--dc-accent-dim);
-$text-primary: var(--dc-text-primary);
-$text-secondary: var(--dc-text-secondary);
-$text-muted: var(--dc-text-muted);
+@use 'styles/mixins' as mx;
+
+$bg-surface: mx.$bg-surface;
+$bg-row: mx.$bg-row;
+$bg-row-hover: mx.$bg-row-hover;
+$border: mx.$border;
+$border-strong: mx.$border-strong;
+$accent: mx.$accent-text;
+$text-primary: mx.$text-primary;
+$text-secondary: mx.$text-secondary;
+$text-muted: mx.$text-muted;
 
 :host {
   display: contents;
 }
 
 // ── Table wrapper ─────────────────────────────────────────────────────────────
-.assets-table-wrapper {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: auto;
-  margin: 0 16px 16px;
-  border: 1px solid $border-strong;
-  border-radius: 6px;
-
-  scrollbar-width: thin;
-  scrollbar-color: var(--dc-scrollbar-thumb) transparent;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: var(--dc-scrollbar-thumb);
-    border-radius: 3px;
-  }
-}
+.assets-table-wrapper { @include mx.table-wrap(); }
 
 // ── Table ─────────────────────────────────────────────────────────────────────
 .assets-table {
@@ -317,47 +299,7 @@ $text-muted: var(--dc-text-muted);
 }
 
 // ── State badge ───────────────────────────────────────────────────────────────
-.state-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  border-radius: 20px;
-  padding: 3px 10px;
-  cursor: pointer;
-  transition: filter 0.15s;
-
-  &:hover {
-    filter: brightness(1.2);
-  }
-
-  &[data-color="green"] {
-    color: var(--dc-state-green-color);
-    background: var(--dc-state-green-bg);
-    border: 1px solid var(--dc-state-green-border);
-  }
-  &[data-color="yellow"] {
-    color: var(--dc-state-yellow-color);
-    background: var(--dc-state-yellow-bg);
-    border: 1px solid var(--dc-state-yellow-border);
-  }
-  &[data-color="red"] {
-    color: var(--dc-state-red-color);
-    background: var(--dc-state-red-bg);
-    border: 1px solid var(--dc-state-red-border);
-  }
-  &[data-color="blue"] {
-    color: var(--dc-state-blue-color);
-    background: var(--dc-state-blue-bg);
-    border: 1px solid var(--dc-state-blue-border);
-  }
-  &[data-color="gray"] {
-    color: $text-secondary;
-    background: rgba(148, 163, 184, 0.1);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-  }
-}
+.state-badge { @include mx.state-badge(); }
 
 .mono {
   font-family: "JetBrains Mono", "Fira Code", "Menlo", monospace;
@@ -475,40 +417,8 @@ $text-muted: var(--dc-text-muted);
 }
 
 // ── Pagination ────────────────────────────────────────────────────────────────
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 14px;
-  border-top: 1px solid $border;
-  flex-shrink: 0;
-  background: $bg-surface;
-}
-
-.page-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: $bg-row;
-  border: 1px solid $border-strong;
-  border-radius: 8px;
-  color: $text-primary;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.15s;
-
-  &:hover:not(:disabled) {
-    background: $bg-row-hover;
-  }
-
-  &:disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
-}
+.pagination { @include mx.pagination(); }
+.page-btn   { @include mx.page-btn(); }
 
 .page-info {
   font-size: 0.82rem;

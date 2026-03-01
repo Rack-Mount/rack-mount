@@ -1,15 +1,17 @@
+@use 'styles/mixins' as mx;
+
 // ── Variables ──────────────────────────────────────────────────────────────
-$bg-base: var(--dc-bg-base);
-$bg-surface: var(--dc-bg-surface);
-$bg-row: var(--dc-bg-row);
-$bg-row-hover: var(--dc-bg-row-hover);
-$border: var(--dc-border);
-$border-strong: var(--dc-border-strong);
+$bg-base:     mx.$bg-base;
+$bg-surface:  mx.$bg-surface;
+$bg-row:      mx.$bg-row;
+$bg-row-hover: mx.$bg-row-hover;
+$border:        mx.$border;
+$border-strong: mx.$border-strong;
 $accent: var(--dc-accent);
 $danger: var(--dc-danger);
-$text-primary: var(--dc-text-primary);
-$text-secondary: var(--dc-text-secondary);
-$text-muted: var(--dc-text-muted);
+$text-primary:   mx.$text-primary;
+$text-secondary: mx.$text-secondary;
+$text-muted:     mx.$text-muted;
 
 :host {
   display: flex;
@@ -56,54 +58,7 @@ $text-muted: var(--dc-text-muted);
   flex-shrink: 0;
 }
 
-.search-box {
-  position: relative;
-  display: flex;
-  align-items: center;
-
-  .search-icon {
-    position: absolute;
-    left: 10px;
-    width: 16px;
-    height: 16px;
-    color: $text-muted;
-    pointer-events: none;
-  }
-
-  .search-input {
-    background: $bg-row;
-    border: 1px solid $border-strong;
-    border-radius: 8px;
-    color: $text-primary;
-    font-size: 0.85rem;
-    padding: 7px 30px 7px 32px;
-    width: 220px;
-    outline: none;
-    transition: border-color 0.15s;
-    &::placeholder {
-      color: $text-muted;
-    }
-    &:focus {
-      border-color: $accent;
-      box-shadow: 0 0 0 2px var(--dc-accent-dim);
-    }
-  }
-
-  .search-clear {
-    position: absolute;
-    right: 8px;
-    background: none;
-    border: none;
-    color: $text-muted;
-    cursor: pointer;
-    font-size: 1rem;
-    line-height: 1;
-    padding: 2px;
-    &:hover {
-      color: $text-primary;
-    }
-  }
-}
+.search-box { @include mx.search-box(220px, $accent); }
 
 .filter-select {
   appearance: none;
@@ -123,57 +78,11 @@ $text-muted: var(--dc-text-muted);
   }
 }
 
-.btn-reset {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.28);
-  border-radius: 8px;
-  color: var(--dc-danger-text);
-  font-size: 0.82rem;
-  padding: 7px 12px;
-  cursor: pointer;
-  transition: background 0.15s;
-  svg {
-    width: 13px;
-    height: 13px;
-  }
-  &:hover {
-    background: rgba(239, 68, 68, 0.22);
-  }
-}
+.btn-reset { @include mx.btn-danger(); }
 
-.count-badge {
-  font-size: 0.78rem;
-  color: $text-secondary;
-  background: var(--dc-count-badge-bg);
-  border: 1px solid var(--dc-count-badge-border);
-  padding: 4px 10px;
-  border-radius: 12px;
-}
+.count-badge { @include mx.count-badge(); }
 
-.btn-new {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--dc-action-bg);
-  border: none;
-  border-radius: 8px;
-  color: var(--dc-action-text);
-  font-size: 0.83rem;
-  font-weight: 500;
-  padding: 7px 14px;
-  cursor: pointer;
-  transition: background 0.15s;
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-  &:hover {
-    background: var(--dc-action-bg-hover);
-  }
-}
+.btn-new { @include mx.btn-primary(sm); }
 
 .btn-import {
   display: flex;
@@ -224,26 +133,7 @@ $text-muted: var(--dc-text-muted);
 }
 
 // ── Table wrap ─────────────────────────────────────────────────────────────
-.table-wrap {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: auto;
-  margin: 0 16px 16px;
-  border: 1px solid $border-strong;
-  border-radius: 6px;
-
-  scrollbar-width: thin;
-  scrollbar-color: var(--dc-scrollbar-thumb) transparent;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: var(--dc-scrollbar-thumb);
-    border-radius: 3px;
-  }
-}
+.table-wrap { @include mx.table-wrap(0 16px 16px); }
 
 .state-full {
   display: flex;
@@ -258,20 +148,9 @@ $text-muted: var(--dc-text-muted);
   }
 }
 
-.spinner {
-  width: 28px;
-  height: 28px;
-  border: 2px solid $border-strong;
-  border-top-color: $accent;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
+.spinner { @include mx.spinner(28px, $accent); }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+@include mx.spin-keyframe();
 
 // ── Data table ─────────────────────────────────────────────────────────────
 .data-table {
@@ -537,46 +416,8 @@ $text-muted: var(--dc-text-muted);
 }
 
 // ── Pagination ─────────────────────────────────────────────────────────────
-.pagination {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px;
-  justify-content: center;
-  border-top: 1px solid $border;
-  background: $bg-surface;
-  flex-shrink: 0;
-}
-
-.page-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: $bg-row;
-  border: 1px solid $border-strong;
-  border-radius: 8px;
-  color: $text-secondary;
-  font-size: 1rem;
-  cursor: pointer;
-  transition:
-    background 0.1s,
-    color 0.1s;
-  &:hover:not(:disabled) {
-    background: $bg-row-hover;
-    color: $text-primary;
-  }
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-  &--active {
-    background: $accent;
-    border-color: $accent;
-    color: #fff;
-  }
-}
+.pagination { @include mx.pagination(); }
+.page-btn   { @include mx.page-btn(); }
 
 // ── Drawer ─────────────────────────────────────────────────────────────────
 .drawer-overlay {

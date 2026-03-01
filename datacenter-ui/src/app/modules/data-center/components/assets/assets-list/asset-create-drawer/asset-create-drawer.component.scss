@@ -1,184 +1,9 @@
-$bg-surface: var(--dc-bg-surface);
-$bg-row: var(--dc-bg-row);
-$border: var(--dc-border);
-$border-strong: var(--dc-border-strong);
-$accent: var(--dc-accent);
-$text-primary: var(--dc-text-primary);
-$text-secondary: var(--dc-text-secondary);
-$text-muted: var(--dc-text-muted);
+@use 'styles/mixins' as mx;
 
-// ── Backdrop ──────────────────────────────────────────────────────────────────
-.drawer-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  z-index: 200;
-}
+@include mx.drawer-shell();
+@include mx.form-elements();
 
-// ── Drawer shell ──────────────────────────────────────────────────────────────
-.create-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 400px;
-  max-width: 95vw;
-  background: $bg-surface;
-  border-left: 1px solid $border-strong;
-  z-index: 201;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: drawer-slide-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes drawer-slide-in {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-// ── Header ────────────────────────────────────────────────────────────────────
-.drawer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid $border;
-  flex-shrink: 0;
-
-  h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: $text-primary;
-    margin: 0;
-  }
-}
-
-.drawer-close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: none;
-  border: none;
-  color: $text-muted;
-  cursor: pointer;
-  border-radius: 4px;
-  transition:
-    background 0.12s,
-    color 0.12s;
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: $text-primary;
-  }
-}
-
-// ── Body ──────────────────────────────────────────────────────────────────────
-.drawer-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  scrollbar-width: thin;
-  scrollbar-color: #2d3a50 transparent;
-}
-
-// ── Form elements ─────────────────────────────────────────────────────────────
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-
-  label {
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: $text-secondary;
-    letter-spacing: 0.02em;
-
-    .required {
-      color: #f87171;
-      margin-left: 2px;
-    }
-  }
-}
-
-.form-input,
-.form-select,
-.form-textarea {
-  background: $bg-row;
-  border: 1px solid $border-strong;
-  border-radius: 8px;
-  color: $text-primary;
-  font-size: 0.875rem;
-  padding: 8px 12px;
-  outline: none;
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.15s;
-  font-family: inherit;
-
-  &::placeholder {
-    color: $text-muted;
-  }
-
-  &:focus {
-    border-color: $accent;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-  }
-}
-
-.form-select {
-  appearance: none;
-  // stylelint-disable-next-line function-url-quotes
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 14px;
-  padding-right: 28px;
-  cursor: pointer;
-
-  option {
-    background: var(--dc-bg-option);
-  }
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.form-error {
-  font-size: 0.78rem;
-  color: #f87171;
-  padding: 6px 10px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 6px;
-}
-
-// ── Form row (two columns) ────────────────────────────────────────────────────
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-// ── Model autocomplete ────────────────────────────────────────────────────────
+// ── Autocomplete ──────────────────────────────────────────────────────────────
 .autocomplete-wrap {
   position: relative;
 
@@ -189,21 +14,16 @@ $text-muted: var(--dc-text-muted);
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: $text-muted;
+    color: var(--dc-text-muted);
     font-size: 1.1rem;
     line-height: 1;
     cursor: pointer;
     padding: 0 2px;
     transition: color 0.12s;
-
-    &:hover {
-      color: var(--dc-danger-text);
-    }
+    &:hover { color: var(--dc-danger-text); }
   }
 
-  .form-input {
-    padding-right: 30px;
-  }
+  .form-input { padding-right: 30px; }
 }
 
 .autocomplete-dropdown {
@@ -212,7 +32,7 @@ $text-muted: var(--dc-text-muted);
   left: 0;
   right: 0;
   background: var(--dc-bg-card);
-  border: 1px solid $border-strong;
+  border: 1px solid var(--dc-border-strong);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
   z-index: 300;
@@ -235,14 +55,11 @@ $text-muted: var(--dc-text-muted);
   cursor: pointer;
   text-align: left;
   transition: background 0.1s;
-
-  &:hover {
-    background: var(--dc-hover-subtle);
-  }
+  &:hover { background: var(--dc-hover-subtle); }
 
   .ac-model-name {
     font-size: 0.875rem;
-    color: $text-primary;
+    color: var(--dc-text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -251,7 +68,7 @@ $text-muted: var(--dc-text-muted);
 
   .ac-vendor-name {
     font-size: 0.75rem;
-    color: $text-muted;
+    color: var(--dc-text-muted);
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -262,44 +79,8 @@ $text-muted: var(--dc-text-muted);
   display: flex;
   gap: 8px;
   padding: 14px 20px;
-  border-top: 1px solid $border;
+  border-top: 1px solid var(--dc-border);
   flex-shrink: 0;
-
-  .btn-cancel {
-    background: transparent;
-    color: $text-secondary;
-    border: 1px solid $border-strong;
-    border-radius: 8px;
-    padding: 9px 16px;
-    font-size: 0.88rem;
-    cursor: pointer;
-    transition: background 0.15s;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.06);
-      color: $text-primary;
-    }
-  }
-
-  .btn-save {
-    flex: 1;
-    background: var(--dc-action-bg);
-    color: var(--dc-action-text);
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 9px 16px;
-    font-size: 0.88rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s;
-
-    &:hover:not(:disabled) {
-      background: var(--dc-action-bg-hover);
-    }
-
-    &:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-  }
 }
+
+@include mx.drawer-footer-btns();

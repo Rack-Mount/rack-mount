@@ -1,0 +1,619 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared SCSS mixins – imported by component stylesheets via:
+//   @use 'styles/mixins' as mx;
+// Requires angular.json → stylePreprocessorOptions.includePaths: ["src"]
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── CSS-var aliases (forward as SCSS variables) ───────────────────────────────
+// Used inside mixins and available as mx.$var after @use
+$bg-base:      var(--dc-bg-base);
+$bg-surface:   var(--dc-bg-surface);
+$bg-row:       var(--dc-bg-row);
+$bg-row-alt:   var(--dc-bg-row-alt);
+$bg-row-hover: var(--dc-bg-row-hover);
+$bg-expanded:  var(--dc-bg-expanded);
+$border:       var(--dc-border);
+$border-strong: var(--dc-border-strong);
+$accent:       var(--dc-accent);
+$accent-text:  var(--dc-accent-text);
+$text-primary:   var(--dc-text-primary);
+$text-secondary: var(--dc-text-secondary);
+$text-muted:     var(--dc-text-muted);
+
+// ── Page :host ─────────────────────────────────────────────────────────────────
+@mixin page-host($position: static) {
+  :host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: $bg-base;
+    font-family: "Inter", "Segoe UI", sans-serif;
+    color: $text-primary;
+    @if $position != static { position: $position; }
+  }
+}
+
+// ── Toolbar ────────────────────────────────────────────────────────────────────
+@mixin toolbar-base($wrap: nowrap) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  background: $bg-surface;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+  @if $wrap != nowrap { flex-wrap: $wrap; }
+}
+
+@mixin toolbar-left($gap: 8px, $wrap: wrap) {
+  display: flex;
+  align-items: center;
+  gap: $gap;
+  @if $wrap != nowrap { flex-wrap: $wrap; }
+}
+
+@mixin toolbar-right($shrink: true) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  @if $shrink { flex-shrink: 0; }
+}
+
+// ── Search box ─────────────────────────────────────────────────────────────────
+@mixin search-box($width: 220px, $focus-color: var(--dc-action-bg)) {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    width: 16px;
+    height: 16px;
+    color: $text-muted;
+    pointer-events: none;
+  }
+
+  .search-input {
+    background: $bg-row;
+    border: 1px solid $border-strong;
+    border-radius: 8px;
+    color: $text-primary;
+    font-size: 0.85rem;
+    padding: 7px 30px 7px 32px;
+    width: $width;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &::placeholder { color: $text-muted; }
+
+    &:focus {
+      border-color: #{$focus-color};
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.18);
+    }
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    color: $text-muted;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 2px;
+    &:hover { color: $text-primary; }
+  }
+}
+
+// ── Count badge ────────────────────────────────────────────────────────────────
+@mixin count-badge($radius: 12px) {
+  font-size: 0.78rem;
+  color: $text-muted;
+  background: var(--dc-count-badge-bg);
+  border: 1px solid var(--dc-count-badge-border);
+  padding: 4px 10px;
+  border-radius: $radius;
+  white-space: nowrap;
+}
+
+// ── Dropdown chevron SVG background ────────────────────────────────────────────
+// stylelint-disable-next-line function-url-quotes
+$_chevron-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+@mixin chevron-bg() {
+  background-image: $_chevron-svg;
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 14px;
+}
+
+// ── Filter / form select ───────────────────────────────────────────────────────
+@mixin filter-select($width: auto) {
+  @include chevron-bg();
+  appearance: none;
+  background-color: $bg-row;
+  border: 1px solid $border-strong;
+  border-radius: 8px;
+  color: $text-primary;
+  font-size: 0.85rem;
+  padding: 7px 28px 7px 10px;
+  @if $width != auto { width: $width; }
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  option { background: var(--dc-bg-option); }
+  &:focus { border-color: $accent-text; }
+}
+
+// ── Primary action button (btn-new / btn-save) ─────────────────────────────────
+@mixin btn-primary($size: md) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--dc-action-bg);
+  border: none;
+  border-radius: 8px;
+  color: var(--dc-action-text);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+
+  @if $size == sm {
+    font-size: 0.83rem;
+    padding: 7px 14px;
+    svg { width: 14px; height: 14px; }
+  } @else {
+    font-size: 0.88rem;
+    padding: 9px 16px;
+    svg { width: 14px; height: 14px; }
+  }
+
+  &:hover:not(:disabled) { background: var(--dc-action-bg-hover); }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+}
+
+// ── Ghost / cancel button ──────────────────────────────────────────────────────
+@mixin btn-ghost($size: md) {
+  background: transparent;
+  color: $text-secondary;
+  border: 1px solid $border-strong;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  @if $size == sm {
+    font-size: 0.83rem;
+    padding: 7px 14px;
+  } @else {
+    font-size: 0.88rem;
+    padding: 9px 16px;
+  }
+
+  &:hover { background: rgba(255, 255, 255, 0.06); color: $text-primary; }
+}
+
+// ── Danger / reset button ──────────────────────────────────────────────────────
+@mixin btn-danger($padding: 7px 12px) {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  border-radius: 8px;
+  color: var(--dc-danger-text);
+  font-size: 0.82rem;
+  padding: $padding;
+  cursor: pointer;
+  transition: background 0.15s;
+  svg { width: 13px; height: 13px; }
+  &:hover { background: rgba(239, 68, 68, 0.22); }
+}
+
+// ── Export button ──────────────────────────────────────────────────────────────
+@mixin btn-export() {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  border: 1px solid var(--dc-export-border);
+  background: var(--dc-export-bg);
+  color: var(--dc-export-color);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  svg { width: 14px; height: 14px; flex-shrink: 0; }
+  &:hover:not(:disabled) { background: var(--dc-export-bg-hover); }
+  &:disabled, &.is-loading { opacity: 0.55; cursor: not-allowed; }
+}
+
+// ── Row action ghost icon button ───────────────────────────────────────────────
+@mixin btn-row-action() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+  svg { width: 14px; height: 14px; }
+
+  &:hover {
+    background: var(--dc-hover-subtle);
+    border-color: $border-strong;
+    color: $text-primary;
+  }
+
+  &--danger:hover {
+    background: var(--dc-danger-bg);
+    border-color: var(--dc-danger-border);
+    color: var(--dc-danger-text);
+  }
+}
+
+// ── Spinner ────────────────────────────────────────────────────────────────────
+@mixin spinner($size: 18px, $top-color: var(--dc-action-bg)) {
+  width: $size;
+  height: $size;
+  border: 2px solid $border-strong;
+  border-top-color: #{$top-color};
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+// Must be called once per stylesheet that uses spinner
+@mixin spin-keyframe() {
+  @keyframes spin { to { transform: rotate(360deg); } }
+}
+
+// ── Loading / empty state ──────────────────────────────────────────────────────
+@mixin loading-state() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 60px 20px;
+  color: $text-muted;
+  font-size: 0.9rem;
+}
+
+@mixin empty-state-center() {
+  padding: 60px 20px;
+  text-align: center;
+  color: $text-muted;
+  font-size: 0.9rem;
+}
+
+// ── Table wrapper with custom scrollbar ───────────────────────────────────────
+@mixin table-wrap($margin: 0 16px 16px) {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  margin: $margin;
+  border: 1px solid $border-strong;
+  border-radius: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--dc-scrollbar-thumb) transparent;
+
+  &::-webkit-scrollbar { width: 6px; height: 6px; }
+  &::-webkit-scrollbar-thumb {
+    background: var(--dc-scrollbar-thumb);
+    border-radius: 3px;
+  }
+}
+
+// ── Pagination ─────────────────────────────────────────────────────────────────
+@mixin pagination() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 14px;
+  border-top: 1px solid $border;
+  flex-shrink: 0;
+  background: $bg-surface;
+}
+
+@mixin page-btn() {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg-row;
+  border: 1px solid $border-strong;
+  border-radius: 8px;
+  color: $text-primary;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) { background: $bg-row-hover; }
+  &:disabled { opacity: 0.3; cursor: default; }
+}
+
+// ── State badge (data-color) ───────────────────────────────────────────────────
+@mixin state-badge() {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: filter 0.15s;
+
+  &:hover { filter: brightness(1.2); }
+
+  &[data-color="green"] {
+    color: var(--dc-state-green-color);
+    background: var(--dc-state-green-bg);
+    border: 1px solid var(--dc-state-green-border);
+  }
+  &[data-color="yellow"] {
+    color: var(--dc-state-yellow-color);
+    background: var(--dc-state-yellow-bg);
+    border: 1px solid var(--dc-state-yellow-border);
+  }
+  &[data-color="red"] {
+    color: var(--dc-state-red-color);
+    background: var(--dc-state-red-bg);
+    border: 1px solid var(--dc-state-red-border);
+  }
+  &[data-color="blue"] {
+    color: var(--dc-state-blue-color);
+    background: var(--dc-state-blue-bg);
+    border: 1px solid var(--dc-state-blue-border);
+  }
+  &[data-color="gray"] {
+    color: var(--dc-text-secondary);
+    background: rgba(148, 163, 184, 0.1);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+  }
+}
+
+// ── Sort indicator (CSS-only double arrow) ─────────────────────────────────────
+@mixin sort-indicator() {
+  display: inline-block;
+  margin-left: 4px;
+  vertical-align: middle;
+  width: 8px;
+  height: 12px;
+  position: relative;
+  opacity: 0.2;
+
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+  }
+  &::before { top: 0; border-bottom: 4px solid currentColor; }
+  &::after  { bottom: 0; border-top: 4px solid currentColor; }
+
+  &--asc  { opacity: 1; &::after  { opacity: 0.2; } }
+  &--desc { opacity: 1; &::before { opacity: 0.2; } }
+}
+
+// ── Delete confirm popover ─────────────────────────────────────────────────────
+@mixin delete-confirm-popover() {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  background: var(--dc-bg-surface);
+  border: 1px solid var(--dc-border-strong);
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  min-width: 180px;
+
+  &__msg {
+    font-size: 0.76rem;
+    color: $text-secondary;
+    text-align: right;
+    line-height: 1.3;
+    white-space: normal;
+  }
+  &__btns { display: flex; gap: 4px; }
+}
+
+// ── Danger small button ────────────────────────────────────────────────────────
+@mixin btn-danger-sm() {
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid var(--dc-danger-border);
+  background: var(--dc-danger-bg);
+  color: var(--dc-danger-text);
+  cursor: pointer;
+  transition: background 0.12s;
+  &:hover { background: var(--dc-danger-bg-hover); }
+}
+
+@mixin btn-ghost-sm() {
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  border-radius: 6px;
+  border: 1px solid $border-strong;
+  background: transparent;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: background 0.12s;
+  &:hover { background: var(--dc-hover-subtle); }
+}
+
+// ── Drawer shell (backdrop + panel + header + close + body) ───────────────────
+@mixin drawer-shell($width: 400px, $z-backdrop: 200, $z-panel: 201) {
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: $z-backdrop;
+  }
+
+  .create-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: $width;
+    max-width: 95vw;
+    background: $bg-surface;
+    border-left: 1px solid $border-strong;
+    z-index: $z-panel;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: drawer-slide-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes drawer-slide-in {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid $border;
+    flex-shrink: 0;
+    h3 { font-size: 1rem; font-weight: 600; color: $text-primary; margin: 0; }
+  }
+
+  .drawer-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: none;
+    color: $text-muted;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.12s, color 0.12s;
+    svg { width: 16px; height: 16px; }
+    &:hover { background: rgba(255, 255, 255, 0.08); color: $text-primary; }
+  }
+
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--dc-scrollbar-thumb) transparent;
+  }
+}
+
+// ── Form elements (form-group, inputs, select, textarea, error) ───────────────
+@mixin form-elements() {
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: $text-secondary;
+      letter-spacing: 0.02em;
+      .required { color: #f87171; margin-left: 2px; }
+    }
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    background: $bg-row;
+    border: 1px solid $border-strong;
+    border-radius: 8px;
+    color: $text-primary;
+    font-size: 0.875rem;
+    padding: 8px 12px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+    font-family: inherit;
+
+    &::placeholder { color: $text-muted; }
+    &:focus {
+      border-color: var(--dc-action-bg);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+  }
+
+  .form-select {
+    @include chevron-bg();
+    appearance: none;
+    padding-right: 28px;
+    cursor: pointer;
+    option { background: var(--dc-bg-option); }
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-error {
+    font-size: 0.78rem;
+    color: #f87171;
+    padding: 6px 10px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 6px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+// ── Drawer footer buttons ──────────────────────────────────────────────────────
+@mixin drawer-footer-btns() {
+  .btn-cancel {
+    @include btn-ghost();
+  }
+
+  .btn-save {
+    @include btn-primary();
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+// ── Monospace text ─────────────────────────────────────────────────────────────
+@mixin mono() {
+  font-family: "JetBrains Mono", "Fira Code", "Menlo", monospace;
+  font-size: 0.8rem;
+  color: $text-secondary;
+}

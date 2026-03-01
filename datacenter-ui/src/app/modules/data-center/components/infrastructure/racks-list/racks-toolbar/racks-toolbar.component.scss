@@ -1,149 +1,19 @@
-$bg-row: var(--dc-bg-row);
-$bg-surface: var(--dc-bg-surface);
-$border: var(--dc-border);
-$border-strong: var(--dc-border-strong);
-$text-primary: var(--dc-text-primary);
-$text-secondary: var(--dc-text-secondary);
-$text-muted: var(--dc-text-muted);
+@use 'styles/mixins' as mx;
 
-:host {
-  display: block;
-  flex-shrink: 0;
-}
+:host { display: block; flex-shrink: 0; }
 
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 20px;
-  background: $bg-surface;
-  border-bottom: 1px solid $border;
-  flex-wrap: wrap;
-}
+.toolbar       { @include mx.toolbar-base(wrap); }
+.toolbar-left  { @include mx.toolbar-left(); }
+.toolbar-right { @include mx.toolbar-right(false); }
 
-.toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+// ── Datacenter / Room filter select ──────────────────────────────────────────
+.dc-filter { @include mx.filter-select(); height: 34px; }
 
-.toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+// ── Search box ────────────────────────────────────────────────────────────────
+.search-box { @include mx.search-box(220px); }
 
-// ── Datacenter / Room filter select ────────────────────────────────────────
-.dc-filter {
-  background: var(--dc-bg-row);
-  border: 1px solid var(--dc-border-strong);
-  border-radius: 8px;
-  color: $text-primary;
-  font-size: 0.85rem;
-  padding: 7px 28px 7px 10px;
-  height: 34px;
-  outline: none;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  transition: border-color 0.15s;
+// ── Count badge ───────────────────────────────────────────────────────────────
+.count-badge { @include mx.count-badge(); }
 
-  &:focus {
-    border-color: var(--dc-action-bg);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.18);
-  }
-
-  option {
-    background: var(--dc-bg-surface);
-  }
-}
-
-// ── Search box ─────────────────────────────────────────────────────────────
-.search-box {
-  position: relative;
-  display: flex;
-  align-items: center;
-
-  .search-icon {
-    position: absolute;
-    left: 10px;
-    width: 16px;
-    height: 16px;
-    color: $text-muted;
-    pointer-events: none;
-  }
-
-  .search-input {
-    background: $bg-row;
-    border: 1px solid $border-strong;
-    border-radius: 8px;
-    color: $text-primary;
-    font-size: 0.85rem;
-    padding: 7px 30px 7px 32px;
-    width: 220px;
-    outline: none;
-    transition: border-color 0.15s;
-
-    &::placeholder {
-      color: $text-muted;
-    }
-    &:focus {
-      border-color: var(--dc-action-bg);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.18);
-    }
-  }
-
-  .search-clear {
-    position: absolute;
-    right: 8px;
-    background: none;
-    border: none;
-    color: $text-muted;
-    cursor: pointer;
-    font-size: 1rem;
-    line-height: 1;
-    padding: 2px;
-    &:hover {
-      color: $text-primary;
-    }
-  }
-}
-
-// ── Count badge ────────────────────────────────────────────────────────────
-.count-badge {
-  font-size: 0.78rem;
-  color: $text-muted;
-  background: var(--dc-count-badge-bg);
-  border: 1px solid var(--dc-count-badge-border);
-  padding: 4px 10px;
-  border-radius: 12px;
-}
-
-// ── New button ─────────────────────────────────────────────────────────────
-.btn-new {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--dc-action-bg);
-  border: none;
-  border-radius: 8px;
-  color: var(--dc-action-text);
-  font-size: 0.83rem;
-  font-weight: 500;
-  padding: 7px 14px;
-  cursor: pointer;
-  transition: background 0.15s;
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  &:hover {
-    background: var(--dc-action-bg-hover);
-  }
-}
+// ── New button ────────────────────────────────────────────────────────────────
+.btn-new { @include mx.btn-primary(sm); }

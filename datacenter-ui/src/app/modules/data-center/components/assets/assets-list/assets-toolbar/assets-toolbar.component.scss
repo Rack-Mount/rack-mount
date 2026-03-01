@@ -1,157 +1,24 @@
-$bg-surface: var(--dc-bg-surface);
-$bg-row: var(--dc-bg-row);
-$border: var(--dc-border);
-$border-strong: var(--dc-border-strong);
-$accent: var(--dc-accent-text);
-$text-primary: var(--dc-text-primary);
-$text-secondary: var(--dc-text-secondary);
-$text-muted: var(--dc-text-muted);
+@use 'styles/mixins' as mx;
 
-:host {
-  display: block;
-}
+:host { display: block; }
 
-// ── Toolbar ───────────────────────────────────────────────────────────────────
-.assets-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 20px;
-  background: $bg-surface;
-  border-bottom: 1px solid $border;
-  flex-shrink: 0;
-}
+.assets-toolbar { @include mx.toolbar-base(); }
+.toolbar-left   { @include mx.toolbar-left(10px); }
+.toolbar-right  { @include mx.toolbar-right(); }
+.search-box     { @include mx.search-box(260px, var(--dc-accent-text)); }
+.filter-select  { @include mx.filter-select(); }
 
-.toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.search-box {
-  position: relative;
-  display: flex;
-  align-items: center;
-
-  .search-icon {
-    position: absolute;
-    left: 10px;
-    width: 16px;
-    height: 16px;
-    color: $text-muted;
-    pointer-events: none;
-  }
-
-  .search-input {
-    background: $bg-row;
-    border: 1px solid $border-strong;
-    border-radius: 8px;
-    color: $text-primary;
-    font-size: 0.85rem;
-    padding: 7px 10px 7px 32px;
-    width: 260px;
-    outline: none;
-    transition: border-color 0.15s;
-
-    &::placeholder {
-      color: $text-muted;
-    }
-
-    &:focus {
-      border-color: $accent;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-    }
-  }
-}
-
-.filter-select {
-  appearance: none;
-  background: $bg-row
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-    no-repeat right 8px center / 14px;
-  border: 1px solid $border-strong;
-  border-radius: 8px;
-  color: $text-primary;
-  font-size: 0.85rem;
-  padding: 7px 28px 7px 10px;
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.15s;
-
-  option {
-    background: var(--dc-bg-option);
-  }
-
-  &:focus {
-    border-color: $accent;
-  }
-}
-
-.btn-reset {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.28);
-  border-radius: 8px;
-  color: #f87171;
-  font-size: 0.82rem;
-  padding: 7px 12px;
-  cursor: pointer;
-  transition: background 0.15s;
-
-  svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  &:hover {
-    background: rgba(239, 68, 68, 0.22);
-  }
-}
+.btn-reset { @include mx.btn-danger(7px 12px); }
 
 .count-badge {
   font-size: 0.8rem;
-  color: $text-secondary;
-  background: $bg-row;
-  border: 1px solid $border;
+  color: var(--dc-text-secondary);
+  background: var(--dc-bg-row);
+  border: 1px solid var(--dc-border);
   border-radius: 20px;
   padding: 4px 12px;
   white-space: nowrap;
 }
 
 // ── New asset button ──────────────────────────────────────────────────────────
-.btn-new-asset {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 14px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  border-radius: 8px;
-  border: none;
-  background: var(--dc-action-bg);
-  color: var(--dc-action-text);
-  cursor: pointer;
-  transition: background 0.15s;
-  white-space: nowrap;
-
-  svg {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-  }
-
-  &:hover {
-    background: var(--dc-action-bg-hover);
-  }
-}
+.btn-new-asset { @include mx.btn-primary(sm); }

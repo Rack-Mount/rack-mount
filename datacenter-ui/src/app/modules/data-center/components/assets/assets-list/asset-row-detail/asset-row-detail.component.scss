@@ -1,10 +1,12 @@
-$bg-detail: var(--dc-bg-expanded);
-$accent: var(--dc-accent-text);
-$border: var(--dc-border);
-$border-strong: var(--dc-border-strong);
-$text-primary: var(--dc-text-primary);
-$text-secondary: var(--dc-text-secondary);
-$text-muted: var(--dc-text-muted);
+@use 'styles/mixins' as mx;
+
+$bg-detail:     mx.$bg-expanded;
+$accent:        mx.$accent-text;
+$border:        mx.$border;
+$border-strong: mx.$border-strong;
+$text-primary:   mx.$text-primary;
+$text-secondary: mx.$text-secondary;
+$text-muted:     mx.$text-muted;
 
 :host {
   display: block;
