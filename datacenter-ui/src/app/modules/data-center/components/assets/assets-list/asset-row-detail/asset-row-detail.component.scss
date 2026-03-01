@@ -1,12 +1,12 @@
-@use 'styles/mixins' as mx;
+@use "styles/mixins" as mx;
 
-$bg-detail:     mx.$bg-expanded;
-$accent:        mx.$accent-text;
-$border:        mx.$border;
+$bg-detail: mx.$bg-expanded;
+$accent: mx.$accent-text;
+$border: mx.$border;
 $border-strong: mx.$border-strong;
-$text-primary:   mx.$text-primary;
+$text-primary: mx.$text-primary;
 $text-secondary: mx.$text-secondary;
-$text-muted:     mx.$text-muted;
+$text-muted: mx.$text-muted;
 
 :host {
   display: block;
@@ -139,7 +139,9 @@ $text-muted:     mx.$text-muted;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .btn-edit {

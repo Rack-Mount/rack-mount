@@ -585,10 +585,7 @@ export class AssetsListComponent {
     if (this.cloneInProgressId() !== null) return;
     this.cloneInProgressId.set(id);
     this.http
-      .post<Asset>(
-        `${environment.service_url}/asset/asset/${id}/clone`,
-        {},
-      )
+      .post<Asset>(`${environment.service_url}/asset/asset/${id}/clone`, {})
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (cloned) => {
