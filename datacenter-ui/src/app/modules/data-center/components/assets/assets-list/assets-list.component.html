@@ -5,11 +5,16 @@
     [availableStates]="availableStates()"
     [availableTypes]="availableTypes()"
     [totalCount]="listState().status === 'loaded' ? totalCount() : null"
+    [importCsvState]="importCsvState()"
+    [importCsvSummary]="importCsvSummary()"
+    [importCsvErrors]="importCsvErrors()"
     (searchChange)="onSearchInput($event)"
     (stateFilterChange)="onStateFilter($event)"
     (typeFilterChange)="onTypeFilter($event)"
     (filtersReset)="resetFilters()"
     (newClick)="openCreateDrawer()"
+    (importCsvFile)="onImportCsvFile($event)"
+    (importCsvDismiss)="onImportCsvDismiss()"
   />
 
   <!-- ── Table + selection bar + pagination ─────────────────────────────── -->

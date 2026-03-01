@@ -12,6 +12,7 @@
 }
 .toolbar-right {
   @include mx.toolbar-right();
+  position: relative;
 }
 .search-box {
   @include mx.search-box(260px, var(--dc-accent-text));
@@ -37,4 +38,151 @@
 // ── New asset button ──────────────────────────────────────────────────────────
 .btn-new-asset {
   @include mx.btn-primary(sm);
+}
+
+// ── CSV import button ─────────────────────────────────────────────────────────
+.btn-import {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--dc-border-strong);
+  background: var(--dc-bg-row);
+  color: var(--dc-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
+
+  svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  &:hover { background: var(--dc-hover-subtle); color: var(--dc-text-primary); }
+
+  &--busy {
+    opacity: 0.65;
+    pointer-events: none;
+  }
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+// ── Template download button ──────────────────────────────────────────────────
+.btn-tpl {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 7px;
+  border: 1px solid var(--dc-border-strong);
+  background: var(--dc-bg-row);
+  color: var(--dc-text-muted);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+
+  svg { width: 14px; height: 14px; }
+  &:hover { background: var(--dc-hover-subtle); color: var(--dc-text-primary); }
+}
+
+// ── Import result message ─────────────────────────────────────────────────────
+.import-msg {
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+
+  &--ok  { background: var(--dc-badge-active-bg);  color: var(--dc-badge-active-text);  border: 1px solid var(--dc-badge-active-border); }
+  &--err { background: var(--dc-badge-error-bg);   color: var(--dc-badge-error-text);   border: 1px solid var(--dc-badge-error-border); }
+
+  &--clickable {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    user-select: none;
+  }
+
+  .caret {
+    width: 10px;
+    height: 6px;
+    flex-shrink: 0;
+  }
+}
+
+// ── Error details panel ───────────────────────────────────────────────────────
+.errors-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 200;
+  min-width: 320px;
+  max-width: 480px;
+  background: var(--dc-bg-card);
+  border: 1px solid var(--dc-badge-error-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--dc-badge-error-bg);
+    color: var(--dc-badge-error-text);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    opacity: 0.7;
+    &:hover { opacity: 1; }
+    svg { width: 12px; height: 12px; }
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+    max-height: 260px;
+    overflow-y: auto;
+
+    li {
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      color: var(--dc-text-primary);
+      border-bottom: 1px solid var(--dc-border);
+      line-height: 1.4;
+      &:last-child { border-bottom: none; }
+    }
+  }
+
+  &__row {
+    font-weight: 600;
+    color: var(--dc-badge-error-text);
+    margin-right: 6px;
+  }
+}
+
+.spinner-xs {
+  width: 12px;
+  height: 12px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

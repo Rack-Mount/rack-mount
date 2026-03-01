@@ -40,7 +40,10 @@ import {
   BulkPickerOpenEvent,
   StatePickerOpenEvent,
 } from './assets-table/assets-table.component';
-import { AssetsToolbarComponent } from './assets-toolbar/assets-toolbar.component';
+import {
+  AssetsToolbarComponent,
+  CsvImportState,
+} from './assets-toolbar/assets-toolbar.component';
 
 @Component({
   selector: 'app-assets-list',
@@ -68,6 +71,11 @@ export class AssetsListComponent {
 
   // ── Create drawer ─────────────────────────────────────────────────────────
   protected readonly createDrawerOpen = signal(false);
+
+  // ── CSV import ────────────────────────────────────────────────────────────
+  protected readonly importCsvState = signal<CsvImportState>('idle');
+  protected readonly importCsvSummary = signal('');
+  protected readonly importCsvErrors = signal<{ row: number; message: string }[]>([]);
 
   // ── Delete confirmation ────────────────────────────────────────────────────
   protected readonly deleteConfirmId = signal<number | null>(null);
@@ -466,6 +474,49 @@ export class AssetsListComponent {
 
   protected closeCreateDrawer(): void {
     this.createDrawerOpen.set(false);
+  }
+
+  // ── CSV import ────────────────────────────────────────────────────────────
+
+  protected onImportCsvFile(file: File): void {
+    this.importCsvState.set('importing');
+    const fd = new FormData();
+    fd.append('file', file);
+    this.http
+      .post<{ created: number; errors: { row: number; message: string }[] }>(
+        `${environment.service_url}/asset/asset/import-csv`,
+        fd,
+      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (r) => {
+          this.importCsvErrors.set(r.errors);
+          const msg =
+            r.errors.length > 0
+              ? `${r.created} importati, ${r.errors.length} errori`
+              : `${r.created} asset importati`;
+          this.importCsvSummary.set(msg);
+          this.importCsvState.set(r.errors.length > 0 ? 'error' : 'success');
+          if (r.created > 0) {
+            this.params.update((p) => ({ ...p, page: 1 }));
+          }
+          // Success auto-clears; errors stay until explicitly dismissed
+          if (r.errors.length === 0) {
+            setTimeout(() => this.importCsvState.set('idle'), 5000);
+          }
+        },
+        error: () => {
+          this.importCsvSummary.set("Errore durante l'importazione");
+          this.importCsvState.set('error');
+          // No auto-clear: user must dismiss
+        },
+      });
+  }
+
+  protected onImportCsvDismiss(): void {
+    this.importCsvState.set('idle');
+    this.importCsvErrors.set([]);
+    this.importCsvSummary.set('');
   }
 
   protected onDrawerSaved(): void {
