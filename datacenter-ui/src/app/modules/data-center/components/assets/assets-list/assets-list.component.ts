@@ -77,7 +77,8 @@ export class AssetsListComponent {
   protected readonly importCsvSummary = signal('');
   protected readonly importCsvErrors = signal<
     { row: number; message: string }[]
-  >([]);  protected readonly importCsvRows = signal<
+  >([]);
+  protected readonly importCsvRows = signal<
     { row: number; hostname: string; serial_number: string }[]
   >([]);
   // ── Delete confirmation ────────────────────────────────────────────────────
@@ -492,10 +493,7 @@ export class AssetsListComponent {
         created: number;
         rows: { row: number; hostname: string; serial_number: string }[];
         errors: { row: number; message: string }[];
-      }>(
-        `${environment.service_url}/asset/asset/import-csv`,
-        fd,
-      )
+      }>(`${environment.service_url}/asset/asset/import-csv`, fd)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (r) => {

@@ -81,7 +81,13 @@
         {{ importCsvSummary }}
         @if (importCsvRows.length > 0) {
           <svg class="caret" viewBox="0 0 10 6" fill="none">
-            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M1 1l4 4 4-4"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         }
       </span>
@@ -105,7 +111,9 @@
         }
       </span>
     }
-    @if (showPanel && (importCsvRows.length > 0 || importCsvErrors.length > 0)) {
+    @if (
+      showPanel && (importCsvRows.length > 0 || importCsvErrors.length > 0)
+    ) {
       <div class="errors-panel">
         <div class="errors-panel__header">
           Resoconto importazione
@@ -127,15 +135,23 @@
 
         @if (importCsvRows.length > 0) {
           <div class="errors-panel__section errors-panel__section--ok">
-            <span class="errors-panel__section-title">&#10003; Inseriti ({{ importCsvRows.length }})</span>
+            <span class="errors-panel__section-title"
+              >&#10003; Inseriti ({{ importCsvRows.length }})</span
+            >
           </div>
           <ul class="errors-panel__list">
             @for (r of importCsvRows; track r.row) {
               <li class="errors-panel__item--ok">
-                <span class="errors-panel__row errors-panel__row--ok">Riga {{ r.row }}</span>
-                <span class="errors-panel__hostname">{{ r.hostname || '—' }}</span>
+                <span class="errors-panel__row errors-panel__row--ok"
+                  >Riga {{ r.row }}</span
+                >
+                <span class="errors-panel__hostname">{{
+                  r.hostname || "—"
+                }}</span>
                 @if (r.serial_number) {
-                  <span class="errors-panel__serial">{{ r.serial_number }}</span>
+                  <span class="errors-panel__serial">{{
+                    r.serial_number
+                  }}</span>
                 }
               </li>
             }
@@ -144,7 +160,9 @@
 
         @if (importCsvErrors.length > 0) {
           <div class="errors-panel__section errors-panel__section--err">
-            <span class="errors-panel__section-title">&#10007; Errori ({{ importCsvErrors.length }})</span>
+            <span class="errors-panel__section-title"
+              >&#10007; Errori ({{ importCsvErrors.length }})</span
+            >
           </div>
           <ul class="errors-panel__list">
             @for (e of importCsvErrors; track e.row) {
