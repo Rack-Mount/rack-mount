@@ -98,6 +98,7 @@
     "save_error": "保存时出错，请重试。",
     "saving_form": "保存中…",
     "import_btn": "导入 JSON",
+    "clone_btn": "克隆",
     "import_success": "型号导入成功。",
     "import_conflict": "相同名称、厂商及类型的型号已存在。",
     "import_error": "导入时出错。",

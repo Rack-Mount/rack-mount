@@ -98,6 +98,7 @@
     "save_error": "Errore durante il salvataggio. Riprova.",
     "saving_form": "Salvataggio…",
     "import_btn": "Importa JSON",
+    "clone_btn": "Clona",
     "import_success": "Modello importato con successo.",
     "import_conflict": "Un modello con questo nome, vendor e tipo esiste già.",
     "import_error": "Errore durante l'importazione.",

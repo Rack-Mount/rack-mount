@@ -338,6 +338,18 @@ $text-muted: mx.$text-muted;
   opacity: 1;
 }
 
+.btn-clone {
+  @extend %btn-row-base;
+  background: transparent;
+  border: 1px solid $border-strong;
+  color: $text-secondary;
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: $accent;
+    color: $accent;
+  }
+}
+
 .btn-edit {
   @extend %btn-row-base;
   background: var(--dc-accent-dim);

@@ -343,6 +343,17 @@
                 } @else {
                   <div class="action-group">
                     <button
+                      class="btn-clone"
+                      [title]="'models.clone_btn' | translate"
+                      (click)="cloneModel(m)"
+                    >
+                      <svg viewBox="0 0 16 16" fill="none">
+                        <rect x="5" y="1" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+                        <rect x="2" y="4" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="var(--dc-bg-row, #181825)"/>
+                      </svg>
+                      {{ "models.clone_btn" | translate }}
+                    </button>
+                    <button
                       class="btn-edit"
                       [title]="'common.edit' | translate"
                       (click)="openEdit(m)"

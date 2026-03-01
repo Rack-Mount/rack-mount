@@ -350,6 +350,33 @@ export class ModelsListComponent {
     this.drawerOpen.set(true);
   }
 
+  protected cloneModel(m: AssetModel): void {
+    this.vendorSearch.set(m.vendor?.name ?? '');
+    this.typeSearch.set(m.type?.name ?? '');
+    this.vendorDropdownOpen.set(false);
+    this.typeDropdownOpen.set(false);
+    this.form.set({
+      name: `(CLONE) ${m.name ?? ''}`,
+      vendor_id: m.vendor?.id ?? null,
+      type_id: m.type?.id ?? null,
+      rack_units: m.rack_units ?? null,
+      note: m.note ?? '',
+      front_image_file: null,
+      rear_image_file: null,
+      front_image_url: m.front_image ?? null,
+      rear_image_url: m.rear_image ?? null,
+      front_transform: null,
+      rear_transform: null,
+      front_preview_url: null,
+      rear_preview_url: null,
+    });
+    this.drawerSave.set('idle');
+    this.drawerSaveMsg.set('');
+    this.drawerMode.set('create');
+    this.drawerEditId.set(null);
+    this.drawerOpen.set(true);
+  }
+
   protected closeDrawer(): void {
     this.drawerOpen.set(false);
   }
