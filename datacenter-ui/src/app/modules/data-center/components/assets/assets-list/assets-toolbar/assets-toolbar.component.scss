@@ -1,14 +1,28 @@
-@use 'styles/mixins' as mx;
+@use "styles/mixins" as mx;
 
-:host { display: block; }
+:host {
+  display: block;
+}
 
-.assets-toolbar { @include mx.toolbar-base(); }
-.toolbar-left   { @include mx.toolbar-left(10px); }
-.toolbar-right  { @include mx.toolbar-right(); }
-.search-box     { @include mx.search-box(260px, var(--dc-accent-text)); }
-.filter-select  { @include mx.filter-select(); }
+.assets-toolbar {
+  @include mx.toolbar-base();
+}
+.toolbar-left {
+  @include mx.toolbar-left(10px);
+}
+.toolbar-right {
+  @include mx.toolbar-right();
+}
+.search-box {
+  @include mx.search-box(260px, var(--dc-accent-text));
+}
+.filter-select {
+  @include mx.filter-select();
+}
 
-.btn-reset { @include mx.btn-danger(7px 12px); }
+.btn-reset {
+  @include mx.btn-danger(7px 12px);
+}
 
 .count-badge {
   font-size: 0.8rem;
@@ -21,4 +35,6 @@
 }
 
 // ── New asset button ──────────────────────────────────────────────────────────
-.btn-new-asset { @include mx.btn-primary(sm); }
+.btn-new-asset {
+  @include mx.btn-primary(sm);
+}

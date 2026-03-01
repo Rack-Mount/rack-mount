@@ -1,21 +1,21 @@
-@use 'styles/mixins' as mx;
+@use "styles/mixins" as mx;
 
 @include mx.page-host();
 
 // ── Variables ─────────────────────────────────────────────────────────────────
-$bg-base:     mx.$bg-base;
-$bg-surface:  mx.$bg-surface;
-$bg-row:      mx.$bg-row;
+$bg-base: mx.$bg-base;
+$bg-surface: mx.$bg-surface;
+$bg-row: mx.$bg-row;
 $bg-row-hover: mx.$bg-row-hover;
 $bg-expanded: mx.$bg-expanded;
-$bg-detail:   mx.$bg-expanded;
-$border:        mx.$border;
+$bg-detail: mx.$bg-expanded;
+$border: mx.$border;
 $border-strong: mx.$border-strong;
-$accent:     var(--dc-accent);
+$accent: var(--dc-accent);
 $accent-dim: var(--dc-accent-dim);
-$text-primary:   mx.$text-primary;
+$text-primary: mx.$text-primary;
 $text-secondary: mx.$text-secondary;
-$text-muted:     mx.$text-muted;
+$text-muted: mx.$text-muted;
 
 // ── Page layout ───────────────────────────────────────────────────────────────
 .assets-page {
@@ -178,7 +178,9 @@ $text-muted:     mx.$text-muted;
 }
 
 // ── Table wrapper ─────────────────────────────────────────────────────────────
-.assets-table-wrapper { @include mx.table-wrap(); }
+.assets-table-wrapper {
+  @include mx.table-wrap();
+}
 
 // ── Table ─────────────────────────────────────────────────────────────────────
 .assets-table {
@@ -459,7 +461,9 @@ $text-muted:     mx.$text-muted;
 }
 
 // ── State badge ───────────────────────────────────────────────────────────────
-.state-badge { @include mx.state-badge(); }
+.state-badge {
+  @include mx.state-badge();
+}
 
 .mono {
   font-family: "JetBrains Mono", "Fira Code", "Menlo", monospace;
@@ -577,8 +581,12 @@ $text-muted:     mx.$text-muted;
 }
 
 // ── Pagination ────────────────────────────────────────────────────────────────
-.pagination { @include mx.pagination(); }
-.page-btn   { @include mx.page-btn(); }
+.pagination {
+  @include mx.pagination();
+}
+.page-btn {
+  @include mx.page-btn();
+}
 
 .page-info {
   font-size: 0.82rem;

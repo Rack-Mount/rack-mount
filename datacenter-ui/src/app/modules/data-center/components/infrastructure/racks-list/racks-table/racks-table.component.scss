@@ -1,4 +1,4 @@
-@use 'styles/mixins' as mx;
+@use "styles/mixins" as mx;
 
 $bg-surface: mx.$bg-surface;
 $bg-row: mx.$bg-row;
@@ -15,9 +15,15 @@ $text-muted: mx.$text-muted;
 }
 
 // ── Loading / Empty states ─────────────────────────────────────────────────
-.loading-state { @include mx.loading-state(); }
-.empty-state   { @include mx.empty-state-center(); }
-.spinner       { @include mx.spinner(); }
+.loading-state {
+  @include mx.loading-state();
+}
+.empty-state {
+  @include mx.empty-state-center();
+}
+.spinner {
+  @include mx.spinner();
+}
 
 @include mx.spin-keyframe();
 
@@ -124,7 +130,9 @@ $text-muted: mx.$text-muted;
 }
 
 // ── Sort indicator ─────────────────────────────────────────────────────────
-.sort-indicator { @include mx.sort-indicator(); }
+.sort-indicator {
+  @include mx.sort-indicator();
+}
 
 // ── Occupancy cell ─────────────────────────────────────────────────────────
 .occ-cell {
@@ -244,13 +252,19 @@ $text-muted: mx.$text-muted;
   gap: 2px;
   opacity: 0.35;
   transition: opacity 0.15s;
-  tr:hover & { opacity: 1; }
+  tr:hover & {
+    opacity: 1;
+  }
 }
 
-.btn-row-action { @include mx.btn-row-action(); }
+.btn-row-action {
+  @include mx.btn-row-action();
+}
 
 // ── Delete confirm inline ──────────────────────────────────────────────────
-.delete-confirm { @include mx.delete-confirm-popover(); }
+.delete-confirm {
+  @include mx.delete-confirm-popover();
+}
 
 .action-msg {
   font-size: 0.8rem;
@@ -261,5 +275,9 @@ $text-muted: mx.$text-muted;
   }
 }
 
-.btn-danger-sm { @include mx.btn-danger-sm(); }
-.btn-ghost-sm  { @include mx.btn-ghost-sm(); }
+.btn-danger-sm {
+  @include mx.btn-danger-sm();
+}
+.btn-ghost-sm {
+  @include mx.btn-ghost-sm();
+}

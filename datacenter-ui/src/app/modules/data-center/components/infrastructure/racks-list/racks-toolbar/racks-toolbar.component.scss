@@ -1,19 +1,37 @@
-@use 'styles/mixins' as mx;
+@use "styles/mixins" as mx;
 
-:host { display: block; flex-shrink: 0; }
+:host {
+  display: block;
+  flex-shrink: 0;
+}
 
-.toolbar       { @include mx.toolbar-base(wrap); }
-.toolbar-left  { @include mx.toolbar-left(); }
-.toolbar-right { @include mx.toolbar-right(false); }
+.toolbar {
+  @include mx.toolbar-base(wrap);
+}
+.toolbar-left {
+  @include mx.toolbar-left();
+}
+.toolbar-right {
+  @include mx.toolbar-right(false);
+}
 
 // ── Datacenter / Room filter select ──────────────────────────────────────────
-.dc-filter { @include mx.filter-select(); height: 34px; }
+.dc-filter {
+  @include mx.filter-select();
+  height: 34px;
+}
 
 // ── Search box ────────────────────────────────────────────────────────────────
-.search-box { @include mx.search-box(220px); }
+.search-box {
+  @include mx.search-box(220px);
+}
 
 // ── Count badge ───────────────────────────────────────────────────────────────
-.count-badge { @include mx.count-badge(); }
+.count-badge {
+  @include mx.count-badge();
+}
 
 // ── New button ────────────────────────────────────────────────────────────────
-.btn-new { @include mx.btn-primary(sm); }
+.btn-new {
+  @include mx.btn-primary(sm);
+}

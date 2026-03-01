@@ -1,16 +1,16 @@
-@use 'styles/mixins' as mx;
+@use "styles/mixins" as mx;
 
 // ── Variables ──────────────────────────────────────────────────────────────
-$bg-base:    mx.$bg-base;
+$bg-base: mx.$bg-base;
 $bg-surface: mx.$bg-surface;
-$bg-row:     mx.$bg-row;
+$bg-row: mx.$bg-row;
 $bg-row-alt: mx.$bg-row-alt;
 $bg-row-hover: mx.$bg-row-hover;
-$border:        mx.$border;
+$border: mx.$border;
 $border-strong: mx.$border-strong;
-$text-primary:   mx.$text-primary;
+$text-primary: mx.$text-primary;
 $text-secondary: mx.$text-secondary;
-$text-muted:     mx.$text-muted;
+$text-muted: mx.$text-muted;
 
 :host {
   display: flex;
@@ -81,11 +81,17 @@ $text-muted:     mx.$text-muted;
   }
 }
 
-.search-box { @include mx.search-box(220px); }
+.search-box {
+  @include mx.search-box(220px);
+}
 
-.count-badge { @include mx.count-badge(); }
+.count-badge {
+  @include mx.count-badge();
+}
 
-.btn-new { @include mx.btn-primary(sm); }
+.btn-new {
+  @include mx.btn-primary(sm);
+}
 
 // ── Table wrap ─────────────────────────────────────────────────────────────
 .table-wrap {
@@ -96,11 +102,17 @@ $text-muted:     mx.$text-muted;
   scrollbar-color: var(--dc-scrollbar-thumb) transparent;
 }
 
-.loading-state { @include mx.loading-state(); }
+.loading-state {
+  @include mx.loading-state();
+}
 
-.empty-state { @include mx.empty-state-center(); }
+.empty-state {
+  @include mx.empty-state-center();
+}
 
-.spinner { @include mx.spinner(); }
+.spinner {
+  @include mx.spinner();
+}
 
 @include mx.spin-keyframe();
 
@@ -201,7 +213,9 @@ $text-muted:     mx.$text-muted;
 }
 
 // ── Sort indicator ───────────────────────────────────────────────────────────
-.sort-indicator { @include mx.sort-indicator(); }
+.sort-indicator {
+  @include mx.sort-indicator();
+}
 
 // ── Occupancy cell ─────────────────────────────────────────────────────────
 .occ-cell {
@@ -348,10 +362,14 @@ $text-muted:     mx.$text-muted;
   }
 }
 
-.btn-row-action { @include mx.btn-row-action(); }
+.btn-row-action {
+  @include mx.btn-row-action();
+}
 
 // ── Delete confirm inline ──────────────────────────────────────────────────
-.delete-confirm { @include mx.delete-confirm-popover(); }
+.delete-confirm {
+  @include mx.delete-confirm-popover();
+}
 
 .action-msg {
   font-size: 0.8rem;
@@ -362,6 +380,10 @@ $text-muted:     mx.$text-muted;
   }
 }
 
-.btn-danger-sm { @include mx.btn-danger-sm(); }
+.btn-danger-sm {
+  @include mx.btn-danger-sm();
+}
 
-.btn-ghost-sm { @include mx.btn-ghost-sm(); }
+.btn-ghost-sm {
+  @include mx.btn-ghost-sm();
+}

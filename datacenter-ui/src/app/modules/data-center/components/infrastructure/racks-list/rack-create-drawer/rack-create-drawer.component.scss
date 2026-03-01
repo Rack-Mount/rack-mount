@@ -1,4 +1,4 @@
-@use 'styles/mixins' as mx;
+@use "styles/mixins" as mx;
 
 @include mx.drawer-shell();
 @include mx.form-elements();
@@ -40,7 +40,9 @@
   gap: 8px;
 }
 
-.btn-cancel { @include mx.btn-ghost(); }
+.btn-cancel {
+  @include mx.btn-ghost();
+}
 
 .btn-save {
   @include mx.btn-primary();

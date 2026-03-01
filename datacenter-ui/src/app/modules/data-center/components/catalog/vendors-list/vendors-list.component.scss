@@ -1,17 +1,17 @@
-@use 'styles/mixins' as mx;
+@use "styles/mixins" as mx;
 
 // ── Variables ──────────────────────────────────────────────────────────────
-$bg-base:     mx.$bg-base;
-$bg-surface:  mx.$bg-surface;
-$bg-row:      mx.$bg-row;
+$bg-base: mx.$bg-base;
+$bg-surface: mx.$bg-surface;
+$bg-row: mx.$bg-row;
 $bg-row-hover: mx.$bg-row-hover;
-$border:        mx.$border;
+$border: mx.$border;
 $border-strong: mx.$border-strong;
 $accent: var(--dc-accent);
 $danger: var(--dc-danger);
-$text-primary:   mx.$text-primary;
+$text-primary: mx.$text-primary;
 $text-secondary: mx.$text-secondary;
-$text-muted:     mx.$text-muted;
+$text-muted: mx.$text-muted;
 
 :host {
   display: flex;
@@ -50,14 +50,22 @@ $text-muted:     mx.$text-muted;
 }
 
 // ── Search ─────────────────────────────────────────────────────────────────
-.search-box { @include mx.search-box(240px, $accent); }
+.search-box {
+  @include mx.search-box(240px, $accent);
+}
 
-.count-badge { @include mx.count-badge(); }
+.count-badge {
+  @include mx.count-badge();
+}
 
-.btn-new { @include mx.btn-primary(sm); }
+.btn-new {
+  @include mx.btn-primary(sm);
+}
 
 // ── Table wrap ─────────────────────────────────────────────────────────────
-.table-wrap { @include mx.table-wrap(0 16px 16px); }
+.table-wrap {
+  @include mx.table-wrap(0 16px 16px);
+}
 
 .state-full {
   display: flex;
@@ -73,7 +81,9 @@ $text-muted:     mx.$text-muted;
   }
 }
 
-.spinner { @include mx.spinner(28px, $accent); }
+.spinner {
+  @include mx.spinner(28px, $accent);
+}
 
 @include mx.spin-keyframe();
 
@@ -317,5 +327,9 @@ $text-muted:     mx.$text-muted;
 }
 
 // ── Pagination ─────────────────────────────────────────────────────────────
-.pagination { @include mx.pagination(); }
-.page-btn   { @include mx.page-btn(); }
+.pagination {
+  @include mx.pagination();
+}
+.page-btn {
+  @include mx.page-btn();
+}
