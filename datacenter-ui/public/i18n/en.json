@@ -163,6 +163,7 @@
   },
   "asset_form": {
     "title": "New asset",
+    "title_edit": "Edit asset",
     "model": "Device",
     "model_search": "Search device or vendor…",
     "model_remove": "Remove device",
@@ -185,6 +186,7 @@
     "notes": "Notes",
     "notes_placeholder": "Additional notes…",
     "save": "Create asset",
+    "save_edit": "Save changes",
     "saving": "Creating…",
     "error": "Save error — please check the data and try again."
   },
@@ -335,6 +337,7 @@
     "created": "Created",
     "updated": "Updated",
     "delete_btn": "Delete asset",
+    "edit_btn": "Edit asset",
     "delete_confirm_msg": "Are you sure? This action cannot be undone.",
     "deleting": "Deleting\u2026",
     "confirm_delete": "Confirm delete",

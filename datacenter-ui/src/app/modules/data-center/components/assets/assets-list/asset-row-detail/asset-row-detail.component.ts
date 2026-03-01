@@ -23,9 +23,15 @@ export class AssetRowDetailComponent {
     'idle',
   );
 
+  readonly editRequested = output<Asset>();
   readonly deleteRequested = output<number>();
   readonly deleteConfirmed = output<number>();
   readonly deleteCancelled = output<void>();
+
+  protected onEditRequest(event: MouseEvent): void {
+    event.stopPropagation();
+    this.editRequested.emit(this.asset());
+  }
 
   protected onDeleteRequest(id: number, event: MouseEvent): void {
     event.stopPropagation();

@@ -374,15 +374,15 @@ $text-muted: var(--dc-text-muted);
   align-items: center;
   gap: 12px;
   padding: 8px 16px;
-  background: rgba(74, 158, 255, 0.1);
-  border: 1px solid rgba(74, 158, 255, 0.3);
+  background: var(--dc-selection-bg);
+  border: 1px solid var(--dc-selection-border);
   border-radius: 6px;
   margin: 0 0 10px;
 
   .selection-count {
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--dc-accent);
+    color: var(--dc-selection-color);
     white-space: nowrap;
   }
 
@@ -391,7 +391,7 @@ $text-muted: var(--dc-text-muted);
     color: $text-secondary;
 
     &--active {
-      color: var(--dc-accent);
+      color: var(--dc-selection-color);
       font-weight: 500;
     }
   }
@@ -401,13 +401,13 @@ $text-muted: var(--dc-text-muted);
     border: none;
     padding: 0;
     font-size: inherit;
-    color: var(--dc-accent);
+    color: var(--dc-selection-color);
     cursor: pointer;
     text-decoration: underline;
     text-underline-offset: 2px;
 
     &:hover {
-      color: var(--dc-accent-hover);
+      color: var(--dc-selection-color-hover);
     }
   }
 
@@ -444,8 +444,6 @@ $text-muted: var(--dc-text-muted);
 
     &--primary {
       background: var(--dc-accent-dim);
-      border-color: var(--dc-accent);
-      color: var(--dc-accent);
 
       &:hover:not(:disabled) {
         background: var(--dc-accent-dim);

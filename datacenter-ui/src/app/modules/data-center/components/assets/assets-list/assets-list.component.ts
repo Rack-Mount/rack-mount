@@ -78,6 +78,9 @@ export class AssetsListComponent {
     'idle' | 'saving' | 'error' | 'mounted'
   >('idle');
 
+  // ── Edit asset ─────────────────────────────────────────────────────────────
+  protected readonly editingAsset = signal<Asset | null>(null);
+
   // ── Filter params (single signal for reactivity) ──────────────────────────
   protected readonly params = signal({
     search: '',
@@ -491,6 +494,21 @@ export class AssetsListComponent {
   protected onDrawerSaved(): void {
     this.closeCreateDrawer();
     this.params.update((p) => ({ ...p, page: 1 }));
+  }
+
+  // ── Edit asset ────────────────────────────────────────────────────────────
+
+  protected openEditDrawer(asset: Asset): void {
+    this.editingAsset.set(asset);
+  }
+
+  protected closeEditDrawer(): void {
+    this.editingAsset.set(null);
+  }
+
+  protected onEditSaved(): void {
+    this.closeEditDrawer();
+    this.params.update((p) => ({ ...p }));
   }
 
   // ── Delete asset ──────────────────────────────────────────────────────────

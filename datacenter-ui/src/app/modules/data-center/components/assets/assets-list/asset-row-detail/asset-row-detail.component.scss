@@ -1,5 +1,5 @@
 $bg-detail: var(--dc-bg-expanded);
-$accent: var(--dc-accent);
+$accent: var(--dc-accent-text);
 $border: var(--dc-border);
 $border-strong: var(--dc-border-strong);
 $text-primary: var(--dc-text-primary);
@@ -89,6 +89,34 @@ $text-muted: var(--dc-text-muted);
   border-top: 1px solid $border;
   margin-top: 10px;
   flex-wrap: wrap;
+}
+
+.btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  border-radius: 6px;
+  border: 1px solid $border-strong;
+  background: transparent;
+  color: $text-secondary;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: $accent;
+    color: $accent;
+  }
 }
 
 .btn-delete {

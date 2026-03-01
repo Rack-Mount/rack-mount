@@ -163,6 +163,7 @@
   },
   "asset_form": {
     "title": "Nuovo asset",
+    "title_edit": "Modifica asset",
     "model": "Apparato",
     "model_search": "Cerca apparato o vendor…",
     "model_remove": "Rimuovi apparato",
@@ -185,6 +186,7 @@
     "notes": "Note",
     "notes_placeholder": "Note aggiuntive…",
     "save": "Crea asset",
+    "save_edit": "Salva modifiche",
     "saving": "Creazione…",
     "error": "Errore nel salvataggio — ricontrolla i dati e riprova."
   },
@@ -335,6 +337,7 @@
     "created": "Creato",
     "updated": "Aggiornato",
     "delete_btn": "Elimina asset",
+    "edit_btn": "Modifica asset",
     "delete_confirm_msg": "Sei sicuro? L'operazione \u00e8 irreversibile.",
     "deleting": "Eliminazione\u2026",
     "confirm_delete": "Conferma eliminazione",

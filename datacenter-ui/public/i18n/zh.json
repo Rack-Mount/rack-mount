@@ -163,6 +163,7 @@
   },
   "asset_form": {
     "title": "新建设备",
+    "title_edit": "编辑设备",
     "model": "设备型号",
     "model_search": "搜索设备或厂商…",
     "model_remove": "移除设备",
@@ -185,6 +186,7 @@
     "notes": "备注",
     "notes_placeholder": "附加备注…",
     "save": "创建设备",
+    "save_edit": "保存更改",
     "saving": "创建中…",
     "error": "保存时出错 — 请检查数据后重试。"
   },
@@ -335,6 +337,7 @@
     "created": "创建时间",
     "updated": "更新时间",
     "delete_btn": "删除设备",
+    "edit_btn": "编辑设备",
     "delete_confirm_msg": "确定吗？此操作无法撤销。",
     "deleting": "删除中…",
     "confirm_delete": "确认删除",

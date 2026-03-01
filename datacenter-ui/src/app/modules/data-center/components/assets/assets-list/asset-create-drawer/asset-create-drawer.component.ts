@@ -6,12 +6,14 @@ import {
   DestroyRef,
   inject,
   input,
+  OnInit,
   output,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 import {
+  Asset,
   AssetModel,
   AssetService,
   AssetState,
@@ -26,13 +28,15 @@ import { BackendErrorService } from '../../../../../core/services/backend-error.
   styleUrl: './asset-create-drawer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AssetCreateDrawerComponent {
+export class AssetCreateDrawerComponent implements OnInit {
   private readonly assetService = inject(AssetService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
 
   readonly availableStates = input.required<AssetState[]>();
   readonly availableModels = input.required<AssetModel[]>();
+  readonly mode = input<'create' | 'edit'>('create');
+  readonly editAsset = input<Asset | null>(null);
 
   /** Emitted after a successful save */
   readonly saved = output<void>();
@@ -78,6 +82,31 @@ export class AssetCreateDrawerComponent {
       .slice(0, 25);
   });
 
+  constructor() {}
+
+  ngOnInit(): void {
+    const a = this.editAsset();
+    if (!a || this.mode() !== 'edit') return;
+    this.createForm.set({
+      model_id: a.model.id,
+      state_id: a.state?.id ?? null, // state_id è write-only, l'API ritorna solo state.id
+      hostname: a.hostname ?? '',
+      serial_number: a.serial_number ?? '',
+      sap_id: a.sap_id ?? '',
+      order_id: a.order_id ?? '',
+      purchase_date: a.purchase_date ?? '',
+      warranty_expiration: a.warranty_expiration ?? '',
+      support_expiration: a.support_expiration ?? '',
+      decommissioned_date: a.decommissioned_date ?? '',
+      power_supplies: a.power_supplies ?? null,
+      power_cosumption_watt: a.power_cosumption_watt ?? null,
+      note: a.note ?? '',
+    });
+    this.modelSearch.set(
+      `${a.model.name ?? ''} (${a.model.vendor.name})`.trim(),
+    );
+  }
+
   // ── Model autocomplete handlers ───────────────────────────────────────────
   protected onModelSearch(value: string): void {
     this.modelSearch.set(value);
@@ -107,35 +136,53 @@ export class AssetCreateDrawerComponent {
     const form = this.createForm();
     if (!form.model_id || !form.state_id) return;
     this.createSaveState.set('saving');
-    this.assetService
-      .assetAssetCreate({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        asset: {
-          model_id: form.model_id,
-          state_id: form.state_id,
-          hostname: form.hostname || undefined,
-          serial_number: form.serial_number || undefined,
-          sap_id: form.sap_id || undefined,
-          order_id: form.order_id || undefined,
-          purchase_date: form.purchase_date || undefined,
-          warranty_expiration: form.warranty_expiration || undefined,
-          support_expiration: form.support_expiration || undefined,
-          decommissioned_date: form.decommissioned_date || undefined,
-          power_supplies: form.power_supplies ?? undefined,
-          power_cosumption_watt: form.power_cosumption_watt ?? undefined,
-          note: form.note || undefined,
-        } as any,
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.createSaveState.set('idle');
-          this.saved.emit();
-        },
-        error: (err: HttpErrorResponse) => {
-          this.createSaveState.set('error');
-          this.createSaveMsg.set(this.backendErr.parse(err));
-        },
-      });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      model_id: form.model_id,
+      state_id: form.state_id,
+      hostname: form.hostname || undefined,
+      serial_number: form.serial_number || undefined,
+      sap_id: form.sap_id || undefined,
+      order_id: form.order_id || undefined,
+      purchase_date: form.purchase_date || undefined,
+      warranty_expiration: form.warranty_expiration || undefined,
+      support_expiration: form.support_expiration || undefined,
+      decommissioned_date: form.decommissioned_date || undefined,
+      power_supplies: form.power_supplies ?? undefined,
+      power_cosumption_watt: form.power_cosumption_watt ?? undefined,
+      note: form.note || undefined,
+    };
+    if (this.mode() === 'edit') {
+      this.assetService
+        .assetAssetPartialUpdate({
+          id: this.editAsset()!.id,
+          patchedAsset: payload,
+        })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.createSaveState.set('idle');
+            this.saved.emit();
+          },
+          error: (err: HttpErrorResponse) => {
+            this.createSaveState.set('error');
+            this.createSaveMsg.set(this.backendErr.parse(err));
+          },
+        });
+    } else {
+      this.assetService
+        .assetAssetCreate({ asset: payload })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.createSaveState.set('idle');
+            this.saved.emit();
+          },
+          error: (err: HttpErrorResponse) => {
+            this.createSaveState.set('error');
+            this.createSaveMsg.set(this.backendErr.parse(err));
+          },
+        });
+    }
   }
 }

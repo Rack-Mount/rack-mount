@@ -134,6 +134,7 @@
   },
   "asset_form": {
     "title": "Neues Gerät",
+    "title_edit": "Gerät bearbeiten",
     "model": "Gerät",
     "model_search": "Gerät oder Hersteller suchen…",
     "model_remove": "Gerät entfernen",
@@ -156,6 +157,7 @@
     "notes": "Notizen",
     "notes_placeholder": "Zusätzliche Notizen…",
     "save": "Gerät erstellen",
+    "save_edit": "Änderungen speichern",
     "saving": "Wird erstellt…",
     "error": "Fehler beim Speichern — bitte Daten prüfen und erneut versuchen."
   },
@@ -333,6 +335,7 @@
     "created": "Erstellt",
     "updated": "Aktualisiert",
     "delete_btn": "Gerät löschen",
+    "edit_btn": "Gerät bearbeiten",
     "delete_confirm_msg": "Sind Sie sicher? Diese Aktion kann nicht rückgängig gemacht werden.",
     "deleting": "Wird gelöscht…",
     "confirm_delete": "Löschen bestätigen",

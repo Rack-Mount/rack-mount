@@ -2,7 +2,7 @@ $text-primary: var(--dc-text-primary);
 $text-muted: var(--dc-text-muted);
 
 // ── State picker overlay ──────────────────────────────────────────────────────────────────
-state-picker-overlay {
+.overlay-backdrop {
   position: fixed;
   inset: 0;
   z-index: 99;

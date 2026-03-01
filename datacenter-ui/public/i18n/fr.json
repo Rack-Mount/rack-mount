@@ -161,6 +161,7 @@
   },
   "asset_form": {
     "title": "Nouvel équipement",
+    "title_edit": "Modifier l'équipement",
     "model": "Modèle",
     "model_search": "Rechercher un modèle ou un fournisseur…",
     "model_remove": "Retirer le modèle",
@@ -183,6 +184,7 @@
     "notes": "Notes",
     "notes_placeholder": "Notes complémentaires…",
     "save": "Créer l'équipement",
+    "save_edit": "Enregistrer les modifications",
     "saving": "Création…",
     "error": "Erreur lors de l'enregistrement — vérifiez les données et réessayez."
   },
@@ -332,6 +334,7 @@
     "created": "Créé",
     "updated": "Mis à jour",
     "delete_btn": "Supprimer l'équipement",
+    "edit_btn": "Modifier l'équipement",
     "delete_confirm_msg": "Êtes-vous sûr ? Cette action est irréversible.",
     "deleting": "Suppression…",
     "confirm_delete": "Confirmer la suppression",
