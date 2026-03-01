@@ -1,0 +1,83 @@
+<div class="toolbar">
+  <div class="toolbar-left">
+    <!-- Datacenter filter -->
+    <select
+      class="dc-filter"
+      [value]="locationFilter ?? ''"
+      (change)="onLocationFilter($any($event.target).value)"
+    >
+      <option value="">{{ "racks.filter_all_dc" | translate }}</option>
+      @for (loc of locations; track loc.id) {
+        <option [value]="loc.id">{{ loc.name }}</option>
+      }
+    </select>
+
+    <!-- Room filter -->
+    <select
+      class="dc-filter"
+      [value]="roomFilter ?? ''"
+      (change)="onRoomFilter($any($event.target).value)"
+    >
+      <option value="">{{ "racks.filter_all_rooms" | translate }}</option>
+      @for (room of filteredRooms; track room.id) {
+        <option [value]="room.id">{{ room.name }}</option>
+      }
+    </select>
+
+    <!-- Search -->
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+        <circle
+          cx="8.5"
+          cy="8.5"
+          r="5.25"
+          stroke="currentColor"
+          stroke-width="1.6"
+        />
+        <path
+          d="M13 13l3.5 3.5"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+        />
+      </svg>
+      <input
+        class="search-input"
+        type="text"
+        [value]="searchQuery"
+        (input)="onSearch($any($event.target).value)"
+        [placeholder]="'racks.search_placeholder' | translate"
+      />
+      @if (searchQuery) {
+        <button
+          class="search-clear"
+          (click)="clearSearch()"
+          [title]="'common.search_clear' | translate"
+        >
+          ×
+        </button>
+      }
+    </div>
+
+    <!-- Count badge -->
+    @if (itemCount !== null) {
+      <span class="count-badge">
+        {{ itemCount }} {{ "racks.count_badge_suffix" | translate }}
+      </span>
+    }
+  </div>
+
+  <div class="toolbar-right">
+    <button class="btn-new" (click)="newClick.emit()">
+      <svg viewBox="0 0 20 20" fill="none">
+        <path
+          d="M10 4v12M4 10h12"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+      {{ "racks.btn_new" | translate }}
+    </button>
+  </div>
+</div>
