@@ -1,0 +1,216 @@
+<div class="editor-root">
+  <!-- ── Mode tabs ──────────────────────────────────────────────────── -->
+  <div class="editor-tabs">
+    <button
+      class="tab"
+      [class.tab--active]="mode === 'perspective'"
+      (click)="setMode('perspective')"
+    >
+      <svg viewBox="0 0 16 16" fill="none">
+        <path
+          d="M2 13L5 3h6l3 10H2z"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linejoin="round"
+        />
+      </svg>
+      {{ "models.editor_tab_persp" | translate }}
+    </button>
+    <button
+      class="tab"
+      [class.tab--active]="mode === 'crop'"
+      (click)="setMode('crop')"
+    >
+      <svg viewBox="0 0 16 16" fill="none">
+        <path
+          d="M4 1v3H1M12 15v-3h3M4 15H1v-3M12 1h3v3"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+        />
+        <rect
+          x="4"
+          y="4"
+          width="8"
+          height="8"
+          stroke="currentColor"
+          stroke-width="1.4"
+        />
+      </svg>
+      {{ "models.editor_tab_crop" | translate }}
+    </button>
+    <button
+      class="tab"
+      [class.tab--active]="mode === 'transform'"
+      (click)="setMode('transform')"
+    >
+      <svg viewBox="0 0 16 16" fill="none">
+        <path
+          d="M13 3A7 7 0 1 1 3.2 12.5"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+        />
+        <path
+          d="M13 3v3h-3"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      {{ "models.editor_tab_transform" | translate }}
+    </button>
+  </div>
+
+  <!-- ── Hint strip ─────────────────────────────────────────────────── -->
+  <div class="editor-hint">
+    @if (mode === "perspective") {
+      <span>{{ "models.editor_hint_persp" | translate }}</span>
+    } @else if (mode === "crop") {
+      <span>{{ "models.editor_hint_crop" | translate }}</span>
+    } @else {
+      <span>{{ "models.editor_hint_transform" | translate }}</span>
+    }
+  </div>
+
+  <!-- ── Canvas area ────────────────────────────────────────────────── -->
+  <div class="canvas-wrap" #wrap>
+    <!-- Canvas is always in the DOM so @ViewChild(static:true) resolves correctly -->
+    <canvas
+      #editorCanvas
+      class="editor-canvas"
+      [style.display]="imgLoaded ? 'block' : 'none'"
+    ></canvas>
+    @if (!imgLoaded && !imgError) {
+      <div class="canvas-placeholder canvas-overlay">
+        <div class="spinner"></div>
+      </div>
+    }
+    @if (imgError) {
+      <div class="canvas-placeholder canvas-placeholder--error canvas-overlay">
+        {{ "models.editor_load_error" | translate }}
+      </div>
+    }
+  </div>
+
+  <!-- ── Transform controls (only visible in transform mode) ──────── -->
+  @if (mode === "transform") {
+    <div class="transform-controls">
+      <div class="transform-group">
+        <span class="transform-label">{{
+          "models.editor_rotate" | translate
+        }}</span>
+        <button
+          class="ctrl-btn"
+          (click)="rotateCCW()"
+          [title]="'models.editor_rotate_ccw' | translate"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M3 3A7 7 0 1 0 12.8 12.5"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+            />
+            <path
+              d="M3 3v3h3"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          {{ "models.editor_rotate_ccw" | translate }}
+        </button>
+        <button
+          class="ctrl-btn"
+          (click)="rotateCW()"
+          [title]="'models.editor_rotate_cw' | translate"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M13 3A7 7 0 1 1 3.2 12.5"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+            />
+            <path
+              d="M13 3v3h-3"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          {{ "models.editor_rotate_cw" | translate }}
+        </button>
+        <span class="rotation-badge">{{ rotationLabel }}</span>
+      </div>
+
+      <div class="transform-group">
+        <span class="transform-label">{{
+          "models.editor_flip" | translate
+        }}</span>
+        <button
+          class="ctrl-btn"
+          [class.ctrl-btn--active]="flipH"
+          (click)="toggleFlipH()"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 2v12M2 6l6-4 6 4"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 10l6 4 6-4"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+          {{ "models.editor_flip_h" | translate }}
+        </button>
+        <button
+          class="ctrl-btn"
+          [class.ctrl-btn--active]="flipV"
+          (click)="toggleFlipV()"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M2 8h12M6 2l4 6-4 6"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M10 2l4 6-4 6"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+              opacity=".4"
+            />
+          </svg>
+          {{ "models.editor_flip_v" | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── Footer ─────────────────────────────────────────────────────── -->
+  <div class="editor-footer">
+    <button class="btn-reset" (click)="reset()">
+      {{ "models.editor_reset" | translate }}
+    </button>
+    <div class="footer-right">
+      <button class="btn-cancel" (click)="cancel()">
+        {{ "common.cancel" | translate }}
+      </button>
+      <button class="btn-apply" [disabled]="!imgLoaded" (click)="apply()">
+        {{ "models.editor_apply" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

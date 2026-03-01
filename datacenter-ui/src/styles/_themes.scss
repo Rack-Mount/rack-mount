@@ -53,7 +53,9 @@
   --dc-lang-btn-active-border: rgba(255, 255, 255, 0.12);
 
   // ── Accent / Status ───────────────────────────────────────────────────────
-  --dc-accent: #2e2e2e;
+  --dc-accent: #3b82f6;
+  --dc-accent-rgb: 59, 130, 246;
+  --dc-accent-dim: rgba(59, 130, 246, 0.14);
   --dc-accent-text: #60a5fa;
   --dc-accent-hover: #2563eb;
   --dc-danger: #ef4444;
@@ -224,7 +226,9 @@
   --dc-lang-btn-active-border: rgba(255, 255, 255, 0.14);
 
   // ── Accent / Status ───────────────────────────────────────────────────────
-  --dc-accent: #2e2e2e;
+  --dc-accent: #2563eb;
+  --dc-accent-rgb: 37, 99, 235;
+  --dc-accent-dim: rgba(37, 99, 235, 0.1);
   --dc-accent-text: #2563eb;
   --dc-accent-hover: #1d4ed8;
   --dc-danger: #dc2626;

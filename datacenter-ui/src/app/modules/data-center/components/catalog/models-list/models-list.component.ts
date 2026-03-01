@@ -29,6 +29,10 @@ import {
   Vendor,
 } from '../../../../core/api/v1';
 import { BackendErrorService } from '../../../../core/services/backend-error.service';
+import {
+  ImageEditorComponent,
+  ImageEditParams,
+} from './image-editor/image-editor.component';
 
 const PAGE_SIZE = 50;
 
@@ -49,6 +53,10 @@ export interface ModelForm {
   rear_image_file: File | null;
   front_image_url: string | null;
   rear_image_url: string | null;
+  front_transform: ImageEditParams | null;
+  rear_transform: ImageEditParams | null;
+  front_preview_url: string | null;
+  rear_preview_url: string | null;
 }
 
 function emptyForm(): ModelForm {
@@ -62,13 +70,17 @@ function emptyForm(): ModelForm {
     rear_image_file: null,
     front_image_url: null,
     rear_image_url: null,
+    front_transform: null,
+    rear_transform: null,
+    front_preview_url: null,
+    rear_preview_url: null,
   };
 }
 
 @Component({
   selector: 'app-models-list',
   standalone: true,
-  imports: [SlicePipe, TranslatePipe],
+  imports: [SlicePipe, TranslatePipe, ImageEditorComponent],
   templateUrl: './models-list.component.html',
   styleUrl: './models-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -133,8 +145,24 @@ export class ModelsListComponent {
   // ── Import ────────────────────────────────────────────────────────────────
   protected readonly importState = signal<ImportState>('idle');
 
+  // ── Image editor ──────────────────────────────────────────────────────────
+  /** Which image side is currently open in the editor ('front' | 'rear' | null) */
+  protected readonly editingImage = signal<'front' | 'rear' | null>(null);
+
+  // ── Autocomplete inputs for vendor / type ─────────────────────────────────
+  protected readonly vendorSearch = signal('');
+  protected readonly vendorDropdownOpen = signal(false);
+  protected readonly typeSearch = signal('');
+  protected readonly typeDropdownOpen = signal(false);
+
+  protected readonly filteredVendors = signal<Vendor[]>([]);
+  protected readonly filteredTypes = signal<AssetType[]>([]);
+
+  private readonly _vendorAcInput = new Subject<string>();
+  private readonly _typeAcInput = new Subject<string>();
+
   constructor() {
-    // Load reference data
+    // Load reference data (for toolbar filters)
     forkJoin([
       this.svc.assetVendorList({ pageSize: 500, ordering: 'name' }),
       this.svc.assetAssetTypeList({ pageSize: 200, ordering: 'name' }),
@@ -144,6 +172,48 @@ export class ModelsListComponent {
         this.vendors.set(vr.results ?? []);
         this.types.set(tr.results ?? []);
       });
+
+    // Autocomplete vendor — live DB search
+    this._vendorAcInput
+      .pipe(
+        debounceTime(250),
+        distinctUntilChanged(),
+        switchMap((q) =>
+          this.svc
+            .assetVendorList({
+              search: q || undefined,
+              pageSize: 25,
+              ordering: 'name',
+            })
+            .pipe(
+              map((r) => r.results ?? []),
+              catchError(() => of([] as Vendor[])),
+            ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((list) => this.filteredVendors.set(list));
+
+    // Autocomplete type — live DB search
+    this._typeAcInput
+      .pipe(
+        debounceTime(250),
+        distinctUntilChanged(),
+        switchMap((q) =>
+          this.svc
+            .assetAssetTypeList({
+              search: q || undefined,
+              pageSize: 25,
+              ordering: 'name',
+            })
+            .pipe(
+              map((r) => r.results ?? []),
+              catchError(() => of([] as AssetType[])),
+            ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((list) => this.filteredTypes.set(list));
 
     // Debounce search
     this._searchInput
@@ -242,6 +312,10 @@ export class ModelsListComponent {
   // ── Drawer ────────────────────────────────────────────────────────────────
   protected openCreate(): void {
     this.form.set(emptyForm());
+    this.vendorSearch.set('');
+    this.typeSearch.set('');
+    this.vendorDropdownOpen.set(false);
+    this.typeDropdownOpen.set(false);
     this.drawerSave.set('idle');
     this.drawerSaveMsg.set('');
     this.drawerMode.set('create');
@@ -250,6 +324,10 @@ export class ModelsListComponent {
   }
 
   protected openEdit(m: AssetModel): void {
+    this.vendorSearch.set(m.vendor?.name ?? '');
+    this.typeSearch.set(m.type?.name ?? '');
+    this.vendorDropdownOpen.set(false);
+    this.typeDropdownOpen.set(false);
     this.form.set({
       name: m.name ?? '',
       vendor_id: m.vendor?.id ?? null,
@@ -260,6 +338,10 @@ export class ModelsListComponent {
       rear_image_file: null,
       front_image_url: m.front_image ?? null,
       rear_image_url: m.rear_image ?? null,
+      front_transform: null,
+      rear_transform: null,
+      front_preview_url: null,
+      rear_preview_url: null,
     });
     this.drawerSave.set('idle');
     this.drawerSaveMsg.set('');
@@ -326,6 +408,98 @@ export class ModelsListComponent {
     this.form.update((f) => ({ ...f, [field]: null }));
   }
 
+  // ── Image editor ──────────────────────────────────────────────────────────
+
+  protected openImageEditor(side: 'front' | 'rear'): void {
+    this.editingImage.set(side);
+  }
+
+  protected onEditorConfirmed(
+    event: { params: ImageEditParams; previewDataUrl: string },
+    side: 'front' | 'rear',
+  ): void {
+    if (side === 'front') {
+      this.form.update((f) => ({
+        ...f,
+        front_transform: event.params,
+        front_preview_url: event.previewDataUrl,
+      }));
+    } else {
+      this.form.update((f) => ({
+        ...f,
+        rear_transform: event.params,
+        rear_preview_url: event.previewDataUrl,
+      }));
+    }
+    this.editingImage.set(null);
+  }
+
+  protected onEditorCancelled(): void {
+    this.editingImage.set(null);
+  }
+
+  protected onVendorFocus(): void {
+    this.vendorDropdownOpen.set(true);
+    this._vendorAcInput.next(this.vendorSearch());
+  }
+
+  protected onVendorSearch(value: string): void {
+    this.vendorSearch.set(value);
+    this.vendorDropdownOpen.set(true);
+    this._vendorAcInput.next(value);
+    if (!value) this.form.update((f) => ({ ...f, vendor_id: null }));
+  }
+
+  protected selectVendor(v: Vendor): void {
+    this.form.update((f) => ({ ...f, vendor_id: v.id }));
+    this.vendorSearch.set(v.name);
+    this.vendorDropdownOpen.set(false);
+  }
+
+  protected clearVendor(): void {
+    this.form.update((f) => ({ ...f, vendor_id: null }));
+    this.vendorSearch.set('');
+    this.vendorDropdownOpen.set(false);
+    this._vendorAcInput.next('');
+  }
+
+  protected onTypeFocus(): void {
+    this.typeDropdownOpen.set(true);
+    this._typeAcInput.next(this.typeSearch());
+  }
+
+  protected onTypeSearch(value: string): void {
+    this.typeSearch.set(value);
+    this.typeDropdownOpen.set(true);
+    this._typeAcInput.next(value);
+    if (!value) this.form.update((f) => ({ ...f, type_id: null }));
+  }
+
+  protected selectType(t: AssetType): void {
+    this.form.update((f) => ({ ...f, type_id: t.id }));
+    this.typeSearch.set(t.name);
+    this.typeDropdownOpen.set(false);
+  }
+
+  protected clearType(): void {
+    this.form.update((f) => ({ ...f, type_id: null }));
+    this.typeSearch.set('');
+    this.typeDropdownOpen.set(false);
+    this._typeAcInput.next('');
+  }
+
+  /** Returns true if the form has any non-identity transforms configured. */
+  protected hasTransform(side: 'front' | 'rear'): boolean {
+    const t =
+      side === 'front'
+        ? this.form().front_transform
+        : this.form().rear_transform;
+    if (!t) return false;
+    return (
+      !!t.perspective || !!t.crop || t.rotation !== 0 || t.flipH || t.flipV
+    );
+  }
+
   protected submitDrawer(): void {
     if (!this.canSave()) return;
     const f = this.form();
@@ -338,13 +512,22 @@ export class ModelsListComponent {
     fd.append('note', f.note ?? '');
     if (f.front_image_file) {
       fd.append('front_image', f.front_image_file);
+      if (f.front_transform)
+        fd.append('front_image_transform', JSON.stringify(f.front_transform));
     } else if (f.front_image_url === null && this.drawerMode() === 'edit') {
       fd.append('front_image', '');
+    } else if (f.front_image_url && f.front_transform) {
+      // Existing image with editor transforms — send params only; backend applies to stored file
+      fd.append('front_image_transform', JSON.stringify(f.front_transform));
     }
     if (f.rear_image_file) {
       fd.append('rear_image', f.rear_image_file);
+      if (f.rear_transform)
+        fd.append('rear_image_transform', JSON.stringify(f.rear_transform));
     } else if (f.rear_image_url === null && this.drawerMode() === 'edit') {
       fd.append('rear_image', '');
+    } else if (f.rear_image_url && f.rear_transform) {
+      fd.append('rear_image_transform', JSON.stringify(f.rear_transform));
     }
 
     this.drawerSave.set('saving');

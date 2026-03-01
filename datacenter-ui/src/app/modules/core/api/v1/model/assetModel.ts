@@ -12,7 +12,7 @@ import { Vendor } from './vendor';
 
 
 /**
- * Serializer for the AssetModel model. vendor / type are nested objects for read; vendor_id / type_id are used for write.
+ * Serializer for the AssetModel model. vendor / type are nested objects for read; vendor_id / type_id are used for write.  Image transform fields (write-only JSON strings):   front_image_transform / rear_image_transform — processed server-side by   asset.utils.image_processing.apply_transforms() before saving.
  */
 export interface AssetModel { 
     readonly id: number;
@@ -23,7 +23,9 @@ export interface AssetModel {
     type_id: number;
     rack_units?: number;
     front_image?: string | null;
+    front_image_transform?: string;
     rear_image?: string | null;
+    rear_image_transform?: string;
     note?: string;
 }
 

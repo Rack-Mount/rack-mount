@@ -522,7 +522,7 @@
   <!-- ── Drawer overlay ───────────────────────────────────────── -->
   @if (drawerOpen()) {
     <div class="drawer-overlay" (click)="closeDrawer()"></div>
-    <aside class="drawer">
+    <aside class="drawer" [class.drawer--editing]="editingImage() !== null">
       <div class="drawer-header">
         <h2 class="drawer-title">
           {{
@@ -554,24 +554,40 @@
             >{{ "models.col_vendor" | translate }}
             <span class="req">*</span></span
           >
-          <select
-            class="field-select"
-            (change)="
-              setField(
-                'vendor_id',
-                $any($event.target).value ? +$any($event.target).value : null
-              )
-            "
-          >
-            <option value="" [selected]="!form().vendor_id">
-              {{ "models.field_vendor_ph" | translate }}
-            </option>
-            @for (v of vendors(); track v.id) {
-              <option [value]="v.id" [selected]="v.id === form().vendor_id">
-                {{ v.name }}
-              </option>
+          <div class="autocomplete-wrap">
+            <input
+              class="field-input"
+              type="text"
+              [placeholder]="'models.field_vendor_ph' | translate"
+              autocomplete="off"
+              [value]="vendorSearch()"
+              (input)="onVendorSearch($any($event.target).value)"
+              (focus)="onVendorFocus()"
+              (blur)="vendorDropdownOpen.set(false)"
+            />
+            @if (form().vendor_id) {
+              <button
+                class="autocomplete-clear"
+                type="button"
+                (mousedown)="$event.preventDefault(); clearVendor()"
+              >
+                ×
+              </button>
             }
-          </select>
+            @if (vendorDropdownOpen() && filteredVendors().length > 0) {
+              <div class="autocomplete-dropdown">
+                @for (v of filteredVendors(); track v.id) {
+                  <button
+                    class="autocomplete-option"
+                    type="button"
+                    (mousedown)="$event.preventDefault(); selectVendor(v)"
+                  >
+                    <span class="ac-name">{{ v.name }}</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
         </label>
 
         <label class="field">
@@ -579,24 +595,40 @@
             >{{ "models.col_type" | translate }}
             <span class="req">*</span></span
           >
-          <select
-            class="field-select"
-            (change)="
-              setField(
-                'type_id',
-                $any($event.target).value ? +$any($event.target).value : null
-              )
-            "
-          >
-            <option value="" [selected]="!form().type_id">
-              {{ "models.field_type_ph" | translate }}
-            </option>
-            @for (t of types(); track t.id) {
-              <option [value]="t.id" [selected]="t.id === form().type_id">
-                {{ t.name }}
-              </option>
+          <div class="autocomplete-wrap">
+            <input
+              class="field-input"
+              type="text"
+              [placeholder]="'models.field_type_ph' | translate"
+              autocomplete="off"
+              [value]="typeSearch()"
+              (input)="onTypeSearch($any($event.target).value)"
+              (focus)="onTypeFocus()"
+              (blur)="typeDropdownOpen.set(false)"
+            />
+            @if (form().type_id) {
+              <button
+                class="autocomplete-clear"
+                type="button"
+                (mousedown)="$event.preventDefault(); clearType()"
+              >
+                ×
+              </button>
             }
-          </select>
+            @if (typeDropdownOpen() && filteredTypes().length > 0) {
+              <div class="autocomplete-dropdown">
+                @for (t of filteredTypes(); track t.id) {
+                  <button
+                    class="autocomplete-option"
+                    type="button"
+                    (mousedown)="$event.preventDefault(); selectType(t)"
+                  >
+                    <span class="ac-name">{{ t.name }}</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
         </label>
 
         <label class="field">
@@ -642,19 +674,41 @@
               <img
                 class="img-preview"
                 [src]="
-                  form().front_image_file
+                  form().front_preview_url ||
+                  (form().front_image_file
                     ? objectUrl(form().front_image_file!)
-                    : form().front_image_url!
+                    : form().front_image_url!)
                 "
                 [attr.alt]="'models.preview_front' | translate"
               />
+              <button
+                class="btn-edit-img"
+                type="button"
+                [class.btn-edit-img--active]="hasTransform('front')"
+                [title]="'models.editor_open' | translate"
+                (click)="openImageEditor('front')"
+              >
+                <svg viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                @if (hasTransform("front")) {
+                  <span class="transform-dot"></span>
+                }
+              </button>
               <button
                 class="img-clear-btn"
                 type="button"
                 [title]="'models.remove_img' | translate"
                 (click)="
                   clearImage('front_image_url');
-                  setField('front_image_file', null)
+                  setField('front_image_file', null);
+                  setField('front_transform', null);
+                  setField('front_preview_url', null)
                 "
               >
                 ×
@@ -694,19 +748,41 @@
               <img
                 class="img-preview"
                 [src]="
-                  form().rear_image_file
+                  form().rear_preview_url ||
+                  (form().rear_image_file
                     ? objectUrl(form().rear_image_file!)
-                    : form().rear_image_url!
+                    : form().rear_image_url!)
                 "
                 [attr.alt]="'models.preview_rear' | translate"
               />
+              <button
+                class="btn-edit-img"
+                type="button"
+                [class.btn-edit-img--active]="hasTransform('rear')"
+                [title]="'models.editor_open' | translate"
+                (click)="openImageEditor('rear')"
+              >
+                <svg viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                @if (hasTransform("rear")) {
+                  <span class="transform-dot"></span>
+                }
+              </button>
               <button
                 class="img-clear-btn"
                 type="button"
                 [title]="'models.remove_img' | translate"
                 (click)="
                   clearImage('rear_image_url');
-                  setField('rear_image_file', null)
+                  setField('rear_image_file', null);
+                  setField('rear_transform', null);
+                  setField('rear_preview_url', null)
                 "
               >
                 ×
@@ -740,6 +816,37 @@
           <div class="save-error">{{ drawerSaveMsg() }}</div>
         }
       </div>
+
+      <!-- ── Image editor overlay (inside the drawer) ───────────── -->
+      @if (editingImage(); as side) {
+        <div class="editor-overlay">
+          <div class="editor-overlay-header">
+            <span class="editor-overlay-title">
+              {{
+                side === "front"
+                  ? ("models.field_front_img" | translate)
+                  : ("models.field_rear_img" | translate)
+              }}
+            </span>
+          </div>
+          <div class="editor-overlay-body">
+            <app-image-editor
+              [imageFile]="
+                side === 'front'
+                  ? form().front_image_file
+                  : form().rear_image_file
+              "
+              [imageUrl]="
+                side === 'front'
+                  ? form().front_image_url
+                  : form().rear_image_url
+              "
+              (confirmed)="onEditorConfirmed($event, side)"
+              (cancelled)="onEditorCancelled()"
+            />
+          </div>
+        </div>
+      }
 
       <div class="drawer-footer">
         <button class="btn-cancel" (click)="closeDrawer()">
