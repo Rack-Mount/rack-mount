@@ -218,6 +218,7 @@ class AssetImportCsvView(APIView):
 
         # ── Process rows ───────────────────────────────────────────────────────
         created = 0
+        rows: list[dict] = []
         errors: list[dict] = []
 
         for row_num, row in enumerate(reader, start=2):  # row 1 = header
@@ -291,6 +292,8 @@ class AssetImportCsvView(APIView):
                     decommissioned_date=decommission_date,
                 )
                 created += 1
+                rows.append({'row': row_num, 'hostname': hostname,
+                            'serial_number': serial_number})
 
             except ValueError as exc:
                 errors.append({'row': row_num, 'message': str(exc)})
@@ -298,4 +301,4 @@ class AssetImportCsvView(APIView):
                 errors.append(
                     {'row': row_num, 'message': f'Errore imprevisto: {exc}'})
 
-        return Response({'created': created, 'errors': errors}, status=status.HTTP_200_OK)
+        return Response({'created': created, 'rows': rows, 'errors': errors}, status=status.HTTP_200_OK)

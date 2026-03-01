@@ -73,7 +73,18 @@
   <div class="toolbar-right">
     <!-- CSV import result feedback -->
     @if (importCsvState === "success") {
-      <span class="import-msg import-msg--ok">{{ importCsvSummary }}</span>
+      <span
+        class="import-msg import-msg--ok"
+        [class.import-msg--clickable]="importCsvRows.length > 0"
+        (click)="importCsvRows.length > 0 && toggleErrors()"
+      >
+        {{ importCsvSummary }}
+        @if (importCsvRows.length > 0) {
+          <svg class="caret" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        }
+      </span>
     }
     @if (importCsvState === "error") {
       <span
@@ -81,7 +92,7 @@
         (click)="toggleErrors()"
       >
         {{ importCsvSummary }}
-        @if (importCsvErrors.length) {
+        @if (importCsvErrors.length || importCsvRows.length) {
           <svg class="caret" viewBox="0 0 10 6" fill="none">
             <path
               d="M1 1l4 4 4-4"
@@ -93,24 +104,47 @@
           </svg>
         }
       </span>
-      @if (showErrors && importCsvErrors.length) {
-        <div class="errors-panel">
-          <div class="errors-panel__header">
-            Righe con errori
-            <button
-              class="errors-panel__close"
-              type="button"
-              (click)="dismissErrors()"
-            >
-              <svg viewBox="0 0 12 12" fill="none">
-                <path
-                  d="M2 2l8 8M10 2l-8 8"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </button>
+    }
+    @if (showPanel && (importCsvRows.length > 0 || importCsvErrors.length > 0)) {
+      <div class="errors-panel">
+        <div class="errors-panel__header">
+          Resoconto importazione
+          <button
+            class="errors-panel__close"
+            type="button"
+            (click)="dismissErrors()"
+          >
+            <svg viewBox="0 0 12 12" fill="none">
+              <path
+                d="M2 2l8 8M10 2l-8 8"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+
+        @if (importCsvRows.length > 0) {
+          <div class="errors-panel__section errors-panel__section--ok">
+            <span class="errors-panel__section-title">&#10003; Inseriti ({{ importCsvRows.length }})</span>
+          </div>
+          <ul class="errors-panel__list">
+            @for (r of importCsvRows; track r.row) {
+              <li class="errors-panel__item--ok">
+                <span class="errors-panel__row errors-panel__row--ok">Riga {{ r.row }}</span>
+                <span class="errors-panel__hostname">{{ r.hostname || '—' }}</span>
+                @if (r.serial_number) {
+                  <span class="errors-panel__serial">{{ r.serial_number }}</span>
+                }
+              </li>
+            }
+          </ul>
+        }
+
+        @if (importCsvErrors.length > 0) {
+          <div class="errors-panel__section errors-panel__section--err">
+            <span class="errors-panel__section-title">&#10007; Errori ({{ importCsvErrors.length }})</span>
           </div>
           <ul class="errors-panel__list">
             @for (e of importCsvErrors; track e.row) {
@@ -120,8 +154,8 @@
               </li>
             }
           </ul>
-        </div>
-      }
+        }
+      </div>
     }
 
     <!-- Template download -->

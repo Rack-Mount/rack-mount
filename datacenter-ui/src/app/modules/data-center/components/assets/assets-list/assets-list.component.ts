@@ -77,8 +77,9 @@ export class AssetsListComponent {
   protected readonly importCsvSummary = signal('');
   protected readonly importCsvErrors = signal<
     { row: number; message: string }[]
+  >([]);  protected readonly importCsvRows = signal<
+    { row: number; hostname: string; serial_number: string }[]
   >([]);
-
   // ── Delete confirmation ────────────────────────────────────────────────────
   protected readonly deleteConfirmId = signal<number | null>(null);
   protected readonly deleteSaveState = signal<
@@ -487,7 +488,11 @@ export class AssetsListComponent {
     const fd = new FormData();
     fd.append('file', file);
     this.http
-      .post<{ created: number; errors: { row: number; message: string }[] }>(
+      .post<{
+        created: number;
+        rows: { row: number; hostname: string; serial_number: string }[];
+        errors: { row: number; message: string }[];
+      }>(
         `${environment.service_url}/asset/asset/import-csv`,
         fd,
       )
@@ -495,6 +500,7 @@ export class AssetsListComponent {
       .subscribe({
         next: (r) => {
           this.importCsvErrors.set(r.errors);
+          this.importCsvRows.set(r.rows ?? []);
           const msg =
             r.errors.length > 0
               ? `${r.created} importati, ${r.errors.length} errori`
@@ -504,15 +510,10 @@ export class AssetsListComponent {
           if (r.created > 0) {
             this.params.update((p) => ({ ...p, page: 1 }));
           }
-          // Success auto-clears; errors stay until explicitly dismissed
-          if (r.errors.length === 0) {
-            setTimeout(() => this.importCsvState.set('idle'), 5000);
-          }
         },
         error: () => {
           this.importCsvSummary.set("Errore durante l'importazione");
           this.importCsvState.set('error');
-          // No auto-clear: user must dismiss
         },
       });
   }
@@ -520,6 +521,7 @@ export class AssetsListComponent {
   protected onImportCsvDismiss(): void {
     this.importCsvState.set('idle');
     this.importCsvErrors.set([]);
+    this.importCsvRows.set([]);
     this.importCsvSummary.set('');
   }
 

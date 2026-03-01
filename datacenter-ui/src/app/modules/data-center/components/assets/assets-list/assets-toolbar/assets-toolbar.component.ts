@@ -18,6 +18,12 @@ export interface AssetsFilterParams {
 
 export type CsvImportState = 'idle' | 'importing' | 'success' | 'error';
 
+export interface CsvImportRow {
+  row: number;
+  hostname: string;
+  serial_number: string;
+}
+
 @Component({
   selector: 'app-assets-toolbar',
   standalone: true,
@@ -38,7 +44,7 @@ export class AssetsToolbarComponent {
   @Input() totalCount: number | null = null;
   @Input() set importCsvState(v: CsvImportState) {
     this._importCsvState = v;
-    if (v === 'idle') this.showErrors = false;
+    if (v === 'idle') this.showPanel = false;
   }
   get importCsvState(): CsvImportState {
     return this._importCsvState;
@@ -47,15 +53,16 @@ export class AssetsToolbarComponent {
 
   @Input() importCsvSummary = '';
   @Input() importCsvErrors: { row: number; message: string }[] = [];
+  @Input() importCsvRows: CsvImportRow[] = [];
 
-  protected showErrors = false;
+  protected showPanel = false;
 
   toggleErrors(): void {
-    this.showErrors = !this.showErrors;
+    this.showPanel = !this.showPanel;
   }
 
   dismissErrors(): void {
-    this.showErrors = false;
+    this.showPanel = false;
     this.importCsvDismiss.emit();
   }
 
