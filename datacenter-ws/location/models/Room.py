@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 import reversion
 
 from location.models.Location import Location
@@ -36,16 +37,16 @@ class Room(models.Model):
     """
 
     class RoomType(models.TextChoices):
-        DATACENTER = 'datacenter', 'Datacenter'
-        WAREHOUSE = 'warehouse', 'Magazzino'
-        LABORATORY = 'laboratory', 'Laboratorio'
-        TECHNICAL_OFFICE = 'technical_office', 'Ufficio Tecnico'
+        DATACENTER = 'datacenter', _('Datacenter')
+        WAREHOUSE = 'warehouse', _('Warehouse')
+        LABORATORY = 'laboratory', _('Laboratory')
+        TECHNICAL_OFFICE = 'technical_office', _('Technical Office')
 
     room_type = models.CharField(
         max_length=20,
         choices=RoomType.choices,
         default=RoomType.DATACENTER,
-        verbose_name='Tipo di stanza',
+        verbose_name=_('Room type'),
     )
 
     location = models.ForeignKey(
@@ -69,7 +70,8 @@ class Room(models.Model):
     floor_plan_data = models.JSONField(
         null=True,
         blank=True,
-        help_text='Interactive floor plan elements (walls, racks, doors) from the Angular editor.',
+        help_text=_(
+            'Interactive floor plan elements (walls, racks, doors) from the Angular editor.'),
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -79,6 +81,6 @@ class Room(models.Model):
 
     class Meta:
         ordering = ['location', 'name']
-        verbose_name = 'Room'
-        verbose_name_plural = 'Rooms'
+        verbose_name = _('Room')
+        verbose_name_plural = _('Rooms')
         db_table = 'datacenter_room'

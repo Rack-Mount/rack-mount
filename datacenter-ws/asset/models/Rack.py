@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from location.models.Room import Room
 from asset.models import RackType
 import reversion
@@ -39,8 +40,8 @@ class Rack(models.Model):
         return f"{self.room} - {self.name}"
 
     class Meta:
-        verbose_name = "Rack"
-        verbose_name_plural = "Racks"
+        verbose_name = _("Rack")
+        verbose_name_plural = _("Racks")
         ordering = ['name']
         unique_together = ('name', 'room')
         db_table = 'rack'

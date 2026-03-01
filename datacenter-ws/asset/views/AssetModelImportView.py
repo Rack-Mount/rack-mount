@@ -3,6 +3,7 @@ import binascii
 import uuid
 
 from django.core.files.base import ContentFile
+from django.utils.translation import gettext as _
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -20,11 +21,11 @@ def _decode_image(data_url: str, field_name: str):
     Returns (ContentFile, extension) or raises ValueError on bad input.
     """
     if not data_url.startswith('data:'):
-        raise ValueError(f'{field_name}: not a valid Data URL')
+        raise ValueError(_('Not a valid Data URL.'))
     try:
         meta, encoded = data_url.split(',', 1)
     except ValueError:
-        raise ValueError(f'{field_name}: malformed Data URL')
+        raise ValueError(_('Malformed Data URL.'))
 
     mime = meta.split(';')[0].replace('data:', '').strip()
     ext_map = {
@@ -39,7 +40,7 @@ def _decode_image(data_url: str, field_name: str):
     try:
         raw = base64.b64decode(encoded)
     except binascii.Error:
-        raise ValueError(f'{field_name}: invalid base64 data')
+        raise ValueError(_('Invalid base64 data.'))
 
     filename = f'{uuid.uuid4().hex}.{ext}'
     return ContentFile(raw, name=filename)
@@ -119,11 +120,11 @@ class AssetModelImportView(APIView):
 
         errors = {}
         if not name:
-            errors['name'] = 'This field is required.'
+            errors['name'] = _('This field is required.')
         if not vendor_name:
-            errors['vendor'] = 'This field is required.'
+            errors['vendor'] = _('This field is required.')
         if not type_name:
-            errors['type'] = 'This field is required.'
+            errors['type'] = _('This field is required.')
         if errors:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -135,7 +136,9 @@ class AssetModelImportView(APIView):
         if AssetModel.objects.filter(name=name, vendor=vendor, type=asset_type).exists():
             return Response(
                 {
-                    'detail': f'A model named "{name}" already exists for {vendor_name} ({type_name}).',
+                    'detail': _('A model named "%(name)s" already exists for %(vendor)s (%(type)s).') % {
+                        'name': name, 'vendor': vendor_name, 'type': type_name,
+                    },
                     'code': 'already_exists',
                 },
                 status=status.HTTP_409_CONFLICT,

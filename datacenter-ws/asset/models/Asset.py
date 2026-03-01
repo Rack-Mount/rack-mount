@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from location.models import Location
 from asset.models import AssetModel, AssetState
 import reversion
@@ -83,6 +84,6 @@ class Asset(models.Model):
 
     class Meta:
         ordering = ['hostname']
-        verbose_name = 'Asset'
-        verbose_name_plural = 'Assets'
+        verbose_name = _('Asset')
+        verbose_name_plural = _('Assets')
         db_table = 'asset'

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 import reversion
 
 
@@ -35,6 +36,6 @@ class Location(models.Model):
 
     class Meta:
         ordering = ['name']
-        verbose_name = 'Location'
-        verbose_name_plural = 'Locations'
+        verbose_name = _('Location')
+        verbose_name_plural = _('Locations')
         db_table = 'datacenter_location'

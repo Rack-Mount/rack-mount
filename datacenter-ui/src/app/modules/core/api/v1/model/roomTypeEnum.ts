@@ -10,7 +10,7 @@
 
 
 /**
- * * `datacenter` - Datacenter * `warehouse` - Magazzino * `laboratory` - Laboratorio * `technical_office` - Ufficio Tecnico
+ * * `datacenter` - Datacenter * `warehouse` - Warehouse * `laboratory` - Laboratory * `technical_office` - Technical Office
  */
 export const RoomTypeEnum = {
     Datacenter: 'datacenter',

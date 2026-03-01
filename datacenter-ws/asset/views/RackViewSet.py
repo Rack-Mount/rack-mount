@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework import filters
 from rest_framework.response import Response
+from django.utils.translation import gettext as _
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Count, Sum
 from asset.serializers import RackSerializer
@@ -34,7 +35,8 @@ class RackViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         if RackUnit.objects.filter(rack=instance).exists():
             return Response(
-                {'detail': 'Rack has associated units — remove them before deleting.'},
+                {'detail': _(
+                    'Rack has associated units — remove them before deleting.')},
                 status=status.HTTP_409_CONFLICT,
             )
         return super().destroy(request, *args, **kwargs)

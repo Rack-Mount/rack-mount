@@ -1,0 +1,107 @@
+# German translations for datacenter project.
+# This file is distributed under the same license as the datacenter package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: datacenter 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-01 07:54+0000\n"
+"PO-Revision-Date: 2026-03-01 07:47+0000\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Asset"
+msgstr "Gerät"
+
+msgid "Assets"
+msgstr "Geräte"
+
+msgid "Rack"
+msgstr "Rack"
+
+msgid "Racks"
+msgstr "Racks"
+
+msgid "Rack Type"
+msgstr "Rack-Typ"
+
+msgid "Rack Types"
+msgstr "Rack-Typen"
+
+msgid "Not a valid Data URL."
+msgstr "Keine gültige Data-URL."
+
+msgid "Malformed Data URL."
+msgstr "Fehlerhafte Data-URL."
+
+msgid "Invalid base64 data."
+msgstr "Ungültige Base64-Daten."
+
+msgid "This field is required."
+msgstr "Dieses Feld ist erforderlich."
+
+#, python-format
+msgid "A model named \"%(name)s\" already exists for %(vendor)s (%(type)s)."
+msgstr "Ein Modell mit dem Namen \"%(name)s\" existiert bereits für %(vendor)s (%(type)s)."
+
+#, python-format
+msgid "Cannot delete: this model is used by %(count)d asset(s)."
+msgstr "Löschen nicht möglich: dieses Modell wird von %(count)d Gerät(en) verwendet."
+
+msgid "state_id is required"
+msgstr "state_id ist erforderlich"
+
+msgid "Rack has associated units — remove them before deleting."
+msgstr "Das Rack enthält Einheiten — bitte vor dem Löschen entfernen."
+
+msgid "English"
+msgstr "Englisch"
+
+msgid "Italian"
+msgstr "Italienisch"
+
+msgid "German"
+msgstr "Deutsch"
+
+msgid "French"
+msgstr "Französisch"
+
+msgid "Chinese (Simplified)"
+msgstr "Chinesisch (Vereinfacht)"
+
+msgid "Location"
+msgstr "Standort"
+
+msgid "Locations"
+msgstr "Standorte"
+
+msgid "Datacenter"
+msgstr "Rechenzentrum"
+
+msgid "Warehouse"
+msgstr "Lager"
+
+msgid "Laboratory"
+msgstr "Labor"
+
+msgid "Technical Office"
+msgstr "Technisches Büro"
+
+msgid "Room type"
+msgstr "Raumtyp"
+
+msgid ""
+"Interactive floor plan elements (walls, racks, doors) from the Angular "
+"editor."
+msgstr ""
+"Interaktive Grundriss-Elemente (Wände, Racks, Türen) aus dem Angular-Editor."
+
+msgid "Room"
+msgstr "Raum"
+
+msgid "Rooms"
+msgstr "Räume"

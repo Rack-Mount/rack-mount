@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.utils.translation import gettext as _
 from asset.serializers import AssetSerializer
 from asset.models import Asset, RackUnit
 from rest_framework import filters
@@ -81,7 +82,7 @@ class AssetViewSet(viewsets.ModelViewSet):
         state_id = request.data.get('state_id')
         if state_id is None:
             return Response(
-                {'error': 'state_id is required'},
+                {'error': _('state_id is required')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         queryset = self.filter_queryset(self.get_queryset())

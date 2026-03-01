@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class RackType(models.Model):
@@ -33,5 +34,5 @@ class RackType(models.Model):
 
     class Meta:
         db_table = 'rack_type'
-        verbose_name = 'Rack Type'
-        verbose_name_plural = 'Rack Types'
+        verbose_name = _('Rack Type')
+        verbose_name_plural = _('Rack Types')

@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from django.utils.translation import gettext as _
 from asset.serializers import AssetModelSerializer
 from asset.models import AssetModel
 from rest_framework import filters
@@ -38,10 +39,7 @@ class AssetModelViewSet(viewsets.ModelViewSet):
             asset_count = instance.assets.count()
             return Response(
                 {
-                    'detail': (
-                        f'Impossibile eliminare: questo modello è utilizzato da '
-                        f'{asset_count} asset.'
-                    ),
+                    'detail': _('Cannot delete: this model is used by %(count)d asset(s).') % {'count': asset_count},
                     'code': 'in_use',
                     'asset_count': asset_count,
                 },
