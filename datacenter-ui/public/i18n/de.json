@@ -277,11 +277,38 @@
     "server": "Serverfehler. Bitte versuchen Sie es später erneut.",
     "fallback": "Beim Speichern ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
   },
+  "racks": {
+    "search_placeholder": "Rack suchen…",
+    "btn_new": "Neues Rack",
+    "count_badge_suffix": "Racks",
+    "col_name": "Name",
+    "col_location": "Standort",
+    "col_room": "Raum",
+    "col_model": "Modell",
+    "col_capacity": "Belegung",
+    "col_power": "Verbrauch",
+    "filter_all_dc": "Alle Rechenzentren",
+    "filter_all_rooms": "Alle Räume",
+    "open_visualizer": "Visualisierer öffnen",
+    "no_match": "Kein Rack entspricht der Suche.",
+    "no_data": "Keine Racks gefunden. Erstellen Sie eines.",
+    "delete_confirm": "Rack \u00ab{{name}}\u00bb löschen?",
+    "delete_has_units": "Löschen nicht möglich: Das Rack enthält installierte Geräte.",
+    "drawer_create_title": "Neues Rack",
+    "drawer_edit_title": "Rack bearbeiten",
+    "field_name": "Name",
+    "field_room": "Raum",
+    "field_model": "Rack-Modell",
+    "field_required": "Bitte alle Pflichtfelder ausfüllen.",
+    "save_error": "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
+    "saving": "Wird gespeichert…"
+  },
   "tabs": {
     "home": "Start",
     "assets": "Geräte",
     "vendors": "Hersteller",
-    "models": "Modelle"
+    "models": "Modelle",
+    "racks": "Racks"
   },
   "asset_row": {
     "section_device": "Gerät",

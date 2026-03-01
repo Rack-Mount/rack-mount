@@ -38,6 +38,8 @@
     "vendors_desc": "Manage device manufacturers",
     "models_title": "Device models",
     "models_desc": "Catalog of device models",
+    "racks_title": "Racks",
+    "racks_desc": "Manage server racks",
     "no_locations": "No locations found."
   },
   "vendors": {
@@ -100,6 +102,32 @@
     "import_conflict": "A model with this name, vendor and type already exists.",
     "import_error": "Error during import.",
     "import_bad_format": "Invalid JSON format."
+  },
+  "racks": {
+    "search_placeholder": "Search rack…",
+    "btn_new": "New Rack",
+    "count_badge_suffix": "racks",
+    "col_name": "Name",
+    "col_location": "Location",
+    "col_room": "Room",
+    "col_model": "Model",
+    "col_capacity": "Usage",
+    "col_power": "Power",
+    "filter_all_dc": "All datacenters",
+    "filter_all_rooms": "All rooms",
+    "open_visualizer": "Open visualizer",
+    "no_match": "No rack matches the search.",
+    "no_data": "No racks found. Create one.",
+    "delete_confirm": "Delete rack \u00ab{{name}}\u00bb?",
+    "delete_has_units": "Cannot delete: rack has installed units.",
+    "drawer_create_title": "New Rack",
+    "drawer_edit_title": "Edit Rack",
+    "field_name": "Name",
+    "field_room": "Room",
+    "field_model": "Rack model",
+    "field_required": "Please fill in all required fields.",
+    "save_error": "Error while saving. Please try again.",
+    "saving": "Saving\u2026"
   },
   "assets": {
     "search_placeholder": "Search hostname, serial, SAP…",
@@ -281,7 +309,8 @@
     "home": "Home",
     "assets": "Assets",
     "vendors": "Vendors",
-    "models": "Models"
+    "models": "Models",
+    "racks": "Racks"
   },
   "asset_row": {
     "section_device": "Device",

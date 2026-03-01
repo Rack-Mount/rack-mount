@@ -21,5 +21,7 @@ export interface Rack {
     readonly room: string;
     room_id?: number | null;
     readonly location_name: string;
+    readonly used_units: number;
+    readonly total_power_watt: number;
 }
 

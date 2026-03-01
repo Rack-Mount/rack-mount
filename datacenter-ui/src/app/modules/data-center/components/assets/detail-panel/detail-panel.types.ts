@@ -3,7 +3,7 @@ export interface PanelTab {
   label: string;
   /** Optional i18n key — when present, overrides label in the UI */
   labelKey?: string;
-  type: 'home' | 'assets' | 'vendors' | 'models' | 'room' | 'rack';
+  type: 'home' | 'assets' | 'vendors' | 'models' | 'racks' | 'room' | 'rack';
   roomId?: number;
   rackName?: string;
   /** Pinned tabs are always visible and cannot be closed */

@@ -23,6 +23,7 @@ import { ModelsListComponent } from './modules/data-center/components/catalog/mo
 import { VendorsListComponent } from './modules/data-center/components/catalog/vendors-list/vendors-list.component';
 import { MapComponent } from './modules/data-center/components/infrastructure/map/map.component';
 import { RackComponent } from './modules/data-center/components/infrastructure/rack/rack.component';
+import { RacksListComponent } from './modules/data-center/components/infrastructure/racks-list/racks-list.component';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,7 @@ import { RackComponent } from './modules/data-center/components/infrastructure/r
     HomeComponent,
     MapComponent,
     RackComponent,
+    RacksListComponent,
     NotFoundComponent,
     AssetsListComponent,
     VendorsListComponent,
@@ -174,6 +176,9 @@ export class AppComponent implements OnInit {
     } else if (segments[0]?.path === 'models') {
       this.tabService.ensureModelsTab();
       this.activeTabId.set('models');
+    } else if (segments[0]?.path === 'racks') {
+      this.tabService.ensureRacksTab();
+      this.activeTabId.set('racks');
     } else if (segments[0]?.path === 'not-found') {
       this.activeTabId.set('not-found');
     } else {
@@ -225,6 +230,10 @@ export class AppComponent implements OnInit {
     }
     if (tabId === 'models') {
       this.router.navigate(['/models']);
+      return;
+    }
+    if (tabId === 'racks') {
+      this.router.navigate(['/racks']);
       return;
     }
     if (tabId.startsWith('room-')) {

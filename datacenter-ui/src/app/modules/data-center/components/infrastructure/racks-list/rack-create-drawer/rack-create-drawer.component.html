@@ -1,0 +1,140 @@
+<div class="drawer-backdrop" (click)="cancelled.emit()"></div>
+
+<div class="create-drawer">
+  <!-- Header -->
+  <div class="drawer-header">
+    <h3>
+      @if (mode() === "edit") {
+        {{ "racks.drawer_edit_title" | translate }}
+      } @else {
+        {{ "racks.drawer_create_title" | translate }}
+      }
+    </h3>
+    <button
+      class="drawer-close"
+      type="button"
+      (click)="cancelled.emit()"
+      [title]="'common.close' | translate"
+    >
+      <svg viewBox="0 0 16 16" fill="none">
+        <path
+          d="M12 4L4 12M4 4l8 8"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="drawer-body">
+    @if (refLoading()) {
+      <div class="ref-loading">
+        <span class="spinner"></span>
+        <span>{{ "common.loading" | translate }}</span>
+      </div>
+    } @else {
+      <!-- Name -->
+      <div class="form-group">
+        <label for="rack-name">
+          {{ "racks.field_name" | translate }}
+          <span class="required">*</span>
+        </label>
+        <input
+          id="rack-name"
+          class="form-input"
+          type="text"
+          autocomplete="off"
+          [placeholder]="'racks.field_name' | translate"
+          [value]="form().name"
+          (input)="onFieldChange('name', $any($event.target).value)"
+        />
+      </div>
+
+      <!-- Room -->
+      <div class="form-group">
+        <label for="rack-room">
+          {{ "racks.field_room" | translate }}
+          <span class="required">*</span>
+        </label>
+        <select
+          id="rack-room"
+          class="form-select"
+          [value]="form().room_id ?? ''"
+          (change)="
+            onFieldChange(
+              'room_id',
+              $any($event.target).value ? +$any($event.target).value : null
+            )
+          "
+        >
+          <option value="">— {{ "racks.field_room" | translate }} —</option>
+          @for (r of rooms(); track r.id) {
+            <option [value]="r.id" [selected]="r.id === form().room_id">
+              {{ r.name }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <!-- Rack model / type -->
+      <div class="form-group">
+        <label for="rack-model">
+          {{ "racks.field_model" | translate }}
+          <span class="required">*</span>
+        </label>
+        <select
+          id="rack-model"
+          class="form-select"
+          [value]="form().model_id ?? ''"
+          (change)="
+            onFieldChange(
+              'model_id',
+              $any($event.target).value ? +$any($event.target).value : null
+            )
+          "
+        >
+          <option value="">— {{ "racks.field_model" | translate }} —</option>
+          @for (t of rackTypes(); track t.id) {
+            <option [value]="t.id" [selected]="t.id === form().model_id">
+              {{ t.model }} ({{ t.capacity }}U)
+            </option>
+          }
+        </select>
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="drawer-footer">
+    @if (saveState() === "error") {
+      <p class="save-error">{{ saveMsg() }}</p>
+    }
+
+    <div class="footer-actions">
+      <button
+        class="btn-cancel"
+        type="button"
+        [disabled]="saveState() === 'saving'"
+        (click)="cancelled.emit()"
+      >
+        {{ "common.cancel" | translate }}
+      </button>
+
+      <button
+        class="btn-save"
+        type="button"
+        [disabled]="saveState() === 'saving' || refLoading()"
+        (click)="onSubmit()"
+      >
+        @if (saveState() === "saving") {
+          <span class="spinner"></span>
+          {{ "racks.saving" | translate }}
+        } @else {
+          {{ "common.save" | translate }}
+        }
+      </button>
+    </div>
+  </div>
+</div>

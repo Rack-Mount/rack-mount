@@ -38,6 +38,8 @@
     "vendors_desc": "Gestisci i produttori degli apparati",
     "models_title": "Apparati",
     "models_desc": "Catalogo degli apparati",
+    "racks_title": "Rack",
+    "racks_desc": "Gestisci i rack del datacenter",
     "no_locations": "Nessuna location trovata."
   },
   "vendors": {
@@ -100,6 +102,32 @@
     "import_conflict": "Un modello con questo nome, vendor e tipo esiste già.",
     "import_error": "Errore durante l'importazione.",
     "import_bad_format": "Formato JSON non valido."
+  },
+  "racks": {
+    "search_placeholder": "Cerca rack\u2026",
+    "btn_new": "Nuovo Rack",
+    "count_badge_suffix": "rack",
+    "col_name": "Nome",
+    "col_location": "Location",
+    "col_room": "Stanza",
+    "col_model": "Modello",
+    "col_capacity": "Capacit\u00e0",
+    "col_power": "Consumo",
+    "filter_all_dc": "Tutti i datacenter",
+    "filter_all_rooms": "Tutte le stanze",
+    "open_visualizer": "Apri visualizzatore",
+    "no_match": "Nessun rack corrisponde alla ricerca.",
+    "no_data": "Nessun rack trovato. Creane uno nuovo.",
+    "delete_confirm": "Eliminare il rack \u00ab{{name}}\u00bb?",
+    "delete_has_units": "Impossibile eliminare: il rack contiene unit\u00e0 installate.",
+    "drawer_create_title": "Nuovo Rack",
+    "drawer_edit_title": "Modifica Rack",
+    "field_name": "Nome",
+    "field_room": "Stanza",
+    "field_model": "Modello rack",
+    "field_required": "Compila tutti i campi obbligatori.",
+    "save_error": "Errore durante il salvataggio. Riprova.",
+    "saving": "Salvataggio\u2026"
   },
   "assets": {
     "search_placeholder": "Cerca hostname, seriale, SAP…",
@@ -281,7 +309,8 @@
     "home": "Home",
     "assets": "Asset",
     "vendors": "Vendor",
-    "models": "Apparati"
+    "models": "Apparati",
+    "racks": "Rack"
   },
   "asset_row": {
     "section_device": "Apparato",

@@ -71,4 +71,8 @@ export class HomeComponent implements OnInit {
   protected onModelsOpen(): void {
     this.tabService.openModels();
   }
+
+  protected onRacksOpen(): void {
+    this.tabService.openRacks();
+  }
 }

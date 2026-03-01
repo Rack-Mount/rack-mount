@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'assets', children: [] },
   { path: 'vendors', children: [] },
   { path: 'models', children: [] },
+  { path: 'racks', children: [] },
   { path: 'map/:id', children: [] },
   { path: 'rack/:name', children: [] },
   { path: 'not-found', children: [] },

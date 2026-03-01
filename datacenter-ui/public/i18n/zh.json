@@ -38,6 +38,8 @@
     "vendors_desc": "管理设备制造商",
     "models_title": "设备型号",
     "models_desc": "设备型号目录",
+    "racks_title": "机柜",
+    "racks_desc": "管理数据中心机柜",
     "no_locations": "未找到任何地点。"
   },
   "vendors": {
@@ -100,6 +102,32 @@
     "import_conflict": "相同名称、厂商及类型的型号已存在。",
     "import_error": "导入时出错。",
     "import_bad_format": "JSON 格式无效。"
+  },
+  "racks": {
+    "search_placeholder": "搜索机柜…",
+    "btn_new": "新建机柜",
+    "count_badge_suffix": "个机柜",
+    "col_name": "名称",
+    "col_location": "地点",
+    "col_room": "房间",
+    "col_model": "型号",
+    "col_capacity": "使用率",
+    "col_power": "耗电",
+    "filter_all_dc": "全部数据中心",
+    "filter_all_rooms": "全部房间",
+    "open_visualizer": "打开可视化器",
+    "no_match": "没有与搜索匹配的机柜。",
+    "no_data": "未找到机柜，请创建一个。",
+    "delete_confirm": "删除机柜《{{name}}》？",
+    "delete_has_units": "无法删除：机柜内有已安装的设备。",
+    "drawer_create_title": "新建机柜",
+    "drawer_edit_title": "编辑机柜",
+    "field_name": "名称",
+    "field_room": "房间",
+    "field_model": "机柜型号",
+    "field_required": "请填写所有必填字段。",
+    "save_error": "保存时出错，请重试。",
+    "saving": "保存中…"
   },
   "assets": {
     "search_placeholder": "搜索主机名、序列号、SAP…",
@@ -281,7 +309,8 @@
     "home": "主页",
     "assets": "设备",
     "vendors": "厂商",
-    "models": "型号"
+    "models": "型号",
+    "racks": "机柜"
   },
   "asset_row": {
     "section_device": "设备",

@@ -2664,7 +2664,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
      * @endpoint post /asset/rack
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2736,7 +2736,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
      * @endpoint delete /asset/rack/{name}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2795,7 +2795,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
      * @endpoint get /asset/rack
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2811,6 +2811,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const page = requestParameters?.page;
         const pageSize = requestParameters?.pageSize;
         const room = requestParameters?.room;
+        const roomLocation = requestParameters?.roomLocation;
         const search = requestParameters?.search;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
@@ -2855,6 +2856,15 @@ export class AssetService extends BaseService implements AssetServiceInterface {
             localVarQueryParameters,
             'room',
             <any>room,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'room__location',
+            <any>roomLocation,
             QueryParamStyle.Form,
             true,
         );
@@ -2914,7 +2924,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
      * @endpoint patch /asset/rack/{name}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2987,7 +2997,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
      * @endpoint get /asset/rack/{name}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -3965,7 +3975,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Rack objects.     serializer_class (Serializer): The serializer class used for Rack objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     lookup_field (str): The field used for individual object lookups.
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
      * @endpoint put /asset/rack/{name}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

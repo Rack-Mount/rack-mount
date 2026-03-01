@@ -29,6 +29,7 @@ export class TabService {
       assets: 'tabs.assets',
       vendors: 'tabs.vendors',
       models: 'tabs.models',
+      racks: 'tabs.racks',
     };
     try {
       const raw = localStorage.getItem(LS_TABS_KEY);
@@ -193,6 +194,33 @@ export class TabService {
 
   ensureModelsTab(): void {
     if (this.upsertModelsTab()) this.persistTabs();
+  }
+
+  // ── Racks tab ───────────────────────────────────────────
+
+  private upsertRacksTab(): boolean {
+    if (this._tabs().some((t) => t.id === 'racks')) return false;
+    this._tabs.update((tabs) => [
+      {
+        id: 'racks',
+        label: 'Rack',
+        labelKey: 'tabs.racks',
+        type: 'racks',
+        pinned: false,
+      },
+      ...tabs,
+    ]);
+    return true;
+  }
+
+  openRacks(): void {
+    this.upsertRacksTab();
+    this.persistTabs();
+    this._activate$.next('racks');
+  }
+
+  ensureRacksTab(): void {
+    if (this.upsertRacksTab()) this.persistTabs();
   }
 
   reportRackNotFound(rackName: string): void {

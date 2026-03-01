@@ -30,6 +30,8 @@
             🏭
           } @else if (tab.type === "models") {
             🗂️
+          } @else if (tab.type === "racks") {
+            🗄️
           } @else {
             🏠
           }
@@ -117,6 +119,21 @@
     } @error {
       <div class="loading-state loading-state--error">
         Impossibile caricare gli apparati.
+      </div>
+    }
+  </div>
+
+  <!-- Racks pane -->
+  <div class="content-pane" [hidden]="activeTabId() !== 'racks'">
+    @defer (when activeTabId() === 'racks'; prefetch on idle) {
+      <app-racks-list />
+    } @loading (minimum 150ms) {
+      <div class="loading-state">Caricamento rack…</div>
+    } @placeholder {
+      <div class="loading-state">Caricamento rack…</div>
+    } @error {
+      <div class="loading-state loading-state--error">
+        Impossibile caricare i rack.
       </div>
     }
   </div>

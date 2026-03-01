@@ -1,0 +1,349 @@
+<div class="racks-page">
+  <!-- ─── Toolbar ─────────────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <select
+        class="dc-filter"
+        [value]="locationFilter() ?? ''"
+        (change)="
+          onLocationFilter(
+            $any($event.target).value ? +$any($event.target).value : null
+          )
+        "
+      >
+        <option value="">{{ "racks.filter_all_dc" | translate }}</option>
+        @for (loc of locations(); track loc.id) {
+          <option [value]="loc.id">{{ loc.name }}</option>
+        }
+      </select>
+
+      <select
+        class="dc-filter"
+        [value]="roomFilter() ?? ''"
+        (change)="
+          onRoomFilter(
+            $any($event.target).value ? +$any($event.target).value : null
+          )
+        "
+      >
+        <option value="">{{ "racks.filter_all_rooms" | translate }}</option>
+        @for (room of filteredRooms(); track room.id) {
+          <option [value]="room.id">{{ room.name }}</option>
+        }
+      </select>
+
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+          <circle
+            cx="8.5"
+            cy="8.5"
+            r="5.25"
+            stroke="currentColor"
+            stroke-width="1.6"
+          />
+          <path
+            d="M13 13l3.5 3.5"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+        </svg>
+        <input
+          class="search-input"
+          type="text"
+          [value]="searchQuery()"
+          (input)="onSearch($any($event.target).value)"
+          [placeholder]="'racks.search_placeholder' | translate"
+        />
+        @if (searchQuery()) {
+          <button
+            class="search-clear"
+            (click)="onClearSearch()"
+            [title]="'common.search_clear' | translate"
+          >
+            ×
+          </button>
+        }
+      </div>
+
+      @if (listState().status === "loaded") {
+        <span class="count-badge">
+          {{ listState().status === "loaded" ? $any(listState()).count : "" }}
+          {{ "racks.count_badge_suffix" | translate }}
+        </span>
+      }
+    </div>
+
+    <div class="toolbar-right">
+      <button class="btn-new" (click)="onNew()">
+        <svg viewBox="0 0 20 20" fill="none">
+          <path
+            d="M10 4v12M4 10h12"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{ "racks.btn_new" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── Table ──────────────────────────────────────────── -->
+  <div class="table-wrap">
+    @if (listState().status === "loading") {
+      <div class="loading-state">
+        <span class="spinner"></span>
+        {{ "common.loading" | translate }}
+      </div>
+    } @else if (listState().status === "error") {
+      <div class="empty-state">{{ "common.error_loading" | translate }}</div>
+    } @else {
+      @let loaded = $any(listState());
+      @if (loaded.results.length === 0) {
+        <div class="empty-state">
+          {{
+            searchQuery()
+              ? ("racks.no_match" | translate)
+              : ("racks.no_data" | translate)
+          }}
+        </div>
+      } @else {
+        <table class="rack-table">
+          <thead>
+            <tr>
+              <th class="col-name th--sortable" (click)="onSort('name')">
+                {{ "racks.col_name" | translate }}
+                <span
+                  class="sort-indicator"
+                  [class.sort-indicator--asc]="sortDir('name') === 'asc'"
+                  [class.sort-indicator--desc]="sortDir('name') === 'desc'"
+                ></span>
+              </th>
+              <th class="col-place th--sortable" (click)="onSort('room__name')">
+                {{ "racks.col_location" | translate }} /
+                {{ "racks.col_room" | translate }}
+                <span
+                  class="sort-indicator"
+                  [class.sort-indicator--asc]="sortDir('room__name') === 'asc'"
+                  [class.sort-indicator--desc]="
+                    sortDir('room__name') === 'desc'
+                  "
+                ></span>
+              </th>
+              <th
+                class="col-model th--sortable"
+                (click)="onSort('model__model')"
+              >
+                {{ "racks.col_model" | translate }}
+                <span
+                  class="sort-indicator"
+                  [class.sort-indicator--asc]="
+                    sortDir('model__model') === 'asc'
+                  "
+                  [class.sort-indicator--desc]="
+                    sortDir('model__model') === 'desc'
+                  "
+                ></span>
+              </th>
+              <th
+                class="col-capacity th--sortable"
+                (click)="onSort('used_units')"
+              >
+                {{ "racks.col_capacity" | translate }}
+                <span
+                  class="sort-indicator"
+                  [class.sort-indicator--asc]="sortDir('used_units') === 'asc'"
+                  [class.sort-indicator--desc]="
+                    sortDir('used_units') === 'desc'
+                  "
+                ></span>
+              </th>
+              <th
+                class="col-power th--sortable"
+                (click)="onSort('total_power_watt')"
+              >
+                {{ "racks.col_power" | translate }}
+                <span
+                  class="sort-indicator"
+                  [class.sort-indicator--asc]="
+                    sortDir('total_power_watt') === 'asc'
+                  "
+                  [class.sort-indicator--desc]="
+                    sortDir('total_power_watt') === 'desc'
+                  "
+                ></span>
+              </th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (rack of loaded.results; track rack.id) {
+              @let del = deleteState();
+              <tr
+                [class.row--deleting]="
+                  del.id === rack.id && $any(del).status === 'deleting'
+                "
+              >
+                <td class="col-name">
+                  <button
+                    class="rack-name-link"
+                    (click)="onOpenVisualizer(rack)"
+                    [title]="'racks.open_visualizer' | translate"
+                  >
+                    <svg viewBox="0 0 20 20" fill="none">
+                      <rect
+                        x="2"
+                        y="4"
+                        width="16"
+                        height="12"
+                        rx="1.5"
+                        stroke="currentColor"
+                        stroke-width="1.4"
+                      />
+                      <path
+                        d="M5 8h2M5 11h2M5 14h2"
+                        stroke="currentColor"
+                        stroke-width="1.3"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    {{ rack.name }}
+                  </button>
+                </td>
+                <td class="col-place">
+                  <span class="place-primary">{{ rack.location_name }}</span>
+                  @if (rack.room) {
+                    <span class="place-secondary">{{ rack.room }}</span>
+                  }
+                </td>
+                <td class="col-model">{{ rack.model?.model }}</td>
+                <td class="col-capacity">
+                  <div class="occ-cell" [class]="occupancyClass(rack)">
+                    <span class="occ-label"
+                      >{{ usedUnits(rack) }}&thinsp;/&thinsp;{{
+                        rack.model?.capacity
+                      }}U</span
+                    >
+                    <div class="occ-bar">
+                      <div
+                        class="occ-bar__fill"
+                        [style.width.%]="occupancyPercent(rack)"
+                      ></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="col-power">
+                  @if (totalPowerWatt(rack) > 0) {
+                    <div class="power-cell">
+                      <svg class="power-icon" viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M9 2L4 9h5l-2 5 7-8H9l2-5z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      <span class="power-label">{{ formatPower(rack) }}</span>
+                    </div>
+                  } @else {
+                    <span class="power-none">—</span>
+                  }
+                </td>
+                <td class="col-actions">
+                  @if (del.id === rack.id) {
+                    @if ($any(del).status === "confirming") {
+                      <div class="delete-confirm">
+                        <span class="delete-confirm__msg">{{
+                          "racks.delete_confirm"
+                            | translate: { name: rack.name }
+                        }}</span>
+                        <div class="delete-confirm__btns">
+                          <button
+                            class="btn-danger-sm"
+                            (click)="onDeleteConfirm(rack)"
+                          >
+                            {{ "common.delete" | translate }}
+                          </button>
+                          <button
+                            class="btn-ghost-sm"
+                            (click)="onDeleteCancel()"
+                          >
+                            {{ "common.cancel" | translate }}
+                          </button>
+                        </div>
+                      </div>
+                    } @else if ($any(del).status === "deleting") {
+                      <span class="action-msg">{{
+                        "common.deleting" | translate
+                      }}</span>
+                    } @else if ($any(del).status === "conflict") {
+                      <div class="delete-confirm">
+                        <span class="action-msg action-msg--error">{{
+                          "racks.delete_has_units" | translate
+                        }}</span>
+                        <button class="btn-ghost-sm" (click)="onDeleteCancel()">
+                          {{ "common.cancel" | translate }}
+                        </button>
+                      </div>
+                    } @else {
+                      <div class="delete-confirm">
+                        <span class="action-msg action-msg--error">{{
+                          "common.error_retry" | translate
+                        }}</span>
+                        <button class="btn-ghost-sm" (click)="onDeleteCancel()">
+                          {{ "common.cancel" | translate }}
+                        </button>
+                      </div>
+                    }
+                  } @else {
+                    <div class="row-actions">
+                      <button
+                        class="btn-row-action"
+                        (click)="onEdit(rack)"
+                        [title]="'common.edit' | translate"
+                      >
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M14.7 3.3a1 1 0 0 1 1.4 0l.6.6a1 1 0 0 1 0 1.4L5.5 16.5l-2.5.5.5-2.5L14.7 3.3z"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        class="btn-row-action btn-row-action--danger"
+                        (click)="onDeleteRequest(rack)"
+                        [title]="'common.delete' | translate"
+                      >
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M3 6h14M8 6V4h4v2M6 6l1 10h6l1-10"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    }
+  </div>
+</div>
+
+<!-- ─── Drawer ──────────────────────────────────────────── -->
+@if (drawerMode() !== null) {
+  <app-rack-create-drawer
+    [mode]="drawerMode()!"
+    [rack]="editingRack()"
+    (saved)="onDrawerSaved($event)"
+    (cancelled)="onDrawerClose()"
+  />
+}
