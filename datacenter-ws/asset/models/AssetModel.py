@@ -1,8 +1,11 @@
+import uuid as _uuid
+
 from django.db import models
 import reversion
 from asset.models import AssetType, Vendor
 from django.utils.html import mark_safe
 from django.conf import settings
+from asset.utils.upload_paths import asset_model_front_upload, asset_model_rear_upload
 
 
 @reversion.register()
@@ -30,6 +33,7 @@ class AssetModel(models.Model):
         unique_together (tuple): Ensures that the combination of name, vendor, and type is unique.
         db_table (str): The name of the database table.
     """
+    uuid = models.UUIDField(default=_uuid.uuid4, unique=True, editable=False)
     name = models.CharField(max_length=100, default='', null=False)
     vendor = models.ForeignKey(
         Vendor, on_delete=models.PROTECT, related_name='asset_vendor')
@@ -37,8 +41,10 @@ class AssetModel(models.Model):
         AssetType, on_delete=models.CASCADE, related_name='asset_type')
     rack_units = models.PositiveIntegerField(
         default=1, null=False, name='rack_units')
-    front_image = models.ImageField(null=True)
-    rear_image = models.ImageField(null=True)
+    front_image = models.ImageField(
+        null=True, upload_to=asset_model_front_upload)
+    rear_image = models.ImageField(
+        null=True, upload_to=asset_model_rear_upload)
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -27,6 +27,7 @@ class AssetModelSerializer(serializers.ModelSerializer):
         model = AssetModel
         fields = [
             'id',
+            'uuid',
             'name',
             'vendor',
             'vendor_id',
@@ -39,3 +40,4 @@ class AssetModelSerializer(serializers.ModelSerializer):
             'rear_image_transform',
             'note',
         ]
+        read_only_fields = ['uuid']

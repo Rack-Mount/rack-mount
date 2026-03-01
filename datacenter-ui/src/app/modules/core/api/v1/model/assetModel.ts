@@ -16,6 +16,7 @@ import { Vendor } from './vendor';
  */
 export interface AssetModel { 
     readonly id: number;
+    readonly uuid: string;
     name?: string;
     readonly vendor: Vendor;
     vendor_id: number;
