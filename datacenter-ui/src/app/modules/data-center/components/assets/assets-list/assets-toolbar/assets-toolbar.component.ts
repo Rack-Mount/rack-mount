@@ -7,8 +7,8 @@ import {
   Output,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AssetState, AssetType } from '../../../../../core/api/v1';
 import { environment } from '../../../../../../../environments/environment';
+import { AssetState, AssetType } from '../../../../../core/api/v1';
 
 export interface AssetsFilterParams {
   search: string;
@@ -40,7 +40,9 @@ export class AssetsToolbarComponent {
     this._importCsvState = v;
     if (v === 'idle') this.showErrors = false;
   }
-  get importCsvState(): CsvImportState { return this._importCsvState; }
+  get importCsvState(): CsvImportState {
+    return this._importCsvState;
+  }
   private _importCsvState: CsvImportState = 'idle';
 
   @Input() importCsvSummary = '';

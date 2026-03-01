@@ -75,7 +75,9 @@ export class AssetsListComponent {
   // ── CSV import ────────────────────────────────────────────────────────────
   protected readonly importCsvState = signal<CsvImportState>('idle');
   protected readonly importCsvSummary = signal('');
-  protected readonly importCsvErrors = signal<{ row: number; message: string }[]>([]);
+  protected readonly importCsvErrors = signal<
+    { row: number; message: string }[]
+  >([]);
 
   // ── Delete confirmation ────────────────────────────────────────────────────
   protected readonly deleteConfirmId = signal<number | null>(null);

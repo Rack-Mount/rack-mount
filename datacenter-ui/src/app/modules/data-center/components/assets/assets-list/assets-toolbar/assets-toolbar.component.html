@@ -72,17 +72,24 @@
 
   <div class="toolbar-right">
     <!-- CSV import result feedback -->
-    @if (importCsvState === 'success') {
+    @if (importCsvState === "success") {
       <span class="import-msg import-msg--ok">{{ importCsvSummary }}</span>
     }
-    @if (importCsvState === 'error') {
-      <span class="import-msg import-msg--err import-msg--clickable"
-            (click)="toggleErrors()">
+    @if (importCsvState === "error") {
+      <span
+        class="import-msg import-msg--err import-msg--clickable"
+        (click)="toggleErrors()"
+      >
         {{ importCsvSummary }}
         @if (importCsvErrors.length) {
           <svg class="caret" viewBox="0 0 10 6" fill="none">
-            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5"
-                  stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M1 1l4 4 4-4"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         }
       </span>
@@ -90,16 +97,27 @@
         <div class="errors-panel">
           <div class="errors-panel__header">
             Righe con errori
-            <button class="errors-panel__close" type="button" (click)="dismissErrors()">
+            <button
+              class="errors-panel__close"
+              type="button"
+              (click)="dismissErrors()"
+            >
               <svg viewBox="0 0 12 12" fill="none">
-                <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5"
-                      stroke-linecap="round"/>
+                <path
+                  d="M2 2l8 8M10 2l-8 8"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
               </svg>
             </button>
           </div>
           <ul class="errors-panel__list">
             @for (e of importCsvErrors; track e.row) {
-              <li><span class="errors-panel__row">Riga {{ e.row }}</span> {{ e.message }}</li>
+              <li>
+                <span class="errors-panel__row">Riga {{ e.row }}</span>
+                {{ e.message }}
+              </li>
             }
           </ul>
         </div>
@@ -107,30 +125,49 @@
     }
 
     <!-- Template download -->
-    <button class="btn-tpl" type="button" (click)="downloadTemplate()"
-      [title]="'assets.import_csv_template_title' | translate">
+    <button
+      class="btn-tpl"
+      type="button"
+      (click)="downloadTemplate()"
+      [title]="'assets.import_csv_template_title' | translate"
+    >
       <svg viewBox="0 0 16 16" fill="none">
-        <path d="M3 13h10M8 3v7M5 7l3 3 3-3"
-              stroke="currentColor" stroke-width="1.6"
-              stroke-linecap="round" stroke-linejoin="round"/>
+        <path
+          d="M3 13h10M8 3v7M5 7l3 3 3-3"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </button>
 
     <!-- Import CSV -->
-    <label class="btn-import" [class.btn-import--busy]="importCsvState === 'importing'"
-      [title]="'assets.import_csv_btn' | translate">
-      @if (importCsvState === 'importing') {
+    <label
+      class="btn-import"
+      [class.btn-import--busy]="importCsvState === 'importing'"
+      [title]="'assets.import_csv_btn' | translate"
+    >
+      @if (importCsvState === "importing") {
         <span class="spinner-xs"></span>
       } @else {
         <svg viewBox="0 0 16 16" fill="none">
-          <path d="M8 3v7M5 7l3-3 3 3M3 13h10"
-                stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M8 3v7M5 7l3-3 3 3M3 13h10"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       }
       {{ "assets.import_csv_btn" | translate }}
-      <input type="file" accept=".csv,text/csv" class="file-input-hidden"
-             (change)="onFileSelected($event)" />
+      <input
+        type="file"
+        accept=".csv,text/csv"
+        class="file-input-hidden"
+        (change)="onFileSelected($event)"
+      />
     </label>
 
     <button class="btn-new-asset" (click)="newClick.emit()">

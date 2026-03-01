@@ -73,7 +73,8 @@ def _parse_date(value: str) -> datetime.date | None:
             return datetime.datetime.strptime(s, fmt).date()
         except ValueError:
             continue
-    raise ValueError(f"Formato data non riconosciuto: '{s}' (usa YYYY-MM-DD o DD/MM/YYYY)")
+    raise ValueError(
+        f"Formato data non riconosciuto: '{s}' (usa YYYY-MM-DD o DD/MM/YYYY)")
 
 
 def _int_or_none(value: str, field_name: str) -> int | None:
@@ -83,7 +84,8 @@ def _int_or_none(value: str, field_name: str) -> int | None:
     try:
         return int(s)
     except ValueError:
-        raise ValueError(f"'{field_name}' deve essere un intero, valore ricevuto: '{s}'")
+        raise ValueError(
+            f"'{field_name}' deve essere un intero, valore ricevuto: '{s}'")
 
 
 # ─────── View ─────────────────────────────────────────────────────────────────
@@ -108,7 +110,7 @@ class AssetImportCsvView(APIView):
         # Example row
         writer.writerow([
             'srv-prod-01',   # Hostname
-            'PowerEdge R750',# Modello
+            'PowerEdge R750',  # Modello
             'Dell',          # Vendor
             'Attivo',        # Stato
             'SN0001',        # Seriale
@@ -122,7 +124,8 @@ class AssetImportCsvView(APIView):
             '2024-01-15',    # Data acquisto
             '',              # Data dismissione
         ])
-        response = HttpResponse(buf.getvalue(), content_type='text/csv; charset=utf-8')
+        response = HttpResponse(
+            buf.getvalue(), content_type='text/csv; charset=utf-8')
         response['Content-Disposition'] = 'attachment; filename="asset_import_template.csv"'
         return response
 
@@ -207,7 +210,8 @@ class AssetImportCsvView(APIView):
             key = state_name.strip().lower()
             if key not in state_cache:
                 try:
-                    state_cache[key] = AssetState.objects.get(name__iexact=state_name.strip())
+                    state_cache[key] = AssetState.objects.get(
+                        name__iexact=state_name.strip())
                 except AssetState.DoesNotExist:
                     state_cache[key] = None
             return state_cache[key]
@@ -218,25 +222,32 @@ class AssetImportCsvView(APIView):
 
         for row_num, row in enumerate(reader, start=2):  # row 1 = header
             try:
-                hostname     = (row.get('Hostname') or '').strip()
-                model_name   = (row.get('Modello')  or '').strip()
-                vendor_name  = (row.get('Vendor')   or '').strip()
-                state_name   = (row.get('Stato')    or '').strip()
+                hostname = (row.get('Hostname') or '').strip()
+                model_name = (row.get('Modello') or '').strip()
+                vendor_name = (row.get('Vendor') or '').strip()
+                state_name = (row.get('Stato') or '').strip()
                 serial_number = (row.get('Seriale') or '').strip()
 
                 # ── Required fields ────────────────────────────────────────────
                 missing_fields = []
-                if not hostname:     missing_fields.append('Hostname')
-                if not model_name:   missing_fields.append('Modello')
-                if not vendor_name:  missing_fields.append('Vendor')
-                if not state_name:   missing_fields.append('Stato')
-                if not serial_number: missing_fields.append('Seriale')
+                if not hostname:
+                    missing_fields.append('Hostname')
+                if not model_name:
+                    missing_fields.append('Modello')
+                if not vendor_name:
+                    missing_fields.append('Vendor')
+                if not state_name:
+                    missing_fields.append('Stato')
+                if not serial_number:
+                    missing_fields.append('Seriale')
                 if missing_fields:
-                    raise ValueError(f'Campi obbligatori mancanti: {", ".join(missing_fields)}')
+                    raise ValueError(
+                        f'Campi obbligatori mancanti: {", ".join(missing_fields)}')
 
                 # ── Duplicate serial check ─────────────────────────────────────
                 if Asset.objects.filter(serial_number=serial_number).exists():
-                    raise ValueError(f"Numero seriale già esistente: '{serial_number}'")
+                    raise ValueError(
+                        f"Numero seriale già esistente: '{serial_number}'")
 
                 # ── Lookups ────────────────────────────────────────────────────
                 model_obj = get_model(vendor_name, model_name)
@@ -250,15 +261,18 @@ class AssetImportCsvView(APIView):
                     raise ValueError(f"Stato non trovato: '{state_name}'")
 
                 # ── Optional fields ────────────────────────────────────────────
-                sap_id       = (row.get('SAP ID') or '').strip()
-                order_id     = (row.get('Order ID') or '').strip()
-                note         = (row.get('Note') or '').strip()
-                power_supplies   = _int_or_none(row.get('Alimentatori', ''), 'Alimentatori')
-                power_watt       = _int_or_none(row.get('Assorbimento (W)', ''), 'Assorbimento (W)')
-                warranty_exp     = _parse_date(row.get('Scad. garanzia', ''))
-                support_exp      = _parse_date(row.get('Scad. supporto', ''))
-                purchase_date    = _parse_date(row.get('Data acquisto', ''))
-                decommission_date = _parse_date(row.get('Data dismissione', ''))
+                sap_id = (row.get('SAP ID') or '').strip()
+                order_id = (row.get('Order ID') or '').strip()
+                note = (row.get('Note') or '').strip()
+                power_supplies = _int_or_none(
+                    row.get('Alimentatori', ''), 'Alimentatori')
+                power_watt = _int_or_none(
+                    row.get('Assorbimento (W)', ''), 'Assorbimento (W)')
+                warranty_exp = _parse_date(row.get('Scad. garanzia', ''))
+                support_exp = _parse_date(row.get('Scad. supporto', ''))
+                purchase_date = _parse_date(row.get('Data acquisto', ''))
+                decommission_date = _parse_date(
+                    row.get('Data dismissione', ''))
 
                 # ── Create ─────────────────────────────────────────────────────
                 Asset.objects.create(
@@ -281,6 +295,7 @@ class AssetImportCsvView(APIView):
             except ValueError as exc:
                 errors.append({'row': row_num, 'message': str(exc)})
             except Exception as exc:
-                errors.append({'row': row_num, 'message': f'Errore imprevisto: {exc}'})
+                errors.append(
+                    {'row': row_num, 'message': f'Errore imprevisto: {exc}'})
 
         return Response({'created': created, 'errors': errors}, status=status.HTTP_200_OK)
