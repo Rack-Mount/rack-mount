@@ -26,7 +26,6 @@ import {
 import { environment } from '../../../../../../environments/environment';
 import {
   Asset,
-  AssetModel,
   AssetService,
   AssetState,
   AssetType,
@@ -67,7 +66,6 @@ export class AssetsListComponent {
   // ── Filter options ────────────────────────────────────────────────────────
   protected readonly availableStates = signal<AssetState[]>([]);
   protected readonly availableTypes = signal<AssetType[]>([]);
-  protected readonly availableModels = signal<AssetModel[]>([]);
 
   // ── Create drawer ─────────────────────────────────────────────────────────
   protected readonly createDrawerOpen = signal(false);
@@ -311,11 +309,6 @@ export class AssetsListComponent {
       .assetAssetTypeList({ pageSize: 100 })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((r) => this.availableTypes.set(r.results ?? []));
-
-    this.assetService
-      .assetAssetModelList({ pageSize: 500 })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((r) => this.availableModels.set(r.results ?? []));
 
     // ── Debounce search: update params, reset page ───────────────────────────
     this._searchInput

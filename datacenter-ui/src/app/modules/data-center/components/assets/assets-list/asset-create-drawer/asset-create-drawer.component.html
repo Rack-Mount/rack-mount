@@ -38,7 +38,7 @@
           autocomplete="off"
           [value]="modelSearch()"
           (input)="onModelSearch($any($event.target).value)"
-          (focus)="modelDropdownOpen.set(true)"
+          (focus)="onModelFocus()"
           (blur)="modelDropdownOpen.set(false)"
         />
         @if (createForm().model_id) {

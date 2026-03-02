@@ -2,7 +2,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   inject,
   input,
@@ -12,6 +11,15 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  of,
+  Subject,
+  switchMap,
+} from 'rxjs';
 import {
   Asset,
   AssetModel,
@@ -34,7 +42,6 @@ export class AssetCreateDrawerComponent implements OnInit {
   private readonly backendErr = inject(BackendErrorService);
 
   readonly availableStates = input.required<AssetState[]>();
-  readonly availableModels = input.required<AssetModel[]>();
   readonly mode = input<'create' | 'edit'>('create');
   readonly editAsset = input<Asset | null>(null);
 
@@ -68,21 +75,36 @@ export class AssetCreateDrawerComponent implements OnInit {
   // ── Model autocomplete ────────────────────────────────────────────────────
   protected readonly modelSearch = signal('');
   protected readonly modelDropdownOpen = signal(false);
+  protected readonly filteredModels = signal<AssetModel[]>([]);
+  protected readonly modelsLoading = signal(false);
 
-  protected readonly filteredModels = computed(() => {
-    const q = this.modelSearch().toLowerCase().trim();
-    const all = this.availableModels();
-    if (!q) return all.slice(0, 25);
-    return all
-      .filter(
-        (m) =>
-          (m.name ?? '').toLowerCase().includes(q) ||
-          (m.vendor.name ?? '').toLowerCase().includes(q),
+  private readonly _modelSearch$ = new Subject<string>();
+
+  constructor() {
+    this._modelSearch$
+      .pipe(
+        debounceTime(250),
+        distinctUntilChanged(),
+        switchMap((q) => {
+          this.modelsLoading.set(true);
+          return this.assetService
+            .assetAssetModelList({
+              search: q || undefined,
+              pageSize: 25,
+              ordering: 'name',
+            })
+            .pipe(
+              map((r) => r.results ?? []),
+              catchError(() => of([] as AssetModel[])),
+            );
+        }),
+        takeUntilDestroyed(this.destroyRef),
       )
-      .slice(0, 25);
-  });
-
-  constructor() {}
+      .subscribe((list) => {
+        this.filteredModels.set(list);
+        this.modelsLoading.set(false);
+      });
+  }
 
   ngOnInit(): void {
     const a = this.editAsset();
@@ -108,9 +130,15 @@ export class AssetCreateDrawerComponent implements OnInit {
   }
 
   // ── Model autocomplete handlers ───────────────────────────────────────────
+  protected onModelFocus(): void {
+    this.modelDropdownOpen.set(true);
+    this._modelSearch$.next(this.modelSearch());
+  }
+
   protected onModelSearch(value: string): void {
     this.modelSearch.set(value);
     this.modelDropdownOpen.set(true);
+    this._modelSearch$.next(value);
     if (!value) this.createForm.update((f) => ({ ...f, model_id: null }));
   }
 

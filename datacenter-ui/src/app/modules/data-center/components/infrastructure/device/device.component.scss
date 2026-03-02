@@ -69,13 +69,20 @@ $type-colors: (
 }
 
 .device__panel-img {
-  display: block;
-  width: 100%;
+  // Absolute positioning gives a definitive height reference (the panel),
+  // bypassing the flex percentage-height resolution ambiguity.
+  // width: auto keeps the natural aspect ratio:
+  //   - wide (full-rack) images extend beyond the slot width and are clipped
+  //     by overflow: hidden on the panel;
+  //   - narrow (cassette/half-rack) images stay narrower and are centred
+  //     by left: 50% + translateX(-50%).
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   height: 100%;
-  // cover = fills the full slot area; any excess is cropped at the right edge
-  // (rack photos are full-width fronts so this is visually correct)
-  object-fit: cover;
-  object-position: center left;
+  width: auto;
+  max-width: none;
   image-rendering: crisp-edges;
   filter: brightness(1.05) contrast(1.02);
   transition: filter 120ms ease;
