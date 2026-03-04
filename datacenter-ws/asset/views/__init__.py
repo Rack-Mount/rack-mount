@@ -8,3 +8,4 @@ from .RackTypeViewSet import RackTypeViewSet
 from .RackViewSet import RackViewSet
 from .RackUnitViewSet import RackUnitViewSet
 from .AssetCustomFieldViewSet import AssetCustomFieldViewSet
+from .GenericComponentViewSet import GenericComponentViewSet

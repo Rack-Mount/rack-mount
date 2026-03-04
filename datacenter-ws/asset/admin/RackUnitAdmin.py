@@ -4,10 +4,10 @@ from asset.models import RackUnit
 
 @admin.register(RackUnit)
 class RackUnitAdmin(admin.ModelAdmin):
-    list_display = ('rack', 'position', 'front', 'device')
-    search_fields = ('rack__name', 'device__hostname')
-    list_filter = ('rack__room', 'device__model')
-    autocomplete_fields = ('rack', 'device')
+    list_display = ('rack', 'position', 'front', 'device', 'generic_component')
+    search_fields = ('rack__name', 'device__hostname', 'generic_component__name')
+    list_filter = ('rack__room', 'device__model', 'generic_component__component_type')
+    autocomplete_fields = ('rack', 'device', 'generic_component')
 
     readonly_fields = ['image_preview']
 

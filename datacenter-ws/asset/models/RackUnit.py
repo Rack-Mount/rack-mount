@@ -1,6 +1,7 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
-from asset.models import Asset, Rack
+from asset.models import Asset, Rack, GenericComponent
 import reversion
 from django.utils.html import mark_safe
 
@@ -34,9 +35,23 @@ class RackUnit(models.Model):
     device = models.OneToOneField(
         Asset, on_delete=models.CASCADE, null=True, blank=True
     )
+    generic_component = models.ForeignKey(
+        GenericComponent,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='installed_in_rack_units',
+        help_text='Generic/consumable component installed in this rack unit (mutually exclusive with device).',
+    )
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        if self.device_id and self.generic_component_id:
+            raise ValidationError(
+                'A rack unit cannot have both a device and a generic component assigned.'
+            )
 
     def __str__(self):
         position = "front" if self.front else "rear"

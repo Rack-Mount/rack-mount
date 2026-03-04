@@ -29,6 +29,7 @@ class RackUnitViewSet(viewsets.ModelViewSet):
         'device__model__vendor',
         'device__model__type',
         'device__state',
+        'generic_component',
     ).all()
     serializer_class = RackUnitSerializer
     pagination_class = StandardResultsSetPagination

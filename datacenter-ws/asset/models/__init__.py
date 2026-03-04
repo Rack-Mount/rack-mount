@@ -8,6 +8,7 @@ from .AssetModel import AssetModel
 from .NetworkSwitchAssetModel import NetworkSwitchAssetModel
 from .Asset import Asset
 from .AssetCustomField import AssetCustomField
+from .GenericComponent import GenericComponent
 from .RackUnit import RackUnit
 
 __all__ = [
@@ -21,5 +22,6 @@ __all__ = [
     'NetworkSwitchAssetModel',
     'Asset',
     'AssetCustomField',
+    'GenericComponent',
     'RackUnit'
 ]

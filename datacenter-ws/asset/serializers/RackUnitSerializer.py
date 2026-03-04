@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
-from asset.models import RackUnit, Rack, Asset
+from asset.models import RackUnit, Rack, Asset, GenericComponent
 
 
 class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
@@ -87,6 +87,36 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         allow_null=True
     )
 
+    # ---- Generic Component (read) ----
+    generic_component_id = serializers.IntegerField(
+        source='generic_component.id',
+        read_only=True,
+    )
+    generic_component_name = serializers.CharField(
+        source='generic_component.name',
+        read_only=True,
+    )
+    generic_component_type = serializers.CharField(
+        source='generic_component.component_type',
+        read_only=True,
+    )
+    generic_component_type_display = serializers.CharField(
+        source='generic_component.get_component_type_display',
+        read_only=True,
+    )
+    generic_component_rack_units = serializers.IntegerField(
+        source='generic_component.rack_units',
+        read_only=True,
+    )
+
+    # ---- Generic Component (write) ----
+    generic_component = serializers.PrimaryKeyRelatedField(
+        queryset=GenericComponent.objects.all(),
+        write_only=True,
+        required=False,
+        allow_null=True,
+    )
+
     device_vendor = serializers.StringRelatedField(
         source='device.model.vendor.name',
         many=False,
@@ -145,4 +175,6 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'rack_id', 'rack_name', 'location_id', 'location_name', 'location_short_name', 'device_id', 'device_hostname',
                   'device_model', 'device_vendor', 'device_type', 'device_serial_number', 'device_sap_id', 'device_state',
                   'device_image', 'device_rear_image', 'device_power_watt', 'rack_installation_front', 'device_rack_units', 'position',
-                  'rack', 'device']
+                  'rack', 'device',
+                  'generic_component_id', 'generic_component_name', 'generic_component_type',
+                  'generic_component_type_display', 'generic_component_rack_units', 'generic_component']

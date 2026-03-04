@@ -20,7 +20,7 @@ URL patterns:
 - /asset_type
 """
 from rest_framework.routers import DefaultRouter
-from asset.views import AssetViewSet, AssetModelViewSet, VendorViewSet, AssetStateViewSet, AssetTypeViewSet, RackViewSet, RackTypeViewSet, RackUnitViewSet, AssetCustomFieldViewSet
+from asset.views import AssetViewSet, AssetModelViewSet, VendorViewSet, AssetStateViewSet, AssetTypeViewSet, RackViewSet, RackTypeViewSet, RackUnitViewSet, AssetCustomFieldViewSet, GenericComponentViewSet
 from asset.views.AssetExportView import AssetExportView
 from asset.views.AssetModelImportView import AssetModelImportView
 from asset.views.AssetImportCsvView import AssetImportCsvView
@@ -35,6 +35,7 @@ router.register('rack', RackViewSet)
 router.register('rack_type', RackTypeViewSet)
 router.register('rack_unit', RackUnitViewSet)
 router.register('asset_custom_field', AssetCustomFieldViewSet)
+router.register('generic_component', GenericComponentViewSet)
 
 urlpatterns = [
     path('asset/export', AssetExportView.as_view(), name='asset-export'),

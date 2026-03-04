@@ -7,3 +7,4 @@ from .RackTypeSerializer import RackTypeSerializer
 from .RackSerializer import RackSerializer
 from .RackUnitSerializer import RackUnitSerializer
 from .AssetCustomFieldSerializer import AssetCustomFieldSerializer
+from .GenericComponentSerializer import GenericComponentSerializer
