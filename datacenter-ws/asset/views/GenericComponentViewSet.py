@@ -16,7 +16,8 @@ class GenericComponentViewSet(viewsets.ModelViewSet):
     queryset = GenericComponent.objects.all()
     serializer_class = GenericComponentSerializer
     pagination_class = StandardResultsSetPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend)
+    filter_backends = (filters.OrderingFilter,
+                       filters.SearchFilter, DjangoFilterBackend)
     filterset_fields = ['component_type']
     search_fields = ['name', 'note']
     ordering_fields = ['name', 'component_type', 'rack_units', 'created_at']
