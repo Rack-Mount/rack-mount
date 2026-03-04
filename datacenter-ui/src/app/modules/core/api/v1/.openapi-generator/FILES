@@ -18,6 +18,8 @@ model/assetModel.ts
 model/assetRack.ts
 model/assetState.ts
 model/assetType.ts
+model/componentTypeEnum.ts
+model/genericComponent.ts
 model/location.ts
 model/locationCustomField.ts
 model/models.ts
@@ -26,6 +28,7 @@ model/paginatedAssetList.ts
 model/paginatedAssetModelList.ts
 model/paginatedAssetStateList.ts
 model/paginatedAssetTypeList.ts
+model/paginatedGenericComponentList.ts
 model/paginatedLocationCustomFieldList.ts
 model/paginatedLocationList.ts
 model/paginatedRackList.ts
@@ -38,6 +41,7 @@ model/patchedAssetCustomField.ts
 model/patchedAssetModel.ts
 model/patchedAssetState.ts
 model/patchedAssetType.ts
+model/patchedGenericComponent.ts
 model/patchedLocation.ts
 model/patchedLocationCustomField.ts
 model/patchedRack.ts

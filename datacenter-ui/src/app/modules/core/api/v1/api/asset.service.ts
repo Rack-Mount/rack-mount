@@ -29,6 +29,8 @@ import { AssetState } from '../model/assetState';
 // @ts-ignore
 import { AssetType } from '../model/assetType';
 // @ts-ignore
+import { GenericComponent } from '../model/genericComponent';
+// @ts-ignore
 import { PaginatedAssetCustomFieldList } from '../model/paginatedAssetCustomFieldList';
 // @ts-ignore
 import { PaginatedAssetList } from '../model/paginatedAssetList';
@@ -38,6 +40,8 @@ import { PaginatedAssetModelList } from '../model/paginatedAssetModelList';
 import { PaginatedAssetStateList } from '../model/paginatedAssetStateList';
 // @ts-ignore
 import { PaginatedAssetTypeList } from '../model/paginatedAssetTypeList';
+// @ts-ignore
+import { PaginatedGenericComponentList } from '../model/paginatedGenericComponentList';
 // @ts-ignore
 import { PaginatedRackList } from '../model/paginatedRackList';
 // @ts-ignore
@@ -56,6 +60,8 @@ import { PatchedAssetModel } from '../model/patchedAssetModel';
 import { PatchedAssetState } from '../model/patchedAssetState';
 // @ts-ignore
 import { PatchedAssetType } from '../model/patchedAssetType';
+// @ts-ignore
+import { PatchedGenericComponent } from '../model/patchedGenericComponent';
 // @ts-ignore
 import { PatchedRack } from '../model/patchedRack';
 // @ts-ignore
@@ -114,6 +120,12 @@ import {
     AssetAssetTypeRetrieveRequestParams,
     AssetAssetTypeUpdateRequestParams,
     AssetAssetUpdateRequestParams,
+    AssetGenericComponentCreateRequestParams,
+    AssetGenericComponentDestroyRequestParams,
+    AssetGenericComponentListRequestParams,
+    AssetGenericComponentPartialUpdateRequestParams,
+    AssetGenericComponentRetrieveRequestParams,
+    AssetGenericComponentUpdateRequestParams,
     AssetRackCreateRequestParams,
     AssetRackDestroyRequestParams,
     AssetRackListRequestParams,
@@ -2932,6 +2944,455 @@ export class AssetService extends BaseService implements AssetServiceInterface {
             {
                 context: localVarHttpContext,
                 body: asset,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint post /asset/generic_component
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetGenericComponentCreate(requestParameters: AssetGenericComponentCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<GenericComponent>;
+    public assetGenericComponentCreate(requestParameters: AssetGenericComponentCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<GenericComponent>>;
+    public assetGenericComponentCreate(requestParameters: AssetGenericComponentCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<GenericComponent>>;
+    public assetGenericComponentCreate(requestParameters: AssetGenericComponentCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const genericComponent = requestParameters?.genericComponent;
+        if (genericComponent === null || genericComponent === undefined) {
+            throw new Error('Required parameter genericComponent was null or undefined when calling assetGenericComponentCreate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (basicAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/generic_component`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<GenericComponent>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: genericComponent,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint delete /asset/generic_component/{id}
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetGenericComponentDestroy(requestParameters: AssetGenericComponentDestroyRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public assetGenericComponentDestroy(requestParameters: AssetGenericComponentDestroyRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public assetGenericComponentDestroy(requestParameters: AssetGenericComponentDestroyRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public assetGenericComponentDestroy(requestParameters: AssetGenericComponentDestroyRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetGenericComponentDestroy.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (basicAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/generic_component/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint get /asset/generic_component
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetGenericComponentList(requestParameters?: AssetGenericComponentListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedGenericComponentList>;
+    public assetGenericComponentList(requestParameters?: AssetGenericComponentListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedGenericComponentList>>;
+    public assetGenericComponentList(requestParameters?: AssetGenericComponentListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedGenericComponentList>>;
+    public assetGenericComponentList(requestParameters?: AssetGenericComponentListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const componentType = requestParameters?.componentType;
+        const ordering = requestParameters?.ordering;
+        const page = requestParameters?.page;
+        const pageSize = requestParameters?.pageSize;
+        const search = requestParameters?.search;
+
+        let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'component_type',
+            <any>componentType,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'ordering',
+            <any>ordering,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page',
+            <any>page,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page_size',
+            <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'search',
+            <any>search,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (basicAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/generic_component`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedGenericComponentList>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters.toHttpParams(),
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint patch /asset/generic_component/{id}
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetGenericComponentPartialUpdate(requestParameters: AssetGenericComponentPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<GenericComponent>;
+    public assetGenericComponentPartialUpdate(requestParameters: AssetGenericComponentPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<GenericComponent>>;
+    public assetGenericComponentPartialUpdate(requestParameters: AssetGenericComponentPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<GenericComponent>>;
+    public assetGenericComponentPartialUpdate(requestParameters: AssetGenericComponentPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetGenericComponentPartialUpdate.');
+        }
+        const patchedGenericComponent = requestParameters?.patchedGenericComponent;
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (basicAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/generic_component/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<GenericComponent>('patch', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: patchedGenericComponent,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint get /asset/generic_component/{id}
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetGenericComponentRetrieve(requestParameters: AssetGenericComponentRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<GenericComponent>;
+    public assetGenericComponentRetrieve(requestParameters: AssetGenericComponentRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<GenericComponent>>;
+    public assetGenericComponentRetrieve(requestParameters: AssetGenericComponentRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<GenericComponent>>;
+    public assetGenericComponentRetrieve(requestParameters: AssetGenericComponentRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetGenericComponentRetrieve.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (basicAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/generic_component/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<GenericComponent>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint put /asset/generic_component/{id}
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetGenericComponentUpdate(requestParameters: AssetGenericComponentUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<GenericComponent>;
+    public assetGenericComponentUpdate(requestParameters: AssetGenericComponentUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<GenericComponent>>;
+    public assetGenericComponentUpdate(requestParameters: AssetGenericComponentUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<GenericComponent>>;
+    public assetGenericComponentUpdate(requestParameters: AssetGenericComponentUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetGenericComponentUpdate.');
+        }
+        const genericComponent = requestParameters?.genericComponent;
+        if (genericComponent === null || genericComponent === undefined) {
+            throw new Error('Required parameter genericComponent was null or undefined when calling assetGenericComponentUpdate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (basicAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('basicAuth', 'Authorization', localVarHeaders, 'Basic ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/generic_component/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<GenericComponent>('put', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: genericComponent,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

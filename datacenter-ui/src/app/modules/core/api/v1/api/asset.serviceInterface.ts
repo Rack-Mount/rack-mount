@@ -17,11 +17,13 @@ import { AssetCustomField } from '../model/models';
 import { AssetModel } from '../model/models';
 import { AssetState } from '../model/models';
 import { AssetType } from '../model/models';
+import { GenericComponent } from '../model/models';
 import { PaginatedAssetCustomFieldList } from '../model/models';
 import { PaginatedAssetList } from '../model/models';
 import { PaginatedAssetModelList } from '../model/models';
 import { PaginatedAssetStateList } from '../model/models';
 import { PaginatedAssetTypeList } from '../model/models';
+import { PaginatedGenericComponentList } from '../model/models';
 import { PaginatedRackList } from '../model/models';
 import { PaginatedRackTypeList } from '../model/models';
 import { PaginatedRackUnitList } from '../model/models';
@@ -31,6 +33,7 @@ import { PatchedAssetCustomField } from '../model/models';
 import { PatchedAssetModel } from '../model/models';
 import { PatchedAssetState } from '../model/models';
 import { PatchedAssetType } from '../model/models';
+import { PatchedGenericComponent } from '../model/models';
 import { PatchedRack } from '../model/models';
 import { PatchedRackType } from '../model/models';
 import { PatchedRackUnit } from '../model/models';
@@ -223,6 +226,36 @@ export interface AssetAssetTypeUpdateRequestParams {
 export interface AssetAssetUpdateRequestParams {
     id: number;
     asset: Asset;
+}
+
+export interface AssetGenericComponentCreateRequestParams {
+    genericComponent: GenericComponent;
+}
+
+export interface AssetGenericComponentDestroyRequestParams {
+    id: number;
+}
+
+export interface AssetGenericComponentListRequestParams {
+    componentType?: 'blanking_panel' | 'cable_manager' | 'other' | 'patch_panel' | 'pdu' | 'shelf';
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface AssetGenericComponentPartialUpdateRequestParams {
+    id: number;
+    patchedGenericComponent?: PatchedGenericComponent;
+}
+
+export interface AssetGenericComponentRetrieveRequestParams {
+    id: number;
+}
+
+export interface AssetGenericComponentUpdateRequestParams {
+    id: number;
+    genericComponent: GenericComponent;
 }
 
 export interface AssetRackCreateRequestParams {
@@ -647,6 +680,54 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetAssetUpdate(requestParameters: AssetAssetUpdateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint post /asset/generic_component
+* @param requestParameters
+     */
+    assetGenericComponentCreate(requestParameters: AssetGenericComponentCreateRequestParams, extraHttpRequestParams?: any): Observable<GenericComponent>;
+
+    /**
+     * 
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint delete /asset/generic_component/{id}
+* @param requestParameters
+     */
+    assetGenericComponentDestroy(requestParameters: AssetGenericComponentDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint get /asset/generic_component
+* @param requestParameters
+     */
+    assetGenericComponentList(requestParameters: AssetGenericComponentListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedGenericComponentList>;
+
+    /**
+     * 
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint patch /asset/generic_component/{id}
+* @param requestParameters
+     */
+    assetGenericComponentPartialUpdate(requestParameters: AssetGenericComponentPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<GenericComponent>;
+
+    /**
+     * 
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint get /asset/generic_component/{id}
+* @param requestParameters
+     */
+    assetGenericComponentRetrieve(requestParameters: AssetGenericComponentRetrieveRequestParams, extraHttpRequestParams?: any): Observable<GenericComponent>;
+
+    /**
+     * 
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * @endpoint put /asset/generic_component/{id}
+* @param requestParameters
+     */
+    assetGenericComponentUpdate(requestParameters: AssetGenericComponentUpdateRequestParams, extraHttpRequestParams?: any): Observable<GenericComponent>;
 
     /**
      * 

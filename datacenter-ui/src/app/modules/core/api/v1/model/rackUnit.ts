@@ -35,5 +35,11 @@ export interface RackUnit {
     position: number;
     rack: number;
     device?: number | null;
+    readonly generic_component_id: number;
+    readonly generic_component_name: string;
+    readonly generic_component_type: string;
+    readonly generic_component_type_display: string;
+    readonly generic_component_rack_units: number;
+    generic_component?: number | null;
 }
 
