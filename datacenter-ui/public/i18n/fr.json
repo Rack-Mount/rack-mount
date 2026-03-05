@@ -38,7 +38,9 @@
     "vendors_desc": "Gérer les fabricants d'équipements",
     "models_title": "Modèles d'équipements",
     "models_desc": "Catalogue des modèles d'équipements",
-    "no_locations": "Aucun site trouvé."
+    "no_locations": "Aucun site trouvé.",
+    "components_title": "Composants de baie",
+    "components_desc": "Gérer les passe-câbles, les obturateurs de baie et les accessoires"
   },
   "vendors": {
     "search_placeholder": "Rechercher un fournisseur…",
@@ -117,6 +119,41 @@
     "editor_flip_v": "Vertical",
     "editor_reset": "Réinitialiser",
     "editor_apply": "Appliquer"
+  },
+  "components": {
+    "search_placeholder": "Rechercher un composant…",
+    "all_types": "Tous les types",
+    "new_btn": "Nouveau composant",
+    "count_badge": "{{count}} composants",
+    "col_name": "Nom",
+    "col_type": "Type",
+    "col_units": "U",
+    "col_images": "Images",
+    "col_note": "Notes",
+    "in_use": "Composant en cours d’utilisation — impossible à supprimer",
+    "error_retry": "Erreur — réessayer",
+    "confirm_delete": "Confirmer la suppression",
+    "deleting": "Suppression…",
+    "no_match": "Aucun composant ne correspond aux filtres.",
+    "no_data": "Aucun composant trouvé. Créez-en un nouveau.",
+    "preview_edit": "Modifier",
+    "preview_front": "Face avant",
+    "preview_rear": "Face arrière",
+    "preview_name": "Nom",
+    "preview_rack_units": "Unités de baie",
+    "preview_notes": "Notes",
+    "drawer_create": "Nouveau composant",
+    "drawer_edit": "Modifier le composant",
+    "field_name": "Nom",
+    "field_name_ph": "Nom du composant",
+    "field_type": "Type",
+    "field_rack_units": "Unités de baie (U)",
+    "field_rack_units_ph": "ex. 1",
+    "field_notes": "Notes",
+    "field_notes_ph": "Informations supplémentaires…",
+    "field_front_img": "Image face avant",
+    "field_rear_img": "Image face arrière",
+    "saving_form": "Enregistrement…"
   },
   "racks": {
     "search_placeholder": "Rechercher une baie\u2026",
@@ -215,10 +252,14 @@
   },
   "install_panel": {
     "title": "Installer à la position {{pos}}U",
+    "tab_asset": "Équipement",
+    "tab_component": "Composant",
     "search_placeholder": "Rechercher par hostname, S/N, SAP…",
+    "component_search_placeholder": "Rechercher un composant…",
     "loading": "Chargement…",
     "error": "Erreur de chargement",
     "no_assets": "Aucun équipement à installer",
+    "no_components": "Aucun composant trouvé. Créez d'abord un composant générique.",
     "installing": "Installation en cours…",
     "cancel": "Annuler",
     "too_large": "Espace insuffisant ({{u}}U disponibles)",
@@ -335,7 +376,9 @@
     "home": "Accueil",
     "assets": "Équipements",
     "vendors": "Fournisseurs",
-    "models": "Modèles"
+    "models": "Modèles",
+    "components": "Composants",
+    "racks": "Baies"
   },
   "asset_row": {
     "section_device": "Équipement",

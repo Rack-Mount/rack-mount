@@ -101,6 +101,10 @@ $_type-colors: (
   background: var(--dc-accent-dim);
 }
 
+.device-table__row--component td {
+  color: var(--dc-text-secondary);
+}
+
 .device-table__td {
   padding: 5px 10px;
   vertical-align: middle;
@@ -152,6 +156,11 @@ $_type-colors: (
       background: rgba($color, 0.15);
       color: $color;
     }
+  }
+
+  &.device-table__badge--component {
+    background: rgba(168, 127, 50, 0.15);
+    color: #a87f32;
   }
 }
 

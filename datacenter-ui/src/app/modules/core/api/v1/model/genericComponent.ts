@@ -11,10 +11,11 @@ import { ComponentTypeEnum } from './componentTypeEnum';
 
 
 /**
- * Serializer for GenericComponent model.  Exposes all fields of a generic/consumable rack-mounted component.
+ * Serializer for GenericComponent model.  Exposes all fields of a generic/consumable rack-mounted component. Image transform fields (write-only JSON strings):   front_image_transform / rear_image_transform — processed server-side   by asset.utils.image_processing.apply_transforms() before saving.
  */
 export interface GenericComponent { 
     readonly id: number;
+    readonly uuid: string;
     name: string;
     component_type?: ComponentTypeEnum;
     readonly component_type_display: string;
@@ -22,6 +23,16 @@ export interface GenericComponent {
      * Number of rack units (U) occupied by this component.
      */
     rack_units?: number;
+    /**
+     * Front-face image of the component.
+     */
+    front_image?: string | null;
+    front_image_transform?: string;
+    /**
+     * Rear-face image of the component.
+     */
+    rear_image?: string | null;
+    rear_image_transform?: string;
     note?: string;
     readonly created_at: string;
     readonly updated_at: string;

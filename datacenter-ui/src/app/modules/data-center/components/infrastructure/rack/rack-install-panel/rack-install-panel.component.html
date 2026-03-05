@@ -13,73 +13,152 @@
     <button class="rack-install__close" (click)="close()">✕</button>
   </div>
 
-  <div class="rack-install__search">
-    <input
-      type="text"
-      class="rack-install__input"
-      [placeholder]="'install_panel.search_placeholder' | translate"
-      [value]="_search()"
-      (input)="onSearch($any($event.target).value)"
-      autofocus
-    />
+  <!-- Tab switcher -->
+  <div class="rack-install__tabs">
+    <button
+      class="rack-install__tab"
+      [class.rack-install__tab--active]="_tab() === 'asset'"
+      (click)="switchTab('asset')"
+    >
+      {{ "install_panel.tab_asset" | translate }}
+    </button>
+    <button
+      class="rack-install__tab"
+      [class.rack-install__tab--active]="_tab() === 'component'"
+      (click)="switchTab('component')"
+    >
+      {{ "install_panel.tab_component" | translate }}
+    </button>
   </div>
 
-  <div class="rack-install__list">
-    @if (_assetsState().status === "loading") {
-      <div class="rack-install__loading">
-        {{ "install_panel.loading" | translate }}
-      </div>
-    } @else if (_assetsState().status === "error") {
-      <div class="rack-install__empty">
-        {{ "install_panel.error" | translate }}
-      </div>
-    } @else if (
-      installableAssets().length === 0 && _assetsState().status === "loaded"
-    ) {
-      <div class="rack-install__empty">
-        {{ "install_panel.no_assets" | translate }}
-      </div>
-    } @else {
-      @for (asset of installableAssets(); track asset.id) {
-        <div
-          class="rack-install__item"
-          [class.rack-install__item--selected]="_selectedId() === asset.id"
-          [class.rack-install__item--disabled]="isTooLarge(asset)"
-          (click)="!isTooLarge(asset) && selectAndInstall(asset.id)"
-        >
-          @if (asset.model.front_image) {
-            <img
-              class="rack-install__thumb"
-              [src]="asset.model.front_image + '?w=80'"
-              alt=""
-              loading="lazy"
-            />
-          } @else {
-            <div class="rack-install__thumb rack-install__thumb--empty"></div>
-          }
-          <div class="rack-install__info">
-            <span class="rack-install__hostname">{{
-              asset.hostname || "—"
-            }}</span>
-            <span class="rack-install__meta"
-              >{{ asset.model.name }} &middot;
-              {{ asset.model.rack_units ?? "?" }}U</span
-            >
-            @if (asset.serial_number) {
-              <span class="rack-install__serial"
-                >S/N: {{ asset.serial_number }}</span
-              >
-            }
-            @if (isTooLarge(asset)) {
-              <span class="rack-install__too-large">{{
-                "install_panel.too_large" | translate: { u: availableU() }
-              }}</span>
-            }
-          </div>
+  @if (_tab() === "asset") {
+    <!-- ── Asset tab ── -->
+    <div class="rack-install__search">
+      <input
+        type="text"
+        class="rack-install__input"
+        [placeholder]="'install_panel.search_placeholder' | translate"
+        [value]="_search()"
+        (input)="onSearch($any($event.target).value)"
+        autofocus
+      />
+    </div>
+
+    <div class="rack-install__list">
+      @if (_assetsState().status === "loading") {
+        <div class="rack-install__loading">
+          {{ "install_panel.loading" | translate }}
         </div>
+      } @else if (_assetsState().status === "error") {
+        <div class="rack-install__empty">
+          {{ "install_panel.error" | translate }}
+        </div>
+      } @else if (
+        installableAssets().length === 0 && _assetsState().status === "loaded"
+      ) {
+        <div class="rack-install__empty">
+          {{ "install_panel.no_assets" | translate }}
+        </div>
+      } @else {
+        @for (asset of installableAssets(); track asset.id) {
+          <div
+            class="rack-install__item"
+            [class.rack-install__item--selected]="_selectedId() === asset.id"
+            [class.rack-install__item--disabled]="isTooLarge(asset)"
+            (click)="!isTooLarge(asset) && selectAndInstall(asset.id)"
+          >
+            @if (asset.model.front_image) {
+              <img
+                class="rack-install__thumb"
+                [src]="asset.model.front_image + '?w=80'"
+                alt=""
+                loading="lazy"
+              />
+            } @else {
+              <div class="rack-install__thumb rack-install__thumb--empty"></div>
+            }
+            <div class="rack-install__info">
+              <span class="rack-install__hostname">{{
+                asset.hostname || "—"
+              }}</span>
+              <span class="rack-install__meta"
+                >{{ asset.model.name }} &middot;
+                {{ asset.model.rack_units ?? "?" }}U</span
+              >
+              @if (asset.serial_number) {
+                <span class="rack-install__serial"
+                  >S/N: {{ asset.serial_number }}</span
+                >
+              }
+              @if (isTooLarge(asset)) {
+                <span class="rack-install__too-large">{{
+                  "install_panel.too_large" | translate: { u: availableU() }
+                }}</span>
+              }
+            </div>
+          </div>
+        }
       }
-    }
-  </div>
+    </div>
+  } @else {
+    <!-- ── Generic component tab ── -->
+    <div class="rack-install__search">
+      <input
+        type="text"
+        class="rack-install__input"
+        [placeholder]="'install_panel.component_search_placeholder' | translate"
+        [value]="_componentSearch()"
+        (input)="onComponentSearch($any($event.target).value)"
+      />
+    </div>
+
+    <div class="rack-install__list">
+      @if (_componentsState().status === "loading") {
+        <div class="rack-install__loading">
+          {{ "install_panel.loading" | translate }}
+        </div>
+      } @else if (_componentsState().status === "error") {
+        <div class="rack-install__empty">
+          {{ "install_panel.error" | translate }}
+        </div>
+      } @else if (
+        installableComponents().length === 0 &&
+        _componentsState().status === "loaded"
+      ) {
+        <div class="rack-install__empty">
+          {{ "install_panel.no_components" | translate }}
+        </div>
+      } @else {
+        @for (comp of installableComponents(); track comp.id) {
+          <div
+            class="rack-install__item rack-install__item--component"
+            [class.rack-install__item--selected]="_selectedId() === comp.id"
+            (click)="selectAndInstallComponent(comp.id)"
+          >
+            @if (comp.front_image) {
+              <img
+                class="rack-install__thumb"
+                [src]="comp.front_image + '?w=80'"
+                alt=""
+                loading="lazy"
+              />
+            } @else {
+              <div class="rack-install__thumb rack-install__thumb--component">
+                <span>⚙</span>
+              </div>
+            }
+            <div class="rack-install__info">
+              <span class="rack-install__hostname">{{ comp.name }}</span>
+              <span class="rack-install__meta">
+                {{ comp.component_type_display }} &middot;
+                {{ comp.rack_units ?? 1 }}U
+              </span>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  }
 
   @if (_error()) {
     <div class="rack-install__error">{{ _error() }}</div>

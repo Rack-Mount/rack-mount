@@ -11,6 +11,7 @@ export const routes: Routes = [
   { path: 'vendors', children: [] },
   { path: 'models', children: [] },
   { path: 'racks', children: [] },
+  { path: 'components', children: [] },
   { path: 'map/:id', children: [] },
   { path: 'rack/:name', children: [] },
   { path: 'not-found', children: [] },

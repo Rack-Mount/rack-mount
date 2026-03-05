@@ -1,5 +1,9 @@
+import uuid as _uuid
 import reversion
 from django.db import models
+from django.conf import settings
+from django.utils.html import mark_safe
+from asset.utils.upload_paths import generic_component_front_upload, generic_component_rear_upload
 
 
 @reversion.register()
@@ -33,6 +37,7 @@ class GenericComponent(models.Model):
     ]
 
     name = models.CharField(max_length=200)
+    uuid = models.UUIDField(default=_uuid.uuid4, unique=True, editable=False)
     component_type = models.CharField(
         max_length=50,
         choices=COMPONENT_TYPE_CHOICES,
@@ -42,9 +47,23 @@ class GenericComponent(models.Model):
         default=1,
         help_text='Number of rack units (U) occupied by this component.',
     )
+    front_image = models.ImageField(
+        null=True, blank=True, upload_to=generic_component_front_upload,
+        help_text='Front-face image of the component.'
+    )
+    rear_image = models.ImageField(
+        null=True, blank=True, upload_to=generic_component_rear_upload,
+        help_text='Rear-face image of the component.'
+    )
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def front_image_preview(self):
+        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.front_image)) if self.front_image else ''
+
+    def rear_image_preview(self):
+        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.rear_image)) if self.rear_image else ''
 
     def __str__(self):
         return f'{self.name} ({self.get_component_type_display()}) – {self.rack_units}U'

@@ -108,6 +108,16 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         source='generic_component.rack_units',
         read_only=True,
     )
+    generic_component_front_image = serializers.StringRelatedField(
+        source='generic_component.front_image',
+        many=False,
+        read_only=True,
+    )
+    generic_component_rear_image = serializers.StringRelatedField(
+        source='generic_component.rear_image',
+        many=False,
+        read_only=True,
+    )
 
     # ---- Generic Component (write) ----
     generic_component = serializers.PrimaryKeyRelatedField(
@@ -177,4 +187,5 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
                   'device_image', 'device_rear_image', 'device_power_watt', 'rack_installation_front', 'device_rack_units', 'position',
                   'rack', 'device',
                   'generic_component_id', 'generic_component_name', 'generic_component_type',
-                  'generic_component_type_display', 'generic_component_rack_units', 'generic_component']
+                  'generic_component_type_display', 'generic_component_rack_units',
+                  'generic_component_front_image', 'generic_component_rear_image', 'generic_component']

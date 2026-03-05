@@ -30,6 +30,8 @@
             🏭
           } @else if (tab.type === "models") {
             🗂️
+          } @else if (tab.type === "components") {
+            🔌
           } @else if (tab.type === "racks") {
             🗄️
           } @else {
@@ -119,6 +121,21 @@
     } @error {
       <div class="loading-state loading-state--error">
         Impossibile caricare gli apparati.
+      </div>
+    }
+  </div>
+
+  <!-- Components pane -->
+  <div class="content-pane" [hidden]="activeTabId() !== 'components'">
+    @defer (when activeTabId() === 'components'; prefetch on idle) {
+      <app-components-list />
+    } @loading (minimum 150ms) {
+      <div class="loading-state">Caricamento componenti…</div>
+    } @placeholder {
+      <div class="loading-state">Caricamento componenti…</div>
+    } @error {
+      <div class="loading-state loading-state--error">
+        Impossibile caricare i componenti.
       </div>
     }
   </div>

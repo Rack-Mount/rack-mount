@@ -1,0 +1,430 @@
+<div class="components-page">
+  <!-- ── Toolbar ──────────────────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+          <circle
+            cx="8.5"
+            cy="8.5"
+            r="5"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+          <path
+            d="M12.5 12.5L16 16"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <input
+          class="search-input"
+          type="text"
+          [placeholder]="'components.search_placeholder' | translate"
+          [value]="search()"
+          (input)="onSearchInput($any($event.target).value)"
+        />
+        @if (search()) {
+          <button
+            class="search-clear"
+            (click)="resetFilters()"
+            [title]="'common.search_clear' | translate"
+          >
+            ×
+          </button>
+        }
+      </div>
+
+      <select
+        class="filter-select"
+        [value]="typeFilter() ?? ''"
+        (change)="onTypeFilter($any($event.target).value)"
+      >
+        <option value="">{{ "components.all_types" | translate }}</option>
+        @for (entry of componentTypes; track entry[0]) {
+          <option [value]="entry[0]">{{ entry[1] }}</option>
+        }
+      </select>
+
+      @if (hasFilters()) {
+        <button class="btn-reset" (click)="resetFilters()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4l8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{ "common.reset" | translate }}
+        </button>
+      }
+    </div>
+
+    <div class="toolbar-right">
+      @if (listState().status === "loaded") {
+        <span class="count-badge">{{
+          "components.count_badge" | translate: { count: totalCount() }
+        }}</span>
+      }
+      <button class="btn-new" (click)="openCreate()">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10M3 8h10"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{ "components.new_btn" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Table ────────────────────────────────────────────────── -->
+  <div class="table-wrap">
+    @if (listState().status === "loading") {
+      <div class="state-full">
+        <div class="spinner"></div>
+        <span>{{ "common.loading" | translate }}</span>
+      </div>
+    } @else if (listState().status === "error") {
+      <div class="state-full state-full--error">
+        {{ "common.error_loading" | translate }}
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th
+              class="col-name th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'name' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'name' && sortDir() === 'desc'
+              "
+              (click)="sort('name')"
+            >
+              {{ "components.col_name" | translate }}
+              <span class="sort-arrow">{{
+                sortField() === "name" ? (sortDir() === "asc" ? "↑" : "↓") : "↕"
+              }}</span>
+            </th>
+            <th class="col-type">{{ "components.col_type" | translate }}</th>
+            <th
+              class="col-units th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'rack_units' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'rack_units' && sortDir() === 'desc'
+              "
+              (click)="sort('rack_units')"
+            >
+              U
+              <span class="sort-arrow">{{
+                sortField() === "rack_units"
+                  ? sortDir() === "asc"
+                    ? "↑"
+                    : "↓"
+                  : "↕"
+              }}</span>
+            </th>
+            <th class="col-images">
+              {{ "components.col_images" | translate }}
+            </th>
+            <th class="col-note">{{ "components.col_note" | translate }}</th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of items(); track c.id) {
+            <tr
+              class="row-data"
+              [class.row-data--deleting]="deleteId() === c.id"
+              [class.row-data--selected]="previewItem()?.id === c.id"
+              (click)="openPreview(c)"
+            >
+              <td class="cell-name">{{ c.name }}</td>
+              <td class="cell-type">
+                <span class="badge badge--type">{{
+                  c.component_type_display
+                }}</span>
+              </td>
+              <td class="cell-units">{{ c.rack_units }}U</td>
+              <td class="cell-images">
+                @if (c.front_image) {
+                  <img
+                    class="thumb"
+                    [src]="imgW(c.front_image, 120)"
+                    alt="Front"
+                    loading="lazy"
+                  />
+                }
+                @if (c.rear_image) {
+                  <img
+                    class="thumb"
+                    [src]="imgW(c.rear_image, 120)"
+                    alt="Rear"
+                    loading="lazy"
+                  />
+                }
+              </td>
+              <td class="cell-note" [title]="c.note ?? ''">
+                {{
+                  c.note && c.note.length > 60
+                    ? (c.note | slice: 0 : 60) + "…"
+                    : (c.note ?? "")
+                }}
+              </td>
+              <td class="actions" (click)="$event.stopPropagation()">
+                @if (deleteId() === c.id) {
+                  <div
+                    class="delete-confirm"
+                    [class.delete-confirm--blocked]="deleteSave() === 'in_use'"
+                  >
+                    @if (deleteSave() === "in_use") {
+                      <span class="delete-label delete-label--warning">
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M8 2L1 14h14L8 2z"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linejoin="round"
+                          />
+                          <path
+                            d="M8 6v4M8 11v1"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linecap="round"
+                          />
+                        </svg>
+                        {{ "components.in_use" | translate }}
+                      </span>
+                      <button class="btn-confirm" (click)="cancelDelete()">
+                        {{ "common.close" | translate }}
+                      </button>
+                    } @else {
+                      <span class="delete-label">
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M8 7v5M8 4v1"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linecap="round"
+                          />
+                          <circle
+                            cx="8"
+                            cy="8"
+                            r="6.25"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          />
+                        </svg>
+                        @if (deleteSave() === "error") {
+                          {{ "components.error_retry" | translate }}
+                        } @else {
+                          {{ "components.confirm_delete" | translate }}
+                        }
+                      </span>
+                      <button
+                        class="btn-confirm btn-confirm--danger"
+                        [disabled]="deleteSave() === 'saving'"
+                        (click)="submitDelete()"
+                      >
+                        @if (deleteSave() === "saving") {
+                          {{ "components.deleting" | translate }}
+                        } @else {
+                          {{ "common.delete" | translate }}
+                        }
+                      </button>
+                      <button class="btn-confirm" (click)="cancelDelete()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    }
+                  </div>
+                } @else {
+                  <div class="action-group">
+                    <button
+                      class="btn-edit"
+                      [title]="'common.edit' | translate"
+                      (click)="openEdit(c)"
+                    >
+                      <svg viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      {{ "common.edit" | translate }}
+                    </button>
+                    <button
+                      class="btn-delete"
+                      [title]="'common.delete' | translate"
+                      (click)="confirmDelete(c.id)"
+                    >
+                      <svg viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      {{ "common.delete" | translate }}
+                    </button>
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+
+          @if (items().length === 0) {
+            <tr>
+              <td colspan="6" class="empty-row">
+                @if (hasFilters()) {
+                  {{ "components.no_match" | translate }}
+                } @else {
+                  {{ "components.no_data" | translate }}
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  <!-- Pagination -->
+  @if (totalPages() > 1) {
+    <div class="pagination">
+      <button
+        class="page-btn"
+        [disabled]="page() === 1"
+        (click)="goPage(page() - 1)"
+      >
+        ‹
+      </button>
+      @for (n of pageNumbers(); track n) {
+        <button
+          class="page-btn"
+          [class.page-btn--active]="n === page()"
+          (click)="goPage(n)"
+        >
+          {{ n }}
+        </button>
+      }
+      <button
+        class="page-btn"
+        [disabled]="page() === totalPages()"
+        (click)="goPage(page() + 1)"
+      >
+        ›
+      </button>
+    </div>
+  }
+
+  <!-- ── Preview panel ─────────────────────────────────────────── -->
+  @if (previewItem(); as c) {
+    <div class="drawer-overlay" (click)="closePreview()"></div>
+    <aside class="drawer preview-panel">
+      <div class="drawer-header">
+        <h2 class="drawer-title">{{ c.name }}</h2>
+        <div class="preview-header-actions">
+          <button
+            class="btn-preview-edit"
+            [title]="'common.edit' | translate"
+            (click)="previewEdit()"
+          >
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+              />
+            </svg>
+            {{ "components.preview_edit" | translate }}
+          </button>
+          <button class="drawer-close" (click)="closePreview()">&#215;</button>
+        </div>
+      </div>
+
+      <div class="drawer-body preview-body">
+        <div class="preview-badges">
+          <span class="badge badge--type">{{ c.component_type_display }}</span>
+          @if (c.rack_units) {
+            <span class="badge badge--units">{{ c.rack_units }}&thinsp;U</span>
+          }
+        </div>
+
+        @if (c.front_image || c.rear_image) {
+          <div class="preview-images">
+            @if (c.front_image) {
+              <div class="preview-img-block">
+                <span class="preview-img-label">{{
+                  "components.preview_front" | translate
+                }}</span>
+                <img
+                  class="preview-img"
+                  [src]="imgW(c.front_image, 640)"
+                  alt="Front"
+                  loading="lazy"
+                />
+              </div>
+            }
+            @if (c.rear_image) {
+              <div class="preview-img-block">
+                <span class="preview-img-label">{{
+                  "components.preview_rear" | translate
+                }}</span>
+                <img
+                  class="preview-img"
+                  [src]="imgW(c.rear_image, 640)"
+                  alt="Rear"
+                  loading="lazy"
+                />
+              </div>
+            }
+          </div>
+        }
+
+        <dl class="preview-dl">
+          <div class="preview-row">
+            <dt>{{ "components.preview_name" | translate }}</dt>
+            <dd>{{ c.name }}</dd>
+          </div>
+          <div class="preview-row">
+            <dt>{{ "components.col_type" | translate }}</dt>
+            <dd>{{ c.component_type_display }}</dd>
+          </div>
+          <div class="preview-row">
+            <dt>{{ "components.preview_rack_units" | translate }}</dt>
+            <dd>{{ c.rack_units ? c.rack_units + " U" : "—" }}</dd>
+          </div>
+          @if (c.note) {
+            <div class="preview-row preview-row--full">
+              <dt>{{ "components.preview_notes" | translate }}</dt>
+              <dd class="preview-note">{{ c.note }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+    </aside>
+  }
+
+  <!-- ── Drawer (create / edit) ───────────────────────────────── -->
+  @if (drawerOpen()) {
+    <app-component-create-drawer
+      [mode]="drawerMode()"
+      [editComponent]="drawerEditComponent()"
+      (saved)="onDrawerSaved($event)"
+      (cancelled)="closeDrawer()"
+    />
+  }
+</div>

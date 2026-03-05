@@ -72,45 +72,76 @@
     @for (row of rows(); track row.position) {
       <tr
         class="device-table__row"
-        [class.device-table__row--selected]="_selectedIds().has(row.device!.id)"
+        [class.device-table__row--selected]="
+          !!row.device?.device_id && _selectedIds().has(row.device!.id)
+        "
+        [class.device-table__row--component]="
+          !!row.device?.generic_component_id
+        "
       >
+        <!-- Checkbox: only for actual devices -->
         <td class="device-table__td device-table__td--check">
-          <input
-            type="checkbox"
-            class="device-table__checkbox"
-            [checked]="_selectedIds().has(row.device!.id)"
-            (change)="toggleSelect(row.device!.id, $any($event.target).checked)"
-          />
+          @if (row.device?.device_id) {
+            <input
+              type="checkbox"
+              class="device-table__checkbox"
+              [checked]="_selectedIds().has(row.device!.id)"
+              (change)="
+                toggleSelect(row.device!.id, $any($event.target).checked)
+              "
+            />
+          }
         </td>
         <td class="device-table__td device-table__td--num">
           {{ row.position }}
         </td>
+        <!-- Name / hostname -->
         <td class="device-table__td device-table__td--hostname">
-          {{ row.device!.device_hostname || "—" }}
+          @if (row.device?.device_id) {
+            {{ row.device!.device_hostname || "—" }}
+          } @else {
+            <em>{{ row.device!.generic_component_name }}</em>
+          }
         </td>
+        <!-- Model -->
         <td class="device-table__td">
-          {{ row.device!.device_model || "—" }}
+          {{ row.device?.device_id ? row.device!.device_model || "—" : "—" }}
         </td>
+        <!-- Vendor -->
         <td class="device-table__td">
-          {{ row.device!.device_vendor || "—" }}
+          {{ row.device?.device_id ? row.device!.device_vendor || "—" : "—" }}
         </td>
+        <!-- Type -->
         <td class="device-table__td">
-          <span
-            class="device-table__badge device-table__badge--{{
-              typeClass(row.device!.device_type)
-            }}"
-          >
-            {{ row.device!.device_type || "—" }}
-          </span>
+          @if (row.device?.device_id) {
+            <span
+              class="device-table__badge device-table__badge--{{
+                typeClass(row.device!.device_type)
+              }}"
+            >
+              {{ row.device!.device_type || "—" }}
+            </span>
+          } @else {
+            <span class="device-table__badge device-table__badge--component">
+              {{ row.device!.generic_component_type_display || "—" }}
+            </span>
+          }
         </td>
+        <!-- Serial -->
         <td class="device-table__td device-table__td--mono">
-          {{ row.device!.device_serial_number || "—" }}
+          {{
+            row.device?.device_id
+              ? row.device!.device_serial_number || "—"
+              : "—"
+          }}
         </td>
+        <!-- SAP -->
         <td class="device-table__td device-table__td--mono">
-          {{ row.device!.device_sap_id || "—" }}
+          {{ row.device?.device_id ? row.device!.device_sap_id || "—" : "—" }}
         </td>
+        <!-- State -->
         <td class="device-table__td">
-          @if (row.device!.device_state) {
+          @if (row.device?.device_id && row.device!.device_state) {
             <span
               class="device-table__state-badge device-table__state-badge--clickable"
               (click)="onStatePickerClick(+row.device!.device_id, $event)"
@@ -120,15 +151,25 @@
             <span>—</span>
           }
         </td>
+        <!-- Size -->
         <td class="device-table__td device-table__td--num">
-          {{ row.device!.device_rack_units }}U
+          @if (row.device?.device_id) {
+            {{ row.device!.device_rack_units }}U
+          } @else {
+            {{ row.device!.generic_component_rack_units }}U
+          }
         </td>
+        <!-- Remove -->
         <td class="device-table__td device-table__td--action">
           <button
             class="device-table__remove-btn"
             [title]="'rack_table.remove_single' | translate"
             (click)="
-              onRemoveClick(row.device!.id, +row.device!.device_id, $event)
+              onRemoveClick(
+                row.device!.id,
+                row.device?.device_id ? +row.device!.device_id : null,
+                $event
+              )
             "
           >
             <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13">

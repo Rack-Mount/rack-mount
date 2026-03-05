@@ -1,0 +1,290 @@
+<div class="drawer-backdrop" (click)="cancelled.emit()"></div>
+
+<div
+  class="create-drawer"
+  [class.create-drawer--editing]="editingImage() !== null"
+>
+  <div class="drawer-header">
+    <h3>
+      {{
+        (mode() === "edit"
+          ? "components.drawer_edit"
+          : "components.drawer_create"
+        ) | translate
+      }}
+    </h3>
+    <button
+      class="drawer-close"
+      (click)="cancelled.emit()"
+      [title]="'common.close' | translate"
+    >
+      <svg viewBox="0 0 16 16" fill="none">
+        <path
+          d="M12 4L4 12M4 4l8 8"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <div class="drawer-body">
+    <!-- Name -->
+    <div class="form-group">
+      <label
+        >{{ "components.field_name" | translate }}
+        <span class="required">*</span></label
+      >
+      <input
+        class="form-input"
+        type="text"
+        [placeholder]="'components.field_name_ph' | translate"
+        [value]="form().name"
+        (input)="setField('name', $any($event.target).value)"
+      />
+    </div>
+
+    <!-- Type -->
+    <div class="form-group">
+      <label
+        >{{ "components.field_type" | translate }}
+        <span class="required">*</span></label
+      >
+      <select
+        class="form-select"
+        [value]="form().component_type"
+        (change)="setField('component_type', $any($event.target).value)"
+      >
+        @for (entry of componentTypes; track entry[0]) {
+          <option [value]="entry[0]">{{ entry[1] }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Rack units -->
+    <div class="form-group">
+      <label>{{ "components.field_rack_units" | translate }}</label>
+      <input
+        class="form-input form-input--short"
+        type="number"
+        min="1"
+        max="42"
+        [placeholder]="'components.field_rack_units_ph' | translate"
+        [value]="form().rack_units ?? ''"
+        (input)="
+          setField(
+            'rack_units',
+            $any($event.target).value ? +$any($event.target).value : null
+          )
+        "
+      />
+    </div>
+
+    <!-- Note -->
+    <div class="form-group">
+      <label>{{ "components.field_notes" | translate }}</label>
+      <textarea
+        class="form-textarea"
+        rows="3"
+        [placeholder]="'components.field_notes_ph' | translate"
+        [value]="form().note"
+        (input)="setField('note', $any($event.target).value)"
+      ></textarea>
+    </div>
+
+    <!-- Front image -->
+    <div class="form-group">
+      <label>{{ "components.field_front_img" | translate }}</label>
+      @if (form().front_image_file || form().front_image_url) {
+        <div class="img-preview-wrap">
+          <img
+            class="img-preview"
+            [src]="
+              form().front_preview_url ||
+              (form().front_image_file
+                ? objectUrl(form().front_image_file!)
+                : form().front_image_url!)
+            "
+            alt="Front"
+          />
+          <button
+            class="btn-edit-img"
+            type="button"
+            [class.btn-edit-img--active]="hasTransform('front')"
+            [title]="'models.editor_open' | translate"
+            (click)="openImageEditor('front')"
+          >
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+              />
+            </svg>
+            @if (hasTransform("front")) {
+              <span class="transform-dot"></span>
+            }
+          </button>
+          <button
+            class="img-clear-btn"
+            type="button"
+            [title]="'models.remove_img' | translate"
+            (click)="
+              clearImage('front_image_url');
+              setField('front_image_file', null);
+              setField('front_transform', null);
+              setField('front_preview_url', null)
+            "
+          >
+            ×
+          </button>
+        </div>
+      }
+      <label class="file-input-label">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10M3 8h10"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{
+          form().front_image_file
+            ? form().front_image_file!.name
+            : ("models.upload_img" | translate)
+        }}
+        <input
+          type="file"
+          accept="image/*"
+          class="file-input-hidden"
+          (change)="onFileChange('front_image_file', $event)"
+        />
+      </label>
+    </div>
+
+    <!-- Rear image -->
+    <div class="form-group">
+      <label>{{ "components.field_rear_img" | translate }}</label>
+      @if (form().rear_image_file || form().rear_image_url) {
+        <div class="img-preview-wrap">
+          <img
+            class="img-preview"
+            [src]="
+              form().rear_preview_url ||
+              (form().rear_image_file
+                ? objectUrl(form().rear_image_file!)
+                : form().rear_image_url!)
+            "
+            alt="Rear"
+          />
+          <button
+            class="btn-edit-img"
+            type="button"
+            [class.btn-edit-img--active]="hasTransform('rear')"
+            [title]="'models.editor_open' | translate"
+            (click)="openImageEditor('rear')"
+          >
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+              />
+            </svg>
+            @if (hasTransform("rear")) {
+              <span class="transform-dot"></span>
+            }
+          </button>
+          <button
+            class="img-clear-btn"
+            type="button"
+            [title]="'models.remove_img' | translate"
+            (click)="
+              clearImage('rear_image_url');
+              setField('rear_image_file', null);
+              setField('rear_transform', null);
+              setField('rear_preview_url', null)
+            "
+          >
+            ×
+          </button>
+        </div>
+      }
+      <label class="file-input-label">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10M3 8h10"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{
+          form().rear_image_file
+            ? form().rear_image_file!.name
+            : ("models.upload_img" | translate)
+        }}
+        <input
+          type="file"
+          accept="image/*"
+          class="file-input-hidden"
+          (change)="onFileChange('rear_image_file', $event)"
+        />
+      </label>
+    </div>
+
+    @if (saveState() === "error") {
+      <p class="form-error">{{ saveMsg() }}</p>
+    }
+  </div>
+
+  <!-- Image editor overlay (inside the drawer) -->
+  @if (editingImage(); as side) {
+    <div class="editor-overlay">
+      <div class="editor-overlay-header">
+        <span class="editor-overlay-title">
+          {{
+            side === "front"
+              ? ("components.field_front_img" | translate)
+              : ("components.field_rear_img" | translate)
+          }}
+        </span>
+      </div>
+      <div class="editor-overlay-body">
+        <app-image-editor
+          [imageFile]="
+            side === 'front' ? form().front_image_file : form().rear_image_file
+          "
+          [imageUrl]="
+            side === 'front' ? form().front_image_url : form().rear_image_url
+          "
+          (confirmed)="onEditorConfirmed($event, side)"
+          (cancelled)="onEditorCancelled()"
+        />
+      </div>
+    </div>
+  }
+
+  <div class="drawer-footer">
+    <button class="btn-cancel" (click)="cancelled.emit()">
+      {{ "common.cancel" | translate }}
+    </button>
+    <button
+      class="btn-save"
+      [disabled]="!canSave() || saveState() === 'saving'"
+      (click)="submit()"
+    >
+      {{
+        saveState() === "saving"
+          ? ("components.saving_form" | translate)
+          : mode() === "edit"
+            ? ("asset_form.save_edit" | translate)
+            : ("asset_form.save" | translate)
+      }}
+    </button>
+  </div>
+</div>

@@ -19,6 +19,7 @@ import { TabService } from './modules/core/services/tab.service';
 import { ThemeService } from './modules/core/services/theme.service';
 import { AssetsListComponent } from './modules/data-center/components/assets/assets-list/assets-list.component';
 import { PanelTab } from './modules/data-center/components/assets/detail-panel/detail-panel.types';
+import { ComponentsListComponent } from './modules/data-center/components/catalog/components-list/components-list.component';
 import { ModelsListComponent } from './modules/data-center/components/catalog/models-list/models-list.component';
 import { VendorsListComponent } from './modules/data-center/components/catalog/vendors-list/vendors-list.component';
 import { MapComponent } from './modules/data-center/components/infrastructure/map/map.component';
@@ -38,6 +39,7 @@ import { RacksListComponent } from './modules/data-center/components/infrastruct
     AssetsListComponent,
     VendorsListComponent,
     ModelsListComponent,
+    ComponentsListComponent,
     TranslatePipe,
   ],
   templateUrl: './app.component.html',
@@ -176,6 +178,9 @@ export class AppComponent implements OnInit {
     } else if (segments[0]?.path === 'models') {
       this.tabService.ensureModelsTab();
       this.activeTabId.set('models');
+    } else if (segments[0]?.path === 'components') {
+      this.tabService.ensureComponentsTab();
+      this.activeTabId.set('components');
     } else if (segments[0]?.path === 'racks') {
       this.tabService.ensureRacksTab();
       this.activeTabId.set('racks');
@@ -230,6 +235,10 @@ export class AppComponent implements OnInit {
     }
     if (tabId === 'models') {
       this.router.navigate(['/models']);
+      return;
+    }
+    if (tabId === 'components') {
+      this.router.navigate(['/components']);
       return;
     }
     if (tabId === 'racks') {

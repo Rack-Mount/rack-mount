@@ -1,0 +1,46 @@
+<div
+  [class]="
+    'gslot gslot--' + typeClass() + (activeImage() ? ' gslot--has-image' : '')
+  "
+>
+  <div class="gslot__type-bar" aria-hidden="true"></div>
+
+  @if (activeImage(); as img) {
+    <!-- Front/rear-panel image mode: full-bleed photo -->
+    <div class="gslot__panel">
+      <img
+        class="gslot__panel-img"
+        [src]="serviceUrl + '/files/' + img + '?w=320'"
+        [alt]="rackUnit().generic_component_name"
+        loading="lazy"
+      />
+    </div>
+    <div class="gslot__overlay" aria-hidden="true">
+      <span class="gslot__overlay-name">{{
+        rackUnit().generic_component_name || "—"
+      }}</span>
+      <span class="gslot__overlay-meta">
+        {{ rackUnit().generic_component_type_display }}
+        &middot; {{ rackUnit().generic_component_rack_units }}U
+      </span>
+    </div>
+  } @else {
+    <!-- Fallback: icon + text -->
+    <div class="gslot__body">
+      <span class="gslot__icon" aria-hidden="true">{{ typeIcon() }}</span>
+      <div class="gslot__info">
+        <span class="gslot__name">{{
+          rackUnit().generic_component_name || "—"
+        }}</span>
+        <span class="gslot__meta">
+          {{ rackUnit().generic_component_type_display }}
+          &middot; {{ rackUnit().generic_component_rack_units }}U
+        </span>
+      </div>
+    </div>
+  }
+
+  <button class="gslot__remove" title="Rimuovi" (click)="onRemove($event)">
+    ✕
+  </button>
+</div>

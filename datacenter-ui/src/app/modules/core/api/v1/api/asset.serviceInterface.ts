@@ -683,7 +683,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
      * @endpoint post /asset/generic_component
 * @param requestParameters
      */
@@ -691,7 +691,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
      * @endpoint delete /asset/generic_component/{id}
 * @param requestParameters
      */
@@ -699,7 +699,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
      * @endpoint get /asset/generic_component
 * @param requestParameters
      */
@@ -707,7 +707,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
      * @endpoint patch /asset/generic_component/{id}
 * @param requestParameters
      */
@@ -715,7 +715,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
      * @endpoint get /asset/generic_component/{id}
 * @param requestParameters
      */
@@ -723,7 +723,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching.
+     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
      * @endpoint put /asset/generic_component/{id}
 * @param requestParameters
      */

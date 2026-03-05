@@ -15,7 +15,7 @@ import { RackRender } from '../../../../models/RackRender';
 
 export interface RemoveRequest {
   rackUnitId: number;
-  assetId: number;
+  assetId: number | null;
   anchorX: number;
   anchorY: number;
 }
@@ -56,8 +56,12 @@ export class RackDeviceTableComponent {
 
   readonly _selectedIds = signal<ReadonlySet<number>>(new Set());
   readonly selectedCount = computed(() => this._selectedIds().size);
+  private readonly _deviceOnlyRows = computed(() =>
+    this.rows().filter((r) => !!r.device?.device_id),
+  );
+
   readonly allSelected = computed(() => {
-    const r = this.rows();
+    const r = this._deviceOnlyRows();
     return (
       r.length > 0 && r.every((row) => this._selectedIds().has(row.device!.id))
     );
@@ -84,7 +88,9 @@ export class RackDeviceTableComponent {
 
   protected toggleSelectAll(checked: boolean): void {
     this._selectedIds.set(
-      checked ? new Set(this.rows().map((r) => r.device!.id)) : new Set(),
+      checked
+        ? new Set(this._deviceOnlyRows().map((r) => r.device!.id))
+        : new Set(),
     );
   }
 
@@ -95,7 +101,7 @@ export class RackDeviceTableComponent {
   protected onBulkRemoveClick(): void {
     const ids = [...this._selectedIds()];
     const ruToAsset = new Map(
-      this.rows()
+      this._deviceOnlyRows()
         .filter((r) => !!r.device)
         .map((r) => [r.device!.id, +r.device!.device_id]),
     );
@@ -107,7 +113,7 @@ export class RackDeviceTableComponent {
 
   protected onRemoveClick(
     rackUnitId: number,
-    assetId: number,
+    assetId: number | null,
     event: MouseEvent,
   ): void {
     event.stopPropagation();

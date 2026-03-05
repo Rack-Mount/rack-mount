@@ -136,6 +136,39 @@
           />
         </svg>
       </button>
+
+      <button class="quick-card" (click)="onComponentsClick()">
+        <div class="quick-card__icon quick-card__icon--components">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+          >
+            <rect x="2" y="4" width="20" height="3" rx="1" />
+            <rect x="2" y="9" width="20" height="3" rx="1" />
+            <rect x="2" y="14" width="20" height="3" rx="1" />
+            <path d="M6 5.5h4M6 10.5h6M6 15.5h3" stroke-width="1.2" />
+          </svg>
+        </div>
+        <div class="quick-card__body">
+          <span class="quick-card__title">{{
+            "home.components_title" | translate
+          }}</span>
+          <span class="quick-card__desc">{{
+            "home.components_desc" | translate
+          }}</span>
+        </div>
+        <svg class="quick-card__arrow" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M6 4l4 4-4 4"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
     </div>
   </section>
 

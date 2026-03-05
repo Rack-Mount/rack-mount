@@ -217,4 +217,54 @@
       }
     }
   }
+
+  // ── Tabs ──────────────────────────────────────────────────────────────────
+  &__tabs {
+    display: flex;
+    border-bottom: 1px solid var(--dc-border-panel);
+    flex-shrink: 0;
+  }
+
+  &__tab {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--dc-text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition:
+      color 100ms ease,
+      border-color 100ms ease;
+    margin-bottom: -1px;
+
+    &:hover {
+      color: var(--dc-text-primary);
+    }
+
+    &--active {
+      color: var(--dc-accent);
+      border-bottom-color: var(--dc-accent);
+    }
+  }
+
+  // ── Component item variant ─────────────────────────────────────────────────
+  &__item--component {
+    .rack-install__thumb--component {
+      background: repeating-linear-gradient(
+        -45deg,
+        #1c1c1e,
+        #1c1c1e 3px,
+        #2c2c2e 3px,
+        #2c2c2e 8px
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #6b7280;
+    }
+  }
 }

@@ -29,6 +29,7 @@ export class TabService {
       assets: 'tabs.assets',
       vendors: 'tabs.vendors',
       models: 'tabs.models',
+      components: 'tabs.components',
       racks: 'tabs.racks',
     };
     try {
@@ -221,6 +222,33 @@ export class TabService {
 
   ensureRacksTab(): void {
     if (this.upsertRacksTab()) this.persistTabs();
+  }
+
+  // ── Components tab ──────────────────────────────────────
+
+  private upsertComponentsTab(): boolean {
+    if (this._tabs().some((t) => t.id === 'components')) return false;
+    this._tabs.update((tabs) => [
+      {
+        id: 'components',
+        label: 'Componenti',
+        labelKey: 'tabs.components',
+        type: 'components',
+        pinned: false,
+      },
+      ...tabs,
+    ]);
+    return true;
+  }
+
+  openComponents(): void {
+    this.upsertComponentsTab();
+    this.persistTabs();
+    this._activate$.next('components');
+  }
+
+  ensureComponentsTab(): void {
+    if (this.upsertComponentsTab()) this.persistTabs();
   }
 
   reportRackNotFound(rackName: string): void {

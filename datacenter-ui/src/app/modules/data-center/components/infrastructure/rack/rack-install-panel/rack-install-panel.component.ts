@@ -21,12 +21,22 @@ import {
   of,
   switchMap,
 } from 'rxjs';
-import { Asset, AssetService } from '../../../../../core/api/v1';
+import {
+  Asset,
+  AssetService,
+  GenericComponent,
+} from '../../../../../core/api/v1';
 
 type InstallAssetsState =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'loaded'; results: Asset[] }
+  | { status: 'error' };
+
+type InstallComponentsState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'loaded'; results: GenericComponent[] }
   | { status: 'error' };
 
 /**
@@ -74,8 +84,23 @@ export class RackInstallPanelComponent implements OnInit {
   readonly _error = signal<string | null>(null);
   readonly _assetsState = signal<InstallAssetsState>({ status: 'idle' });
 
+  /** Active tab: 'asset' or 'component'. */
+  readonly _tab = signal<'asset' | 'component'>('asset');
+
+  readonly _componentsState = signal<InstallComponentsState>({
+    status: 'idle',
+  });
+
+  /** Search string for the generic-component tab. */
+  readonly _componentSearch = signal('');
+
   readonly installableAssets = computed<Asset[]>(() => {
     const s = this._assetsState();
+    return s.status === 'loaded' ? s.results : [];
+  });
+
+  readonly installableComponents = computed<GenericComponent[]>(() => {
+    const s = this._componentsState();
     return s.status === 'loaded' ? s.results : [];
   });
 
@@ -89,6 +114,9 @@ export class RackInstallPanelComponent implements OnInit {
   // Two rx subjects: one debounced (typed search), one immediate (panel open)
   private readonly _immediateSearch$ = new Subject<string>();
   private readonly _debouncedSearch$ = new Subject<string>();
+
+  private readonly _immediateComponentSearch$ = new Subject<string>();
+  private readonly _debouncedComponentSearch$ = new Subject<string>();
 
   constructor() {
     merge(
@@ -115,11 +143,49 @@ export class RackInstallPanelComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((state) => this._assetsState.set(state));
+
+    merge(
+      this._immediateComponentSearch$,
+      this._debouncedComponentSearch$.pipe(debounceTime(250)),
+    )
+      .pipe(
+        switchMap((search) =>
+          concat(
+            of<InstallComponentsState>({ status: 'loading' }),
+            this.assetService
+              .assetGenericComponentList({ search, pageSize: 50 })
+              .pipe(
+                map(
+                  (r): InstallComponentsState => ({
+                    status: 'loaded',
+                    results: r.results,
+                  }),
+                ),
+                catchError(() =>
+                  of<InstallComponentsState>({ status: 'error' }),
+                ),
+              ),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((state) => this._componentsState.set(state));
   }
 
   ngOnInit(): void {
     // Panel just became visible – load all assets with no filter
     this._immediateSearch$.next('');
+  }
+
+  // ── Tab switching ──────────────────────────────────────────────────────────
+
+  protected switchTab(tab: 'asset' | 'component'): void {
+    this._tab.set(tab);
+    this._selectedId.set(null);
+    this._error.set(null);
+    if (tab === 'component' && this._componentsState().status === 'idle') {
+      this._immediateComponentSearch$.next('');
+    }
   }
 
   // ── Public actions ─────────────────────────────────────────────────────────
@@ -129,9 +195,19 @@ export class RackInstallPanelComponent implements OnInit {
     this._debouncedSearch$.next(value);
   }
 
+  protected onComponentSearch(value: string): void {
+    this._componentSearch.set(value);
+    this._debouncedComponentSearch$.next(value);
+  }
+
   protected selectAndInstall(assetId: number): void {
     this._selectedId.set(assetId);
     this._confirmInstall();
+  }
+
+  protected selectAndInstallComponent(componentId: number): void {
+    this._selectedId.set(componentId);
+    this._confirmInstallComponent();
   }
 
   private _confirmInstall(): void {
@@ -145,6 +221,34 @@ export class RackInstallPanelComponent implements OnInit {
         rackUnit: {
           rack: this.rackId(),
           device: assetId,
+          position: this.position(),
+        } as any,
+      })
+      .subscribe({
+        next: () => {
+          this._saving.set(false);
+          this.installed.emit();
+        },
+        error: () => {
+          this._saving.set(false);
+          this._error.set(
+            this.translate.instant('install_panel.install_error'),
+          );
+        },
+      });
+  }
+
+  private _confirmInstallComponent(): void {
+    const componentId = this._selectedId();
+    if (!componentId) return;
+    this._saving.set(true);
+    this._error.set(null);
+    this.assetService
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .assetRackUnitCreate({
+        rackUnit: {
+          rack: this.rackId(),
+          generic_component: componentId,
           position: this.position(),
         } as any,
       })

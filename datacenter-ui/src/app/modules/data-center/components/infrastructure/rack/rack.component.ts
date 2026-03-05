@@ -25,6 +25,7 @@ import {
 } from '../../../../core/api/v1';
 import { RackRender } from '../../../models/RackRender';
 import { DeviceComponent } from '../device/device.component';
+import { GenericComponentSlotComponent } from '../generic-component-slot/generic-component-slot.component';
 import {
   BulkRemoveRequest,
   RackDeviceTableComponent,
@@ -56,10 +57,18 @@ type RackLoadState =
  */
 const RACK_OVERHEAD_PX = 72;
 
+/** Returns the effective number of rack units a RackUnit occupies. */
+function effectiveRackUnits(u: RackUnit): number {
+  if (u.device_id) return u.device_rack_units || 1;
+  if (u.generic_component_id) return u.generic_component_rack_units || 1;
+  return 1;
+}
+
 @Component({
   selector: 'app-rack',
   imports: [
     DeviceComponent,
+    GenericComponentSlotComponent,
     RackInstallPanelComponent,
     RackStatePickerComponent,
     RackRemoveConfirmComponent,
@@ -283,7 +292,7 @@ export class RackComponent {
   readonly occupiedUnits = computed(() => {
     const state = this._unitsState();
     if (!state || state.status !== 'loaded') return 0;
-    return state.results.reduce((sum, u) => sum + u.device_rack_units, 0);
+    return state.results.reduce((sum, u) => sum + effectiveRackUnits(u), 0);
   });
 
   readonly freeUnits = computed(
@@ -317,10 +326,24 @@ export class RackComponent {
     ),
   );
 
-  /** Only the rows that have a device, ordered top-to-bottom. */
+  /** Rows that have an installed device OR a generic component. */
   readonly deviceRows = computed(() =>
-    this.rackRender().filter((row) => !!row.device),
+    this.rackRender().filter(
+      (row) => !!row.device?.device_id || !!row.device?.generic_component_id,
+    ),
   );
+
+  /** Handle remove request emitted from a generic-component slot. */
+  protected onGenericSlotRemoveRequest(e: {
+    rackUnitId: number;
+    anchorX: number;
+    anchorY: number;
+  }): void {
+    this._removeConfirmX.set(e.anchorX);
+    this._removeConfirmY.set(e.anchorY);
+    this._removeConfirmId.set(e.rackUnitId);
+    this._removeConfirmAssetId.set(null); // no asset to decommission
+  }
 
   protected closeBulkRemoveConfirm(): void {
     this._bulkRemoveConfirm.set(false);
@@ -388,15 +411,16 @@ export class RackComponent {
       const idx = capacity - asset.position;
       if (idx < 0 || idx >= capacity) continue;
 
+      const span = effectiveRackUnits(asset);
       rows[idx] = {
         device: asset,
-        rackUnit: asset.device_rack_units,
+        rackUnit: span,
         position: rows[idx].position,
         visible: true,
       };
 
-      // Hide rows behind a multi-U device (rows below the top row of the device)
-      for (let j = 1; j < asset.device_rack_units; j++) {
+      // Hide rows behind a multi-U item (rows below the top row)
+      for (let j = 1; j < span; j++) {
         if (idx + j < capacity) rows[idx + j].visible = false;
       }
     }
@@ -412,7 +436,7 @@ export class RackComponent {
     if (!state || state.status !== 'loaded') return new Map<number, RackUnit>();
     const m = new Map<number, RackUnit>();
     for (const unit of state.results) {
-      for (let i = 0; i < unit.device_rack_units; i++) {
+      for (let i = 0; i < effectiveRackUnits(unit); i++) {
         m.set(unit.position - i, unit); // position = top; extends downward
       }
     }

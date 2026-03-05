@@ -29,6 +29,7 @@ export class HomeLocationsComponent {
   readonly vendorsOpen = output<void>();
   readonly modelsOpen = output<void>();
   readonly racksOpen = output<void>();
+  readonly componentsOpen = output<void>();
 
   protected onRoomClick(id: number, name: string): void {
     this.roomOpen.emit({ id, name });
@@ -48,5 +49,9 @@ export class HomeLocationsComponent {
 
   protected onRacksClick(): void {
     this.racksOpen.emit();
+  }
+
+  protected onComponentsClick(): void {
+    this.componentsOpen.emit();
   }
 }
