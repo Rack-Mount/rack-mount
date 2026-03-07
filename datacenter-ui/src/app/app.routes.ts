@@ -7,23 +7,79 @@ import {
 } from './modules/core/guards/auth.guard';
 
 /**
- * Routes are used only for URL state management (no <router-outlet>).
- * Navigation events update the address bar and trigger AppComponent's
- * router subscription; AppComponent controls what is rendered directly.
- * The /login route is the exception — it is rendered via <router-outlet>.
+ * Static routes use loadComponent → Angular Router lazy-loads the JS chunk
+ * on first navigation.  Dynamic segments (map/:id, rack/:name) keep
+ * children:[] because their panes are managed by AppComponent directly.
+ * The /login route is the only one rendered via <router-outlet>.
  */
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [noAuthGuard] },
   { path: '', pathMatch: 'full', canActivate: [authGuard], children: [] },
-  { path: 'assets', canActivate: [authGuard], children: [] },
-  { path: 'vendors', canActivate: [authGuard], children: [] },
-  { path: 'models', canActivate: [authGuard], children: [] },
-  { path: 'racks', canActivate: [authGuard], children: [] },
-  { path: 'components', canActivate: [authGuard], children: [] },
+  {
+    path: 'assets',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/assets/assets-list/assets-list.component').then(
+        (m) => m.AssetsListComponent,
+      ),
+  },
+  {
+    path: 'vendors',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/catalog/vendors-list/vendors-list.component').then(
+        (m) => m.VendorsListComponent,
+      ),
+  },
+  {
+    path: 'models',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/catalog/models-list/models-list.component').then(
+        (m) => m.ModelsListComponent,
+      ),
+  },
+  {
+    path: 'racks',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/infrastructure/racks-list/racks-list.component').then(
+        (m) => m.RacksListComponent,
+      ),
+  },
+  {
+    path: 'components',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/catalog/components-list/components-list.component').then(
+        (m) => m.ComponentsListComponent,
+      ),
+  },
   { path: 'map/:id', canActivate: [authGuard], children: [] },
   { path: 'rack/:name', canActivate: [authGuard], children: [] },
-  { path: 'admin', canActivate: [authGuard, adminGuard], children: [] },
-  { path: 'change-password', canActivate: [authGuard], children: [] },
-  { path: 'not-found', canActivate: [authGuard], children: [] },
+  {
+    path: 'admin',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./modules/admin/components/users-list/users-list.component').then(
+        (m) => m.UsersListComponent,
+      ),
+  },
+  {
+    path: 'change-password',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./modules/core/components/change-password/change-password.component').then(
+        (m) => m.ChangePasswordComponent,
+      ),
+  },
+  {
+    path: 'not-found',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./modules/core/components/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent,
+      ),
+  },
   { path: '**', redirectTo: 'not-found' },
 ];

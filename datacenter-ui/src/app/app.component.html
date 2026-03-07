@@ -27,79 +27,11 @@
       }
     </div>
 
-    <!-- Assets pane: deferred on first activation, kept alive with [hidden] -->
-    <div class="content-pane" [hidden]="activeTabId() !== 'assets'">
-      @defer (when activeTabId() === 'assets'; prefetch on idle) {
-        <app-assets-list />
-      } @loading (minimum 150ms) {
-        <div class="loading-state">Caricamento asset…</div>
-      } @placeholder {
-        <div class="loading-state">Caricamento asset…</div>
-      } @error {
-        <div class="loading-state loading-state--error">
-          Impossibile caricare gli asset.
-        </div>
-      }
-    </div>
-
-    <!-- Vendors pane -->
-    <div class="content-pane" [hidden]="activeTabId() !== 'vendors'">
-      @defer (when activeTabId() === 'vendors'; prefetch on idle) {
-        <app-vendors-list />
-      } @loading (minimum 150ms) {
-        <div class="loading-state">Caricamento vendor…</div>
-      } @placeholder {
-        <div class="loading-state">Caricamento vendor…</div>
-      } @error {
-        <div class="loading-state loading-state--error">
-          Impossibile caricare i vendor.
-        </div>
-      }
-    </div>
-
-    <!-- Models pane -->
-    <div class="content-pane" [hidden]="activeTabId() !== 'models'">
-      @defer (when activeTabId() === 'models'; prefetch on idle) {
-        <app-models-list />
-      } @loading (minimum 150ms) {
-        <div class="loading-state">Caricamento apparati…</div>
-      } @placeholder {
-        <div class="loading-state">Caricamento apparati…</div>
-      } @error {
-        <div class="loading-state loading-state--error">
-          Impossibile caricare gli apparati.
-        </div>
-      }
-    </div>
-
-    <!-- Components pane -->
-    <div class="content-pane" [hidden]="activeTabId() !== 'components'">
-      @defer (when activeTabId() === 'components'; prefetch on idle) {
-        <app-components-list />
-      } @loading (minimum 150ms) {
-        <div class="loading-state">Caricamento componenti…</div>
-      } @placeholder {
-        <div class="loading-state">Caricamento componenti…</div>
-      } @error {
-        <div class="loading-state loading-state--error">
-          Impossibile caricare i componenti.
-        </div>
-      }
-    </div>
-
-    <!-- Racks pane -->
-    <div class="content-pane" [hidden]="activeTabId() !== 'racks'">
-      @defer (when activeTabId() === 'racks'; prefetch on idle) {
-        <app-racks-list />
-      } @loading (minimum 150ms) {
-        <div class="loading-state">Caricamento rack…</div>
-      } @placeholder {
-        <div class="loading-state">Caricamento rack…</div>
-      } @error {
-        <div class="loading-state loading-state--error">
-          Impossibile caricare i rack.
-        </div>
-      }
+    <!-- Static panes (assets, vendors, models, components, racks, admin,
+         change-password, not-found): Angular Router lazy-loads each
+         component on first navigation via loadComponent() in app.routes.ts. -->
+    <div class="content-pane" [hidden]="!isStaticTab()">
+      <router-outlet />
     </div>
 
     <!-- Room panes: lazy chunk loaded on first tab activation, state preserved by [hidden] -->
@@ -142,51 +74,6 @@
         </div>
       }
     }
-
-    <!-- Not-found pane: lazy chunk -->
-    <div class="content-pane" [hidden]="activeTabId() !== 'not-found'">
-      @defer (when activeTabId() === 'not-found'; prefetch on idle) {
-        <app-not-found />
-      } @loading (minimum 150ms) {
-        <div class="loading-state">Caricamento…</div>
-      } @placeholder {
-        <div class="loading-state">Caricamento…</div>
-      } @error {
-        <div class="loading-state loading-state--error">
-          Pagina non disponibile.
-        </div>
-      }
-    </div>
-
-    <!-- Admin pane -->
-    <div class="content-pane" [hidden]="activeTabId() !== 'admin'">
-      @defer (when activeTabId() === 'admin'; prefetch on idle) {
-        <app-users-list />
-      } @loading (minimum 150ms) {
-        <div class="loading-state">{{ "users.loading" | translate }}</div>
-      } @placeholder {
-        <div class="loading-state">{{ "users.loading" | translate }}</div>
-      } @error {
-        <div class="loading-state loading-state--error">
-          {{ "common.error_loading" | translate }}
-        </div>
-      }
-    </div>
-
-    <!-- Change password pane -->
-    <div class="content-pane" [hidden]="activeTabId() !== 'change-password'">
-      @defer (when activeTabId() === 'change-password'; prefetch on idle) {
-        <app-change-password />
-      } @loading (minimum 150ms) {
-        <div class="loading-state">{{ "common.loading" | translate }}</div>
-      } @placeholder {
-        <div class="loading-state">{{ "common.loading" | translate }}</div>
-      } @error {
-        <div class="loading-state loading-state--error">
-          {{ "common.error_loading" | translate }}
-        </div>
-      }
-    </div>
   </div>
 } @else {
   <router-outlet />

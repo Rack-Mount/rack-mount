@@ -33,6 +33,14 @@
     overflow: hidden;
     background: var(--dc-rack-pane-bg);
   }
+
+  // Component rendered by <router-outlet> is inserted as a sibling of the
+  // outlet element inside this flex container — ensure it fills the pane.
+  > :not(router-outlet) {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
 }
 
 .loading-state {

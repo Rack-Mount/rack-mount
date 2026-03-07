@@ -9,27 +9,18 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 import { merge } from 'rxjs';
 import { filter, startWith } from 'rxjs/operators';
-import { UsersListComponent } from './modules/admin/components/users-list/users-list.component';
-import { ChangePasswordComponent } from './modules/core/components/change-password/change-password.component';
 import { HeaderComponent } from './modules/core/components/header/header.component';
 import { HomeComponent } from './modules/core/components/home/home.component';
-import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
 import { TabBarComponent } from './modules/core/components/tab-bar/tab-bar.component';
 import { ToastComponent } from './modules/core/components/toast/toast.component';
 import { AuthService } from './modules/core/services/auth.service';
 import { TabService } from './modules/core/services/tab.service';
 import { ThemeService } from './modules/core/services/theme.service';
-import { AssetsListComponent } from './modules/data-center/components/assets/assets-list/assets-list.component';
 import { PanelTab } from './modules/data-center/components/assets/detail-panel/detail-panel.types';
-import { ComponentsListComponent } from './modules/data-center/components/catalog/components-list/components-list.component';
-import { ModelsListComponent } from './modules/data-center/components/catalog/models-list/models-list.component';
-import { VendorsListComponent } from './modules/data-center/components/catalog/vendors-list/vendors-list.component';
 import { MapComponent } from './modules/data-center/components/infrastructure/map/map.component';
 import { RackComponent } from './modules/data-center/components/infrastructure/rack/rack.component';
-import { RacksListComponent } from './modules/data-center/components/infrastructure/racks-list/racks-list.component';
 
 /** Maps static tab IDs to their router paths (no dynamic segment). */
 const STATIC_TAB_PATHS: Record<string, string[]> = {
@@ -43,9 +34,28 @@ const STATIC_TAB_PATHS: Record<string, string[]> = {
   'change-password': ['/change-password'],
 };
 
+/**
+ * Tab IDs whose content is served by Angular Router's <router-outlet>.
+ * These are lazily loaded via loadComponent() in app.routes.ts.
+ */
+const STATIC_TABS = new Set([
+  'assets',
+  'vendors',
+  'models',
+  'components',
+  'racks',
+  'admin',
+  'change-password',
+  'not-found',
+]);
+
 @Component({
   selector: 'app-root',
   standalone: true,
+  // Static pane components are NOT imported here — they are loaded on demand
+  // by Angular Router (loadComponent in app.routes.ts) and rendered via the
+  // single <router-outlet> in the template.
+  // Only always-visible or @defer-based dynamic panes are listed below.
   imports: [
     RouterOutlet,
     HeaderComponent,
@@ -53,15 +63,6 @@ const STATIC_TAB_PATHS: Record<string, string[]> = {
     HomeComponent,
     MapComponent,
     RackComponent,
-    RacksListComponent,
-    NotFoundComponent,
-    AssetsListComponent,
-    VendorsListComponent,
-    ModelsListComponent,
-    ComponentsListComponent,
-    UsersListComponent,
-    ChangePasswordComponent,
-    TranslatePipe,
     ToastComponent,
   ],
   templateUrl: './app.component.html',
@@ -86,6 +87,9 @@ export class AppComponent implements OnInit {
   readonly tabs = computed(() => [this.homeTab, ...this.tabService.tabs()]);
   readonly activeTabId = signal('home');
   private tabHistory: string[] = ['home'];
+
+  /** True when the active tab's content is served by <router-outlet>. */
+  readonly isStaticTab = computed(() => STATIC_TABS.has(this.activeTabId()));
   ngOnInit(): void {
     // Apply the persisted or OS-default theme immediately
     this.themeService.init();
