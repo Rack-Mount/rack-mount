@@ -453,6 +453,7 @@
     "field_password": "密码",
     "field_password_ph": "设置密码",
     "field_new_password_ph": "新密码（留空则保持不变）",
+    "field_new_password": "新密码",
     "field_role": "角色",
     "confirm_delete": "确认删除该用户？",
     "delete_error": "错误—请重试",

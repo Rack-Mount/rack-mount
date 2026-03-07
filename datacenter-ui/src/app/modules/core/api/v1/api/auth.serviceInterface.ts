@@ -14,6 +14,7 @@ import { Observable }                                        from 'rxjs';
 import { AuthMeRetrieve200Response } from '../model/models';
 import { PaginatedUserListList } from '../model/models';
 import { PatchedUserUpdate } from '../model/models';
+import { Role } from '../model/models';
 import { TokenObtainPair } from '../model/models';
 import { TokenRefresh } from '../model/models';
 import { UserCreate } from '../model/models';
@@ -70,6 +71,13 @@ export interface AuthServiceInterface {
      * @endpoint get /auth/me/
 */
     authMeRetrieve(extraHttpRequestParams?: any): Observable<AuthMeRetrieve200Response>;
+
+    /**
+     * 
+     * Read-only list of all available roles. Accessible only by Admin role.
+     * @endpoint get /auth/roles/
+*/
+    authRolesList(extraHttpRequestParams?: any): Observable<Array<Role>>;
 
     /**
      * 

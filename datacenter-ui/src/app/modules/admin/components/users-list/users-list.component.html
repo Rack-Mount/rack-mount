@@ -17,60 +17,68 @@
     }
   </div>
 
-  <!-- ── Create form ──────────────────────────────────────────────────────── -->
+  <!-- ── Create panel ─────────────────────────────────────────────────────── -->
   @if (createOpen()) {
-    <div class="create-form">
-      <h3 class="form-title">{{ "users.create_title" | translate }}</h3>
-      <div class="form-row">
-        <label class="form-label">{{
-          "users.field_username" | translate
-        }}</label>
-        <input
-          class="form-input"
-          type="text"
-          [value]="createUsername()"
-          (input)="createUsername.set($any($event.target).value)"
-          [placeholder]="'users.field_username_ph' | translate"
-        />
-      </div>
-      <div class="form-row">
-        <label class="form-label">{{ "users.field_email" | translate }}</label>
-        <input
-          class="form-input"
-          type="email"
-          [value]="createEmail()"
-          (input)="createEmail.set($any($event.target).value)"
-          [placeholder]="'users.field_email_ph' | translate"
-        />
-      </div>
-      <div class="form-row">
-        <label class="form-label">{{
-          "users.field_password" | translate
-        }}</label>
-        <input
-          class="form-input"
-          type="password"
-          [value]="createPassword()"
-          (input)="createPassword.set($any($event.target).value)"
-          [placeholder]="'users.field_password_ph' | translate"
-        />
-      </div>
-      <div class="form-row">
-        <label class="form-label">{{ "users.field_role" | translate }}</label>
-        <select
-          class="form-select"
-          [value]="createRoleId()"
-          (change)="createRoleId.set(+$any($event.target).value)"
-        >
-          @for (r of roles; track r.id) {
-            <option [value]="r.id">{{ "roles." + r.name | translate }}</option>
-          }
-        </select>
+    <div class="create-panel">
+      <h3 class="create-panel__title">
+        {{ "users.create_title" | translate }}
+      </h3>
+      <div class="edit-panel__fields">
+        <div class="edit-field">
+          <label class="edit-label">{{
+            "users.field_username" | translate
+          }}</label>
+          <input
+            class="edit-input"
+            type="text"
+            [value]="createUsername()"
+            (input)="createUsername.set($any($event.target).value)"
+            [placeholder]="'users.field_username_ph' | translate"
+          />
+        </div>
+        <div class="edit-field">
+          <label class="edit-label">{{
+            "users.field_email" | translate
+          }}</label>
+          <input
+            class="edit-input"
+            type="email"
+            [value]="createEmail()"
+            (input)="createEmail.set($any($event.target).value)"
+            [placeholder]="'users.field_email_ph' | translate"
+          />
+        </div>
+        <div class="edit-field">
+          <label class="edit-label">{{
+            "users.field_password" | translate
+          }}</label>
+          <input
+            class="edit-input"
+            type="password"
+            [value]="createPassword()"
+            (input)="createPassword.set($any($event.target).value)"
+            [placeholder]="'users.field_password_ph' | translate"
+          />
+        </div>
+        <div class="edit-field">
+          <label class="edit-label">{{ "users.field_role" | translate }}</label>
+          <select
+            class="edit-select"
+            [ngModel]="createRoleId()"
+            (ngModelChange)="createRoleId.set($event)"
+          >
+            @for (r of roles(); track r.id) {
+              <option [ngValue]="r.id">
+                {{ "roles." + r.name | translate }}
+              </option>
+            }
+          </select>
+        </div>
       </div>
       @if (createSave() === "error") {
-        <p class="form-error">{{ createError() }}</p>
+        <p class="edit-error">{{ createError() }}</p>
       }
-      <div class="form-actions">
+      <div class="edit-panel__actions">
         <button
           class="btn-save"
           [disabled]="
@@ -115,62 +123,99 @@
         <tbody>
           @for (u of users(); track u.id) {
             @if (editId() === u.id) {
-              <!-- Edit row -->
-              <tr class="row-edit">
-                <td>{{ u.username }}</td>
-                <td>
-                  <input
-                    class="inline-input"
-                    type="email"
-                    [value]="editEmail()"
-                    (input)="editEmail.set($any($event.target).value)"
-                  />
-                </td>
-                <td>
-                  <select
-                    class="inline-select"
-                    [value]="editRoleId()"
-                    (change)="editRoleId.set(+$any($event.target).value)"
-                  >
-                    @for (r of roles; track r.id) {
-                      <option [value]="r.id">
-                        {{ "roles." + r.name | translate }}
-                      </option>
+              <!-- Edit panel row -->
+              <tr class="row-edit-panel">
+                <td colspan="5">
+                  <div class="edit-panel">
+                    <div class="edit-panel__fields">
+                      <div class="edit-field">
+                        <label class="edit-label">{{
+                          "users.field_username" | translate
+                        }}</label>
+                        <input
+                          class="edit-input"
+                          type="text"
+                          [value]="editUsername()"
+                          (input)="editUsername.set($any($event.target).value)"
+                        />
+                      </div>
+                      <div class="edit-field">
+                        <label class="edit-label">{{
+                          "users.field_email" | translate
+                        }}</label>
+                        <input
+                          class="edit-input"
+                          type="email"
+                          [value]="editEmail()"
+                          (input)="editEmail.set($any($event.target).value)"
+                        />
+                      </div>
+                      <div class="edit-field">
+                        <label class="edit-label">{{
+                          "users.field_role" | translate
+                        }}</label>
+                        <select
+                          class="edit-select"
+                          [ngModel]="editRoleId()"
+                          (ngModelChange)="editRoleId.set($event)"
+                        >
+                          @for (r of roles(); track r.id) {
+                            <option [ngValue]="r.id">
+                              {{ "roles." + r.name | translate }}
+                            </option>
+                          }
+                        </select>
+                      </div>
+                      <div class="edit-field">
+                        <label class="edit-label">{{
+                          "users.field_new_password" | translate
+                        }}</label>
+                        <input
+                          class="edit-input"
+                          type="password"
+                          [value]="editPassword()"
+                          (input)="editPassword.set($any($event.target).value)"
+                          [placeholder]="
+                            'users.field_new_password_ph' | translate
+                          "
+                        />
+                      </div>
+                      <div class="edit-field edit-field--toggle">
+                        <label class="edit-label">{{
+                          "users.col_active" | translate
+                        }}</label>
+                        <label class="toggle">
+                          <input
+                            type="checkbox"
+                            [checked]="editIsActive()"
+                            (change)="
+                              editIsActive.set($any($event.target).checked)
+                            "
+                          />
+                          <span class="toggle__track"></span>
+                        </label>
+                      </div>
+                    </div>
+                    @if (editSave() === "error") {
+                      <p class="edit-error">{{ editError() }}</p>
                     }
-                  </select>
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    [checked]="editIsActive()"
-                    (change)="editIsActive.set($any($event.target).checked)"
-                  />
-                </td>
-                <td class="actions">
-                  <input
-                    class="inline-input inline-input--pw"
-                    type="password"
-                    [value]="editPassword()"
-                    (input)="editPassword.set($any($event.target).value)"
-                    [placeholder]="'users.field_new_password_ph' | translate"
-                  />
-                  @if (editSave() === "error") {
-                    <span class="inline-error">{{ editError() }}</span>
-                  }
-                  <button
-                    class="btn-action btn-action--save"
-                    [disabled]="editSave() === 'saving'"
-                    (click)="submitEdit()"
-                  >
-                    {{
-                      editSave() === "saving"
-                        ? "…"
-                        : ("common.save" | translate)
-                    }}
-                  </button>
-                  <button class="btn-action" (click)="cancelEdit()">
-                    {{ "common.cancel" | translate }}
-                  </button>
+                    <div class="edit-panel__actions">
+                      <button
+                        class="btn-save"
+                        [disabled]="editSave() === 'saving'"
+                        (click)="submitEdit()"
+                      >
+                        {{
+                          editSave() === "saving"
+                            ? ("common.saving" | translate)
+                            : ("common.save" | translate)
+                        }}
+                      </button>
+                      <button class="btn-cancel" (click)="cancelEdit()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    </div>
+                  </div>
                 </td>
               </tr>
             } @else {

@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
-from rest_framework import viewsets, mixins
+from rest_framework import generics, viewsets, mixins, status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
+from accounts.models import Role
 from accounts.permissions import IsAdminRole
-from accounts.serializers import UserListSerializer, UserCreateSerializer, UserUpdateSerializer
+from accounts.serializers import RoleSerializer, UserListSerializer, UserCreateSerializer, UserUpdateSerializer
 
 
 class UserManagementViewSet(
@@ -33,3 +35,19 @@ class UserManagementViewSet(
             from rest_framework.exceptions import PermissionDenied
             raise PermissionDenied("You cannot delete your own account.")
         instance.delete()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        response_serializer = UserListSerializer(
+            user, context={'request': request})
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
+
+class RoleListView(generics.ListAPIView):
+    """Read-only list of all available roles. Accessible only by Admin role."""
+    queryset = Role.objects.order_by('id')
+    serializer_class = RoleSerializer
+    permission_classes = [IsAuthenticated, IsAdminRole]
+    pagination_class = None

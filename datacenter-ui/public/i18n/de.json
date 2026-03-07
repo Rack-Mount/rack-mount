@@ -451,6 +451,7 @@
     "field_password": "Passwort",
     "field_password_ph": "Passwort setzen",
     "field_new_password_ph": "Neues Passwort (leer lassen zum Behalten)",
+    "field_new_password": "Neues Passwort",
     "field_role": "Rolle",
     "confirm_delete": "Benutzer löschen?",
     "delete_error": "Fehler — erneut versuchen",

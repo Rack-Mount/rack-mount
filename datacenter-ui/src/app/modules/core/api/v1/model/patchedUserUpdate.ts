@@ -10,6 +10,7 @@
 
 
 export interface PatchedUserUpdate { 
+    username?: string;
     email?: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.

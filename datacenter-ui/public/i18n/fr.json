@@ -451,6 +451,7 @@
     "field_password": "Mot de passe",
     "field_password_ph": "Définir le mot de passe",
     "field_new_password_ph": "Nouveau mot de passe (laisser vide pour conserver)",
+    "field_new_password": "Nouveau mot de passe",
     "field_role": "Rôle",
     "confirm_delete": "Supprimer l’utilisateur ?",
     "delete_error": "Erreur — réessayer",

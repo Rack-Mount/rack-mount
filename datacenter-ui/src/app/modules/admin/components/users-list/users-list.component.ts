@@ -33,7 +33,13 @@ export interface UserCreatePayload {
   role_id: number;
 }
 
+export interface RoleSummary {
+  id: number;
+  name: string;
+}
+
 export interface UserUpdatePayload {
+  username?: string;
   email?: string;
   is_active?: boolean;
   role_id?: number;
@@ -72,8 +78,9 @@ export class UsersListComponent {
 
   // ── Edit form ─────────────────────────────────────────────────────────────
   protected readonly editId = signal<number | null>(null);
+  protected readonly editUsername = signal('');
   protected readonly editEmail = signal('');
-  protected readonly editRoleId = signal<number>(3);
+  protected readonly editRoleId = signal<number | null>(null);
   protected readonly editIsActive = signal(true);
   protected readonly editPassword = signal('');
   protected readonly editSave = signal<SaveState>('idle');
@@ -84,15 +91,18 @@ export class UsersListComponent {
   protected readonly deleteSave = signal<SaveState>('idle');
   protected readonly deleteErrorMsg = signal('');
 
-  protected readonly roles = [
-    { id: 1, name: 'admin' },
-    { id: 2, name: 'editor' },
-    { id: 3, name: 'viewer' },
-    { id: 4, name: 'guest' },
-  ];
+  protected readonly roles = signal<RoleSummary[]>([]);
 
   constructor() {
     this.loadUsers();
+    this.loadRoles();
+  }
+
+  private loadRoles(): void {
+    this.http
+      .get<RoleSummary[]>(`${environment.service_url}/auth/roles/`)
+      .pipe(catchError(() => EMPTY))
+      .subscribe((list) => this.roles.set(list));
   }
 
   private loadUsers(): void {
@@ -156,8 +166,9 @@ export class UsersListComponent {
   protected startEdit(user: UserItem): void {
     this.createOpen.set(false);
     this.editId.set(user.id);
+    this.editUsername.set(user.username);
     this.editEmail.set(user.email);
-    this.editRoleId.set(user.role?.id ?? 3);
+    this.editRoleId.set(user.role?.id ?? null);
     this.editIsActive.set(user.is_active);
     this.editPassword.set('');
     this.editSave.set('idle');
@@ -173,8 +184,9 @@ export class UsersListComponent {
     if (!id) return;
     this.editSave.set('saving');
     const payload: UserUpdatePayload = {
-      email: this.editEmail().trim(),
-      role_id: this.editRoleId(),
+      username: this.editUsername().trim() || undefined,
+      email: this.editEmail().trim() || undefined,
+      role_id: this.editRoleId() ?? undefined,
       is_active: this.editIsActive(),
     };
     if (this.editPassword().trim()) {

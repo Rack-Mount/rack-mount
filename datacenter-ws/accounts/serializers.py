@@ -71,6 +71,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=False, max_length=150)
     role_id = serializers.PrimaryKeyRelatedField(
         queryset=Role.objects.all(),
         source='profile.role',
@@ -81,7 +82,17 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'is_active', 'role_id', 'password']
+        fields = ['username', 'email', 'is_active', 'role_id', 'password']
+
+    def validate_username(self, value):
+        value = value.strip()
+        qs = User.objects.filter(username=value)
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise serializers.ValidationError(
+                'A user with this username already exists.')
+        return value
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile', None)

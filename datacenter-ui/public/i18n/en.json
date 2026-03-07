@@ -453,6 +453,7 @@
     "field_password": "Password",
     "field_password_ph": "Set password",
     "field_new_password_ph": "New password (leave blank to keep)",
+    "field_new_password": "New password",
     "field_role": "Role",
     "confirm_delete": "Delete user?",
     "delete_error": "Error — retry",
