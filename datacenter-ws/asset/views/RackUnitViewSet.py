@@ -1,13 +1,10 @@
 from rest_framework import viewsets
 from asset.serializers import RackUnitSerializer
 from asset.models import RackUnit
-from asset.paginations import StandardResultsSetPagination
-from rest_framework import filters
-from rest_framework import permissions
-from django_filters.rest_framework import DjangoFilterBackend
+from shared.mixins import StandardFilterMixin
 
 
-class RackUnitViewSet(viewsets.ModelViewSet):
+class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     """
     RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.
 
@@ -32,9 +29,5 @@ class RackUnitViewSet(viewsets.ModelViewSet):
         'generic_component',
     ).all()
     serializer_class = RackUnitSerializer
-    pagination_class = StandardResultsSetPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter,
-                       DjangoFilterBackend)
     filterset_fields = ['rack__name', 'device__hostname', 'rack__room']
     search_fields = ['rack__name', 'device__hostname']
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]

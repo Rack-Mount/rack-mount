@@ -10,16 +10,16 @@
 
 
 /**
- * RackUnitSerializer is a HyperlinkedModelSerializer for the RackUnit model.  Fields:     - id: The unique identifier for the RackUnit.     - rack_id: The ID of the associated rack.     - rack_name: The name of the associated rack.     - location_id: The ID of the location where the rack is situated.     - location_name: The name of the location where the rack is situated.     - location_short_name: The short name of the location where the rack is situated.     - device_id: The ID of the associated device.     - device_hostname: The hostname of the associated device.     - device_model: The model name of the associated device.     - device_vendor: The vendor name of the associated device model.     - device_type: The type name of the associated device model.     - rack_installation_front: Boolean indicating if the rack installation is at the front.
+ * RackUnitSerializer for the RackUnit model.  Fields:     - id: The unique identifier for the RackUnit.     - rack_id: The ID of the associated rack.     - rack_name: The name of the associated rack.     - location_id: The ID of the location where the rack is situated.     - location_name: The name of the location where the rack is situated.     - location_short_name: The short name of the location where the rack is situated.     - device_id: The ID of the associated device.     - device_hostname: The hostname of the associated device.     - device_model: The model name of the associated device.     - device_vendor: The vendor name of the associated device model.     - device_type: The type name of the associated device model.     - rack_installation_front: Boolean indicating if the rack installation is at the front.
  */
 export interface PatchedRackUnit { 
     readonly id?: number;
-    readonly rack_id?: string;
+    readonly rack_id?: number;
     readonly rack_name?: string;
-    readonly location_id?: string;
+    readonly location_id?: number;
     readonly location_name?: string;
     readonly location_short_name?: string;
-    readonly device_id?: string;
+    readonly device_id?: number | null;
     readonly device_hostname?: string;
     readonly device_model?: string;
     readonly device_vendor?: string;

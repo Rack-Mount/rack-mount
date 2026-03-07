@@ -144,7 +144,7 @@
           @if (row.device?.device_id && row.device!.device_state) {
             <span
               class="device-table__state-badge device-table__state-badge--clickable"
-              (click)="onStatePickerClick(+row.device!.device_id, $event)"
+              (click)="onStatePickerClick(row.device!.device_id!, $event)"
               >{{ row.device!.device_state }}</span
             >
           } @else {
@@ -167,7 +167,7 @@
             (click)="
               onRemoveClick(
                 row.device!.id,
-                row.device?.device_id ? +row.device!.device_id : null,
+                row.device?.device_id ? row.device!.device_id : null,
                 $event
               )
             "

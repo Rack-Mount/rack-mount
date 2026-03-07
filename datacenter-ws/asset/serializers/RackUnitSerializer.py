@@ -4,9 +4,9 @@ from drf_spectacular.types import OpenApiTypes
 from asset.models import RackUnit, Rack, Asset, GenericComponent
 
 
-class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
+class RackUnitSerializer(serializers.ModelSerializer):
     """
-    RackUnitSerializer is a HyperlinkedModelSerializer for the RackUnit model.
+    RackUnitSerializer for the RackUnit model.
 
     Fields:
         - id: The unique identifier for the RackUnit.
@@ -22,9 +22,8 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         - device_type: The type name of the associated device model.
         - rack_installation_front: Boolean indicating if the rack installation is at the front.
     """
-    rack_id = serializers.StringRelatedField(
+    rack_id = serializers.IntegerField(
         source='rack.id',
-        many=False,
         read_only=True
     )
     rack_name = serializers.StringRelatedField(
@@ -33,9 +32,8 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True
     )
 
-    location_id = serializers.StringRelatedField(
+    location_id = serializers.IntegerField(
         source='rack.room.location.id',
-        many=False,
         read_only=True
     )
 
@@ -51,10 +49,10 @@ class RackUnitSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True
     )
 
-    device_id = serializers.StringRelatedField(
+    device_id = serializers.IntegerField(
         source='device.id',
-        many=False,
-        read_only=True
+        read_only=True,
+        allow_null=True
     )
 
     device_hostname = serializers.StringRelatedField(

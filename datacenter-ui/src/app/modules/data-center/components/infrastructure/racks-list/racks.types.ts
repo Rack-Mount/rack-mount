@@ -1,9 +1,7 @@
 import { Rack } from '../../../../core/api/v1';
+import { PaginatedListState } from '../../../../core/types/list-state.types';
 
-export type ListState =
-  | { status: 'loading' }
-  | { status: 'loaded'; results: Rack[]; count: number }
-  | { status: 'error' };
+export type ListState = PaginatedListState<Rack>;
 
 export type DeleteState =
   | { id: 'none' }

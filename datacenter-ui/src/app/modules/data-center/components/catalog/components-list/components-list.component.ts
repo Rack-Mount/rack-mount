@@ -25,24 +25,19 @@ import {
   ComponentTypeEnum,
   GenericComponent,
 } from '../../../../core/api/v1';
+import {
+  COMPONENT_TYPE_LABELS,
+  DEFAULT_PAGE_SIZE,
+  SEARCH_DEBOUNCE_MS,
+} from '../../../../core/constants';
+import {
+  DestroyableState,
+  PaginatedListState,
+} from '../../../../core/types/list-state.types';
+import { toggleSort } from '../../../../core/utils/sort.utils';
 import { ComponentCreateDrawerComponent } from './component-create-drawer/component-create-drawer.component';
 
-const PAGE_SIZE = 50;
-
-type SaveState = 'idle' | 'saving' | 'error' | 'in_use';
-type ListState =
-  | { status: 'loading' }
-  | { status: 'error' }
-  | { status: 'loaded'; results: GenericComponent[]; count: number };
-
-const COMPONENT_TYPE_LABELS: Record<ComponentTypeEnum, string> = {
-  cable_manager: 'Passacavi / Cable Manager',
-  blanking_panel: 'Pannello cieco / Blanking Panel',
-  patch_panel: 'Patch Panel',
-  pdu: 'PDU / Power Strip',
-  shelf: 'Ripiano / Shelf',
-  other: 'Altro / Other',
-};
+const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 @Component({
   selector: 'app-components-list',
@@ -76,7 +71,9 @@ export class ComponentsListComponent {
   );
 
   // ── List state ────────────────────────────────────────────────────────────
-  protected readonly listState = signal<ListState>({ status: 'loading' });
+  protected readonly listState = signal<PaginatedListState<GenericComponent>>({
+    status: 'loading',
+  });
 
   protected readonly items = computed(() => {
     const s = this.listState();
@@ -104,13 +101,13 @@ export class ComponentsListComponent {
 
   // ── Delete ────────────────────────────────────────────────────────────────
   protected readonly deleteId = signal<number | null>(null);
-  protected readonly deleteSave = signal<SaveState>('idle');
+  protected readonly deleteSave = signal<DestroyableState>('idle');
 
   constructor() {
     // Debounce search
     this._searchInput
       .pipe(
-        debounceTime(300),
+        debounceTime(SEARCH_DEBOUNCE_MS),
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef),
       )
@@ -131,7 +128,7 @@ export class ComponentsListComponent {
       .pipe(
         switchMap((p) =>
           concat(
-            of<ListState>({ status: 'loading' }),
+            of<PaginatedListState<GenericComponent>>({ status: 'loading' }),
             this.svc
               .assetGenericComponentList({
                 search: p.search || undefined,
@@ -142,13 +139,15 @@ export class ComponentsListComponent {
               })
               .pipe(
                 map(
-                  (r): ListState => ({
+                  (r): PaginatedListState<GenericComponent> => ({
                     status: 'loaded',
                     results: r.results ?? [],
                     count: r.count ?? 0,
                   }),
                 ),
-                catchError(() => of<ListState>({ status: 'error' })),
+                catchError(() =>
+                  of<PaginatedListState<GenericComponent>>({ status: 'error' }),
+                ),
               ),
           ),
         ),
@@ -179,14 +178,7 @@ export class ComponentsListComponent {
 
   // ── Sorting ────────────────────────────────────────────────────────────────
   protected sort(field: string): void {
-    const cur = this.ordering();
-    if (cur === field) {
-      this.ordering.set(`-${field}`);
-    } else if (cur === `-${field}`) {
-      this.ordering.set(field);
-    } else {
-      this.ordering.set(field);
-    }
+    this.ordering.set(toggleSort(this.ordering(), field));
     this.page.set(1);
   }
 

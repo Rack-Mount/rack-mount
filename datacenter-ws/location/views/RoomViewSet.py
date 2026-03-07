@@ -1,11 +1,10 @@
-from rest_framework import viewsets, filters, parsers
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, parsers
 from location.models import Room
 from location.serializers import RoomSerializer
-from asset.paginations import StandardResultsSetPagination
+from shared.mixins import StandardFilterMixin
 
 
-class RoomViewSet(viewsets.ModelViewSet):
+class RoomViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     """
     RoomViewSet is a viewset for handling CRUD operations on the Room model.
 
@@ -22,10 +21,7 @@ class RoomViewSet(viewsets.ModelViewSet):
     """
     queryset = Room.objects.select_related('location').all()
     serializer_class = RoomSerializer
-    pagination_class = StandardResultsSetPagination
     parser_classes = [parsers.JSONParser,
                       parsers.MultiPartParser, parsers.FormParser]
-    filter_backends = (filters.OrderingFilter,
-                       filters.SearchFilter, DjangoFilterBackend)
     filterset_fields = ['location', 'room_type']
     search_fields = ['name', 'description', 'manager']

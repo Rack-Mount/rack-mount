@@ -102,8 +102,8 @@ export class RackDeviceTableComponent {
     const ids = [...this._selectedIds()];
     const ruToAsset = new Map(
       this._deviceOnlyRows()
-        .filter((r) => !!r.device)
-        .map((r) => [r.device!.id, +r.device!.device_id]),
+        .filter((r) => !!r.device && r.device.device_id !== null)
+        .map((r) => [r.device!.id, r.device!.device_id as number]),
     );
     const assetIds = ids
       .map((id) => ruToAsset.get(id))

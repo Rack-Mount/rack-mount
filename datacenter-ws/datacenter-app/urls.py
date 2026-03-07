@@ -28,11 +28,6 @@ admin.site.site_header = "Rack-Mount Data Center Admin"
 admin.site.site_title = "Rack-Mount Data Center Admin Portal"
 admin.site.index_title = "Welcome to Rack-Mount Data Center Portal"
 
-schema_url_patterns = [
-    path('location/', include(location_urls.urlpatterns)),
-    path('asset/', include(asset_urls.urlpatterns)),
-]
-
 urlpatterns = [
     path('location/', include(location_urls.urlpatterns)),
     path('asset/', include(asset_urls.urlpatterns)),

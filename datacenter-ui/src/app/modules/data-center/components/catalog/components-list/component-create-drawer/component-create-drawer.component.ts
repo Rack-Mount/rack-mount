@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,25 +12,17 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
-import { environment } from '../../../../../../../environments/environment';
 import {
   ComponentTypeEnum,
   GenericComponent,
 } from '../../../../../core/api/v1';
+import { COMPONENT_TYPE_LABELS } from '../../../../../core/constants';
 import { BackendErrorService } from '../../../../../core/services/backend-error.service';
+import { MultipartUploadService } from '../../../../../core/services/multipart-upload.service';
 import {
   ImageEditorComponent,
   ImageEditParams,
 } from '../../models-list/image-editor/image-editor.component';
-
-const COMPONENT_TYPE_LABELS: Record<ComponentTypeEnum, string> = {
-  cable_manager: 'Passacavi / Cable Manager',
-  blanking_panel: 'Pannello cieco / Blanking Panel',
-  patch_panel: 'Patch Panel',
-  pdu: 'PDU / Power Strip',
-  shelf: 'Ripiano / Shelf',
-  other: 'Altro / Other',
-};
 
 interface ComponentForm {
   name: string;
@@ -73,9 +65,9 @@ function emptyForm(): ComponentForm {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ComponentCreateDrawerComponent implements OnInit {
-  private readonly http = inject(HttpClient);
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
+  private readonly uploadSvc = inject(MultipartUploadService);
 
   readonly mode = input<'create' | 'edit'>('create');
   readonly editComponent = input<GenericComponent | null>(null);
@@ -212,13 +204,11 @@ export class ComponentCreateDrawerComponent implements OnInit {
     }
 
     this.saveState.set('saving');
-    const base = `${environment.service_url}/asset/generic_component`;
     const editComp = this.editComponent();
-
-    const req$ =
-      this.mode() === 'create'
-        ? this.http.post<GenericComponent>(base, fd)
-        : this.http.patch<GenericComponent>(`${base}/${editComp!.id}`, fd);
+    const req$ = this.uploadSvc.saveGenericComponent(
+      fd,
+      this.mode() === 'edit' ? editComp?.id : null,
+    );
 
     req$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (saved) => {

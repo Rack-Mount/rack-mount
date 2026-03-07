@@ -6,11 +6,8 @@ from rest_framework.response import Response
 from django.utils.translation import gettext as _
 from asset.serializers import AssetSerializer
 from asset.models import Asset, RackUnit
-from rest_framework import filters
 from django_filters import rest_framework as df_filters
-from django_filters.rest_framework import DjangoFilterBackend
-from asset.paginations import StandardResultsSetPagination
-from rest_framework import permissions
+from shared.mixins import StandardFilterMixin
 
 
 class AssetFilter(df_filters.FilterSet):
@@ -30,7 +27,7 @@ class AssetFilter(df_filters.FilterSet):
                   'model', 'state', 'model__vendor', 'model__type']
 
 
-class AssetViewSet(viewsets.ModelViewSet):
+class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     """
     AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 
@@ -48,11 +45,8 @@ class AssetViewSet(viewsets.ModelViewSet):
         'model', 'model__vendor', 'model__type', 'state', 'rackunit__rack'
     ).all()
     serializer_class = AssetSerializer
-    pagination_class = StandardResultsSetPagination
     search_fields = ['hostname', 'sap_id', 'serial_number', 'order_id',
                      'model__name', 'model__vendor__name']
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter,
-                       DjangoFilterBackend)
     filterset_class = AssetFilter
     ordering_fields = [
         'hostname', 'serial_number', 'sap_id', 'order_id',
@@ -70,7 +64,6 @@ class AssetViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_409_CONFLICT,
             )
         return super().destroy(request, *args, **kwargs)
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     @action(detail=False, methods=['patch'], url_path='bulk_state')
     def bulk_state(self, request):

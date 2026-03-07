@@ -4,7 +4,7 @@ from datacenter.views import LocationViewSet, LocationCustomFieldViewSet, RoomVi
 
 router = DefaultRouter(trailing_slash=False)
 router.register(r'location', LocationViewSet)
-router.register(r'locationcustomfiled', LocationCustomFieldViewSet)
+router.register(r'locationcustomfield', LocationCustomFieldViewSet)
 router.register(r'room', RoomViewSet)
 
 urlpatterns = [

@@ -20,15 +20,18 @@ import {
   switchMap,
 } from 'rxjs';
 import { AssetService, Vendor } from '../../../../core/api/v1';
+import {
+  DEFAULT_PAGE_SIZE,
+  SEARCH_DEBOUNCE_MS,
+} from '../../../../core/constants';
 import { BackendErrorService } from '../../../../core/services/backend-error.service';
+import {
+  PaginatedListState,
+  SaveState,
+} from '../../../../core/types/list-state.types';
+import { toggleSort } from '../../../../core/utils/sort.utils';
 
-const PAGE_SIZE = 50;
-
-type SaveState = 'idle' | 'saving' | 'error';
-type ListState =
-  | { status: 'loading' }
-  | { status: 'error' }
-  | { status: 'loaded'; results: Vendor[]; count: number };
+const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 @Component({
   selector: 'app-vendors-list',
@@ -58,7 +61,9 @@ export class VendorsListComponent {
   );
 
   // ── List state ────────────────────────────────────────────────────────────
-  protected readonly listState = signal<ListState>({ status: 'loading' });
+  protected readonly listState = signal<PaginatedListState<Vendor>>({
+    status: 'loading',
+  });
 
   protected readonly vendors = computed(() => {
     const s = this.listState();
@@ -95,7 +100,7 @@ export class VendorsListComponent {
     // Debounce search → reset page
     this._searchInput
       .pipe(
-        debounceTime(300),
+        debounceTime(SEARCH_DEBOUNCE_MS),
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef),
       )
@@ -115,7 +120,7 @@ export class VendorsListComponent {
       .pipe(
         switchMap((p) =>
           concat(
-            of<ListState>({ status: 'loading' }),
+            of<PaginatedListState<Vendor>>({ status: 'loading' }),
             this.svc
               .assetVendorList({
                 search: p.search || undefined,
@@ -125,13 +130,15 @@ export class VendorsListComponent {
               })
               .pipe(
                 map(
-                  (r): ListState => ({
+                  (r): PaginatedListState<Vendor> => ({
                     status: 'loaded',
                     results: r.results ?? [],
                     count: r.count ?? 0,
                   }),
                 ),
-                catchError(() => of<ListState>({ status: 'error' })),
+                catchError(() =>
+                  of<PaginatedListState<Vendor>>({ status: 'error' }),
+                ),
               ),
           ),
         ),
@@ -152,14 +159,7 @@ export class VendorsListComponent {
 
   // ── Sorting ─────────────────────────────────────────────────────────────
   protected sort(field: string): void {
-    const cur = this.ordering();
-    if (cur === field) {
-      this.ordering.set(`-${field}`);
-    } else if (cur === `-${field}`) {
-      this.ordering.set(field);
-    } else {
-      this.ordering.set(field);
-    }
+    this.ordering.set(toggleSort(this.ordering(), field));
     this.page.set(1);
   }
 

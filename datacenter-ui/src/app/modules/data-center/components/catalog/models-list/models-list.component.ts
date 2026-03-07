@@ -1,5 +1,5 @@
 import { SlicePipe } from '@angular/common';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -21,27 +21,31 @@ import {
   Subject,
   switchMap,
 } from 'rxjs';
-import { environment } from '../../../../../../environments/environment';
 import {
   AssetModel,
   AssetService,
   AssetType,
   Vendor,
 } from '../../../../core/api/v1';
+import {
+  DEFAULT_PAGE_SIZE,
+  SEARCH_DEBOUNCE_MS,
+} from '../../../../core/constants';
 import { BackendErrorService } from '../../../../core/services/backend-error.service';
+import { MultipartUploadService } from '../../../../core/services/multipart-upload.service';
+import {
+  DestroyableState,
+  PaginatedListState,
+} from '../../../../core/types/list-state.types';
+import { toggleSort } from '../../../../core/utils/sort.utils';
 import {
   ImageEditorComponent,
   ImageEditParams,
 } from './image-editor/image-editor.component';
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
-type SaveState = 'idle' | 'saving' | 'error' | 'in_use';
 type ImportState = 'idle' | 'importing' | 'error' | 'conflict' | 'bad_format';
-type ListState =
-  | { status: 'loading' }
-  | { status: 'error' }
-  | { status: 'loaded'; results: AssetModel[]; count: number };
 
 export interface ModelForm {
   name: string;
@@ -87,9 +91,9 @@ function emptyForm(): ModelForm {
 })
 export class ModelsListComponent {
   private readonly svc = inject(AssetService);
-  private readonly http = inject(HttpClient);
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
+  private readonly uploadSvc = inject(MultipartUploadService);
 
   // ── Reference data ────────────────────────────────────────────────────────
   protected readonly vendors = signal<Vendor[]>([]);
@@ -111,7 +115,9 @@ export class ModelsListComponent {
   );
 
   // ── List state ────────────────────────────────────────────────────────────
-  protected readonly listState = signal<ListState>({ status: 'loading' });
+  protected readonly listState = signal<PaginatedListState<AssetModel>>({
+    status: 'loading',
+  });
 
   protected readonly models = computed(() => {
     const s = this.listState();
@@ -132,7 +138,7 @@ export class ModelsListComponent {
   protected readonly drawerMode = signal<'create' | 'edit'>('create');
   protected readonly drawerEditId = signal<number | null>(null);
   protected readonly form = signal<ModelForm>(emptyForm());
-  protected readonly drawerSave = signal<SaveState>('idle');
+  protected readonly drawerSave = signal<DestroyableState>('idle');
   protected readonly drawerSaveMsg = signal('');
 
   // ── Preview ───────────────────────────────────────────────────────────────
@@ -140,7 +146,7 @@ export class ModelsListComponent {
 
   // ── Delete ────────────────────────────────────────────────────────────────
   protected readonly deleteId = signal<number | null>(null);
-  protected readonly deleteSave = signal<SaveState>('idle');
+  protected readonly deleteSave = signal<DestroyableState>('idle');
 
   // ── Import ────────────────────────────────────────────────────────────────
   protected readonly importState = signal<ImportState>('idle');
@@ -218,7 +224,7 @@ export class ModelsListComponent {
     // Debounce search
     this._searchInput
       .pipe(
-        debounceTime(300),
+        debounceTime(SEARCH_DEBOUNCE_MS),
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef),
       )
@@ -240,7 +246,7 @@ export class ModelsListComponent {
       .pipe(
         switchMap((p) =>
           concat(
-            of<ListState>({ status: 'loading' }),
+            of<PaginatedListState<AssetModel>>({ status: 'loading' }),
             this.svc
               .assetAssetModelList({
                 search: p.search || undefined,
@@ -252,13 +258,15 @@ export class ModelsListComponent {
               })
               .pipe(
                 map(
-                  (r): ListState => ({
+                  (r): PaginatedListState<AssetModel> => ({
                     status: 'loaded',
                     results: r.results ?? [],
                     count: r.count ?? 0,
                   }),
                 ),
-                catchError(() => of<ListState>({ status: 'error' })),
+                catchError(() =>
+                  of<PaginatedListState<AssetModel>>({ status: 'error' }),
+                ),
               ),
           ),
         ),
@@ -291,14 +299,7 @@ export class ModelsListComponent {
 
   // ── Sorting ────────────────────────────────────────────────────────────────
   protected sort(field: string): void {
-    const cur = this.ordering();
-    if (cur === field) {
-      this.ordering.set(`-${field}`);
-    } else if (cur === `-${field}`) {
-      this.ordering.set(field);
-    } else {
-      this.ordering.set(field);
-    }
+    this.ordering.set(toggleSort(this.ordering(), field));
     this.page.set(1);
   }
 
@@ -558,12 +559,7 @@ export class ModelsListComponent {
     }
 
     this.drawerSave.set('saving');
-    const base = `${environment.service_url}/asset/asset_model`;
-
-    const req$ =
-      this.drawerMode() === 'create'
-        ? this.http.post<AssetModel>(base, fd)
-        : this.http.patch<AssetModel>(`${base}/${this.drawerEditId()}`, fd);
+    const req$ = this.uploadSvc.saveAssetModel(fd, this.drawerEditId());
 
     req$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (saved) => {
@@ -667,11 +663,8 @@ export class ModelsListComponent {
       }
 
       this.importState.set('importing');
-      this.http
-        .post<AssetModel>(
-          `${environment.service_url}/asset/asset-model/import`,
-          payload,
-        )
+      this.uploadSvc
+        .importAssetModel(payload)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (saved) => {

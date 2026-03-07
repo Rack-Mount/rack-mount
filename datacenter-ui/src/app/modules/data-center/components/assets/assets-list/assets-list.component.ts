@@ -1,8 +1,4 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpParams,
-} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -30,6 +26,7 @@ import {
   AssetState,
   AssetType,
 } from '../../../../core/api/v1';
+import { AssetActionsService } from '../../../../core/services/asset-actions.service';
 import { TabService } from '../../../../core/services/tab.service';
 import { AssetCreateDrawerComponent } from './asset-create-drawer/asset-create-drawer.component';
 import { AssetStatePickerComponent } from './asset-state-picker/asset-state-picker.component';
@@ -61,7 +58,7 @@ export class AssetsListComponent {
   protected readonly assetService = inject(AssetService);
   protected readonly tabService = inject(TabService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly http = inject(HttpClient);
+  private readonly assetActionsSvc = inject(AssetActionsService);
 
   // ── Filter options ────────────────────────────────────────────────────────
   protected readonly availableStates = signal<AssetState[]>([]);
@@ -197,16 +194,12 @@ export class AssetsListComponent {
     if (this.selectAllPages()) {
       this.bulkEditState.set('saving');
       const p = this.params();
-      let qp = new HttpParams();
-      if (p.search) qp = qp.set('search', p.search);
-      if (p.stateId != null) qp = qp.set('state', String(p.stateId));
-      if (p.typeId != null) qp = qp.set('model__type', String(p.typeId));
-      this.http
-        .patch<{ updated: number }>(
-          `${environment.service_url}/asset/asset/bulk_state`,
-          { state_id: stateId },
-          { params: qp },
-        )
+      this.assetActionsSvc
+        .bulkState(stateId, {
+          search: p.search || undefined,
+          stateId: p.stateId,
+          typeId: p.typeId,
+        })
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -479,14 +472,8 @@ export class AssetsListComponent {
 
   protected onImportCsvFile(file: File): void {
     this.importCsvState.set('importing');
-    const fd = new FormData();
-    fd.append('file', file);
-    this.http
-      .post<{
-        created: number;
-        rows: { row: number; hostname: string; serial_number: string }[];
-        errors: { row: number; message: string }[];
-      }>(`${environment.service_url}/asset/asset/import-csv`, fd)
+    this.assetActionsSvc
+      .importCsv(file)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (r) => {
@@ -577,8 +564,8 @@ export class AssetsListComponent {
   protected cloneAsset(id: number): void {
     if (this.cloneInProgressId() !== null) return;
     this.cloneInProgressId.set(id);
-    this.http
-      .post<Asset>(`${environment.service_url}/asset/asset/${id}/clone`, {})
+    this.assetActionsSvc
+      .clone(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (cloned) => {
@@ -604,11 +591,8 @@ export class AssetsListComponent {
     const ids = [...this.selectedIds()];
     if (!ids.length) return;
     this.bulkCloneState.set('saving');
-    this.http
-      .post<{ created: number }>(
-        `${environment.service_url}/asset/asset/bulk_clone`,
-        { ids },
-      )
+    this.assetActionsSvc
+      .bulkClone(ids)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

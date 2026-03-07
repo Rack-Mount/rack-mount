@@ -5,12 +5,20 @@ import {
   computed,
   DestroyRef,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, Subject, switchMap } from 'rxjs';
+import {
+  catchError,
+  concat,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  of,
+  Subject,
+  switchMap,
+} from 'rxjs';
 import {
   AssetService,
   Location,
@@ -18,11 +26,14 @@ import {
   Rack,
   Room,
 } from '../../../../core/api/v1';
+import { SEARCH_DEBOUNCE_MS } from '../../../../core/constants';
 import { TabService } from '../../../../core/services/tab.service';
+import { PaginatedListState } from '../../../../core/types/list-state.types';
+import { toggleSort } from '../../../../core/utils/sort.utils';
 import { RackCreateDrawerComponent } from './rack-create-drawer/rack-create-drawer.component';
 import { RacksTableComponent } from './racks-table/racks-table.component';
 import { RacksToolbarComponent } from './racks-toolbar/racks-toolbar.component';
-import { DeleteState, ListState } from './racks.types';
+import { DeleteState } from './racks.types';
 
 @Component({
   selector: 'app-racks-list',
@@ -36,14 +47,14 @@ import { DeleteState, ListState } from './racks.types';
   styleUrl: './racks-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RacksListComponent implements OnInit {
+export class RacksListComponent {
   private readonly assetService = inject(AssetService);
   private readonly locationService = inject(LocationService);
   private readonly tabService = inject(TabService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly listState = signal<ListState>({ status: 'loading' });
+  readonly listState = signal<PaginatedListState<Rack>>({ status: 'loading' });
   readonly searchQuery = signal('');
   readonly locationFilter = signal<number | null>(null);
   readonly roomFilter = signal<number | null>(null);
@@ -61,87 +72,83 @@ export class RacksListComponent implements OnInit {
   readonly editingRack = signal<Rack | null>(null);
   readonly deleteState = signal<DeleteState>({ id: 'none' });
 
-  private readonly search$ = new Subject<string>();
+  private readonly _searchInput = new Subject<string>();
 
-  ngOnInit(): void {
-    this.loadRacks();
+  constructor() {
+    // Load all locations once
     this.locationService
       .locationLocationList({ pageSize: 200 })
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({ next: (data) => this.locations.set(data.results) });
+      .subscribe({ next: (data) => this.locations.set(data.results ?? []) });
 
-    this.search$
+    // Debounce search input → update signal
+    this._searchInput
       .pipe(
-        debounceTime(280),
+        debounceTime(SEARCH_DEBOUNCE_MS),
         distinctUntilChanged(),
-        switchMap((q) =>
-          this.assetService.assetRackList({
-            search: q || undefined,
-            pageSize: 200,
-            roomLocation: this.locationFilter() ?? undefined,
-            room: this.roomFilter() ?? undefined,
-            ordering: this.ordering(),
-          }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((q) => this.searchQuery.set(q));
+
+    // Reactively reload racks whenever any filter signal changes
+    toObservable(
+      computed(() => ({
+        search: this.searchQuery(),
+        locationId: this.locationFilter(),
+        roomId: this.roomFilter(),
+        ordering: this.ordering(),
+      })),
+    )
+      .pipe(
+        switchMap((p) =>
+          concat(
+            of<PaginatedListState<Rack>>({ status: 'loading' }),
+            this.assetService
+              .assetRackList({
+                search: p.search || undefined,
+                pageSize: 200,
+                roomLocation: p.locationId ?? undefined,
+                room: p.roomId ?? undefined,
+                ordering: p.ordering,
+              })
+              .pipe(
+                map(
+                  (r): PaginatedListState<Rack> => ({
+                    status: 'loaded',
+                    results: r.results ?? [],
+                    count: r.count ?? 0,
+                  }),
+                ),
+                catchError(() =>
+                  of<PaginatedListState<Rack>>({ status: 'error' }),
+                ),
+              ),
+          ),
         ),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe({
-        next: (data) =>
-          this.listState.set({
-            status: 'loaded',
-            results: data.results,
-            count: data.count,
-          }),
-        error: () => this.listState.set({ status: 'error' }),
-      });
-  }
-
-  private loadRacks(): void {
-    this.listState.set({ status: 'loading' });
-    this.assetService
-      .assetRackList({
-        pageSize: 200,
-        search: this.searchQuery() || undefined,
-        roomLocation: this.locationFilter() ?? undefined,
-        room: this.roomFilter() ?? undefined,
-        ordering: this.ordering(),
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (data) =>
-          this.listState.set({
-            status: 'loaded',
-            results: data.results,
-            count: data.count,
-          }),
-        error: () => this.listState.set({ status: 'error' }),
-      });
+      .subscribe((s) => this.listState.set(s));
   }
 
   protected onSearch(q: string): void {
-    this.searchQuery.set(q);
-    this.search$.next(q);
+    this._searchInput.next(q);
   }
 
   protected onClearSearch(): void {
-    this.onSearch('');
+    this._searchInput.next('');
   }
 
   protected onLocationFilter(id: number | null): void {
     this.locationFilter.set(id);
-    this.roomFilter.set(null); // reset room when dc changes
-    this.loadRacks();
+    this.roomFilter.set(null);
   }
 
   protected onRoomFilter(id: number | null): void {
     this.roomFilter.set(id);
-    this.loadRacks();
   }
 
   protected onSort(field: string): void {
-    const cur = this.ordering();
-    this.ordering.set(cur === field ? `-${field}` : field);
-    this.loadRacks();
+    this.ordering.set(toggleSort(this.ordering(), field));
   }
 
   protected onNew(): void {

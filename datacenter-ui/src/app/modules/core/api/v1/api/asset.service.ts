@@ -453,6 +453,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint post /asset/asset_custom_field
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -521,6 +522,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint delete /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -579,6 +581,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint get /asset/asset_custom_field
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -687,6 +690,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint patch /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -759,6 +763,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint get /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -818,6 +823,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint put /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -1981,7 +1987,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetState objects.
      * @endpoint post /asset/asset_state
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2053,7 +2059,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetState objects.
      * @endpoint delete /asset/asset_state/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2112,7 +2118,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetState objects.
      * @endpoint get /asset/asset_state
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2221,7 +2227,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetState objects.
      * @endpoint patch /asset/asset_state/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2294,7 +2300,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetState objects.
      * @endpoint get /asset/asset_state/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2354,7 +2360,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetStateViewSet is a viewset for handling CRUD operations on AssetState objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetState objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize AssetState objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetState objects.
      * @endpoint put /asset/asset_state/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2430,7 +2436,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetType objects.
      * @endpoint post /asset/asset_type
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2502,7 +2508,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetType objects.
      * @endpoint delete /asset/asset_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2561,7 +2567,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetType objects.
      * @endpoint get /asset/asset_type
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2670,7 +2676,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetType objects.
      * @endpoint patch /asset/asset_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2743,7 +2749,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetType objects.
      * @endpoint get /asset/asset_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -2803,7 +2809,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * AssetTypeViewSet is a viewset for handling CRUD operations on AssetType model.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetType objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetType objects.     pagination_class (Pagination): The pagination class used for paginating the results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): The default ordering for the queryset, ordered by \&#39;name\&#39;.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on AssetType objects.
      * @endpoint put /asset/asset_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -3797,7 +3803,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on RackType objects.
      * @endpoint post /asset/rack_type
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -3869,7 +3875,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on RackType objects.
      * @endpoint delete /asset/rack_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -3928,7 +3934,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on RackType objects.
      * @endpoint get /asset/rack_type
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4037,7 +4043,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on RackType objects.
      * @endpoint patch /asset/rack_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4110,7 +4116,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on RackType objects.
      * @endpoint get /asset/rack_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4170,7 +4176,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackTypeViewSet is a viewset for handling CRUD operations on RackType model.  Attributes:     queryset (QuerySet): A queryset containing all RackType objects.     serializer_class (Serializer): The serializer class used for RackType objects.     pagination_class (Pagination): The pagination class used for paginating results.     filter_backends (tuple): The filter backends used for ordering, searching, and filtering.     ordering (list): Default ordering for the queryset, ordered by \&#39;model\&#39;.     filterset_fields (list): Fields that can be used to filter the queryset.     search_fields (list): The fields that can be searched.
+     * ViewSet for CRUD operations on RackType objects.
      * @endpoint put /asset/rack_type/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

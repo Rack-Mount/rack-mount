@@ -2,9 +2,11 @@ import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
+  computed,
+  effect,
+  input,
+  output,
+  signal,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from '../../../../../../../environments/environment';
@@ -33,49 +35,48 @@ export interface CsvImportRow {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssetsToolbarComponent {
-  @Input() params: AssetsFilterParams = {
+  readonly params = input<AssetsFilterParams>({
     search: '',
     stateId: null,
     typeId: null,
-  };
-  @Input() availableStates: AssetState[] = [];
-  @Input() availableTypes: AssetType[] = [];
-  /** null = list not yet loaded — hides the count badge */
-  @Input() totalCount: number | null = null;
-  @Input() set importCsvState(v: CsvImportState) {
-    this._importCsvState = v;
-    if (v === 'idle') this.showPanel = false;
-  }
-  get importCsvState(): CsvImportState {
-    return this._importCsvState;
-  }
-  private _importCsvState: CsvImportState = 'idle';
+  });
+  readonly availableStates = input<AssetState[]>([]);
+  readonly availableTypes = input<AssetType[]>([]);
+  readonly totalCount = input<number | null>(null);
+  readonly importCsvState = input<CsvImportState>('idle');
+  readonly importCsvSummary = input('');
+  readonly importCsvErrors = input<{ row: number; message: string }[]>([]);
+  readonly importCsvRows = input<CsvImportRow[]>([]);
 
-  @Input() importCsvSummary = '';
-  @Input() importCsvErrors: { row: number; message: string }[] = [];
-  @Input() importCsvRows: CsvImportRow[] = [];
+  readonly importCsvDismiss = output<void>();
+  readonly searchChange = output<string>();
+  readonly stateFilterChange = output<number | null>();
+  readonly typeFilterChange = output<number | null>();
+  readonly filtersReset = output<void>();
+  readonly newClick = output<void>();
+  readonly importCsvFile = output<File>();
 
-  protected showPanel = false;
+  protected readonly showPanel = signal(false);
+
+  protected readonly hasFilters = computed(() => {
+    const p = this.params();
+    return !!(p.search || p.stateId || p.typeId);
+  });
+
+  constructor() {
+    // Close import panel automatically when state resets to idle
+    effect(() => {
+      if (this.importCsvState() === 'idle') this.showPanel.set(false);
+    });
+  }
 
   toggleErrors(): void {
-    this.showPanel = !this.showPanel;
+    this.showPanel.update((v) => !v);
   }
 
   dismissErrors(): void {
-    this.showPanel = false;
+    this.showPanel.set(false);
     this.importCsvDismiss.emit();
-  }
-
-  @Output() importCsvDismiss = new EventEmitter<void>();
-  @Output() searchChange = new EventEmitter<string>();
-  @Output() stateFilterChange = new EventEmitter<number | null>();
-  @Output() typeFilterChange = new EventEmitter<number | null>();
-  @Output() filtersReset = new EventEmitter<void>();
-  @Output() newClick = new EventEmitter<void>();
-  @Output() importCsvFile = new EventEmitter<File>();
-
-  get hasFilters(): boolean {
-    return !!(this.params.search || this.params.stateId || this.params.typeId);
   }
 
   onFileSelected(event: Event): void {
