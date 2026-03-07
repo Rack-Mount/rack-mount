@@ -40,7 +40,9 @@
     </div>
   }
 
-  <button class="gslot__remove" title="Rimuovi" (click)="onRemove($event)">
-    ✕
-  </button>
+  @if (role.canEdit()) {
+    <button class="gslot__remove" title="Rimuovi" (click)="onRemove($event)">
+      ✕
+    </button>
+  }
 </div>

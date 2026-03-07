@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   output,
 } from '@angular/core';
 import { environment } from '../../../../../../environments/environment';
 import { RackUnit } from '../../../../core/api/v1';
+import { RoleService } from '../../../../core/services/role.service';
 
 const TYPE_CLASS_MAP: Record<string, string> = {
   cable_manager: 'cable-manager',
@@ -47,6 +49,7 @@ export class GenericComponentSlotComponent {
     anchorY: number;
   }>();
 
+  protected readonly role = inject(RoleService);
   protected readonly serviceUrl = environment.service_url;
 
   protected readonly typeClass = computed(() => {
