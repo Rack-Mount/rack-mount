@@ -2,17 +2,19 @@
   <!-- ── Toolbar ──────────────────────────────────────────────────────────── -->
   <div class="users-toolbar">
     <h2 class="users-title">{{ "users.title" | translate }}</h2>
-    <button class="btn-new" (click)="openCreate()">
-      <svg viewBox="0 0 16 16" fill="none">
-        <path
-          d="M8 3v10M3 8h10"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-        />
-      </svg>
-      {{ "users.new_btn" | translate }}
-    </button>
+    @if (role.canManageUsers()) {
+      <button class="btn-new" (click)="openCreate()">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10M3 8h10"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{ "users.new_btn" | translate }}
+      </button>
+    }
   </div>
 
   <!-- ── Create form ──────────────────────────────────────────────────────── -->
@@ -211,35 +213,37 @@
                       </button>
                     </span>
                   } @else {
-                    <button
-                      class="btn-icon btn-icon--edit"
-                      [title]="'common.edit' | translate"
-                      (click)="startEdit(u)"
-                    >
-                      <svg viewBox="0 0 16 16" fill="none">
-                        <path
-                          d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
-                          stroke="currentColor"
-                          stroke-width="1.4"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      class="btn-icon btn-icon--delete"
-                      [title]="'common.delete' | translate"
-                      (click)="startDelete(u.id)"
-                    >
-                      <svg viewBox="0 0 16 16" fill="none">
-                        <path
-                          d="M3 4h10M6 4V3h4v1M5 4v8h6V4H5z"
-                          stroke="currentColor"
-                          stroke-width="1.4"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </button>
+                    @if (role.canManageUsers()) {
+                      <button
+                        class="btn-icon btn-icon--edit"
+                        [title]="'common.edit' | translate"
+                        (click)="startEdit(u)"
+                      >
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        class="btn-icon btn-icon--delete"
+                        [title]="'common.delete' | translate"
+                        (click)="startDelete(u.id)"
+                      >
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M3 4h10M6 4V3h4v1M5 4v8h6V4H5z"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    }
                   }
                 </td>
               </tr>

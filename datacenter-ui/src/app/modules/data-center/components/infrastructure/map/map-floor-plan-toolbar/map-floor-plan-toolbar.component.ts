@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   output,
 } from '@angular/core';
@@ -10,6 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Location as DjLocation } from '../../../../../core/api/v1/model/location';
 import { RackType } from '../../../../../core/api/v1/model/rackType';
 import { Room as DjRoom } from '../../../../../core/api/v1/model/room';
+import { RoleService } from '../../../../../core/services/role.service';
 
 /**
  * Presentational toolbar component rendered above the map SVG canvas.
@@ -25,6 +27,7 @@ import { Room as DjRoom } from '../../../../../core/api/v1/model/room';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapFloorPlanToolbarComponent {
+  protected readonly role = inject(RoleService);
   // ── Inputs ─────────────────────────────────────────────────────────────────
 
   /**

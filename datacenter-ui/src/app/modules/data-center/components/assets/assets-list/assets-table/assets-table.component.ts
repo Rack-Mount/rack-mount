@@ -3,11 +3,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  inject,
   Input,
   Output,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Asset, AssetState } from '../../../../../core/api/v1';
+import { RoleService } from '../../../../../core/services/role.service';
 import { AssetRowDetailComponent } from '../asset-row-detail/asset-row-detail.component';
 import { EditState, ListState, stateColor } from '../assets-list-utils';
 
@@ -31,6 +33,8 @@ export interface BulkPickerOpenEvent {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssetsTableComponent {
+  protected readonly role = inject(RoleService);
+
   // ── Data ──────────────────────────────────────────────────────────────────
   @Input() listState: ListState = { status: 'loading' };
   @Input() availableStates: AssetState[] = [];

@@ -23,6 +23,7 @@ import {
   Rack,
   RackUnit,
 } from '../../../../core/api/v1';
+import { RoleService } from '../../../../core/services/role.service';
 import { RackRender } from '../../../models/RackRender';
 import { DeviceComponent } from '../device/device.component';
 import { GenericComponentSlotComponent } from '../generic-component-slot/generic-component-slot.component';
@@ -90,6 +91,7 @@ export class RackComponent {
     return s.status === 'loaded' ? s.rack : undefined;
   });
 
+  protected readonly role = inject(RoleService);
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly assetService = inject(AssetService);

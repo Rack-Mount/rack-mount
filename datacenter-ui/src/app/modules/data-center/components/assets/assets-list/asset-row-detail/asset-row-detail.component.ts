@@ -1,11 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   input,
   output,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Asset } from '../../../../../core/api/v1';
+import { RoleService } from '../../../../../core/services/role.service';
 
 @Component({
   selector: 'app-asset-row-detail',
@@ -16,6 +18,8 @@ import { Asset } from '../../../../../core/api/v1';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssetRowDetailComponent {
+  protected readonly role = inject(RoleService);
+
   readonly asset = input.required<Asset>();
   readonly today = input.required<string>();
   readonly deleteConfirmId = input<number | null>(null);

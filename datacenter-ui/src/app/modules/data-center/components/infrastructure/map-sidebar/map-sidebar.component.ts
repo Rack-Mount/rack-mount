@@ -2,10 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  inject,
   Input,
   Output,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { RoleService } from '../../../../core/services/role.service';
 
 @Component({
   selector: 'app-map-sidebar',
@@ -16,6 +18,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapSidebarComponent {
+  protected readonly role = inject(RoleService);
+
   @Input() activeTool: string = 'select';
   @Input() disabled: boolean = false;
   @Output() toolChange = new EventEmitter<string>();

@@ -11,6 +11,7 @@ import {
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 import { skip } from 'rxjs';
+import { RoleService } from '../../../../../core/services/role.service';
 import { RackRender } from '../../../../models/RackRender';
 
 export interface RemoveRequest {
@@ -39,6 +40,7 @@ export interface BulkRemoveRequest {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RackDeviceTableComponent {
+  protected readonly role = inject(RoleService);
   private readonly destroyRef = inject(DestroyRef);
 
   /** Device rows to display (already filtered to occupied slots). */

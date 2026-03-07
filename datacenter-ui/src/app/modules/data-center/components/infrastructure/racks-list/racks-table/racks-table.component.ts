@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  inject,
   Input,
   Output,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Rack, RackType } from '../../../../../core/api/v1';
+import { RoleService } from '../../../../../core/services/role.service';
 import { DeleteState, ListState } from '../racks.types';
 
 @Component({
@@ -18,6 +20,8 @@ import { DeleteState, ListState } from '../racks.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RacksTableComponent {
+  protected readonly role = inject(RoleService);
+
   @Input() listState: ListState = { status: 'loading' };
   @Input() ordering = 'name';
   @Input() deleteState: DeleteState = { id: 'none' };

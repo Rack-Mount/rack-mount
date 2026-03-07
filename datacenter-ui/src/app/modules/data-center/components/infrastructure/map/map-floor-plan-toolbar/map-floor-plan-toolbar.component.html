@@ -35,29 +35,31 @@
     </select>
   }
 
-  <button
-    class="btn-save"
-    (click)="save.emit()"
-    [disabled]="!selectedRoomId() || saveStatus() === 'saving'"
-  >
-    {{
-      saveStatus() === "saving"
-        ? ("map_toolbar.saving" | translate)
-        : ("map_toolbar.save" | translate)
-    }}
-  </button>
+  @if (role.canEdit()) {
+    <button
+      class="btn-save"
+      (click)="save.emit()"
+      [disabled]="!selectedRoomId() || saveStatus() === 'saving'"
+    >
+      {{
+        saveStatus() === "saving"
+          ? ("map_toolbar.saving" | translate)
+          : ("map_toolbar.save" | translate)
+      }}
+    </button>
 
-  <label class="autosave-toggle">
-    <input
-      type="checkbox"
-      [checked]="autosave()"
-      (change)="autosaveChange.emit($any($event.target).checked)"
-    />
-    <span class="switch-track">
-      <span class="switch-thumb"></span>
-    </span>
-    <span class="switch-label">{{ "map_toolbar.autosave" | translate }}</span>
-  </label>
+    <label class="autosave-toggle">
+      <input
+        type="checkbox"
+        [checked]="autosave()"
+        (change)="autosaveChange.emit($any($event.target).checked)"
+      />
+      <span class="switch-track">
+        <span class="switch-thumb"></span>
+      </span>
+      <span class="switch-label">{{ "map_toolbar.autosave" | translate }}</span>
+    </label>
+  }
 
   @if (saveStatus() === "saved") {
     <span class="save-feedback save-ok">{{

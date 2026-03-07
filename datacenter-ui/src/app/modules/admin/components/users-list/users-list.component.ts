@@ -10,6 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { BackendErrorService } from '../../../core/services/backend-error.service';
+import { RoleService } from '../../../core/services/role.service';
 
 export interface UserRoleSummary {
   id: number;
@@ -50,6 +51,7 @@ type SaveState = 'idle' | 'saving' | 'error';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersListComponent {
+  protected readonly role = inject(RoleService);
   private readonly http = inject(HttpClient);
   private readonly backendErr = inject(BackendErrorService);
 

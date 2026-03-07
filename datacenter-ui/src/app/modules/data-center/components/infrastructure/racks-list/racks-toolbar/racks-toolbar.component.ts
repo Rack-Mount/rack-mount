@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  inject,
   Input,
   Output,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Location, Room } from '../../../../../core/api/v1';
+import { RoleService } from '../../../../../core/services/role.service';
 
 @Component({
   selector: 'app-racks-toolbar',
@@ -17,6 +19,8 @@ import { Location, Room } from '../../../../../core/api/v1';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RacksToolbarComponent {
+  protected readonly role = inject(RoleService);
+
   @Input() locations: Location[] = [];
   @Input() filteredRooms: Room[] = [];
   @Input() locationFilter: number | null = null;

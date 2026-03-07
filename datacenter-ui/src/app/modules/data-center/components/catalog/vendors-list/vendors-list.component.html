@@ -205,7 +205,7 @@
                       }
                     </span>
                   } @else {
-                    @if (role.canEdit() || role.canDelete()) {
+                    @if (role.canEdit()) {
                       <button
                         class="btn-icon btn-icon--edit"
                         [title]="'common.edit' | translate"
@@ -220,6 +220,8 @@
                           />
                         </svg>
                       </button>
+                    }
+                    @if (role.canDelete()) {
                       <button
                         class="btn-icon btn-icon--delete"
                         [title]="'common.delete' | translate"
