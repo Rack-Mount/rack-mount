@@ -3,7 +3,8 @@ import os
 
 from django.conf import settings
 from django.http import FileResponse, Http404, HttpResponse
-from django.views import View
+from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 from PIL import Image
 
 
@@ -13,7 +14,8 @@ ALLOWED_WIDTHS = {32, 48, 64, 80, 120, 200,
 CACHE_SUBDIR = 'cache'
 
 
-class ImageView(View):
+@extend_schema(exclude=True)
+class ImageView(APIView):
     """
     Serve media images with optional on-the-fly resizing.
 

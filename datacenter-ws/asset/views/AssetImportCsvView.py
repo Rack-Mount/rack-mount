@@ -25,26 +25,36 @@ Response JSON (POST):
 """
 
 from __future__ import annotations
+import datetime
+from asset.models.AssetState import AssetState
+from asset.models.AssetModel import AssetModel
+from asset.models import Asset
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser
+from rest_framework import status
+from django.http import HttpResponse
 
 import csv
 import io
-import datetime
 
-from django.http import HttpResponse
-from rest_framework import status
-from rest_framework.parsers import MultiPartParser
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema, OpenApiResponse
-from drf_spectacular.types import OpenApiTypes
+# Max 50 MB CSV file
+_MAX_CSV_BYTES = 50 * 1024 * 1024
 
-from asset.models import Asset
-from asset.models.AssetModel import AssetModel
-from asset.models.AssetState import AssetState
+# Characters that trigger formula execution in spreadsheet apps (CSV injection)
+_FORMULA_PREFIXES = ('=', '+', '-', '@', '\t', '\r')
+
+
+def _sanitize_cell(value: str) -> str:
+    """Prevent CSV/formula injection by prefixing dangerous characters."""
+    if value and value[0] in _FORMULA_PREFIXES:
+        return "'" + value
+    return value
 
 
 # ─────── CSV column definitions ───────────────────────────────────────────────
-
 TEMPLATE_HEADERS = [
     'Hostname',
     'Modello',
@@ -151,6 +161,13 @@ class AssetImportCsvView(APIView):
         if not uploaded:
             return Response({'detail': 'Nessun file caricato.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        # ── Size guard ─────────────────────────────────────────────────────────
+        if uploaded.size > _MAX_CSV_BYTES:
+            return Response(
+                {'detail': f'Il file supera il limite di {_MAX_CSV_BYTES // 1024 // 1024} MB.'},
+                status=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            )
+
         # ── Decode ─────────────────────────────────────────────────────────────
         try:
             raw = uploaded.read().decode('utf-8-sig')  # strip BOM if present
@@ -223,11 +240,12 @@ class AssetImportCsvView(APIView):
 
         for row_num, row in enumerate(reader, start=2):  # row 1 = header
             try:
-                hostname = (row.get('Hostname') or '').strip()
+                hostname = _sanitize_cell((row.get('Hostname') or '').strip())
                 model_name = (row.get('Modello') or '').strip()
                 vendor_name = (row.get('Vendor') or '').strip()
                 state_name = (row.get('Stato') or '').strip()
-                serial_number = (row.get('Seriale') or '').strip()
+                serial_number = _sanitize_cell(
+                    (row.get('Seriale') or '').strip())
 
                 # ── Required fields ────────────────────────────────────────────
                 missing_fields = []
@@ -262,9 +280,9 @@ class AssetImportCsvView(APIView):
                     raise ValueError(f"Stato non trovato: '{state_name}'")
 
                 # ── Optional fields ────────────────────────────────────────────
-                sap_id = (row.get('SAP ID') or '').strip()
-                order_id = (row.get('Order ID') or '').strip()
-                note = (row.get('Note') or '').strip()
+                sap_id = _sanitize_cell((row.get('SAP ID') or '').strip())
+                order_id = _sanitize_cell((row.get('Order ID') or '').strip())
+                note = _sanitize_cell((row.get('Note') or '').strip())
                 power_supplies = _int_or_none(
                     row.get('Alimentatori', ''), 'Alimentatori')
                 power_watt = _int_or_none(

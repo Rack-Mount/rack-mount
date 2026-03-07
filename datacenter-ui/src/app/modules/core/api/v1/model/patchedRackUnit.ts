@@ -19,7 +19,7 @@ export interface PatchedRackUnit {
     readonly location_id?: number;
     readonly location_name?: string;
     readonly location_short_name?: string;
-    readonly device_id?: number | null;
+    readonly device_id?: number;
     readonly device_hostname?: string;
     readonly device_model?: string;
     readonly device_vendor?: string;

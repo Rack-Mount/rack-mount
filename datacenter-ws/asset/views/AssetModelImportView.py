@@ -1,5 +1,6 @@
 import base64
 import binascii
+import io
 import uuid
 
 from django.core.files.base import ContentFile
@@ -14,11 +15,27 @@ from asset.models import AssetModel, Vendor
 from asset.models.AssetType import AssetType
 from asset.serializers import AssetModelSerializer
 
+# Max 10 MB per image payload
+_MAX_IMAGE_BYTES = 10 * 1024 * 1024
+
+# Strict MIME whitelist — unknown types are rejected, not silently coerced
+_ALLOWED_MIME = {
+    'image/jpeg': 'jpg',
+    'image/jpg':  'jpg',
+    'image/png':  'png',
+    'image/webp': 'webp',
+    'image/gif':  'gif',
+}
+
 
 def _decode_image(data_url: str, field_name: str):
     """
     Decode a Data URL (``data:<mime>;base64,<data>``) into a Django ContentFile.
-    Returns (ContentFile, extension) or raises ValueError on bad input.
+
+    Validates:
+    - MIME type against an explicit whitelist (rejects unknown types)
+    - Decoded payload size (max 10 MB)
+    - That the bytes are a valid image (via PIL)
     """
     if not data_url.startswith('data:'):
         raise ValueError(_('Not a valid Data URL.'))
@@ -28,19 +45,32 @@ def _decode_image(data_url: str, field_name: str):
         raise ValueError(_('Malformed Data URL.'))
 
     mime = meta.split(';')[0].replace('data:', '').strip()
-    ext_map = {
-        'image/jpeg': 'jpg',
-        'image/jpg': 'jpg',
-        'image/png': 'png',
-        'image/webp': 'webp',
-        'image/gif': 'gif',
-    }
-    ext = ext_map.get(mime, 'jpg')
+
+    # Reject any MIME type not in the whitelist
+    ext = _ALLOWED_MIME.get(mime)
+    if ext is None:
+        raise ValueError(_('Unsupported image type: %s') % mime)
 
     try:
         raw = base64.b64decode(encoded)
     except binascii.Error:
         raise ValueError(_('Invalid base64 data.'))
+
+    # Enforce size limit before any further processing
+    if len(raw) > _MAX_IMAGE_BYTES:
+        raise ValueError(
+            _('Image exceeds maximum allowed size of %d MB.') % (
+                _MAX_IMAGE_BYTES // 1024 // 1024)
+        )
+
+    # Validate that the bytes are actually a recognisable image
+    try:
+        from PIL import Image
+        with Image.open(io.BytesIO(raw)) as img:
+            img.verify()
+    except Exception:
+        raise ValueError(
+            _('Uploaded file for %s is not a valid image.') % field_name)
 
     filename = f'{uuid.uuid4().hex}.{ext}'
     return ContentFile(raw, name=filename)

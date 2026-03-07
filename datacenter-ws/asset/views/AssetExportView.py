@@ -15,6 +15,16 @@ from drf_spectacular.types import OpenApiTypes
 from asset.models import Asset
 from asset.views.AssetViewSet import AssetFilter
 
+# Characters that trigger formula execution in spreadsheet apps (CSV injection).
+_FORMULA_PREFIXES = ('=', '+', '-', '@', '\t', '\r')
+
+
+def _safe_cell(value: str) -> str:
+    """Prevent formula injection by prefixing dangerous leading characters."""
+    if value and value[0] in _FORMULA_PREFIXES:
+        return "'" + value
+    return value
+
 
 COLUMNS = [
     ('Hostname', lambda a: a.hostname or ''),
@@ -121,8 +131,11 @@ class AssetExportView(APIView):
         for row_idx, asset in enumerate(qs, start=2):
             fill = ROW_FILL_ODD if row_idx % 2 == 1 else ROW_FILL_EVEN
             for col_idx, (_, getter) in enumerate(COLUMNS, start=1):
-                cell = ws.cell(row=row_idx, column=col_idx,
-                               value=getter(asset))
+                raw_value = getter(asset)
+                # Sanitize string values to prevent formula/CSV injection
+                safe_value = _safe_cell(raw_value) if isinstance(
+                    raw_value, str) else raw_value
+                cell = ws.cell(row=row_idx, column=col_idx, value=safe_value)
                 cell.font = ROW_FONT
                 cell.fill = fill
                 cell.alignment = Alignment(

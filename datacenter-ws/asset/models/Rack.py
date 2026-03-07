@@ -37,7 +37,8 @@ class Rack(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.room} - {self.name}"
+        room = self.room.name if self.room else None
+        return f"{room} - {self.name}"
 
     class Meta:
         verbose_name = _("Rack")

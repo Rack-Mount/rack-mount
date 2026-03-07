@@ -81,7 +81,9 @@ class Asset(models.Model):
         return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.model.rear_image)) if self.model.rear_image else ''
 
     def __str__(self):
-        return f"{self.hostname} ({self.serial_number}) - {self.model.vendor} - {self.model.name}"
+        vendor = self.model.vendor if self.model else None
+        model_name = self.model.name if self.model else None
+        return f"{self.hostname or '?'} ({self.serial_number or '?'}) - {vendor} - {model_name}"
 
     class Meta:
         ordering = ['hostname']

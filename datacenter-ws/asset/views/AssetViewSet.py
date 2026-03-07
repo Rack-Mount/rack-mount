@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
 from asset.serializers import AssetSerializer
-from asset.models import Asset, RackUnit
+from asset.models import Asset, AssetState, RackUnit
 from django_filters import rest_framework as df_filters
 from shared.mixins import StandardFilterMixin
 
@@ -80,6 +80,11 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
                 {'error': _('state_id is required')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        if not AssetState.objects.filter(pk=state_id).exists():
+            return Response(
+                {'error': _('Invalid state_id')},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         queryset = self.filter_queryset(self.get_queryset())
         updated_count = queryset.update(state_id=state_id)
         return Response({'updated': updated_count})
@@ -138,7 +143,15 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
             )
         assets = Asset.objects.filter(id__in=ids)
         created = 0
+        errors = []
         for asset in assets:
-            self._clone_asset(asset)
-            created += 1
-        return Response({'created': created})
+            try:
+                self._clone_asset(asset)
+                created += 1
+            except Exception as exc:
+                errors.append({'id': asset.id, 'error': str(exc)})
+        response_data = {'created': created}
+        if errors:
+            response_data['errors'] = errors
+            return Response(response_data, status=status.HTTP_207_MULTI_STATUS)
+        return Response(response_data)

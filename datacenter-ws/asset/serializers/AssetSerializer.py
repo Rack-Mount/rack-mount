@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.core.exceptions import ObjectDoesNotExist
 from asset.models import Asset, AssetModel, AssetState
 from asset.serializers import AssetModelSerializer, AssetStateSerializer
 from drf_spectacular.utils import extend_schema_field
@@ -62,7 +63,7 @@ class AssetSerializer(serializers.HyperlinkedModelSerializer):
         try:
             ru = obj.rackunit
             return {'id': ru.rack.id, 'name': ru.rack.name, 'position': ru.position}
-        except Exception:
+        except (ObjectDoesNotExist, AttributeError):
             return None
 
     class Meta:
