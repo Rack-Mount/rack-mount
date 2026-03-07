@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
-from accounts.permissions import IsEditorOrAbove
+from accounts.permissions import ImportCatalogPermission
 from asset.models import AssetModel, Vendor
 from asset.models.AssetType import AssetType
 from asset.serializers import AssetModelSerializer
@@ -105,7 +105,7 @@ class AssetModelImportView(APIView):
     - 409: a model with the same (name, vendor, type) already exists.
     """
 
-    permission_classes = [IsAuthenticated, IsEditorOrAbove]
+    permission_classes = [IsAuthenticated, ImportCatalogPermission]
 
     @extend_schema(
         summary='Import an AssetModel from JSON (with optional base64 images)',

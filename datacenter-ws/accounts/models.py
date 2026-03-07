@@ -22,18 +22,43 @@ class Role(models.Model):
         verbose_name=_('Name'),
     )
 
-    # ── Granular permission flags ─────────────────────────────────────────
-    can_create = models.BooleanField(
-        default=False, verbose_name=_('Can create'))
-    can_edit = models.BooleanField(default=False, verbose_name=_('Can edit'))
-    can_delete = models.BooleanField(
-        default=False, verbose_name=_('Can delete'))
-    can_import_export = models.BooleanField(
-        default=False, verbose_name=_('Can import/export'))
-    can_access_assets = models.BooleanField(
-        default=False, verbose_name=_('Can access assets'))
-    can_access_catalog = models.BooleanField(
-        default=False, verbose_name=_('Can access catalog'))
+    # ── Assets permissions ────────────────────────────────────────────────
+    can_view_assets = models.BooleanField(
+        default=False, verbose_name=_('Can view assets'))
+    can_create_assets = models.BooleanField(
+        default=False, verbose_name=_('Can create assets'))
+    can_edit_assets = models.BooleanField(
+        default=False, verbose_name=_('Can edit assets'))
+    can_delete_assets = models.BooleanField(
+        default=False, verbose_name=_('Can delete assets'))
+    can_import_export_assets = models.BooleanField(
+        default=False, verbose_name=_('Can import/export assets'))
+    can_clone_assets = models.BooleanField(
+        default=False, verbose_name=_('Can clone assets'))
+
+    # ── Catalog permissions (vendors, models, components) ─────────────────
+    can_view_catalog = models.BooleanField(
+        default=False, verbose_name=_('Can view catalog'))
+    can_create_catalog = models.BooleanField(
+        default=False, verbose_name=_('Can create catalog entries'))
+    can_edit_catalog = models.BooleanField(
+        default=False, verbose_name=_('Can edit catalog entries'))
+    can_delete_catalog = models.BooleanField(
+        default=False, verbose_name=_('Can delete catalog entries'))
+    can_import_catalog = models.BooleanField(
+        default=False, verbose_name=_('Can import catalog'))
+
+    # ── Infrastructure permissions (racks, map, locations) ────────────────
+    can_create_racks = models.BooleanField(
+        default=False, verbose_name=_('Can create racks'))
+    can_edit_racks = models.BooleanField(
+        default=False, verbose_name=_('Can edit racks and rack units'))
+    can_delete_racks = models.BooleanField(
+        default=False, verbose_name=_('Can delete racks'))
+    can_edit_map = models.BooleanField(
+        default=False, verbose_name=_('Can edit floor plans'))
+
+    # ── Admin permissions ─────────────────────────────────────────────────
     can_manage_users = models.BooleanField(
         default=False, verbose_name=_('Can manage users'))
 

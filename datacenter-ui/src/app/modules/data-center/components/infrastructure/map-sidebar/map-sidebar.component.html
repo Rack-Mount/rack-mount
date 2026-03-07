@@ -2,7 +2,7 @@
   <div class="title">{{ "map_sidebar.title" | translate }}</div>
   <div class="tools-container">
     @for (tool of tools; track tool.id) {
-      @if (tool.id === "select" || role.canEdit()) {
+      @if (tool.id === "select" || role.canEditMap()) {
         <div
           class="tool-item"
           [class.active]="activeTool === tool.id"

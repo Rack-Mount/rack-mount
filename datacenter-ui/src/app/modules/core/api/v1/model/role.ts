@@ -13,12 +13,21 @@ import { NameEnum } from './nameEnum';
 export interface Role { 
     readonly id: number;
     readonly name: NameEnum;
-    readonly can_create: boolean;
-    readonly can_edit: boolean;
-    readonly can_delete: boolean;
-    readonly can_import_export: boolean;
-    readonly can_access_assets: boolean;
-    readonly can_access_catalog: boolean;
+    readonly can_view_assets: boolean;
+    readonly can_create_assets: boolean;
+    readonly can_edit_assets: boolean;
+    readonly can_delete_assets: boolean;
+    readonly can_import_export_assets: boolean;
+    readonly can_clone_assets: boolean;
+    readonly can_view_catalog: boolean;
+    readonly can_create_catalog: boolean;
+    readonly can_edit_catalog: boolean;
+    readonly can_delete_catalog: boolean;
+    readonly can_import_catalog: boolean;
+    readonly can_create_racks: boolean;
+    readonly can_edit_racks: boolean;
+    readonly can_delete_racks: boolean;
+    readonly can_edit_map: boolean;
     readonly can_manage_users: boolean;
 }
 export namespace Role {

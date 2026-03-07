@@ -66,9 +66,9 @@
                   @if (row.device?.device_id) {
                     <div
                       class="rack-slot__occupied"
-                      [draggable]="role.canEdit()"
+                      [draggable]="role.canEditRacks()"
                       (dragstart)="
-                        role.canEdit() && onDragStart($event, row.device!)
+                        role.canEditRacks() && onDragStart($event, row.device!)
                       "
                       (dragend)="onDragEnd()"
                     >
@@ -90,11 +90,11 @@
                     <div
                       class="rack-slot__empty"
                       (click)="
-                        role.canEdit() && openInstall(row.position, $event)
+                        role.canEditRacks() && openInstall(row.position, $event)
                       "
                     >
                       <span class="rack-slot__rail rack-slot__rail--l"></span>
-                      @if (role.canEdit()) {
+                      @if (role.canEditRacks()) {
                         <span class="rack-slot__install-hint">+</span>
                       }
                       <span class="rack-slot__rail rack-slot__rail--r"></span>

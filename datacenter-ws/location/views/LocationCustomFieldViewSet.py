@@ -2,10 +2,12 @@ from rest_framework import viewsets
 from location.models import LocationCustomField
 from location.serializers import LocationCustomFieldSerializer
 from shared.mixins import StandardFilterMixin
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import RackResourcePermission
 
 
-class LocationCustomFieldViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
+class LocationCustomFieldViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, RackResourcePermission]
     """
     ViewSet for viewing and editing LocationCustomField instances.
     """

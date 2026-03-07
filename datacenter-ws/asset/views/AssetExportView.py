@@ -13,7 +13,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from drf_spectacular.types import OpenApiTypes
 
-from accounts.permissions import IsEditorOrAbove
+from accounts.permissions import ImportExportAssetsPermission
 from asset.models import Asset
 from asset.views.AssetViewSet import AssetFilter
 
@@ -71,7 +71,7 @@ class AssetExportView(APIView):
     Accepts the same filters as AssetViewSet (search, state, model__type, ordering, ids).
     Returns an .xlsx file.
     """
-    permission_classes = [IsAuthenticated, IsEditorOrAbove]
+    permission_classes = [IsAuthenticated, ImportExportAssetsPermission]
     filter_backends = (filters.OrderingFilter,
                        filters.SearchFilter, DjangoFilterBackend)
     search_fields = ['hostname', 'sap_id', 'serial_number', 'order_id',

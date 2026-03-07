@@ -2,10 +2,12 @@ from rest_framework import viewsets
 from asset.serializers import RackUnitSerializer
 from asset.models import RackUnit
 from shared.mixins import StandardFilterMixin
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import RackResourcePermission
 
 
-class RackUnitViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
+class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, RackResourcePermission]
     """
     RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.
 

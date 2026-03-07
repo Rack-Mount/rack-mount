@@ -177,7 +177,7 @@
       </div>
     }
 
-    @if (role.canImportExport()) {
+    @if (role.canImportExportAssets()) {
       <!-- Template download -->
       <button
         class="btn-tpl"
@@ -225,7 +225,7 @@
       </label>
     }
 
-    @if (role.canCreate()) {
+    @if (role.canCreateAssets()) {
       <button class="btn-new-asset" (click)="newClick.emit()">
         <svg viewBox="0 0 16 16" fill="none">
           <path

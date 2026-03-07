@@ -42,7 +42,7 @@
           "vendors.count_badge" | translate: { count: totalCount() }
         }}</span>
       }
-      @if (role.canCreate()) {
+      @if (role.canCreateCatalog()) {
         <button class="btn-new" (click)="openCreate()">
           <svg viewBox="0 0 16 16" fill="none">
             <path
@@ -205,7 +205,7 @@
                       }
                     </span>
                   } @else {
-                    @if (role.canEdit()) {
+                    @if (role.canEditCatalog()) {
                       <button
                         class="btn-icon btn-icon--edit"
                         [title]="'common.edit' | translate"
@@ -221,7 +221,7 @@
                         </svg>
                       </button>
                     }
-                    @if (role.canDelete()) {
+                    @if (role.canDeleteCatalog()) {
                       <button
                         class="btn-icon btn-icon--delete"
                         [title]="'common.delete' | translate"

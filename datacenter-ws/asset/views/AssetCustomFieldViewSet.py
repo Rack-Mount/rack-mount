@@ -2,10 +2,12 @@ from rest_framework import viewsets
 from asset.serializers import AssetCustomFieldSerializer
 from asset.models import AssetCustomField
 from shared.mixins import StandardFilterMixin
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import CatalogResourcePermission
 
 
-class AssetCustomFieldViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
+class AssetCustomFieldViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, CatalogResourcePermission]
     queryset = AssetCustomField.objects.select_related(
         'asset', 'field_name'
     ).all()

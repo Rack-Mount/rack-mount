@@ -26,7 +26,7 @@
     }
 
     <div class="selection-actions">
-      @if (role.canEdit()) {
+      @if (role.canEditAssets()) {
         <button
           class="selection-action selection-action--primary"
           [class.is-saving]="bulkEditState === 'saving'"
@@ -66,7 +66,7 @@
         </svg>
         {{ "assets.deselect_all" | translate }}
       </button>
-      @if (role.canImportExport()) {
+      @if (role.canImportExportAssets()) {
         <button
           class="selection-action"
           (click)="exportRequested.emit()"
@@ -99,7 +99,7 @@
           {{ "assets.export_excel" | translate }}
         </button>
       }
-      @if (role.canCreate()) {
+      @if (role.canCloneAssets()) {
         <button
           class="selection-action"
           (click)="bulkCloneRequested.emit()"
@@ -139,7 +139,7 @@
     <thead>
       <tr>
         <th class="col-check">
-          @if (role.canEdit() || role.canCreate() || role.canImportExport()) {
+          @if (role.canEditAssets() || role.canCloneAssets() || role.canImportExportAssets()) {
             <input
               type="checkbox"
               class="row-check"
@@ -309,13 +309,13 @@
             <td
               class="col-check"
               (click)="
-                role.canEdit() || role.canCreate() || role.canImportExport()
+                role.canEditAssets() || role.canCloneAssets() || role.canImportExportAssets()
                   ? onSelectRow(asset.id, $event)
                   : null
               "
             >
               @if (
-                role.canEdit() || role.canCreate() || role.canImportExport()
+                role.canEditAssets() || role.canCloneAssets() || role.canImportExportAssets()
               ) {
                 <input
                   type="checkbox"
@@ -337,7 +337,7 @@
               <span class="type-chip">{{ asset.model.type.name }}</span>
             </td>
             <td class="col-state">
-              @if (role.canEdit()) {
+              @if (role.canEditAssets()) {
                 <span
                   class="state-badge"
                   [attr.data-color]="stateColor(asset.state.name)"

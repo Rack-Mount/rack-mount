@@ -2,10 +2,12 @@ from rest_framework import viewsets, parsers
 from location.models import Room
 from location.serializers import RoomSerializer
 from shared.mixins import StandardFilterMixin
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import MapEditPermission
 
 
-class RoomViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
+class RoomViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, MapEditPermission]
     """
     RoomViewSet is a viewset for handling CRUD operations on the Room model.
 

@@ -4,10 +4,11 @@ from asset.models import GenericComponent
 from asset.serializers import GenericComponentSerializer
 from shared.mixins import ImageTransformMixin
 from shared.paginations import StandardResultsSetPagination
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import CatalogResourcePermission
 
 
-class GenericComponentViewSet(RoleBasedViewSetMixin, ImageTransformMixin, viewsets.ModelViewSet):
+class GenericComponentViewSet(ImageTransformMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing GenericComponent objects (cable managers, blanking panels,
     patch panels, PDUs, shelves, and other consumable rack accessories).
@@ -17,6 +18,7 @@ class GenericComponentViewSet(RoleBasedViewSetMixin, ImageTransformMixin, viewse
     and corresponding *_transform JSON for server-side crop/rotate processing.
     """
 
+    permission_classes = [IsAuthenticated, CatalogResourcePermission]
     queryset = GenericComponent.objects.all()
     serializer_class = GenericComponentSerializer
     pagination_class = StandardResultsSetPagination

@@ -108,13 +108,13 @@
 }
 
 .lang-select {
-  background: var(--dc-lang-btn-active-bg);
-  border: 1px solid var(--dc-lang-btn-active-border);
-  border-radius: 8px;
-  color: var(--dc-navbar-link-active-color);
-  font-size: 0.78rem;
+  background: transparent;
+  border: 1px solid var(--dc-border);
+  border-radius: 6px;
+  color: var(--dc-text-secondary);
+  font-size: 0.8125rem;
   font-weight: 500;
-  padding: 4px 28px 4px 10px;
+  padding: 5px 28px 5px 10px;
   cursor: pointer;
   outline: none;
   appearance: none;
@@ -123,12 +123,14 @@
   background-repeat: no-repeat;
   background-position: right 8px center;
   transition:
-    background-color 0.15s,
-    border-color 0.15s;
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    background-color: var(--dc-lang-btn-hover-bg);
-    border-color: var(--dc-lang-btn-active-border);
+    background-color: var(--dc-bg-elevated);
+    border-color: var(--dc-border-strong);
+    color: var(--dc-text-primary);
   }
 
   option {
@@ -160,6 +162,42 @@
 
   @media (max-width: 600px) {
     display: none;
+  }
+}
+
+// ── Admin / User management button ───────────────────────────────────────
+
+.admin-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--dc-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dc-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background-color: var(--dc-bg-elevated);
+    border-color: var(--dc-border-strong);
+    color: var(--dc-text-primary);
+  }
+
+  span {
+    @media (max-width: 480px) {
+      display: none;
+    }
   }
 }
 

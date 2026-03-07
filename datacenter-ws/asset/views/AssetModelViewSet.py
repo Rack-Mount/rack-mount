@@ -6,10 +6,11 @@ from asset.serializers import AssetModelSerializer
 from asset.models import AssetModel
 from shared.mixins import ImageTransformMixin
 from shared.paginations import StandardResultsSetPagination
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import CatalogResourcePermission
 
 
-class AssetModelViewSet(RoleBasedViewSetMixin, ImageTransformMixin, viewsets.ModelViewSet):
+class AssetModelViewSet(ImageTransformMixin, viewsets.ModelViewSet):
     """
     AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 
@@ -23,6 +24,7 @@ class AssetModelViewSet(RoleBasedViewSetMixin, ImageTransformMixin, viewsets.Mod
         ordering (list): The default ordering for the results.
         filterset_fields (list): The fields that can be used for filtering the results.
     """
+    permission_classes = [IsAuthenticated, CatalogResourcePermission]
     queryset = AssetModel.objects.select_related('vendor', 'type').all()
     serializer_class = AssetModelSerializer
     pagination_class = StandardResultsSetPagination

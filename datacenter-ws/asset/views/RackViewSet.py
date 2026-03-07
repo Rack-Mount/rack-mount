@@ -5,13 +5,15 @@ from django.db.models import Count, Sum
 from asset.serializers import RackSerializer
 from asset.models import Rack, RackUnit
 from shared.mixins import StandardFilterMixin
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import RackResourcePermission
 
 
-class RackViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
+class RackViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     """
     RackViewSet is a viewset for handling CRUD operations on Rack objects.
     """
+    permission_classes = [IsAuthenticated, RackResourcePermission]
 
     queryset = Rack.objects.select_related(
         'model', 'room', 'room__location'

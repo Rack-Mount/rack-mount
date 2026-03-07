@@ -4,13 +4,15 @@ from rest_framework.response import Response
 from asset.serializers import VendorSerializer
 from asset.models import Vendor
 from shared.mixins import NameSearchMixin
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import CatalogResourcePermission
 
 
-class VendorViewSet(RoleBasedViewSetMixin, NameSearchMixin, viewsets.ModelViewSet):
+class VendorViewSet(NameSearchMixin, viewsets.ModelViewSet):
     """
     VendorViewSet handles CRUD operations on the Vendor model.
     """
+    permission_classes = [IsAuthenticated, CatalogResourcePermission]
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
     ordering_fields = ['name']

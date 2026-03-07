@@ -1,16 +1,6 @@
 """
-RoleBasedViewSetMixin — apply to any ModelViewSet to enforce role-based
-read/write restrictions based on the authenticated user's role.
+RoleBasedViewSetMixin — legacy shim kept for compatibility.
+New viewsets should directly declare permission_classes instead.
 """
-from accounts.permissions import RoleBasedModelPermission
-
-
-class RoleBasedViewSetMixin:
-    """
-    Override get_permissions() to inject RoleBasedModelPermission in addition
-    to any permissions already declared on the viewset.
-    """
-
-    def get_permissions(self):
-        base = super().get_permissions()
-        return [*base, RoleBasedModelPermission()]
+# This mixin is no longer used; viewsets now use explicit per-section
+# permission classes from accounts.permissions.

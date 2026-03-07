@@ -2,12 +2,25 @@ import { computed, Injectable, signal } from '@angular/core';
 
 export interface RoleData {
   name: string;
-  can_create: boolean;
-  can_edit: boolean;
-  can_delete: boolean;
-  can_import_export: boolean;
-  can_access_assets: boolean;
-  can_access_catalog: boolean;
+  // Assets
+  can_view_assets: boolean;
+  can_create_assets: boolean;
+  can_edit_assets: boolean;
+  can_delete_assets: boolean;
+  can_import_export_assets: boolean;
+  can_clone_assets: boolean;
+  // Catalog
+  can_view_catalog: boolean;
+  can_create_catalog: boolean;
+  can_edit_catalog: boolean;
+  can_delete_catalog: boolean;
+  can_import_catalog: boolean;
+  // Infrastructure
+  can_create_racks: boolean;
+  can_edit_racks: boolean;
+  can_delete_racks: boolean;
+  can_edit_map: boolean;
+  // Admin
   can_manage_users: boolean;
 }
 
@@ -20,12 +33,55 @@ export class RoleService {
   readonly role = this._role.asReadonly();
 
   readonly isAdmin = computed(() => this._role()?.name === 'admin');
-  readonly canCreate = computed(() => this._role()?.can_create ?? false);
-  readonly canEdit = computed(() => this._role()?.can_edit ?? false);
-  readonly canDelete = computed(() => this._role()?.can_delete ?? false);
-  readonly canImportExport = computed(
-    () => this._role()?.can_import_export ?? false,
+
+  // Assets
+  readonly canViewAssets = computed(
+    () => this._role()?.can_view_assets ?? false,
   );
+  readonly canCreateAssets = computed(
+    () => this._role()?.can_create_assets ?? false,
+  );
+  readonly canEditAssets = computed(
+    () => this._role()?.can_edit_assets ?? false,
+  );
+  readonly canDeleteAssets = computed(
+    () => this._role()?.can_delete_assets ?? false,
+  );
+  readonly canImportExportAssets = computed(
+    () => this._role()?.can_import_export_assets ?? false,
+  );
+  readonly canCloneAssets = computed(
+    () => this._role()?.can_clone_assets ?? false,
+  );
+
+  // Catalog
+  readonly canViewCatalog = computed(
+    () => this._role()?.can_view_catalog ?? false,
+  );
+  readonly canCreateCatalog = computed(
+    () => this._role()?.can_create_catalog ?? false,
+  );
+  readonly canEditCatalog = computed(
+    () => this._role()?.can_edit_catalog ?? false,
+  );
+  readonly canDeleteCatalog = computed(
+    () => this._role()?.can_delete_catalog ?? false,
+  );
+  readonly canImportCatalog = computed(
+    () => this._role()?.can_import_catalog ?? false,
+  );
+
+  // Infrastructure
+  readonly canCreateRacks = computed(
+    () => this._role()?.can_create_racks ?? false,
+  );
+  readonly canEditRacks = computed(() => this._role()?.can_edit_racks ?? false);
+  readonly canDeleteRacks = computed(
+    () => this._role()?.can_delete_racks ?? false,
+  );
+  readonly canEditMap = computed(() => this._role()?.can_edit_map ?? false);
+
+  // Admin
   readonly canManageUsers = computed(
     () => this._role()?.can_manage_users ?? false,
   );

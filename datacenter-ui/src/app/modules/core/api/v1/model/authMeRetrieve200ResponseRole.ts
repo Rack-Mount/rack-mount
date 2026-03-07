@@ -12,12 +12,21 @@
 export interface AuthMeRetrieve200ResponseRole { 
     id?: number;
     name?: string;
-    can_create?: boolean;
-    can_edit?: boolean;
-    can_delete?: boolean;
-    can_import_export?: boolean;
-    can_access_assets?: boolean;
-    can_access_catalog?: boolean;
+    can_view_assets?: boolean;
+    can_create_assets?: boolean;
+    can_edit_assets?: boolean;
+    can_delete_assets?: boolean;
+    can_import_export_assets?: boolean;
+    can_clone_assets?: boolean;
+    can_view_catalog?: boolean;
+    can_create_catalog?: boolean;
+    can_edit_catalog?: boolean;
+    can_delete_catalog?: boolean;
+    can_import_catalog?: boolean;
+    can_create_racks?: boolean;
+    can_edit_racks?: boolean;
+    can_delete_racks?: boolean;
+    can_edit_map?: boolean;
     can_manage_users?: boolean;
 }
 

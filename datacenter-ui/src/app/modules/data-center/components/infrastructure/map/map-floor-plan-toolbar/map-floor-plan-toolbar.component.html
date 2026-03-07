@@ -35,7 +35,7 @@
     </select>
   }
 
-  @if (role.canEdit()) {
+  @if (role.canEditMap()) {
     <button
       class="btn-save"
       (click)="save.emit()"

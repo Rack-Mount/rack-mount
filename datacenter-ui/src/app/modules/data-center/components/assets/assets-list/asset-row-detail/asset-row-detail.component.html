@@ -128,7 +128,7 @@
 
   <div class="detail-actions">
     @if (deleteConfirmId() !== asset().id) {
-      @if (role.canCreate()) {
+      @if (role.canCloneAssets()) {
         <button
           class="btn-clone"
           [disabled]="cloneInProgress()"
@@ -163,7 +163,7 @@
           }
         </button>
       }
-      @if (role.canEdit()) {
+      @if (role.canEditAssets()) {
         <button class="btn-edit" (click)="onEditRequest($event)">
           <svg viewBox="0 0 16 16" fill="none">
             <path
@@ -177,7 +177,7 @@
           {{ "asset_row.edit_btn" | translate }}
         </button>
       }
-      @if (role.canDelete()) {
+      @if (role.canDeleteAssets()) {
         <button
           class="btn-delete"
           (click)="onDeleteRequest(asset().id, $event)"

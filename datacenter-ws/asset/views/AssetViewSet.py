@@ -8,7 +8,13 @@ from asset.serializers import AssetSerializer
 from asset.models import Asset, AssetState, RackUnit
 from django_filters import rest_framework as df_filters
 from shared.mixins import StandardFilterMixin
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import (
+    AssetResourcePermission,
+    CloneAssetPermission,
+    EditAssetPermission,
+    ImportExportAssetsPermission,
+)
 
 
 class AssetFilter(df_filters.FilterSet):
@@ -28,7 +34,7 @@ class AssetFilter(df_filters.FilterSet):
                   'model', 'state', 'model__vendor', 'model__type']
 
 
-class AssetViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
+class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     """
     AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 
@@ -42,6 +48,15 @@ class AssetViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelVie
         ordering (list): The default ordering for the results.
         filterset_fields (list): The fields that can be used for filtering the results.
     """
+    permission_classes = [IsAuthenticated, AssetResourcePermission]
+
+    def get_permissions(self):
+        if self.action in ('clone', 'bulk_clone'):
+            return [IsAuthenticated(), CloneAssetPermission()]
+        if self.action == 'bulk_state':
+            return [IsAuthenticated(), EditAssetPermission()]
+        return [IsAuthenticated(), AssetResourcePermission()]
+
     queryset = Asset.objects.select_related(
         'model', 'model__vendor', 'model__type', 'state', 'rackunit__rack'
     ).all()

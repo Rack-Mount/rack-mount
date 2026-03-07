@@ -4,10 +4,23 @@ from .models import Role, UserProfile
 
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
-    list_display = ('name', 'can_create', 'can_edit', 'can_delete',
-                    'can_import_export', 'can_access_assets', 'can_access_catalog', 'can_manage_users')
-    list_editable = ('can_create', 'can_edit', 'can_delete',
-                     'can_import_export', 'can_access_assets', 'can_access_catalog', 'can_manage_users')
+    list_display = (
+        'name',
+        'can_view_assets', 'can_create_assets', 'can_edit_assets',
+        'can_delete_assets', 'can_import_export_assets', 'can_clone_assets',
+        'can_view_catalog', 'can_create_catalog', 'can_edit_catalog',
+        'can_delete_catalog', 'can_import_catalog',
+        'can_create_racks', 'can_edit_racks', 'can_delete_racks', 'can_edit_map',
+        'can_manage_users',
+    )
+    list_editable = (
+        'can_view_assets', 'can_create_assets', 'can_edit_assets',
+        'can_delete_assets', 'can_import_export_assets', 'can_clone_assets',
+        'can_view_catalog', 'can_create_catalog', 'can_edit_catalog',
+        'can_delete_catalog', 'can_import_catalog',
+        'can_create_racks', 'can_edit_racks', 'can_delete_racks', 'can_edit_map',
+        'can_manage_users',
+    )
 
 
 @admin.register(UserProfile)

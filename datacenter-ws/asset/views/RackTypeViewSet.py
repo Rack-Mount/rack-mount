@@ -2,11 +2,13 @@ from rest_framework import viewsets
 from asset.serializers import RackTypeSerializer
 from asset.models import RackType
 from shared.mixins import NameSearchMixin
-from accounts.mixins import RoleBasedViewSetMixin
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import RackResourcePermission
 
 
-class RackTypeViewSet(RoleBasedViewSetMixin, NameSearchMixin, viewsets.ModelViewSet):
+class RackTypeViewSet(NameSearchMixin, viewsets.ModelViewSet):
     """ViewSet for CRUD operations on RackType objects."""
+    permission_classes = [IsAuthenticated, RackResourcePermission]
 
     queryset = RackType.objects.all()
     serializer_class = RackTypeSerializer

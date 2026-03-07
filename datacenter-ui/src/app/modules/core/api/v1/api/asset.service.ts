@@ -461,7 +461,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint post /asset/asset_custom_field
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -532,7 +532,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint delete /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -593,7 +593,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint get /asset/asset_custom_field
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -704,7 +704,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint patch /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -779,7 +779,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint get /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -841,7 +841,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint put /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4360,7 +4360,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint post /asset/rack_unit
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4434,7 +4434,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint delete /asset/rack_unit/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4495,7 +4495,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint get /asset/rack_unit
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4626,7 +4626,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint patch /asset/rack_unit/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4701,7 +4701,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint get /asset/rack_unit/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -4763,7 +4763,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all RackUnit objects.     serializer_class (Serializer): The serializer class used to serialize and deserialize RackUnit objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for filtering and searching the queryset.     filterset_fields (list): The fields that can be used to filter the queryset.     search_fields (list): The fields that can be used to search the queryset.
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint put /asset/rack_unit/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

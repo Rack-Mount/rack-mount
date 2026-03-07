@@ -5,7 +5,7 @@
   <span class="rack-aside__count">{{ rows().length }}</span>
 </div>
 
-@if (selectedCount() > 0 && role.canEdit()) {
+@if (selectedCount() > 0 && role.canEditRacks()) {
   <div class="device-table__bulk-bar">
     <span class="device-table__bulk-bar__info"
       >{{ selectedCount() }}
@@ -41,7 +41,7 @@
   <thead>
     <tr>
       <th class="device-table__th device-table__th--check">
-        @if (role.canEdit()) {
+        @if (role.canEditRacks()) {
           <input
             type="checkbox"
             class="device-table__checkbox"
@@ -83,7 +83,7 @@
       >
         <!-- Checkbox: only for actual devices -->
         <td class="device-table__td device-table__td--check">
-          @if (row.device?.device_id && role.canEdit()) {
+          @if (row.device?.device_id && role.canEditRacks()) {
             <input
               type="checkbox"
               class="device-table__checkbox"
@@ -144,7 +144,7 @@
         <!-- State -->
         <td class="device-table__td">
           @if (row.device?.device_id && row.device!.device_state) {
-            @if (role.canEdit()) {
+            @if (role.canEditRacks()) {
               <span
                 class="device-table__state-badge device-table__state-badge--clickable"
                 (click)="onStatePickerClick(row.device!.device_id!, $event)"
@@ -169,7 +169,7 @@
         </td>
         <!-- Remove -->
         <td class="device-table__td device-table__td--action">
-          @if (role.canEdit()) {
+          @if (role.canEditRacks()) {
             <button
               class="device-table__remove-btn"
               [title]="'rack_table.remove_single' | translate"
