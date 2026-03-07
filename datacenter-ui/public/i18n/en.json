@@ -381,7 +381,8 @@
     "models": "Models",
     "components": "Components",
     "racks": "Racks",
-    "admin": "Users"
+    "admin": "Users",
+    "change_password": "Password"
   },
   "asset_row": {
     "section_device": "Device",
@@ -429,7 +430,8 @@
   "header": {
     "logout": "Sign out",
     "logged_in_as": "Signed in as",
-    "manage_users": "Manage Users"
+    "manage_users": "Manage Users",
+    "change_password": "Change Password"
   },
   "roles": {
     "admin": "Admin",
@@ -459,5 +461,17 @@
     "delete_error": "Error — retry",
     "save_error": "Error while saving.",
     "no_data": "No users found."
+  },
+  "change_password": {
+    "title": "Change Password",
+    "current_password": "Current Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm Password",
+    "current_ph": "Current password",
+    "new_ph": "New password (min. 8 characters)",
+    "confirm_ph": "Confirm new password",
+    "success": "Password updated successfully.",
+    "change_again": "Change Again",
+    "error_mismatch": "Passwords do not match."
   }
 }

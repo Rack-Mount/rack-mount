@@ -381,7 +381,8 @@
     "models": "Apparati",
     "components": "Componenti",
     "racks": "Rack",
-    "admin": "Utenti"
+    "admin": "Utenti",
+    "change_password": "Password"
   },
   "asset_row": {
     "section_device": "Apparato",
@@ -429,7 +430,8 @@
   "header": {
     "logout": "Esci",
     "logged_in_as": "Connesso come",
-    "manage_users": "Gestione Utenti"
+    "manage_users": "Gestione Utenti",
+    "change_password": "Cambia Password"
   },
   "roles": {
     "admin": "Amministratore",
@@ -459,5 +461,17 @@
     "delete_error": "Errore — riprova",
     "save_error": "Errore durante il salvataggio.",
     "no_data": "Nessun utente trovato."
+  },
+  "change_password": {
+    "title": "Cambia Password",
+    "current_password": "Password Attuale",
+    "new_password": "Nuova Password",
+    "confirm_password": "Conferma Password",
+    "current_ph": "Password attuale",
+    "new_ph": "Nuova password (min. 8 caratteri)",
+    "confirm_ph": "Conferma nuova password",
+    "success": "Password aggiornata con successo.",
+    "change_again": "Cambia di nuovo",
+    "error_mismatch": "Le password non coincidono."
   }
 }

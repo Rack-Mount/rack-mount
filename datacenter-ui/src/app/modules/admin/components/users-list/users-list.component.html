@@ -258,7 +258,9 @@
                       </button>
                     </span>
                   } @else {
-                    @if (role.canManageUsers()) {
+                    @if (
+                      role.canManageUsers() && u.username !== auth.username()
+                    ) {
                       <button
                         class="btn-icon btn-icon--edit"
                         [title]="'common.edit' | translate"

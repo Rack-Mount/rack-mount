@@ -128,8 +128,8 @@
     color 0.15s ease;
 
   &:hover {
-    background-color: var(--dc-bg-elevated);
-    border-color: var(--dc-border-strong);
+    background-color: var(--dc-lang-btn-hover-bg);
+    border-color: var(--dc-lang-btn-active-border);
     color: var(--dc-text-primary);
   }
 
@@ -189,15 +189,52 @@
   }
 
   &:hover {
-    background-color: var(--dc-bg-elevated);
-    border-color: var(--dc-border-strong);
-    color: var(--dc-text-primary);
+    background-color: var(--dc-lang-btn-hover-bg);
+    border-color: var(--dc-lang-btn-active-border);
+    color: var(--dc-navbar-link-active-color);
   }
 
   span {
     @media (max-width: 480px) {
       display: none;
     }
+  }
+}
+
+// ── Change password button (username + lock icon) ─────────────────────────
+
+.change-pwd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--dc-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dc-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background-color: var(--dc-lang-btn-hover-bg);
+    border-color: var(--dc-lang-btn-active-border);
+    color: var(--dc-navbar-link-active-color);
+  }
+
+  .user-info__name {
+    border: none;
+    padding: 0;
+    background: none;
+    color: inherit;
   }
 }
 

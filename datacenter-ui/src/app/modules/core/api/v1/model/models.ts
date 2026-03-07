@@ -7,6 +7,7 @@ export * from './assetState';
 export * from './assetType';
 export * from './authMeRetrieve200Response';
 export * from './authMeRetrieve200ResponseRole';
+export * from './changePassword';
 export * from './componentTypeEnum';
 export * from './genericComponent';
 export * from './location';

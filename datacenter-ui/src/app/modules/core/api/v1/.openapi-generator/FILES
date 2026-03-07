@@ -22,6 +22,7 @@ model/assetState.ts
 model/assetType.ts
 model/authMeRetrieve200Response.ts
 model/authMeRetrieve200ResponseRole.ts
+model/changePassword.ts
 model/componentTypeEnum.ts
 model/genericComponent.ts
 model/location.ts

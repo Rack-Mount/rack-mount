@@ -12,6 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { AuthMeRetrieve200Response } from '../model/models';
+import { ChangePassword } from '../model/models';
 import { PaginatedUserListList } from '../model/models';
 import { PatchedUserUpdate } from '../model/models';
 import { Role } from '../model/models';
@@ -24,6 +25,10 @@ import { UserUpdate } from '../model/models';
 
 import { Configuration }                                     from '../configuration';
 
+
+export interface AuthChangePasswordCreateRequestParams {
+    changePassword: ChangePassword;
+}
 
 export interface AuthTokenCreateRequestParams {
     tokenObtainPair: TokenObtainPair;
@@ -64,6 +69,14 @@ export interface AuthUsersUpdateRequestParams {
 export interface AuthServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
+
+    /**
+     * 
+     * Allow any authenticated user to change their own password.
+     * @endpoint post /auth/change-password/
+* @param requestParameters
+     */
+    authChangePasswordCreate(requestParameters: AuthChangePasswordCreateRequestParams, extraHttpRequestParams?: any): Observable<ChangePassword>;
 
     /**
      * 

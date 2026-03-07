@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from accounts.models import Role
 from accounts.permissions import IsAdminRole
-from accounts.serializers import RoleSerializer, UserListSerializer, UserCreateSerializer, UserUpdateSerializer
+from accounts.serializers import RoleSerializer, UserListSerializer, UserCreateSerializer, UserUpdateSerializer, ChangePasswordSerializer
 
 
 class UserManagementViewSet(
@@ -51,3 +51,20 @@ class RoleListView(generics.ListAPIView):
     serializer_class = RoleSerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
     pagination_class = None
+
+
+class ChangePasswordView(generics.GenericAPIView):
+    """Allow any authenticated user to change their own password."""
+    serializer_class = ChangePasswordSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = request.user
+        if not user.check_password(serializer.validated_data['current_password']):
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError({'current_password': 'Incorrect password.'})
+        user.set_password(serializer.validated_data['new_password'])
+        user.save()
+        return Response({'detail': 'Password changed successfully.'}, status=status.HTTP_200_OK)

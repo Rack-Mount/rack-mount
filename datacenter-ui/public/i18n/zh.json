@@ -381,7 +381,8 @@
     "models": "型号",
     "components": "组件",
     "racks": "机柜",
-    "admin": "用户"
+    "admin": "用户",
+    "change_password": "密码"
   },
   "asset_row": {
     "section_device": "设备",
@@ -429,7 +430,8 @@
   "header": {
     "logout": "退出",
     "logged_in_as": "当前用户",
-    "manage_users": "用户管理"
+    "manage_users": "用户管理",
+    "change_password": "修改密码"
   },
   "roles": {
     "admin": "管理员",
@@ -459,5 +461,17 @@
     "delete_error": "错误—请重试",
     "save_error": "保存时出错。",
     "no_data": "未找到用户。"
+  },
+  "change_password": {
+    "title": "修改密码",
+    "current_password": "当前密码",
+    "new_password": "新密码",
+    "confirm_password": "确认密码",
+    "current_ph": "当前密码",
+    "new_ph": "新密码（至少8位）",
+    "confirm_ph": "确认新密码",
+    "success": "密码已成功更新。",
+    "change_again": "再次修改",
+    "error_mismatch": "两次输入的密码不一致。"
   }
 }

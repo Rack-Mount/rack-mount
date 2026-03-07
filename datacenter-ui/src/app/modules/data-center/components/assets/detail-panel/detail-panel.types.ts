@@ -12,7 +12,8 @@ export interface PanelTab {
     | 'racks'
     | 'room'
     | 'rack'
-    | 'admin';
+    | 'admin'
+    | 'change-password';
   roomId?: number;
   rackName?: string;
   /** Pinned tabs are always visible and cannot be closed */

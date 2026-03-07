@@ -23,6 +23,7 @@ export const routes: Routes = [
   { path: 'map/:id', canActivate: [authGuard], children: [] },
   { path: 'rack/:name', canActivate: [authGuard], children: [] },
   { path: 'admin', canActivate: [authGuard, adminGuard], children: [] },
+  { path: 'change-password', canActivate: [authGuard], children: [] },
   { path: 'not-found', canActivate: [authGuard], children: [] },
   { path: '**', redirectTo: 'not-found' },
 ];

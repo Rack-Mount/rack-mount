@@ -37,6 +37,8 @@
               🗄️
             } @else if (tab.type === "admin") {
               👥
+            } @else if (tab.type === "change-password") {
+              🔑
             } @else {
               🏠
             }
@@ -222,6 +224,21 @@
         <div class="loading-state">{{ "users.loading" | translate }}</div>
       } @placeholder {
         <div class="loading-state">{{ "users.loading" | translate }}</div>
+      } @error {
+        <div class="loading-state loading-state--error">
+          {{ "common.error_loading" | translate }}
+        </div>
+      }
+    </div>
+
+    <!-- Change password pane -->
+    <div class="content-pane" [hidden]="activeTabId() !== 'change-password'">
+      @defer (when activeTabId() === 'change-password'; prefetch on idle) {
+        <app-change-password />
+      } @loading (minimum 150ms) {
+        <div class="loading-state">{{ "common.loading" | translate }}</div>
+      } @placeholder {
+        <div class="loading-state">{{ "common.loading" | translate }}</div>
       } @error {
         <div class="loading-state loading-state--error">
           {{ "common.error_loading" | translate }}

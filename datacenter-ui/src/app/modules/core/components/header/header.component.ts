@@ -27,6 +27,10 @@ export class HeaderComponent {
     this.tabService.openAdmin();
   }
 
+  protected openChangePassword(): void {
+    this.tabService.openChangePassword();
+  }
+
   protected logout(): void {
     this.auth.logout();
     this.router.navigate(['/login']);

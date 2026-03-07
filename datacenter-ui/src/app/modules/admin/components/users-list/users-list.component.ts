@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { AuthService } from '../../../core/services/auth.service';
 import { BackendErrorService } from '../../../core/services/backend-error.service';
 import { RoleService } from '../../../core/services/role.service';
 
@@ -58,6 +59,7 @@ type SaveState = 'idle' | 'saving' | 'error';
 })
 export class UsersListComponent {
   protected readonly role = inject(RoleService);
+  protected readonly auth = inject(AuthService);
   private readonly http = inject(HttpClient);
   private readonly backendErr = inject(BackendErrorService);
 

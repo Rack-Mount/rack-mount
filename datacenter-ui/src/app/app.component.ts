@@ -13,6 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { merge } from 'rxjs';
 import { filter, startWith } from 'rxjs/operators';
 import { UsersListComponent } from './modules/admin/components/users-list/users-list.component';
+import { ChangePasswordComponent } from './modules/core/components/change-password/change-password.component';
 import { HeaderComponent } from './modules/core/components/header/header.component';
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
@@ -45,6 +46,7 @@ import { RacksListComponent } from './modules/data-center/components/infrastruct
     ModelsListComponent,
     ComponentsListComponent,
     UsersListComponent,
+    ChangePasswordComponent,
     TranslatePipe,
     ToastComponent,
   ],
@@ -194,6 +196,9 @@ export class AppComponent implements OnInit {
     } else if (segments[0]?.path === 'admin') {
       this.tabService.ensureAdminTab();
       this.activeTabId.set('admin');
+    } else if (segments[0]?.path === 'change-password') {
+      this.tabService.ensureChangePasswordTab();
+      this.activeTabId.set('change-password');
     } else if (segments[0]?.path === 'not-found') {
       this.activeTabId.set('not-found');
     } else {
@@ -257,6 +262,10 @@ export class AppComponent implements OnInit {
     }
     if (tabId === 'admin') {
       this.router.navigate(['/admin']);
+      return;
+    }
+    if (tabId === 'change-password') {
+      this.router.navigate(['/change-password']);
       return;
     }
     if (tabId.startsWith('room-')) {

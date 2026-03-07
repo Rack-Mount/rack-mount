@@ -379,7 +379,8 @@
     "models": "Modelle",
     "components": "Komponenten",
     "racks": "Racks",
-    "admin": "Benutzer"
+    "admin": "Benutzer",
+    "change_password": "Passwort"
   },
   "asset_row": {
     "section_device": "Gerät",
@@ -427,7 +428,8 @@
   "header": {
     "logout": "Abmelden",
     "logged_in_as": "Angemeldet als",
-    "manage_users": "Benutzerverwaltung"
+    "manage_users": "Benutzerverwaltung",
+    "change_password": "Passwort ändern"
   },
   "roles": {
     "admin": "Administrator",
@@ -457,5 +459,17 @@
     "delete_error": "Fehler — erneut versuchen",
     "save_error": "Fehler beim Speichern.",
     "no_data": "Keine Benutzer gefunden."
+  },
+  "change_password": {
+    "title": "Passwort ändern",
+    "current_password": "Aktuelles Passwort",
+    "new_password": "Neues Passwort",
+    "confirm_password": "Passwort bestätigen",
+    "current_ph": "Aktuelles Passwort",
+    "new_ph": "Neues Passwort (mind. 8 Zeichen)",
+    "confirm_ph": "Neues Passwort bestätigen",
+    "success": "Passwort erfolgreich aktualisiert.",
+    "change_again": "Erneut ändern",
+    "error_mismatch": "Passwörter stimmen nicht überein."
   }
 }

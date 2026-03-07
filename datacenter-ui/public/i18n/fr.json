@@ -379,7 +379,8 @@
     "models": "Modèles",
     "components": "Composants",
     "racks": "Baies",
-    "admin": "Utilisateurs"
+    "admin": "Utilisateurs",
+    "change_password": "Mot de passe"
   },
   "asset_row": {
     "section_device": "Équipement",
@@ -427,7 +428,8 @@
   "header": {
     "logout": "Déconnexion",
     "logged_in_as": "Connecté en tant que",
-    "manage_users": "Gérer les utilisateurs"
+    "manage_users": "Gérer les utilisateurs",
+    "change_password": "Changer le mot de passe"
   },
   "roles": {
     "admin": "Administrateur",
@@ -457,5 +459,17 @@
     "delete_error": "Erreur — réessayer",
     "save_error": "Erreur lors de l’enregistrement.",
     "no_data": "Aucun utilisateur trouvé."
+  },
+  "change_password": {
+    "title": "Changer le mot de passe",
+    "current_password": "Mot de passe actuel",
+    "new_password": "Nouveau mot de passe",
+    "confirm_password": "Confirmer le mot de passe",
+    "current_ph": "Mot de passe actuel",
+    "new_ph": "Nouveau mot de passe (min. 8 caractères)",
+    "confirm_ph": "Confirmer le nouveau mot de passe",
+    "success": "Mot de passe mis à jour avec succès.",
+    "change_again": "Modifier à nouveau",
+    "error_mismatch": "Les mots de passe ne correspondent pas."
   }
 }

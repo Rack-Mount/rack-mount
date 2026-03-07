@@ -278,6 +278,33 @@ export class TabService {
     if (this.upsertAdminTab()) this.persistTabs();
   }
 
+  // ── Change password tab ────────────────────────────────────
+
+  private upsertChangePasswordTab(): boolean {
+    if (this._tabs().some((t) => t.id === 'change-password')) return false;
+    this._tabs.update((tabs) => [
+      {
+        id: 'change-password',
+        label: 'Password',
+        labelKey: 'tabs.change_password',
+        type: 'change-password' as const,
+        pinned: false,
+      },
+      ...tabs,
+    ]);
+    return true;
+  }
+
+  openChangePassword(): void {
+    this.upsertChangePasswordTab();
+    this.persistTabs();
+    this._activate$.next('change-password');
+  }
+
+  ensureChangePasswordTab(): void {
+    if (this.upsertChangePasswordTab()) this.persistTabs();
+  }
+
   reportRackNotFound(rackName: string): void {
     this.closeTab(`rack-${rackName}`);
     this._rackNotFound$.next(rackName);
