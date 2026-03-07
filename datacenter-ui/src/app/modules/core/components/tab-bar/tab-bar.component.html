@@ -1,0 +1,41 @@
+<div class="tab-list">
+  @for (tab of tabs(); track tab.id) {
+    <div
+      class="tab"
+      [class.active]="tab.id === activeTabId()"
+      [class.pinned]="tab.pinned"
+      [class.tab--dragging]="_dragTabId() === tab.id"
+      [class.tab--drag-over]="_dragOverId() === tab.id"
+      [attr.draggable]="tab.pinned ? null : 'true'"
+      (click)="tabActivate.emit(tab.id)"
+      (dragstart)="!tab.pinned && onTabDragStart(tab.id, $event)"
+      (dragover)="onTabDragOver(tab.id, $event)"
+      (drop)="onTabDrop(tab.id, $event)"
+      (dragend)="onTabDragEnd()"
+      [title]="tab.labelKey ? (tab.labelKey | translate) : tab.label"
+    >
+      <span class="tab-icon">{{ tabIcon(tab.type) }}</span>
+      <span class="tab-label">{{
+        tab.labelKey ? (tab.labelKey | translate) : tab.label
+      }}</span>
+      @if (!tab.pinned) {
+        <button
+          class="tab-close"
+          (click)="onCloseClick(tab.id, $event)"
+          [title]="'common.close_tab' | translate"
+        >
+          ×
+        </button>
+      }
+    </div>
+  }
+
+  @if (_dragTabId() !== null) {
+    <div
+      class="tab-drop-end"
+      [class.tab-drop-end--active]="_dragOverEnd()"
+      (dragover)="onTabDragOverEnd($event)"
+      (drop)="onTabDropEnd($event)"
+    ></div>
+  }
+</div>

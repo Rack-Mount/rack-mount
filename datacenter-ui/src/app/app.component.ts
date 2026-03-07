@@ -17,6 +17,7 @@ import { ChangePasswordComponent } from './modules/core/components/change-passwo
 import { HeaderComponent } from './modules/core/components/header/header.component';
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
+import { TabBarComponent } from './modules/core/components/tab-bar/tab-bar.component';
 import { ToastComponent } from './modules/core/components/toast/toast.component';
 import { AuthService } from './modules/core/services/auth.service';
 import { TabService } from './modules/core/services/tab.service';
@@ -30,12 +31,25 @@ import { MapComponent } from './modules/data-center/components/infrastructure/ma
 import { RackComponent } from './modules/data-center/components/infrastructure/rack/rack.component';
 import { RacksListComponent } from './modules/data-center/components/infrastructure/racks-list/racks-list.component';
 
+/** Maps static tab IDs to their router paths (no dynamic segment). */
+const STATIC_TAB_PATHS: Record<string, string[]> = {
+  home: ['/'],
+  assets: ['/assets'],
+  vendors: ['/vendors'],
+  models: ['/models'],
+  components: ['/components'],
+  racks: ['/racks'],
+  admin: ['/admin'],
+  'change-password': ['/change-password'],
+};
+
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     RouterOutlet,
     HeaderComponent,
+    TabBarComponent,
     HomeComponent,
     MapComponent,
     RackComponent,
@@ -72,59 +86,6 @@ export class AppComponent implements OnInit {
   readonly tabs = computed(() => [this.homeTab, ...this.tabService.tabs()]);
   readonly activeTabId = signal('home');
   private tabHistory: string[] = ['home'];
-
-  // ── Drag-and-drop tab reordering ─────────────────────────────
-  readonly _dragTabId = signal<string | null>(null);
-  readonly _dragOverId = signal<string | null>(null);
-  readonly _dragOverEnd = signal(false);
-
-  protected onTabDragStart(tabId: string, event: DragEvent): void {
-    event.dataTransfer!.effectAllowed = 'move';
-    event.dataTransfer!.setData('text/plain', tabId);
-    // Small delay so the ghost is rendered before we mark the element dragging
-    setTimeout(() => this._dragTabId.set(tabId), 0);
-  }
-
-  protected onTabDragOver(tabId: string, event: DragEvent): void {
-    if (this._dragTabId() === null || tabId === 'home') return;
-    event.preventDefault();
-    event.dataTransfer!.dropEffect = 'move';
-    this._dragOverEnd.set(false);
-    if (this._dragOverId() !== tabId) this._dragOverId.set(tabId);
-  }
-
-  protected onTabDrop(tabId: string, event: DragEvent): void {
-    event.preventDefault();
-    const fromId = this._dragTabId();
-    this._dragTabId.set(null);
-    this._dragOverId.set(null);
-    if (!fromId || fromId === tabId || tabId === 'home') return;
-    this.tabService.reorderTabs(fromId, tabId);
-  }
-
-  protected onTabDragOverEnd(event: DragEvent): void {
-    if (this._dragTabId() === null) return;
-    event.preventDefault();
-    event.dataTransfer!.dropEffect = 'move';
-    this._dragOverId.set(null);
-    this._dragOverEnd.set(true);
-  }
-
-  protected onTabDropEnd(event: DragEvent): void {
-    event.preventDefault();
-    const fromId = this._dragTabId();
-    this._dragTabId.set(null);
-    this._dragOverEnd.set(false);
-    if (!fromId) return;
-    this.tabService.moveTabToEnd(fromId);
-  }
-
-  protected onTabDragEnd(): void {
-    this._dragTabId.set(null);
-    this._dragOverId.set(null);
-    this._dragOverEnd.set(false);
-  }
-
   ngOnInit(): void {
     // Apply the persisted or OS-default theme immediately
     this.themeService.init();
@@ -160,8 +121,9 @@ export class AppComponent implements OnInit {
   private syncFromUrl(): void {
     const tree = this.router.parseUrl(this.router.url);
     const segments = tree.root.children['primary']?.segments ?? [];
+    const first = segments[0]?.path;
 
-    if (segments[0]?.path === 'rack') {
+    if (first === 'rack') {
       const rackName = segments[1]?.path;
       if (rackName) {
         this.tabService.ensureRackTab(rackName);
@@ -169,38 +131,56 @@ export class AppComponent implements OnInit {
       } else {
         this.activeTabId.set('home');
       }
-    } else if (segments[0]?.path === 'map') {
-      const rawId = segments[1]?.path;
-      const roomId = rawId ? +rawId : NaN;
+      return;
+    }
+
+    if (first === 'map') {
+      const roomId = +(segments[1]?.path ?? '');
       if (!isNaN(roomId)) {
         this.tabService.ensureRoomTab(roomId, `Room #${roomId}`);
         this.activeTabId.set(`room-${roomId}`);
       } else {
         this.activeTabId.set('home');
       }
-    } else if (segments[0]?.path === 'assets') {
-      this.tabService.ensureAssetsTab();
-      this.activeTabId.set('assets');
-    } else if (segments[0]?.path === 'vendors') {
-      this.tabService.ensureVendorsTab();
-      this.activeTabId.set('vendors');
-    } else if (segments[0]?.path === 'models') {
-      this.tabService.ensureModelsTab();
-      this.activeTabId.set('models');
-    } else if (segments[0]?.path === 'components') {
-      this.tabService.ensureComponentsTab();
-      this.activeTabId.set('components');
-    } else if (segments[0]?.path === 'racks') {
-      this.tabService.ensureRacksTab();
-      this.activeTabId.set('racks');
-    } else if (segments[0]?.path === 'admin') {
-      this.tabService.ensureAdminTab();
-      this.activeTabId.set('admin');
-    } else if (segments[0]?.path === 'change-password') {
-      this.tabService.ensureChangePasswordTab();
-      this.activeTabId.set('change-password');
-    } else if (segments[0]?.path === 'not-found') {
-      this.activeTabId.set('not-found');
+      return;
+    }
+
+    const urlEnsureMap: Record<string, () => void> = {
+      assets: () => {
+        this.tabService.ensureAssetsTab();
+        this.activeTabId.set('assets');
+      },
+      vendors: () => {
+        this.tabService.ensureVendorsTab();
+        this.activeTabId.set('vendors');
+      },
+      models: () => {
+        this.tabService.ensureModelsTab();
+        this.activeTabId.set('models');
+      },
+      components: () => {
+        this.tabService.ensureComponentsTab();
+        this.activeTabId.set('components');
+      },
+      racks: () => {
+        this.tabService.ensureRacksTab();
+        this.activeTabId.set('racks');
+      },
+      admin: () => {
+        this.tabService.ensureAdminTab();
+        this.activeTabId.set('admin');
+      },
+      'change-password': () => {
+        this.tabService.ensureChangePasswordTab();
+        this.activeTabId.set('change-password');
+      },
+      'not-found': () => {
+        this.activeTabId.set('not-found');
+      },
+    };
+
+    if (first && urlEnsureMap[first]) {
+      urlEnsureMap[first]();
     } else {
       this.activeTabId.set('home');
     }
@@ -236,36 +216,8 @@ export class AppComponent implements OnInit {
 
   private navigateToTab(tabId: string): void {
     if (tabId === 'not-found') return;
-    if (tabId === 'home') {
-      this.router.navigate(['/']);
-      return;
-    }
-    if (tabId === 'assets') {
-      this.router.navigate(['/assets']);
-      return;
-    }
-    if (tabId === 'vendors') {
-      this.router.navigate(['/vendors']);
-      return;
-    }
-    if (tabId === 'models') {
-      this.router.navigate(['/models']);
-      return;
-    }
-    if (tabId === 'components') {
-      this.router.navigate(['/components']);
-      return;
-    }
-    if (tabId === 'racks') {
-      this.router.navigate(['/racks']);
-      return;
-    }
-    if (tabId === 'admin') {
-      this.router.navigate(['/admin']);
-      return;
-    }
-    if (tabId === 'change-password') {
-      this.router.navigate(['/change-password']);
+    if (STATIC_TAB_PATHS[tabId]) {
+      this.router.navigate(STATIC_TAB_PATHS[tabId]);
       return;
     }
     if (tabId.startsWith('room-')) {

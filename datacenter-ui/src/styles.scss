@@ -23,3 +23,82 @@ body {
 }
 
 /* Component-specific styles (rack, device) are in their respective SCSS files */
+
+/* ── Shared form-field utilities ─────────────────────────────────────────────
+ * These classes are used by multiple components (users-list, change-password,
+ * user-edit-panel). Keeping them global avoids duplication and ViewEncapsulation
+ * workarounds, while the specific class names keep them well-scoped.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+.edit-panel__fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+
+  &--toggle {
+    justify-content: flex-end;
+  }
+}
+
+.edit-label {
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: var(--dc-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.edit-input,
+.edit-select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--dc-border-strong);
+  border-radius: 5px;
+  font-size: 0.875rem;
+  background: var(--dc-bg-surface);
+  color: var(--dc-text-primary);
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-color: var(--dc-accent);
+  }
+}
+
+.edit-panel__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-error {
+  font-size: 0.8rem;
+  color: var(--dc-danger-text);
+  margin: 0 0 0.5rem;
+}
+
+.btn-save {
+  padding: 0.4rem 1rem;
+  background: var(--dc-accent);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--dc-accent-hover);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+}

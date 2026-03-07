@@ -3,70 +3,12 @@
   <app-header />
 
   <!-- global tab bar -->
-  <div class="global-tab-bar">
-    <div class="tab-list">
-      @for (tab of tabs(); track tab.id) {
-        <div
-          class="tab"
-          [class.active]="tab.id === activeTabId()"
-          [class.pinned]="tab.pinned"
-          [class.tab--dragging]="_dragTabId() === tab.id"
-          [class.tab--drag-over]="_dragOverId() === tab.id"
-          [attr.draggable]="tab.pinned ? null : 'true'"
-          (click)="activateTab(tab.id)"
-          (dragstart)="!tab.pinned && onTabDragStart(tab.id, $event)"
-          (dragover)="onTabDragOver(tab.id, $event)"
-          (drop)="onTabDrop(tab.id, $event)"
-          (dragend)="onTabDragEnd()"
-          [title]="tab.labelKey ? (tab.labelKey | translate) : tab.label"
-        >
-          <span class="tab-icon">
-            @if (tab.type === "rack") {
-              🖥️
-            } @else if (tab.type === "room") {
-              🗺️
-            } @else if (tab.type === "assets") {
-              📦
-            } @else if (tab.type === "vendors") {
-              🏭
-            } @else if (tab.type === "models") {
-              🗂️
-            } @else if (tab.type === "components") {
-              🔌
-            } @else if (tab.type === "racks") {
-              🗄️
-            } @else if (tab.type === "admin") {
-              👥
-            } @else if (tab.type === "change-password") {
-              🔑
-            } @else {
-              🏠
-            }
-          </span>
-          <span class="tab-label">{{
-            tab.labelKey ? (tab.labelKey | translate) : tab.label
-          }}</span>
-          @if (!tab.pinned) {
-            <button
-              class="tab-close"
-              (click)="closeTab(tab.id, $event)"
-              [title]="'common.close_tab' | translate"
-            >
-              ×
-            </button>
-          }
-        </div>
-      }
-      @if (_dragTabId() !== null) {
-        <div
-          class="tab-drop-end"
-          [class.tab-drop-end--active]="_dragOverEnd()"
-          (dragover)="onTabDragOverEnd($event)"
-          (drop)="onTabDropEnd($event)"
-        ></div>
-      }
-    </div>
-  </div>
+  <app-tab-bar
+    [tabs]="tabs()"
+    [activeTabId]="activeTabId()"
+    (tabActivate)="activateTab($event)"
+    (tabClose)="closeTab($event.id, $event.event)"
+  />
 
   <!-- content area -->
   <div class="app-content">

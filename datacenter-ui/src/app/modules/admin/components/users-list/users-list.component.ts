@@ -12,6 +12,7 @@ import { environment } from '../../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
 import { BackendErrorService } from '../../../core/services/backend-error.service';
 import { RoleService } from '../../../core/services/role.service';
+import { UserEditPanelComponent } from './user-edit-panel/user-edit-panel.component';
 
 export interface UserRoleSummary {
   id: number;
@@ -52,7 +53,7 @@ type SaveState = 'idle' | 'saving' | 'error';
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [FormsModule, TranslatePipe],
+  imports: [FormsModule, TranslatePipe, UserEditPanelComponent],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -80,13 +81,6 @@ export class UsersListComponent {
 
   // ── Edit form ─────────────────────────────────────────────────────────────
   protected readonly editId = signal<number | null>(null);
-  protected readonly editUsername = signal('');
-  protected readonly editEmail = signal('');
-  protected readonly editRoleId = signal<number | null>(null);
-  protected readonly editIsActive = signal(true);
-  protected readonly editPassword = signal('');
-  protected readonly editSave = signal<SaveState>('idle');
-  protected readonly editError = signal('');
 
   // ── Delete ────────────────────────────────────────────────────────────────
   protected readonly deleteId = signal<number | null>(null);
@@ -168,48 +162,17 @@ export class UsersListComponent {
   protected startEdit(user: UserItem): void {
     this.createOpen.set(false);
     this.editId.set(user.id);
-    this.editUsername.set(user.username);
-    this.editEmail.set(user.email);
-    this.editRoleId.set(user.role?.id ?? null);
-    this.editIsActive.set(user.is_active);
-    this.editPassword.set('');
-    this.editSave.set('idle');
-    this.editError.set('');
   }
 
   protected cancelEdit(): void {
     this.editId.set(null);
   }
 
-  protected submitEdit(): void {
-    const id = this.editId();
-    if (!id) return;
-    this.editSave.set('saving');
-    const payload: UserUpdatePayload = {
-      username: this.editUsername().trim() || undefined,
-      email: this.editEmail().trim() || undefined,
-      role_id: this.editRoleId() ?? undefined,
-      is_active: this.editIsActive(),
-    };
-    if (this.editPassword().trim()) {
-      payload.password = this.editPassword();
-    }
-    this.http
-      .patch<UserItem>(`${this.baseUrl}${id}/`, payload)
-      .pipe(
-        catchError((err: HttpErrorResponse) => {
-          this.editSave.set('error');
-          this.editError.set(this.backendErr.parse(err));
-          return EMPTY;
-        }),
-      )
-      .subscribe((updated) => {
-        this.users.update((list) =>
-          list.map((u) => (u.id === id ? updated : u)),
-        );
-        this.editId.set(null);
-        this.editSave.set('idle');
-      });
+  protected onEditSaved(updated: UserItem): void {
+    this.users.update((list) =>
+      list.map((u) => (u.id === updated.id ? updated : u)),
+    );
+    this.editId.set(null);
   }
 
   protected startDelete(id: number): void {

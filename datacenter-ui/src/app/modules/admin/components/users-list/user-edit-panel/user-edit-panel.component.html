@@ -1,0 +1,82 @@
+<div class="edit-panel">
+  <div class="edit-panel__fields">
+    <div class="edit-field">
+      <label class="edit-label">{{ "users.field_username" | translate }}</label>
+      <input
+        class="edit-input"
+        type="text"
+        [value]="editUsername()"
+        (input)="editUsername.set($any($event.target).value)"
+      />
+    </div>
+
+    <div class="edit-field">
+      <label class="edit-label">{{ "users.field_email" | translate }}</label>
+      <input
+        class="edit-input"
+        type="email"
+        [value]="editEmail()"
+        (input)="editEmail.set($any($event.target).value)"
+      />
+    </div>
+
+    <div class="edit-field">
+      <label class="edit-label">{{ "users.field_role" | translate }}</label>
+      <select
+        class="edit-select"
+        [ngModel]="editRoleId()"
+        (ngModelChange)="editRoleId.set($event)"
+      >
+        @for (r of roles(); track r.id) {
+          <option [ngValue]="r.id">{{ "roles." + r.name | translate }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="edit-field">
+      <label class="edit-label">{{
+        "users.field_new_password" | translate
+      }}</label>
+      <input
+        class="edit-input"
+        type="password"
+        [value]="editPassword()"
+        (input)="editPassword.set($any($event.target).value)"
+        [placeholder]="'users.field_new_password_ph' | translate"
+      />
+    </div>
+
+    <div class="edit-field edit-field--toggle">
+      <label class="edit-label">{{ "users.col_active" | translate }}</label>
+      <label class="toggle">
+        <input
+          type="checkbox"
+          [checked]="editIsActive()"
+          (change)="editIsActive.set($any($event.target).checked)"
+        />
+        <span class="toggle__track"></span>
+      </label>
+    </div>
+  </div>
+
+  @if (editSave() === "error") {
+    <p class="edit-error">{{ editError() }}</p>
+  }
+
+  <div class="edit-panel__actions">
+    <button
+      class="btn-save"
+      [disabled]="editSave() === 'saving'"
+      (click)="submitEdit()"
+    >
+      {{
+        editSave() === "saving"
+          ? ("common.saving" | translate)
+          : ("common.save" | translate)
+      }}
+    </button>
+    <button class="btn-cancel" (click)="cancelled.emit()">
+      {{ "common.cancel" | translate }}
+    </button>
+  </div>
+</div>
