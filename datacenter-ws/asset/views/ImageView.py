@@ -4,6 +4,7 @@ import os
 from django.conf import settings
 from django.http import FileResponse, Http404, HttpResponse
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema
 from PIL import Image
 
@@ -18,18 +19,10 @@ CACHE_SUBDIR = 'cache'
 class ImageView(APIView):
     """
     Serve media images with optional on-the-fly resizing.
-
-    URL:  GET /files/<path:filename>?w=<width>
-
-    - If ``w`` is omitted the original file is served unchanged.
-    - ``w`` must be one of the values in ALLOWED_WIDTHS; otherwise the nearest
-      smaller allowed width is used (or the original if none fits).
-    - Resized variants are cached on disk under
-      MEDIA_ROOT/cache/w<width>/<original_path> so subsequent requests are
-      served directly from cache with no Pillow processing.
-    - Both original and cached responses carry a long-lived Cache-Control header
-      so the browser caches them aggressively.
+    Public endpoint — no authentication required.
     """
+
+    permission_classes = [AllowAny]
 
     def get(self, request, filename):
         media_root = os.path.abspath(settings.MEDIA_ROOT)

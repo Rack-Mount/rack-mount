@@ -81,21 +81,21 @@
     "preview_name": "Nome",
     "preview_vendor": "Vendor",
     "preview_type": "Tipo",
-    "preview_rack_units": "Unit\u00e0 rack",
+    "preview_rack_units": "Unità rack",
     "preview_notes": "Note",
     "drawer_create": "Nuovo apparato",
     "drawer_edit": "Modifica apparato",
     "field_name": "Nome",
     "field_name_ph": "Nome apparato",
-    "field_vendor_ph": "Seleziona vendor\u2026",
-    "field_type_ph": "Seleziona tipo\u2026",
-    "field_rack_units": "Unit\u00e0 rack (U)",
+    "field_vendor_ph": "Seleziona vendor…",
+    "field_type_ph": "Seleziona tipo…",
+    "field_rack_units": "Unità rack (U)",
     "field_rack_units_ph": "es. 1",
     "field_notes": "Note",
-    "field_notes_ph": "Informazioni aggiuntive\u2026",
+    "field_notes_ph": "Informazioni aggiuntive…",
     "field_front_img": "Immagine fronte",
     "field_rear_img": "Immagine retro",
-    "upload_img": "Carica immagine\u2026",
+    "upload_img": "Carica immagine…",
     "remove_img": "Rimuovi immagine",
     "save_error": "Errore durante il salvataggio. Riprova.",
     "saving_form": "Salvataggio…",
@@ -158,14 +158,14 @@
     "saving_form": "Salvataggio…"
   },
   "racks": {
-    "search_placeholder": "Cerca rack\u2026",
+    "search_placeholder": "Cerca rack…",
     "btn_new": "Nuovo Rack",
     "count_badge_suffix": "rack",
     "col_name": "Nome",
     "col_location": "Location",
     "col_room": "Stanza",
     "col_model": "Modello",
-    "col_capacity": "Capacit\u00e0",
+    "col_capacity": "Capacità",
     "col_power": "Consumo",
     "filter_all_dc": "Tutti i datacenter",
     "filter_all_rooms": "Tutte le stanze",
@@ -173,8 +173,8 @@
     "open_preview": "Anteprima rack",
     "no_match": "Nessun rack corrisponde alla ricerca.",
     "no_data": "Nessun rack trovato. Creane uno nuovo.",
-    "delete_confirm": "Eliminare il rack \u00ab{{name}}\u00bb?",
-    "delete_has_units": "Impossibile eliminare: il rack contiene unit\u00e0 installate.",
+    "delete_confirm": "Eliminare il rack «{{name}}»?",
+    "delete_has_units": "Impossibile eliminare: il rack contiene unità installate.",
     "drawer_create_title": "Nuovo Rack",
     "drawer_edit_title": "Modifica Rack",
     "field_name": "Nome",
@@ -182,7 +182,7 @@
     "field_model": "Modello rack",
     "field_required": "Compila tutti i campi obbligatori.",
     "save_error": "Errore durante il salvataggio. Riprova.",
-    "saving": "Salvataggio\u2026"
+    "saving": "Salvataggio…"
   },
   "assets": {
     "search_placeholder": "Cerca hostname, seriale, SAP…",
@@ -291,13 +291,13 @@
     "rack_not_found": "Rack non trovato."
   },
   "rack": {
-    "error_loading": "Errore nel caricamento delle unit\u00e0 rack",
+    "error_loading": "Errore nel caricamento delle unità rack",
     "move_error": "Impossibile spostare {{hostname}} in posizione {{pos}}U",
     "front_view": "Vista fronte",
     "rear_view": "Vista retro",
     "front": "Fronte",
     "rear": "Retro",
-    "stat_total": "Unit\u00e0 totali",
+    "stat_total": "Unità totali",
     "stat_used": "Occupate",
     "stat_free": "Libere",
     "stat_power": "Potenza",
@@ -324,7 +324,7 @@
     "remove_single": "Rimuovi dal rack"
   },
   "rack_state": {
-    "saving": "Salvataggio\u2026"
+    "saving": "Salvataggio…"
   },
   "map_sidebar": {
     "title": "Strumenti Mappa",
@@ -342,8 +342,8 @@
     "saving": "Salvataggio...",
     "save": "Salva Planimetria",
     "autosave": "Autosalvataggio",
-    "saved_ok": "\u2713 Salvato",
-    "save_error": "\u2717 Errore nel salvataggio",
+    "saved_ok": "✓ Salvato",
+    "save_error": "✗ Errore nel salvataggio",
     "no_rack_models": "Nessun modello rack disponibile",
     "rack_model_label": "Modello rack:",
     "door_label": "Larghezza varco:",
@@ -407,11 +407,26 @@
     "edit_btn": "Modifica asset",
     "clone_btn": "Clona asset",
     "cloning": "Clonazione…",
-    "delete_confirm_msg": "Sei sicuro? L'operazione \u00e8 irreversibile.",
-    "deleting": "Eliminazione\u2026",
+    "delete_confirm_msg": "Sei sicuro? L'operazione è irreversibile.",
+    "deleting": "Eliminazione…",
     "confirm_delete": "Conferma eliminazione",
     "cancel": "Annulla",
     "delete_error": "Errore — riprova",
     "delete_mounted": "Apparato montato su rack — rimuoverlo prima di eliminarlo"
+  },
+  "login": {
+    "title": "Accedi",
+    "username": "Nome utente",
+    "username_placeholder": "Inserisci il nome utente",
+    "password": "Password",
+    "password_placeholder": "Inserisci la password",
+    "submit": "Accedi",
+    "signing_in": "Accesso in corso…",
+    "invalid_credentials": "Nome utente o password non validi.",
+    "error": "Errore di connessione. Riprova."
+  },
+  "header": {
+    "logout": "Esci",
+    "logged_in_as": "Connesso come"
   }
 }

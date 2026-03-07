@@ -1,0 +1,144 @@
+<div class="login-backdrop">
+  <div class="login-card">
+    <!-- Top-right controls: theme toggle + language switcher -->
+    <div class="login-top-controls">
+      <button
+        type="button"
+        class="login-theme-btn"
+        (click)="theme.toggle()"
+        [title]="
+          theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'
+        "
+        aria-label="Toggle theme"
+      >
+        @if (theme.isDark()) {
+          <!-- Sun icon -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+        } @else {
+          <!-- Moon icon -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        }
+      </button>
+      <div class="login-lang">
+        <select
+          class="login-lang-select"
+          [value]="lang.currentLang()"
+          (change)="lang.use($any($event.target).value)"
+          [title]="lang.currentLanguage.label"
+        >
+          @for (l of lang.availableLanguages; track l.code) {
+            <option [value]="l.code" [selected]="lang.currentLang() === l.code">
+              {{ l.flag }} {{ l.code.toUpperCase() }}
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Logo left-aligned -->
+    <img src="logo.svg" alt="Rack Mount" class="login-logo" />
+
+    <h1 class="login-title">{{ "login.title" | translate }}</h1>
+
+    <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="login-field">
+        <label for="login-username" class="login-label">
+          {{ "login.username" | translate }}
+        </label>
+        <input
+          id="login-username"
+          type="text"
+          class="login-input"
+          name="username"
+          [(ngModel)]="username"
+          [placeholder]="'login.username_placeholder' | translate"
+          autocomplete="username"
+          required
+          [disabled]="loading()"
+        />
+      </div>
+
+      <div class="login-field">
+        <label for="login-password" class="login-label">
+          {{ "login.password" | translate }}
+        </label>
+        <input
+          id="login-password"
+          type="password"
+          class="login-input"
+          name="password"
+          [(ngModel)]="password"
+          [placeholder]="'login.password_placeholder' | translate"
+          autocomplete="current-password"
+          required
+          [disabled]="loading()"
+        />
+      </div>
+
+      @if (errorKey()) {
+        <p class="login-error" role="alert">
+          <svg
+            class="login-error__icon"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          {{ errorKey()! | translate }}
+        </p>
+      }
+
+      <button
+        type="submit"
+        class="login-btn"
+        [disabled]="loading() || !username || !password"
+      >
+        @if (loading()) {
+          <span class="login-btn__spinner" aria-hidden="true"></span>
+          {{ "login.signing_in" | translate }}
+        } @else {
+          {{ "login.submit" | translate }}
+        }
+      </button>
+    </form>
+  </div>
+</div>

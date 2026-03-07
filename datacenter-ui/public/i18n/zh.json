@@ -413,5 +413,20 @@
     "cancel": "取消",
     "delete_error": "错误 — 重试",
     "delete_mounted": "设备已安装在机柜中 — 请先将其移除再删除"
+  },
+  "login": {
+    "title": "登录",
+    "username": "用户名",
+    "username_placeholder": "请输入用户名",
+    "password": "密码",
+    "password_placeholder": "请输入密码",
+    "submit": "登录",
+    "signing_in": "登录中…",
+    "invalid_credentials": "用户名或密码无效。",
+    "error": "连接错误，请重试。"
+  },
+  "header": {
+    "logout": "退出",
+    "logged_in_as": "当前用户"
   }
 }

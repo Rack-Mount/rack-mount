@@ -11,13 +11,12 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { Configuration, ConfigurationParameters } from './modules/core/api/v1';
+import { authInterceptor } from './modules/core/interceptors/auth.interceptor';
 import { notFoundInterceptor } from './modules/core/interceptors/not-found.interceptor';
 
 export function apiConfigFactory(): Configuration {
   const params: ConfigurationParameters = {
     basePath: environment.service_url,
-    username: environment.api_username,
-    password: environment.api_password,
   };
   return new Configuration(params);
 }
@@ -33,7 +32,10 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     { provide: Configuration, useFactory: apiConfigFactory },
-    provideHttpClient(withFetch(), withInterceptors([notFoundInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor, notFoundInterceptor]),
+    ),
     provideTranslateService({
       fallbackLang: 'en',
     }),

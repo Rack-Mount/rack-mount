@@ -1,213 +1,217 @@
-<!-- app shell -->
-<app-header />
+@if (auth.isAuthenticated()) {
+  <!-- app shell -->
+  <app-header />
 
-<!-- global tab bar -->
-<div class="global-tab-bar">
-  <div class="tab-list">
-    @for (tab of tabs(); track tab.id) {
-      <div
-        class="tab"
-        [class.active]="tab.id === activeTabId()"
-        [class.pinned]="tab.pinned"
-        [class.tab--dragging]="_dragTabId() === tab.id"
-        [class.tab--drag-over]="_dragOverId() === tab.id"
-        [attr.draggable]="tab.pinned ? null : 'true'"
-        (click)="activateTab(tab.id)"
-        (dragstart)="!tab.pinned && onTabDragStart(tab.id, $event)"
-        (dragover)="onTabDragOver(tab.id, $event)"
-        (drop)="onTabDrop(tab.id, $event)"
-        (dragend)="onTabDragEnd()"
-        [title]="tab.labelKey ? (tab.labelKey | translate) : tab.label"
-      >
-        <span class="tab-icon">
-          @if (tab.type === "rack") {
-            🖥️
-          } @else if (tab.type === "room") {
-            🗺️
-          } @else if (tab.type === "assets") {
-            📦
-          } @else if (tab.type === "vendors") {
-            🏭
-          } @else if (tab.type === "models") {
-            🗂️
-          } @else if (tab.type === "components") {
-            🔌
-          } @else if (tab.type === "racks") {
-            🗄️
-          } @else {
-            🏠
+  <!-- global tab bar -->
+  <div class="global-tab-bar">
+    <div class="tab-list">
+      @for (tab of tabs(); track tab.id) {
+        <div
+          class="tab"
+          [class.active]="tab.id === activeTabId()"
+          [class.pinned]="tab.pinned"
+          [class.tab--dragging]="_dragTabId() === tab.id"
+          [class.tab--drag-over]="_dragOverId() === tab.id"
+          [attr.draggable]="tab.pinned ? null : 'true'"
+          (click)="activateTab(tab.id)"
+          (dragstart)="!tab.pinned && onTabDragStart(tab.id, $event)"
+          (dragover)="onTabDragOver(tab.id, $event)"
+          (drop)="onTabDrop(tab.id, $event)"
+          (dragend)="onTabDragEnd()"
+          [title]="tab.labelKey ? (tab.labelKey | translate) : tab.label"
+        >
+          <span class="tab-icon">
+            @if (tab.type === "rack") {
+              🖥️
+            } @else if (tab.type === "room") {
+              🗺️
+            } @else if (tab.type === "assets") {
+              📦
+            } @else if (tab.type === "vendors") {
+              🏭
+            } @else if (tab.type === "models") {
+              🗂️
+            } @else if (tab.type === "components") {
+              🔌
+            } @else if (tab.type === "racks") {
+              🗄️
+            } @else {
+              🏠
+            }
+          </span>
+          <span class="tab-label">{{
+            tab.labelKey ? (tab.labelKey | translate) : tab.label
+          }}</span>
+          @if (!tab.pinned) {
+            <button
+              class="tab-close"
+              (click)="closeTab(tab.id, $event)"
+              [title]="'common.close_tab' | translate"
+            >
+              ×
+            </button>
           }
-        </span>
-        <span class="tab-label">{{
-          tab.labelKey ? (tab.labelKey | translate) : tab.label
-        }}</span>
-        @if (!tab.pinned) {
-          <button
-            class="tab-close"
-            (click)="closeTab(tab.id, $event)"
-            [title]="'common.close_tab' | translate"
-          >
-            ×
-          </button>
-        }
-      </div>
-    }
-    @if (_dragTabId() !== null) {
-      <div
-        class="tab-drop-end"
-        [class.tab-drop-end--active]="_dragOverEnd()"
-        (dragover)="onTabDragOverEnd($event)"
-        (drop)="onTabDropEnd($event)"
-      ></div>
-    }
-  </div>
-</div>
-
-<!-- content area -->
-<div class="app-content">
-  <!-- Home pane: deferred on idle (lazy chunk), kept alive with [hidden] -->
-  <div class="content-pane home-pane" [hidden]="activeTabId() !== 'home'">
-    @defer (on idle) {
-      <app-home />
-    } @loading (minimum 150ms) {
-      <div class="loading-state">Caricamento…</div>
-    } @placeholder {
-      <div class="loading-state">Caricamento…</div>
-    } @error {
-      <div class="loading-state loading-state--error">
-        Impossibile caricare la pagina.
-      </div>
-    }
+        </div>
+      }
+      @if (_dragTabId() !== null) {
+        <div
+          class="tab-drop-end"
+          [class.tab-drop-end--active]="_dragOverEnd()"
+          (dragover)="onTabDragOverEnd($event)"
+          (drop)="onTabDropEnd($event)"
+        ></div>
+      }
+    </div>
   </div>
 
-  <!-- Assets pane: deferred on first activation, kept alive with [hidden] -->
-  <div class="content-pane" [hidden]="activeTabId() !== 'assets'">
-    @defer (when activeTabId() === 'assets'; prefetch on idle) {
-      <app-assets-list />
-    } @loading (minimum 150ms) {
-      <div class="loading-state">Caricamento asset…</div>
-    } @placeholder {
-      <div class="loading-state">Caricamento asset…</div>
-    } @error {
-      <div class="loading-state loading-state--error">
-        Impossibile caricare gli asset.
-      </div>
+  <!-- content area -->
+  <div class="app-content">
+    <!-- Home pane: deferred on idle (lazy chunk), kept alive with [hidden] -->
+    <div class="content-pane home-pane" [hidden]="activeTabId() !== 'home'">
+      @defer (on idle) {
+        <app-home />
+      } @loading (minimum 150ms) {
+        <div class="loading-state">Caricamento…</div>
+      } @placeholder {
+        <div class="loading-state">Caricamento…</div>
+      } @error {
+        <div class="loading-state loading-state--error">
+          Impossibile caricare la pagina.
+        </div>
+      }
+    </div>
+
+    <!-- Assets pane: deferred on first activation, kept alive with [hidden] -->
+    <div class="content-pane" [hidden]="activeTabId() !== 'assets'">
+      @defer (when activeTabId() === 'assets'; prefetch on idle) {
+        <app-assets-list />
+      } @loading (minimum 150ms) {
+        <div class="loading-state">Caricamento asset…</div>
+      } @placeholder {
+        <div class="loading-state">Caricamento asset…</div>
+      } @error {
+        <div class="loading-state loading-state--error">
+          Impossibile caricare gli asset.
+        </div>
+      }
+    </div>
+
+    <!-- Vendors pane -->
+    <div class="content-pane" [hidden]="activeTabId() !== 'vendors'">
+      @defer (when activeTabId() === 'vendors'; prefetch on idle) {
+        <app-vendors-list />
+      } @loading (minimum 150ms) {
+        <div class="loading-state">Caricamento vendor…</div>
+      } @placeholder {
+        <div class="loading-state">Caricamento vendor…</div>
+      } @error {
+        <div class="loading-state loading-state--error">
+          Impossibile caricare i vendor.
+        </div>
+      }
+    </div>
+
+    <!-- Models pane -->
+    <div class="content-pane" [hidden]="activeTabId() !== 'models'">
+      @defer (when activeTabId() === 'models'; prefetch on idle) {
+        <app-models-list />
+      } @loading (minimum 150ms) {
+        <div class="loading-state">Caricamento apparati…</div>
+      } @placeholder {
+        <div class="loading-state">Caricamento apparati…</div>
+      } @error {
+        <div class="loading-state loading-state--error">
+          Impossibile caricare gli apparati.
+        </div>
+      }
+    </div>
+
+    <!-- Components pane -->
+    <div class="content-pane" [hidden]="activeTabId() !== 'components'">
+      @defer (when activeTabId() === 'components'; prefetch on idle) {
+        <app-components-list />
+      } @loading (minimum 150ms) {
+        <div class="loading-state">Caricamento componenti…</div>
+      } @placeholder {
+        <div class="loading-state">Caricamento componenti…</div>
+      } @error {
+        <div class="loading-state loading-state--error">
+          Impossibile caricare i componenti.
+        </div>
+      }
+    </div>
+
+    <!-- Racks pane -->
+    <div class="content-pane" [hidden]="activeTabId() !== 'racks'">
+      @defer (when activeTabId() === 'racks'; prefetch on idle) {
+        <app-racks-list />
+      } @loading (minimum 150ms) {
+        <div class="loading-state">Caricamento rack…</div>
+      } @placeholder {
+        <div class="loading-state">Caricamento rack…</div>
+      } @error {
+        <div class="loading-state loading-state--error">
+          Impossibile caricare i rack.
+        </div>
+      }
+    </div>
+
+    <!-- Room panes: lazy chunk loaded on first tab activation, state preserved by [hidden] -->
+    @for (tab of tabService.tabs(); track tab.id) {
+      @if (tab.type === "room") {
+        <div class="content-pane" [hidden]="activeTabId() !== tab.id">
+          @defer (when activeTabId() === tab.id; prefetch on idle) {
+            <app-map [roomId]="tab.roomId" />
+          } @loading (minimum 150ms) {
+            <div class="loading-state">Apertura room…</div>
+          } @placeholder {
+            <div class="loading-state">Apertura room…</div>
+          } @error {
+            <div class="loading-state loading-state--error">
+              Impossibile caricare la mappa.
+            </div>
+          }
+        </div>
+      }
     }
+
+    <!-- Rack panes: lazy chunk, state preserved by [hidden] -->
+    @for (tab of tabService.tabs(); track tab.id) {
+      @if (tab.type === "rack") {
+        <div class="content-pane rack-pane" [hidden]="activeTabId() !== tab.id">
+          @defer (when activeTabId() === tab.id; prefetch on idle) {
+            <app-rack
+              [rackName]="tab.rackName!"
+              (rackNotFound)="onRackNotFound($event)"
+            />
+          } @loading (minimum 150ms) {
+            <div class="loading-state">Caricamento rack…</div>
+          } @placeholder {
+            <div class="loading-state">Caricamento rack…</div>
+          } @error {
+            <div class="loading-state loading-state--error">
+              Impossibile caricare il rack.
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <!-- Not-found pane: lazy chunk -->
+    <div class="content-pane" [hidden]="activeTabId() !== 'not-found'">
+      @defer (when activeTabId() === 'not-found'; prefetch on idle) {
+        <app-not-found />
+      } @loading (minimum 150ms) {
+        <div class="loading-state">Caricamento…</div>
+      } @placeholder {
+        <div class="loading-state">Caricamento…</div>
+      } @error {
+        <div class="loading-state loading-state--error">
+          Pagina non disponibile.
+        </div>
+      }
+    </div>
   </div>
-
-  <!-- Vendors pane -->
-  <div class="content-pane" [hidden]="activeTabId() !== 'vendors'">
-    @defer (when activeTabId() === 'vendors'; prefetch on idle) {
-      <app-vendors-list />
-    } @loading (minimum 150ms) {
-      <div class="loading-state">Caricamento vendor…</div>
-    } @placeholder {
-      <div class="loading-state">Caricamento vendor…</div>
-    } @error {
-      <div class="loading-state loading-state--error">
-        Impossibile caricare i vendor.
-      </div>
-    }
-  </div>
-
-  <!-- Models pane -->
-  <div class="content-pane" [hidden]="activeTabId() !== 'models'">
-    @defer (when activeTabId() === 'models'; prefetch on idle) {
-      <app-models-list />
-    } @loading (minimum 150ms) {
-      <div class="loading-state">Caricamento apparati…</div>
-    } @placeholder {
-      <div class="loading-state">Caricamento apparati…</div>
-    } @error {
-      <div class="loading-state loading-state--error">
-        Impossibile caricare gli apparati.
-      </div>
-    }
-  </div>
-
-  <!-- Components pane -->
-  <div class="content-pane" [hidden]="activeTabId() !== 'components'">
-    @defer (when activeTabId() === 'components'; prefetch on idle) {
-      <app-components-list />
-    } @loading (minimum 150ms) {
-      <div class="loading-state">Caricamento componenti…</div>
-    } @placeholder {
-      <div class="loading-state">Caricamento componenti…</div>
-    } @error {
-      <div class="loading-state loading-state--error">
-        Impossibile caricare i componenti.
-      </div>
-    }
-  </div>
-
-  <!-- Racks pane -->
-  <div class="content-pane" [hidden]="activeTabId() !== 'racks'">
-    @defer (when activeTabId() === 'racks'; prefetch on idle) {
-      <app-racks-list />
-    } @loading (minimum 150ms) {
-      <div class="loading-state">Caricamento rack…</div>
-    } @placeholder {
-      <div class="loading-state">Caricamento rack…</div>
-    } @error {
-      <div class="loading-state loading-state--error">
-        Impossibile caricare i rack.
-      </div>
-    }
-  </div>
-
-  <!-- Room panes: lazy chunk loaded on first tab activation, state preserved by [hidden] -->
-  @for (tab of tabService.tabs(); track tab.id) {
-    @if (tab.type === "room") {
-      <div class="content-pane" [hidden]="activeTabId() !== tab.id">
-        @defer (when activeTabId() === tab.id; prefetch on idle) {
-          <app-map [roomId]="tab.roomId" />
-        } @loading (minimum 150ms) {
-          <div class="loading-state">Apertura room…</div>
-        } @placeholder {
-          <div class="loading-state">Apertura room…</div>
-        } @error {
-          <div class="loading-state loading-state--error">
-            Impossibile caricare la mappa.
-          </div>
-        }
-      </div>
-    }
-  }
-
-  <!-- Rack panes: lazy chunk, state preserved by [hidden] -->
-  @for (tab of tabService.tabs(); track tab.id) {
-    @if (tab.type === "rack") {
-      <div class="content-pane rack-pane" [hidden]="activeTabId() !== tab.id">
-        @defer (when activeTabId() === tab.id; prefetch on idle) {
-          <app-rack
-            [rackName]="tab.rackName!"
-            (rackNotFound)="onRackNotFound($event)"
-          />
-        } @loading (minimum 150ms) {
-          <div class="loading-state">Caricamento rack…</div>
-        } @placeholder {
-          <div class="loading-state">Caricamento rack…</div>
-        } @error {
-          <div class="loading-state loading-state--error">
-            Impossibile caricare il rack.
-          </div>
-        }
-      </div>
-    }
-  }
-
-  <!-- Not-found pane: lazy chunk -->
-  <div class="content-pane" [hidden]="activeTabId() !== 'not-found'">
-    @defer (when activeTabId() === 'not-found'; prefetch on idle) {
-      <app-not-found />
-    } @loading (minimum 150ms) {
-      <div class="loading-state">Caricamento…</div>
-    } @placeholder {
-      <div class="loading-state">Caricamento…</div>
-    } @error {
-      <div class="loading-state loading-state--error">
-        Pagina non disponibile.
-      </div>
-    }
-  </div>
-</div>
+} @else {
+  <router-outlet />
+}

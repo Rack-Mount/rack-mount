@@ -1,19 +1,23 @@
 import { Routes } from '@angular/router';
+import { LoginComponent } from './modules/core/components/login/login.component';
+import { authGuard, noAuthGuard } from './modules/core/guards/auth.guard';
 
 /**
  * Routes are used only for URL state management (no <router-outlet>).
  * Navigation events update the address bar and trigger AppComponent's
  * router subscription; AppComponent controls what is rendered directly.
+ * The /login route is the exception — it is rendered via <router-outlet>.
  */
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', children: [] },
-  { path: 'assets', children: [] },
-  { path: 'vendors', children: [] },
-  { path: 'models', children: [] },
-  { path: 'racks', children: [] },
-  { path: 'components', children: [] },
-  { path: 'map/:id', children: [] },
-  { path: 'rack/:name', children: [] },
-  { path: 'not-found', children: [] },
+  { path: 'login', component: LoginComponent, canActivate: [noAuthGuard] },
+  { path: '', pathMatch: 'full', canActivate: [authGuard], children: [] },
+  { path: 'assets', canActivate: [authGuard], children: [] },
+  { path: 'vendors', canActivate: [authGuard], children: [] },
+  { path: 'models', canActivate: [authGuard], children: [] },
+  { path: 'racks', canActivate: [authGuard], children: [] },
+  { path: 'components', canActivate: [authGuard], children: [] },
+  { path: 'map/:id', canActivate: [authGuard], children: [] },
+  { path: 'rack/:name', canActivate: [authGuard], children: [] },
+  { path: 'not-found', canActivate: [authGuard], children: [] },
   { path: '**', redirectTo: 'not-found' },
 ];

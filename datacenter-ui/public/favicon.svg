@@ -1,153 +1,168 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <!-- Icon gradients -->
+    <!-- Background: deep navy with slight blue tint -->
     <linearGradient id="bg" x1="0" y1="0" x2="0.6" y2="1">
       <stop offset="0%" stop-color="#1c2d5e"/>
       <stop offset="100%" stop-color="#09111f"/>
     </linearGradient>
+    <!-- Rail: darker panel -->
     <linearGradient id="rail" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#0a1628"/>
       <stop offset="100%" stop-color="#0d1c34"/>
     </linearGradient>
+    <!-- Server body gradient -->
     <linearGradient id="srv1" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#243d73"/>
       <stop offset="100%" stop-color="#162645"/>
     </linearGradient>
+    <!-- 2U server body -->
     <linearGradient id="srv2" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#1e3566"/>
       <stop offset="100%" stop-color="#12213e"/>
     </linearGradient>
+    <!-- Switch body -->
     <linearGradient id="sw" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#102030"/>
       <stop offset="100%" stop-color="#080f1a"/>
     </linearGradient>
+    <!-- Cyan accent stripe -->
     <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#00eaff"/>
       <stop offset="60%" stop-color="#0099ee"/>
       <stop offset="100%" stop-color="#004488"/>
     </linearGradient>
+    <!-- Amber accent stripe -->
     <linearGradient id="amber" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#ffcc22"/>
       <stop offset="100%" stop-color="#ee6600"/>
     </linearGradient>
+    <!-- Top-shine on units -->
     <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#ffffff" stop-opacity="0.09"/>
       <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
     </linearGradient>
-    <!-- Wordmark gradient -->
-    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#818cf8"/>
-    </linearGradient>
-    <!-- Filters -->
+    <!-- LED glow filter -->
     <filter id="glow" x="-120%" y="-120%" width="340%" height="340%">
       <feGaussianBlur stdDeviation="1.8" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
+    <!-- Softer glow for screen -->
     <filter id="softglow" x="-60%" y="-60%" width="220%" height="220%">
       <feGaussianBlur stdDeviation="0.8" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
+    <!-- Outer shadow -->
     <filter id="shadow" x="-6%" y="-6%" width="112%" height="120%">
       <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.6"/>
     </filter>
+    <!-- Clip to rounded rect -->
     <clipPath id="clip">
       <rect width="64" height="64" rx="13"/>
     </clipPath>
   </defs>
 
-  <!-- ICON (identical to favicon) -->
+  <!-- ── Background ──────────────────────────────── -->
   <rect width="64" height="64" rx="13" fill="url(#bg)" filter="url(#shadow)"/>
-  <rect width="64" height="64" rx="13" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.2"/>
-  <!-- Left rail -->
+  <!-- Subtle top-left highlight -->
+  <rect width="64" height="64" rx="13" fill="none"
+        stroke="rgba(255,255,255,0.08)" stroke-width="1.2"/>
+
+  <!-- ── Left rail ────────────────────────────────── -->
   <rect x="0" y="0" width="10" height="64" fill="url(#rail)" clip-path="url(#clip)"/>
+  <!-- Rail edge highlight -->
   <rect x="9.3" y="0" width="0.7" height="64" fill="rgba(255,255,255,0.05)"/>
+  <!-- Screw holes left (top / mid / bot) -->
   <circle cx="5" cy="9"  r="2.4" fill="#04080f"/>
   <circle cx="5" cy="9"  r="1.1" fill="#0e1e36" opacity="0.7"/>
   <circle cx="5" cy="32" r="2.4" fill="#04080f"/>
   <circle cx="5" cy="32" r="1.1" fill="#0e1e36" opacity="0.7"/>
   <circle cx="5" cy="55" r="2.4" fill="#04080f"/>
   <circle cx="5" cy="55" r="1.1" fill="#0e1e36" opacity="0.7"/>
-  <!-- Right rail -->
+
+  <!-- ── Right rail ───────────────────────────────── -->
   <rect x="54" y="0" width="10" height="64" fill="url(#rail)" clip-path="url(#clip)"/>
+  <!-- Rail edge highlight -->
   <rect x="54" y="0" width="0.7" height="64" fill="rgba(255,255,255,0.05)"/>
+  <!-- Screw holes right -->
   <circle cx="59" cy="9"  r="2.4" fill="#04080f"/>
   <circle cx="59" cy="9"  r="1.1" fill="#0e1e36" opacity="0.7"/>
   <circle cx="59" cy="32" r="2.4" fill="#04080f"/>
   <circle cx="59" cy="32" r="1.1" fill="#0e1e36" opacity="0.7"/>
   <circle cx="59" cy="55" r="2.4" fill="#04080f"/>
   <circle cx="59" cy="55" r="1.1" fill="#0e1e36" opacity="0.7"/>
-  <!-- 1U server (y 3-16) -->
+
+  <!-- ══════════════════════════════════════════════
+       1U SERVER  (y 3–16)
+  ══════════════════════════════════════════════ -->
   <rect x="11" y="3"  width="42" height="13" rx="2" fill="url(#srv1)"/>
   <rect x="11" y="3"  width="42" height="5"  rx="2" fill="url(#shine)"/>
+  <!-- Cyan top stripe -->
   <rect x="11" y="3"  width="42" height="2.5" rx="1.5" fill="url(#cyan)"/>
+  <!-- 3 drive bays -->
   <rect x="13" y="8"  width="6" height="5" rx="1" fill="#040a14"/>
   <rect x="20.5" y="8" width="6" height="5" rx="1" fill="#040a14"/>
   <rect x="28"  y="8"  width="6" height="5" rx="1" fill="#040a14"/>
+  <!-- Bay activity dots -->
   <circle cx="16"   cy="10.5" r="1" fill="#00d4ff" opacity="0.3" filter="url(#softglow)"/>
   <circle cx="23.5" cy="10.5" r="1" fill="#00ff88" opacity="0.5" filter="url(#softglow)"/>
+  <!-- Power button area -->
   <rect x="36" y="8" width="8" height="5" rx="1.2" fill="#040a14"/>
   <circle cx="40" cy="10.5" r="1.8" fill="#040a14" stroke="#1a3060" stroke-width="0.6"/>
   <circle cx="40" cy="10.5" r="0.9" fill="#00cc66" opacity="0.8"/>
+  <!-- Power LED green -->
   <circle cx="48.5" cy="8.8"  r="2.3" fill="#00ff88" filter="url(#glow)"/>
+  <!-- HDD LED amber -->
   <circle cx="48.5" cy="14"   r="1.4" fill="#ffaa00" filter="url(#glow)" opacity="0.8"/>
-  <!-- 2U server (y 18-38) -->
+
+  <!-- ══════════════════════════════════════════════
+       2U SERVER  (y 18–38)
+  ══════════════════════════════════════════════ -->
   <rect x="11" y="18" width="42" height="20" rx="2" fill="url(#srv2)"/>
   <rect x="11" y="18" width="42" height="6"  rx="2" fill="url(#shine)"/>
+  <!-- Cyan stripe -->
   <rect x="11" y="18" width="42" height="2.5" rx="1.5" fill="url(#cyan)" opacity="0.75"/>
+  <!-- Vent grille — 5 rows -->
   <rect x="13" y="23"   width="23" height="1.6" rx="0.5" fill="#040a14"/>
   <rect x="13" y="26"   width="23" height="1.6" rx="0.5" fill="#040a14"/>
   <rect x="13" y="29"   width="23" height="1.6" rx="0.5" fill="#040a14"/>
   <rect x="13" y="32"   width="23" height="1.6" rx="0.5" fill="#040a14"/>
   <rect x="13" y="35"   width="23" height="1.6" rx="0.5" fill="#040a14"/>
+  <!-- Mini LCD -->
   <rect x="38" y="22" width="12" height="13" rx="1.8" fill="#040a14"/>
   <rect x="39" y="23" width="10" height="4"  rx="0.8" fill="#00d4ff" filter="url(#softglow)" opacity="0.45"/>
   <rect x="39" y="28.5" width="6" height="1.8" rx="0.5" fill="#00d4ff" opacity="0.2"/>
   <rect x="39" y="31"   width="8" height="1.8" rx="0.5" fill="#00d4ff" opacity="0.15"/>
+  <!-- Status LED amber -->
   <circle cx="48.5" cy="37"  r="2.3" fill="#ffcc00" filter="url(#glow)" opacity="0.95"/>
-  <!-- 1U switch (y 41-55) -->
+
+  <!-- ══════════════════════════════════════════════
+       1U SWITCH  (y 41–55)
+  ══════════════════════════════════════════════ -->
   <rect x="11" y="41" width="42" height="14" rx="2" fill="url(#sw)"/>
   <rect x="11" y="41" width="42" height="5"  rx="2" fill="url(#shine)"/>
+  <!-- Amber top stripe -->
   <rect x="11" y="41" width="42" height="2.5" rx="1.5" fill="url(#amber)" opacity="0.75"/>
+  <!-- 5 RJ45 ports -->
   <rect x="13"   y="45.5" width="4.5" height="6" rx="0.8" fill="#040a14"/>
   <rect x="18.5" y="45.5" width="4.5" height="6" rx="0.8" fill="#040a14"/>
   <rect x="24"   y="45.5" width="4.5" height="6" rx="0.8" fill="#040a14"/>
   <rect x="29.5" y="45.5" width="4.5" height="6" rx="0.8" fill="#040a14"/>
   <rect x="35"   y="45.5" width="4.5" height="6" rx="0.8" fill="#040a14"/>
+  <!-- Port pin rows -->
   <rect x="14"   y="47.2" width="2.5" height="0.9" rx="0.3" fill="#162a50" opacity="0.9"/>
   <rect x="19.5" y="47.2" width="2.5" height="0.9" rx="0.3" fill="#162a50" opacity="0.9"/>
   <rect x="25"   y="47.2" width="2.5" height="0.9" rx="0.3" fill="#162a50" opacity="0.9"/>
   <rect x="30.5" y="47.2" width="2.5" height="0.9" rx="0.3" fill="#162a50" opacity="0.9"/>
   <rect x="36"   y="47.2" width="2.5" height="0.9" rx="0.3" fill="#162a50" opacity="0.9"/>
+  <!-- Link LEDs (above each port) -->
   <circle cx="15.2"  cy="45"  r="1.3" fill="#00ff88" filter="url(#glow)"/>
   <circle cx="20.7"  cy="45"  r="1.3" fill="#00ff88" filter="url(#glow)"/>
   <circle cx="26.2"  cy="45"  r="1.3" fill="#555"    opacity="0.4"/>
   <circle cx="31.7"  cy="45"  r="1.3" fill="#00ff88" filter="url(#glow)"/>
   <circle cx="37.2"  cy="45"  r="1.3" fill="#ffcc00" filter="url(#glow)" opacity="0.9"/>
+  <!-- Speed / uplink LED -->
   <circle cx="48.5" cy="48"  r="2.3" fill="#00d4ff" filter="url(#glow)" opacity="0.9"/>
-  <!-- Bottom glow bar -->
+
+  <!-- ── Bottom cyan glow bar ────────────────────── -->
   <rect x="13" y="59" width="38" height="2.5" rx="1.2" fill="url(#cyan)" opacity="0.3"/>
-
-
-  <!-- WORDMARK -->
-  <!-- "RACK" light weight -->
-  <text x="82" y="31"
-    font-family="'Inter','Segoe UI',system-ui,sans-serif"
-    font-size="22" font-weight="300" letter-spacing="3" fill="#b8cce8">RACK</text>
-  <!-- "MOUNT" bold gradient -->
-  <text x="152" y="31"
-    font-family="'Inter','Segoe UI',system-ui,sans-serif"
-    font-size="22" font-weight="800" letter-spacing="2" fill="url(#titleGrad)">MOUNT</text>
-  <!-- Thin cyan underline accent -->
-  <rect x="82" y="36" width="240" height="1" rx="0.5" fill="url(#cyan)" opacity="0.2"/>
-  <!-- DCIM pill -->
-  <rect x="82" y="41" width="36" height="13" rx="4"
-    fill="#00d4ff" fill-opacity="0.1" stroke="#00d4ff" stroke-width="0.8" stroke-opacity="0.4"/>
-  <text x="100" y="51.5" text-anchor="middle"
-    font-family="'Inter','Segoe UI',system-ui,sans-serif"
-    font-size="7.5" font-weight="600" letter-spacing="1.5" fill="#00d4ff">DCIM</text>
-  <!-- Tagline -->
-  <text x="126" y="51.5"
-    font-family="'Inter','Segoe UI',system-ui,sans-serif"
-    font-size="7.5" font-weight="400" letter-spacing="0.3" fill="#b8cce8" opacity="0.28">DATA CENTER INFRASTRUCTURE MANAGEMENT</text>
 </svg>

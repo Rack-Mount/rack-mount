@@ -1,7 +1,10 @@
 export * from './asset.service';
 import { AssetService } from './asset.service';
 export * from './asset.serviceInterface';
+export * from './auth.service';
+import { AuthService } from './auth.service';
+export * from './auth.serviceInterface';
 export * from './location.service';
 import { LocationService } from './location.service';
 export * from './location.serviceInterface';
-export const APIS = [AssetService, LocationService];
+export const APIS = [AssetService, AuthService, LocationService];

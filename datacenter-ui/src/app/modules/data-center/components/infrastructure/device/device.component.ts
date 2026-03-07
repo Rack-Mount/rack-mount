@@ -6,8 +6,8 @@ import {
   ElementRef,
   input,
 } from '@angular/core';
-import { RackUnit } from '../../../../core/api/v1';
 import { environment } from '../../../../../../environments/environment';
+import { RackUnit } from '../../../../core/api/v1';
 
 /**
  * Maps device_type names (case-insensitive) to a CSS modifier class

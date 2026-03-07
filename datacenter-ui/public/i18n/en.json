@@ -87,15 +87,15 @@
     "drawer_edit": "Edit device",
     "field_name": "Name",
     "field_name_ph": "Device name",
-    "field_vendor_ph": "Select vendor\u2026",
-    "field_type_ph": "Select type\u2026",
+    "field_vendor_ph": "Select vendor…",
+    "field_type_ph": "Select type…",
     "field_rack_units": "Rack units (U)",
     "field_rack_units_ph": "e.g. 1",
     "field_notes": "Notes",
-    "field_notes_ph": "Additional information\u2026",
+    "field_notes_ph": "Additional information…",
     "field_front_img": "Front image",
     "field_rear_img": "Rear image",
-    "upload_img": "Upload image\u2026",
+    "upload_img": "Upload image…",
     "remove_img": "Remove image",
     "save_error": "Error while saving. Please try again.",
     "saving_form": "Saving…",
@@ -173,7 +173,7 @@
     "open_preview": "Rack preview",
     "no_match": "No rack matches the search.",
     "no_data": "No racks found. Create one.",
-    "delete_confirm": "Delete rack \u00ab{{name}}\u00bb?",
+    "delete_confirm": "Delete rack «{{name}}»?",
     "delete_has_units": "Cannot delete: rack has installed units.",
     "drawer_create_title": "New Rack",
     "drawer_edit_title": "Edit Rack",
@@ -182,7 +182,7 @@
     "field_model": "Rack model",
     "field_required": "Please fill in all required fields.",
     "save_error": "Error while saving. Please try again.",
-    "saving": "Saving\u2026"
+    "saving": "Saving…"
   },
   "assets": {
     "search_placeholder": "Search hostname, serial, SAP…",
@@ -324,7 +324,7 @@
     "remove_single": "Remove from rack"
   },
   "rack_state": {
-    "saving": "Saving\u2026"
+    "saving": "Saving…"
   },
   "map_sidebar": {
     "title": "Map Tools",
@@ -342,8 +342,8 @@
     "saving": "Saving...",
     "save": "Save Floor Plan",
     "autosave": "Autosave",
-    "saved_ok": "\u2713 Saved",
-    "save_error": "\u2717 Save error",
+    "saved_ok": "✓ Saved",
+    "save_error": "✗ Save error",
     "no_rack_models": "No rack models available",
     "rack_model_label": "Rack model:",
     "door_label": "Doorway width:",
@@ -408,10 +408,25 @@
     "clone_btn": "Clone asset",
     "cloning": "Cloning…",
     "delete_confirm_msg": "Are you sure? This action cannot be undone.",
-    "deleting": "Deleting\u2026",
+    "deleting": "Deleting…",
     "confirm_delete": "Confirm delete",
     "cancel": "Cancel",
     "delete_error": "Error — try again",
     "delete_mounted": "Asset mounted on rack — uninstall it before deleting"
+  },
+  "login": {
+    "title": "Sign in",
+    "username": "Username",
+    "username_placeholder": "Enter your username",
+    "password": "Password",
+    "password_placeholder": "Enter your password",
+    "submit": "Sign in",
+    "signing_in": "Signing in…",
+    "invalid_credentials": "Invalid username or password.",
+    "error": "Connection error. Please try again."
+  },
+  "header": {
+    "logout": "Sign out",
+    "logged_in_as": "Signed in as"
   }
 }

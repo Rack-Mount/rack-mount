@@ -361,7 +361,7 @@
     "open_preview": "Rack-Vorschau",
     "no_match": "Kein Rack entspricht der Suche.",
     "no_data": "Keine Racks gefunden. Erstellen Sie eines.",
-    "delete_confirm": "Rack \u00ab{{name}}\u00bb löschen?",
+    "delete_confirm": "Rack «{{name}}» löschen?",
     "delete_has_units": "Löschen nicht möglich: Das Rack enthält installierte Geräte.",
     "drawer_create_title": "Neues Rack",
     "drawer_edit_title": "Rack bearbeiten",
@@ -411,5 +411,20 @@
     "cancel": "Abbrechen",
     "delete_error": "Fehler — erneut versuchen",
     "delete_mounted": "Gerät im Rack installiert — vor dem Löschen entfernen"
+  },
+  "login": {
+    "title": "Anmelden",
+    "username": "Benutzername",
+    "username_placeholder": "Benutzername eingeben",
+    "password": "Passwort",
+    "password_placeholder": "Passwort eingeben",
+    "submit": "Anmelden",
+    "signing_in": "Anmelden…",
+    "invalid_credentials": "Ungültiger Benutzername oder Passwort.",
+    "error": "Verbindungsfehler. Bitte erneut versuchen."
+  },
+  "header": {
+    "logout": "Abmelden",
+    "logged_in_as": "Angemeldet als"
   }
 }

@@ -8,13 +8,14 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { merge } from 'rxjs';
 import { filter, startWith } from 'rxjs/operators';
 import { HeaderComponent } from './modules/core/components/header/header.component';
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
+import { AuthService } from './modules/core/services/auth.service';
 import { TabService } from './modules/core/services/tab.service';
 import { ThemeService } from './modules/core/services/theme.service';
 import { AssetsListComponent } from './modules/data-center/components/assets/assets-list/assets-list.component';
@@ -30,6 +31,7 @@ import { RacksListComponent } from './modules/data-center/components/infrastruct
   selector: 'app-root',
   standalone: true,
   imports: [
+    RouterOutlet,
     HeaderComponent,
     HomeComponent,
     MapComponent,
@@ -51,6 +53,7 @@ export class AppComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   readonly tabService = inject(TabService);
   private readonly themeService = inject(ThemeService);
+  readonly auth = inject(AuthService);
 
   readonly homeTab: PanelTab = {
     id: 'home',
