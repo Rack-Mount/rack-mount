@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { BackendErrorService } from '../../../core/services/backend-error.service';
 
 export interface UserRoleSummary {
   id: number;
@@ -50,6 +51,7 @@ type SaveState = 'idle' | 'saving' | 'error';
 })
 export class UsersListComponent {
   private readonly http = inject(HttpClient);
+  private readonly backendErr = inject(BackendErrorService);
 
   private readonly baseUrl = `${environment.service_url}/auth/users/`;
 
@@ -78,6 +80,7 @@ export class UsersListComponent {
   // ── Delete ────────────────────────────────────────────────────────────────
   protected readonly deleteId = signal<number | null>(null);
   protected readonly deleteSave = signal<SaveState>('idle');
+  protected readonly deleteErrorMsg = signal('');
 
   protected readonly roles = [
     { id: 1, name: 'admin' },
@@ -135,9 +138,9 @@ export class UsersListComponent {
     this.http
       .post<UserItem>(this.baseUrl, payload)
       .pipe(
-        catchError(() => {
+        catchError((err: HttpErrorResponse) => {
           this.createSave.set('error');
-          this.createError.set('users.save_error');
+          this.createError.set(this.backendErr.parse(err));
           return EMPTY;
         }),
       )
@@ -178,9 +181,9 @@ export class UsersListComponent {
     this.http
       .patch<UserItem>(`${this.baseUrl}${id}/`, payload)
       .pipe(
-        catchError(() => {
+        catchError((err: HttpErrorResponse) => {
           this.editSave.set('error');
-          this.editError.set('users.save_error');
+          this.editError.set(this.backendErr.parse(err));
           return EMPTY;
         }),
       )
@@ -196,6 +199,7 @@ export class UsersListComponent {
   protected startDelete(id: number): void {
     this.deleteId.set(id);
     this.deleteSave.set('idle');
+    this.deleteErrorMsg.set('');
   }
 
   protected cancelDelete(): void {
@@ -209,8 +213,9 @@ export class UsersListComponent {
     this.http
       .delete(`${this.baseUrl}${id}/`)
       .pipe(
-        catchError(() => {
+        catchError((err: HttpErrorResponse) => {
           this.deleteSave.set('error');
+          this.deleteErrorMsg.set(this.backendErr.parse(err));
           return EMPTY;
         }),
       )

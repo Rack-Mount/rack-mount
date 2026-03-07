@@ -367,7 +367,7 @@
     "invalid": "无效值。",
     "does_not_exist": "所选值不存在。",
     "conflict": "无法修改：该记录正在使用中。",
-    "permission_denied": "权限被拒绝。",
+    "permission_denied": "您没有执行此操作的权限。",
     "authentication": "需要身份验证。",
     "throttled": "请求过于频繁，请稍后重试。",
     "network": "无法连接服务器。",

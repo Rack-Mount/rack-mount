@@ -1,13 +1,17 @@
 import { HttpInterceptorFn, HttpStatusCode } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { ToastService } from '../services/toast.service';
 
 /** URL fragments that must never receive an Authorization header. */
 const AUTH_BYPASS = ['/auth/token/'];
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
+  const toast = inject(ToastService);
+  const translate = inject(TranslateService);
 
   const isBypass = AUTH_BYPASS.some((fragment) => req.url.includes(fragment));
   if (isBypass || !auth.isAuthenticated()) {
@@ -19,6 +23,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(withBearer(auth.accessToken())).pipe(
     catchError((error) => {
+      if (error.status === HttpStatusCode.Forbidden) {
+        toast.error(translate.instant('backend_errors.permission_denied'));
+        return throwError(() => error);
+      }
       if (error.status !== HttpStatusCode.Unauthorized) {
         return throwError(() => error);
       }

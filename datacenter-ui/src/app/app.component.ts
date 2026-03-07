@@ -16,6 +16,7 @@ import { UsersListComponent } from './modules/admin/components/users-list/users-
 import { HeaderComponent } from './modules/core/components/header/header.component';
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { NotFoundComponent } from './modules/core/components/not-found/not-found.component';
+import { ToastComponent } from './modules/core/components/toast/toast.component';
 import { AuthService } from './modules/core/services/auth.service';
 import { TabService } from './modules/core/services/tab.service';
 import { ThemeService } from './modules/core/services/theme.service';
@@ -45,6 +46,7 @@ import { RacksListComponent } from './modules/data-center/components/infrastruct
     ComponentsListComponent,
     UsersListComponent,
     TranslatePipe,
+    ToastComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

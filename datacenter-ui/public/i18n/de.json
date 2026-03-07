@@ -338,7 +338,7 @@
     "invalid": "Ungültiger Wert.",
     "does_not_exist": "Der ausgewählte Wert existiert nicht.",
     "conflict": "Änderung nicht möglich: Der Datensatz wird verwendet.",
-    "permission_denied": "Zugriff verweigert.",
+    "permission_denied": "Du hast keine Berechtigung, diese Aktion auszuführen.",
     "authentication": "Authentifizierung erforderlich.",
     "throttled": "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
     "network": "Server nicht erreichbar.",

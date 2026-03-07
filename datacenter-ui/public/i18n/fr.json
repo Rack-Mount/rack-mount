@@ -365,7 +365,7 @@
     "invalid": "Valeur invalide.",
     "does_not_exist": "La valeur sélectionnée n'existe pas.",
     "conflict": "Impossible de modifier : l'enregistrement est utilisé.",
-    "permission_denied": "Permission refusée.",
+    "permission_denied": "Vous n'avez pas la permission d'effectuer cette action.",
     "authentication": "Authentification requise.",
     "throttled": "Trop de requêtes. Veuillez réessayer plus tard.",
     "network": "Impossible de contacter le serveur.",

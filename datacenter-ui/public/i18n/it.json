@@ -367,7 +367,7 @@
     "invalid": "Valore non valido.",
     "does_not_exist": "Il valore selezionato non esiste.",
     "conflict": "Impossibile modificare: il dato è in uso.",
-    "permission_denied": "Permesso negato.",
+    "permission_denied": "Non hai i permessi per eseguire questa azione.",
     "authentication": "Autenticazione richiesta.",
     "throttled": "Troppe richieste. Riprova tra qualche istante.",
     "network": "Impossibile contattare il server.",

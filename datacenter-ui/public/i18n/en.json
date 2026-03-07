@@ -367,7 +367,7 @@
     "invalid": "Invalid value.",
     "does_not_exist": "The selected value does not exist.",
     "conflict": "Cannot modify: the record is in use.",
-    "permission_denied": "Permission denied.",
+    "permission_denied": "You don't have permission to perform this action.",
     "authentication": "Authentication required.",
     "throttled": "Too many requests. Please try again later.",
     "network": "Unable to reach the server.",

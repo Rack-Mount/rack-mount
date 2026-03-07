@@ -66,7 +66,7 @@
         </select>
       </div>
       @if (createSave() === "error") {
-        <p class="form-error">{{ createError() | translate }}</p>
+        <p class="form-error">{{ createError() }}</p>
       }
       <div class="form-actions">
         <button
@@ -153,9 +153,7 @@
                     [placeholder]="'users.field_new_password_ph' | translate"
                   />
                   @if (editSave() === "error") {
-                    <span class="inline-error">{{
-                      editError() | translate
-                    }}</span>
+                    <span class="inline-error">{{ editError() }}</span>
                   }
                   <button
                     class="btn-action btn-action--save"
@@ -194,9 +192,7 @@
                   @if (deleteId() === u.id) {
                     <span class="delete-confirm">
                       @if (deleteSave() === "error") {
-                        <span class="delete-error">{{
-                          "users.delete_error" | translate
-                        }}</span>
+                        <span class="delete-error">{{ deleteErrorMsg() }}</span>
                       }
                       <span>{{ "users.confirm_delete" | translate }}</span>
                       <button
