@@ -6,6 +6,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { RoleService } from '../services/role.service';
 
 /** Protects routes that require authentication. Redirects to /login when not authenticated. */
 export const authGuard: CanActivateFn = (
@@ -26,4 +27,11 @@ export const noAuthGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
   return !auth.isAuthenticated() ? true : router.createUrlTree(['/']);
+};
+
+/** Restricts access to admin-role users only. Redirects to / for non-admins. */
+export const adminGuard: CanActivateFn = () => {
+  const role = inject(RoleService);
+  const router = inject(Router);
+  return role.isAdmin() ? true : router.createUrlTree(['/']);
 };

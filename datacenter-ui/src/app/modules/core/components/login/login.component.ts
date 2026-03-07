@@ -53,7 +53,10 @@ export class LoginComponent {
           this.auth.login(this.username, tokens);
           const returnUrl =
             this.route.snapshot.queryParamMap.get('returnUrl') ?? '/';
-          this.router.navigateByUrl(returnUrl);
+          this.auth.fetchAndLoadRole().subscribe({
+            complete: () => this.router.navigateByUrl(returnUrl),
+            error: () => this.router.navigateByUrl(returnUrl),
+          });
         },
         error: (err) => {
           this.loading.set(false);

@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   effect,
+  inject,
   input,
   output,
   signal,
@@ -11,6 +12,7 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from '../../../../../../../environments/environment';
 import { AssetState, AssetType } from '../../../../../core/api/v1';
+import { RoleService } from '../../../../../core/services/role.service';
 
 export interface AssetsFilterParams {
   search: string;
@@ -35,6 +37,7 @@ export interface CsvImportRow {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssetsToolbarComponent {
+  protected readonly role = inject(RoleService);
   readonly params = input<AssetsFilterParams>({
     search: '',
     stateId: null,

@@ -2,9 +2,10 @@ from rest_framework import viewsets
 from asset.serializers import RackUnitSerializer
 from asset.models import RackUnit
 from shared.mixins import StandardFilterMixin
+from accounts.mixins import RoleBasedViewSetMixin
 
 
-class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class RackUnitViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
     """
     RackUnitViewSet is a viewset for handling CRUD operations on RackUnit objects.
 

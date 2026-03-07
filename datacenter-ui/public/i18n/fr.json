@@ -378,7 +378,8 @@
     "vendors": "Fournisseurs",
     "models": "Modèles",
     "components": "Composants",
-    "racks": "Baies"
+    "racks": "Baies",
+    "admin": "Utilisateurs"
   },
   "asset_row": {
     "section_device": "Équipement",
@@ -425,6 +426,35 @@
   },
   "header": {
     "logout": "Déconnexion",
-    "logged_in_as": "Connecté en tant que"
+    "logged_in_as": "Connecté en tant que",
+    "manage_users": "Gérer les utilisateurs"
+  },
+  "roles": {
+    "admin": "Administrateur",
+    "editor": "Éditeur",
+    "viewer": "Lecteur",
+    "guest": "Invité"
+  },
+  "users": {
+    "title": "Gestion des utilisateurs",
+    "loading": "Chargement des utilisateurs…",
+    "new_btn": "Nouvel utilisateur",
+    "create_title": "Créer un utilisateur",
+    "col_username": "Nom d’utilisateur",
+    "col_email": "E-mail",
+    "col_role": "Rôle",
+    "col_active": "Actif",
+    "field_username": "Nom d’utilisateur",
+    "field_username_ph": "ex. pierre",
+    "field_email": "E-mail",
+    "field_email_ph": "utilisateur@exemple.fr",
+    "field_password": "Mot de passe",
+    "field_password_ph": "Définir le mot de passe",
+    "field_new_password_ph": "Nouveau mot de passe (laisser vide pour conserver)",
+    "field_role": "Rôle",
+    "confirm_delete": "Supprimer l’utilisateur ?",
+    "delete_error": "Erreur — réessayer",
+    "save_error": "Erreur lors de l’enregistrement.",
+    "no_data": "Aucun utilisateur trouvé."
   }
 }

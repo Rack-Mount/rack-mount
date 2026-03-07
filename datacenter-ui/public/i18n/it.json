@@ -380,7 +380,8 @@
     "vendors": "Vendor",
     "models": "Apparati",
     "components": "Componenti",
-    "racks": "Rack"
+    "racks": "Rack",
+    "admin": "Utenti"
   },
   "asset_row": {
     "section_device": "Apparato",
@@ -427,6 +428,35 @@
   },
   "header": {
     "logout": "Esci",
-    "logged_in_as": "Connesso come"
+    "logged_in_as": "Connesso come",
+    "manage_users": "Gestione Utenti"
+  },
+  "roles": {
+    "admin": "Amministratore",
+    "editor": "Editor",
+    "viewer": "Visualizzatore",
+    "guest": "Ospite"
+  },
+  "users": {
+    "title": "Gestione Utenti",
+    "loading": "Caricamento utenti…",
+    "new_btn": "Nuovo Utente",
+    "create_title": "Crea Utente",
+    "col_username": "Username",
+    "col_email": "Email",
+    "col_role": "Ruolo",
+    "col_active": "Attivo",
+    "field_username": "Username",
+    "field_username_ph": "es. mario",
+    "field_email": "Email",
+    "field_email_ph": "utente@esempio.it",
+    "field_password": "Password",
+    "field_password_ph": "Imposta password",
+    "field_new_password_ph": "Nuova password (lascia vuoto per mantenere)",
+    "field_role": "Ruolo",
+    "confirm_delete": "Eliminare l'utente?",
+    "delete_error": "Errore — riprova",
+    "save_error": "Errore durante il salvataggio.",
+    "no_data": "Nessun utente trovato."
   }
 }

@@ -35,6 +35,8 @@
               🔌
             } @else if (tab.type === "racks") {
               🗄️
+            } @else if (tab.type === "admin") {
+              👥
             } @else {
               🏠
             }
@@ -208,6 +210,21 @@
       } @error {
         <div class="loading-state loading-state--error">
           Pagina non disponibile.
+        </div>
+      }
+    </div>
+
+    <!-- Admin pane -->
+    <div class="content-pane" [hidden]="activeTabId() !== 'admin'">
+      @defer (when activeTabId() === 'admin'; prefetch on idle) {
+        <app-users-list />
+      } @loading (minimum 150ms) {
+        <div class="loading-state">{{ "users.loading" | translate }}</div>
+      } @placeholder {
+        <div class="loading-state">{{ "users.loading" | translate }}</div>
+      } @error {
+        <div class="loading-state loading-state--error">
+          {{ "common.error_loading" | translate }}
         </div>
       }
     </div>

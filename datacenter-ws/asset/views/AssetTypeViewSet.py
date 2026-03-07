@@ -2,9 +2,10 @@ from rest_framework import viewsets
 from asset.serializers import AssetTypeSerializer
 from asset.models import AssetType
 from shared.mixins import NameSearchMixin
+from accounts.mixins import RoleBasedViewSetMixin
 
 
-class AssetTypeViewSet(NameSearchMixin, viewsets.ModelViewSet):
+class AssetTypeViewSet(RoleBasedViewSetMixin, NameSearchMixin, viewsets.ModelViewSet):
     """ViewSet for CRUD operations on AssetType objects."""
 
     queryset = AssetType.objects.all()

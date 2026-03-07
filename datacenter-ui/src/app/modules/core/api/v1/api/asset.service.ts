@@ -461,7 +461,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
      * @endpoint post /asset/asset_custom_field
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -532,7 +532,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
      * @endpoint delete /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -593,7 +593,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
      * @endpoint get /asset/asset_custom_field
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -704,7 +704,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
      * @endpoint patch /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -779,7 +779,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
      * @endpoint get /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -841,7 +841,7 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     }
 
     /**
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * Override get_permissions() to inject RoleBasedModelPermission in addition to any permissions already declared on the viewset.
      * @endpoint put /asset/asset_custom_field/{id}
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

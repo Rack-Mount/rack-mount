@@ -380,7 +380,8 @@
     "vendors": "Vendors",
     "models": "Models",
     "components": "Components",
-    "racks": "Racks"
+    "racks": "Racks",
+    "admin": "Users"
   },
   "asset_row": {
     "section_device": "Device",
@@ -427,6 +428,35 @@
   },
   "header": {
     "logout": "Sign out",
-    "logged_in_as": "Signed in as"
+    "logged_in_as": "Signed in as",
+    "manage_users": "Manage Users"
+  },
+  "roles": {
+    "admin": "Admin",
+    "editor": "Editor",
+    "viewer": "Viewer",
+    "guest": "Guest"
+  },
+  "users": {
+    "title": "User Management",
+    "loading": "Loading users…",
+    "new_btn": "New User",
+    "create_title": "Create User",
+    "col_username": "Username",
+    "col_email": "Email",
+    "col_role": "Role",
+    "col_active": "Active",
+    "field_username": "Username",
+    "field_username_ph": "e.g. john",
+    "field_email": "Email",
+    "field_email_ph": "user@example.com",
+    "field_password": "Password",
+    "field_password_ph": "Set password",
+    "field_new_password_ph": "New password (leave blank to keep)",
+    "field_role": "Role",
+    "confirm_delete": "Delete user?",
+    "delete_error": "Error — retry",
+    "save_error": "Error while saving.",
+    "no_data": "No users found."
   }
 }

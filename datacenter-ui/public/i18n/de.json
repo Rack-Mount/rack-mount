@@ -378,7 +378,8 @@
     "vendors": "Hersteller",
     "models": "Modelle",
     "components": "Komponenten",
-    "racks": "Racks"
+    "racks": "Racks",
+    "admin": "Benutzer"
   },
   "asset_row": {
     "section_device": "Gerät",
@@ -425,6 +426,35 @@
   },
   "header": {
     "logout": "Abmelden",
-    "logged_in_as": "Angemeldet als"
+    "logged_in_as": "Angemeldet als",
+    "manage_users": "Benutzerverwaltung"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "editor": "Editor",
+    "viewer": "Betrachter",
+    "guest": "Gast"
+  },
+  "users": {
+    "title": "Benutzerverwaltung",
+    "loading": "Benutzer werden geladen…",
+    "new_btn": "Neuer Benutzer",
+    "create_title": "Benutzer erstellen",
+    "col_username": "Benutzername",
+    "col_email": "E-Mail",
+    "col_role": "Rolle",
+    "col_active": "Aktiv",
+    "field_username": "Benutzername",
+    "field_username_ph": "z.B. max",
+    "field_email": "E-Mail",
+    "field_email_ph": "benutzer@beispiel.de",
+    "field_password": "Passwort",
+    "field_password_ph": "Passwort setzen",
+    "field_new_password_ph": "Neues Passwort (leer lassen zum Behalten)",
+    "field_role": "Rolle",
+    "confirm_delete": "Benutzer löschen?",
+    "delete_error": "Fehler — erneut versuchen",
+    "save_error": "Fehler beim Speichern.",
+    "no_data": "Keine Benutzer gefunden."
   }
 }

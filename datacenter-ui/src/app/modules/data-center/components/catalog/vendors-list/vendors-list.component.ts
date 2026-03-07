@@ -25,6 +25,7 @@ import {
   SEARCH_DEBOUNCE_MS,
 } from '../../../../core/constants';
 import { BackendErrorService } from '../../../../core/services/backend-error.service';
+import { RoleService } from '../../../../core/services/role.service';
 import {
   PaginatedListState,
   SaveState,
@@ -44,6 +45,7 @@ const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 export class VendorsListComponent {
   private readonly svc = inject(AssetService);
   private readonly destroyRef = inject(DestroyRef);
+  protected readonly role = inject(RoleService);
   private readonly backendErr = inject(BackendErrorService);
   private readonly translate = inject(TranslateService);
 

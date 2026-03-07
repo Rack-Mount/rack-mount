@@ -8,6 +8,7 @@ from asset.serializers import AssetSerializer
 from asset.models import Asset, AssetState, RackUnit
 from django_filters import rest_framework as df_filters
 from shared.mixins import StandardFilterMixin
+from accounts.mixins import RoleBasedViewSetMixin
 
 
 class AssetFilter(df_filters.FilterSet):
@@ -27,7 +28,7 @@ class AssetFilter(df_filters.FilterSet):
                   'model', 'state', 'model__vendor', 'model__type']
 
 
-class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class AssetViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
     """
     AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 

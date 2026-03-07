@@ -177,63 +177,67 @@
       </div>
     }
 
-    <!-- Template download -->
-    <button
-      class="btn-tpl"
-      type="button"
-      (click)="downloadTemplate()"
-      [title]="'assets.import_csv_template_title' | translate"
-    >
-      <svg viewBox="0 0 16 16" fill="none">
-        <path
-          d="M3 13h10M8 3v7M5 7l3 3 3-3"
-          stroke="currentColor"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
-
-    <!-- Import CSV -->
-    <label
-      class="btn-import"
-      [class.btn-import--busy]="importCsvState() === 'importing'"
-      [title]="'assets.import_csv_btn' | translate"
-    >
-      @if (importCsvState() === "importing") {
-        <span class="spinner-xs"></span>
-      } @else {
+    @if (role.canImportExport()) {
+      <!-- Template download -->
+      <button
+        class="btn-tpl"
+        type="button"
+        (click)="downloadTemplate()"
+        [title]="'assets.import_csv_template_title' | translate"
+      >
         <svg viewBox="0 0 16 16" fill="none">
           <path
-            d="M8 3v7M5 7l3-3 3 3M3 13h10"
+            d="M3 13h10M8 3v7M5 7l3 3 3-3"
             stroke="currentColor"
             stroke-width="1.6"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
         </svg>
-      }
-      {{ "assets.import_csv_btn" | translate }}
-      <input
-        type="file"
-        accept=".csv,text/csv"
-        class="file-input-hidden"
-        (change)="onFileSelected($event)"
-      />
-    </label>
+      </button>
 
-    <button class="btn-new-asset" (click)="newClick.emit()">
-      <svg viewBox="0 0 16 16" fill="none">
-        <path
-          d="M8 3v10M3 8h10"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
+      <!-- Import CSV -->
+      <label
+        class="btn-import"
+        [class.btn-import--busy]="importCsvState() === 'importing'"
+        [title]="'assets.import_csv_btn' | translate"
+      >
+        @if (importCsvState() === "importing") {
+          <span class="spinner-xs"></span>
+        } @else {
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 3v7M5 7l3-3 3 3M3 13h10"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        }
+        {{ "assets.import_csv_btn" | translate }}
+        <input
+          type="file"
+          accept=".csv,text/csv"
+          class="file-input-hidden"
+          (change)="onFileSelected($event)"
         />
-      </svg>
-      {{ "assets.new_btn" | translate }}
-    </button>
+      </label>
+    }
+
+    @if (role.canCreate()) {
+      <button class="btn-new-asset" (click)="newClick.emit()">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 3v10M3 8h10"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{ "assets.new_btn" | translate }}
+      </button>
+    }
     @if (totalCount() !== null) {
       <span class="count-badge">
         {{

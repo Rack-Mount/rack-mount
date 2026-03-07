@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'reversion',
     "corsheaders",
     'import_export',
-    # 'accounts',
+    'accounts',
     'location',
     'asset',
     'drf_spectacular',

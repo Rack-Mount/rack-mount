@@ -94,42 +94,46 @@
           "models.import_conflict" | translate
         }}</span>
       }
-      <label
-        class="btn-import"
-        [class.btn-import--busy]="importState() === 'importing'"
-      >
-        @if (importState() === "importing") {
-          <span class="spinner-xs"></span>
-        } @else {
+      @if (role.canImportExport()) {
+        <label
+          class="btn-import"
+          [class.btn-import--busy]="importState() === 'importing'"
+        >
+          @if (importState() === "importing") {
+            <span class="spinner-xs"></span>
+          } @else {
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M8 13V3M4 9l4 4 4-4"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          }
+          {{ "models.import_btn" | translate }}
+          <input
+            type="file"
+            accept=".json,application/json"
+            class="file-input-hidden"
+            (change)="onImportJson($event)"
+          />
+        </label>
+      }
+      @if (role.canCreate()) {
+        <button class="btn-new" (click)="openCreate()">
           <svg viewBox="0 0 16 16" fill="none">
             <path
-              d="M8 13V3M4 9l4 4 4-4"
+              d="M8 3v10M3 8h10"
               stroke="currentColor"
               stroke-width="1.8"
               stroke-linecap="round"
-              stroke-linejoin="round"
             />
           </svg>
-        }
-        {{ "models.import_btn" | translate }}
-        <input
-          type="file"
-          accept=".json,application/json"
-          class="file-input-hidden"
-          (change)="onImportJson($event)"
-        />
-      </label>
-      <button class="btn-new" (click)="openCreate()">
-        <svg viewBox="0 0 16 16" fill="none">
-          <path
-            d="M8 3v10M3 8h10"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-          />
-        </svg>
-        {{ "models.new_btn" | translate }}
-      </button>
+          {{ "models.new_btn" | translate }}
+        </button>
+      }
     </div>
   </div>
 
@@ -342,65 +346,71 @@
                   </div>
                 } @else {
                   <div class="action-group">
-                    <button
-                      class="btn-clone"
-                      [title]="'models.clone_btn' | translate"
-                      (click)="cloneModel(m)"
-                    >
-                      <svg viewBox="0 0 16 16" fill="none">
-                        <rect
-                          x="5"
-                          y="1"
-                          width="9"
-                          height="11"
-                          rx="1.5"
-                          stroke="currentColor"
-                          stroke-width="1.4"
-                        />
-                        <rect
-                          x="2"
-                          y="4"
-                          width="9"
-                          height="11"
-                          rx="1.5"
-                          stroke="currentColor"
-                          stroke-width="1.4"
-                          fill="var(--dc-bg-row, #181825)"
-                        />
-                      </svg>
-                      {{ "models.clone_btn" | translate }}
-                    </button>
-                    <button
-                      class="btn-edit"
-                      [title]="'common.edit' | translate"
-                      (click)="openEdit(m)"
-                    >
-                      <svg viewBox="0 0 16 16" fill="none">
-                        <path
-                          d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
-                          stroke="currentColor"
-                          stroke-width="1.4"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      {{ "common.edit" | translate }}
-                    </button>
-                    <button
-                      class="btn-delete"
-                      [title]="'common.delete' | translate"
-                      (click)="confirmDelete(m.id)"
-                    >
-                      <svg viewBox="0 0 16 16" fill="none">
-                        <path
-                          d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
-                          stroke="currentColor"
-                          stroke-width="1.4"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      {{ "common.delete" | translate }}
-                    </button>
+                    @if (role.canCreate()) {
+                      <button
+                        class="btn-clone"
+                        [title]="'models.clone_btn' | translate"
+                        (click)="cloneModel(m)"
+                      >
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <rect
+                            x="5"
+                            y="1"
+                            width="9"
+                            height="11"
+                            rx="1.5"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                          />
+                          <rect
+                            x="2"
+                            y="4"
+                            width="9"
+                            height="11"
+                            rx="1.5"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            fill="var(--dc-bg-row, #181825)"
+                          />
+                        </svg>
+                        {{ "models.clone_btn" | translate }}
+                      </button>
+                    }
+                    @if (role.canEdit()) {
+                      <button
+                        class="btn-edit"
+                        [title]="'common.edit' | translate"
+                        (click)="openEdit(m)"
+                      >
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        {{ "common.edit" | translate }}
+                      </button>
+                    }
+                    @if (role.canDelete()) {
+                      <button
+                        class="btn-delete"
+                        [title]="'common.delete' | translate"
+                        (click)="confirmDelete(m.id)"
+                      >
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        {{ "common.delete" | translate }}
+                      </button>
+                    }
                   </div>
                 }
               </td>

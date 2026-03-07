@@ -8,9 +8,11 @@ from django.utils.translation import gettext as _
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
+from accounts.permissions import IsEditorOrAbove
 from asset.models import AssetModel, Vendor
 from asset.models.AssetType import AssetType
 from asset.serializers import AssetModelSerializer
@@ -102,6 +104,8 @@ class AssetModelImportView(APIView):
     - 400: missing/invalid fields.
     - 409: a model with the same (name, vendor, type) already exists.
     """
+
+    permission_classes = [IsAuthenticated, IsEditorOrAbove]
 
     @extend_schema(
         summary='Import an AssetModel from JSON (with optional base64 images)',

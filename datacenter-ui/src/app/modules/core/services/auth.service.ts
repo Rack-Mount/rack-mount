@@ -11,6 +11,7 @@ import {
   throwError,
 } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { RoleData, RoleService } from './role.service';
 
 interface TokenPair {
   access: string;
@@ -26,6 +27,7 @@ const STORAGE_KEYS = {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly roleService = inject(RoleService);
 
   private readonly _accessToken = signal<string>(
     localStorage.getItem(STORAGE_KEYS.access) ?? '',
@@ -63,6 +65,18 @@ export class AuthService {
     localStorage.removeItem(STORAGE_KEYS.refresh);
     this._isRefreshing = false;
     this._refreshSubject.next(null);
+    this.roleService.clear();
+  }
+
+  /** Fetches /auth/me/ and stores the returned role in RoleService. */
+  fetchAndLoadRole(): Observable<void> {
+    return this.http
+      .get<{ role: RoleData }>(`${environment.service_url}/auth/me/`)
+      .pipe(
+        map(({ role }) => {
+          if (role) this.roleService.load(role);
+        }),
+      );
   }
 
   // ── Token refresh ─────────────────────────────────────────────────────────

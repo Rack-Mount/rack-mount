@@ -1,0 +1,262 @@
+<div class="users-list">
+  <!-- ── Toolbar ──────────────────────────────────────────────────────────── -->
+  <div class="users-toolbar">
+    <h2 class="users-title">{{ "users.title" | translate }}</h2>
+    <button class="btn-new" (click)="openCreate()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <path
+          d="M8 3v10M3 8h10"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        />
+      </svg>
+      {{ "users.new_btn" | translate }}
+    </button>
+  </div>
+
+  <!-- ── Create form ──────────────────────────────────────────────────────── -->
+  @if (createOpen()) {
+    <div class="create-form">
+      <h3 class="form-title">{{ "users.create_title" | translate }}</h3>
+      <div class="form-row">
+        <label class="form-label">{{
+          "users.field_username" | translate
+        }}</label>
+        <input
+          class="form-input"
+          type="text"
+          [value]="createUsername()"
+          (input)="createUsername.set($any($event.target).value)"
+          [placeholder]="'users.field_username_ph' | translate"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">{{ "users.field_email" | translate }}</label>
+        <input
+          class="form-input"
+          type="email"
+          [value]="createEmail()"
+          (input)="createEmail.set($any($event.target).value)"
+          [placeholder]="'users.field_email_ph' | translate"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">{{
+          "users.field_password" | translate
+        }}</label>
+        <input
+          class="form-input"
+          type="password"
+          [value]="createPassword()"
+          (input)="createPassword.set($any($event.target).value)"
+          [placeholder]="'users.field_password_ph' | translate"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">{{ "users.field_role" | translate }}</label>
+        <select
+          class="form-select"
+          [value]="createRoleId()"
+          (change)="createRoleId.set(+$any($event.target).value)"
+        >
+          @for (r of roles; track r.id) {
+            <option [value]="r.id">{{ "roles." + r.name | translate }}</option>
+          }
+        </select>
+      </div>
+      @if (createSave() === "error") {
+        <p class="form-error">{{ createError() | translate }}</p>
+      }
+      <div class="form-actions">
+        <button
+          class="btn-save"
+          [disabled]="
+            createSave() === 'saving' ||
+            !createUsername().trim() ||
+            !createPassword().trim()
+          "
+          (click)="submitCreate()"
+        >
+          {{
+            createSave() === "saving"
+              ? ("common.saving" | translate)
+              : ("common.save" | translate)
+          }}
+        </button>
+        <button class="btn-cancel" (click)="cancelCreate()">
+          {{ "common.cancel" | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── Table ────────────────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="state-full"><div class="spinner"></div></div>
+  } @else if (loadError()) {
+    <div class="state-full state-full--error">
+      {{ "common.error_loading" | translate }}
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>{{ "users.col_username" | translate }}</th>
+            <th>{{ "users.col_email" | translate }}</th>
+            <th>{{ "users.col_role" | translate }}</th>
+            <th>{{ "users.col_active" | translate }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of users(); track u.id) {
+            @if (editId() === u.id) {
+              <!-- Edit row -->
+              <tr class="row-edit">
+                <td>{{ u.username }}</td>
+                <td>
+                  <input
+                    class="inline-input"
+                    type="email"
+                    [value]="editEmail()"
+                    (input)="editEmail.set($any($event.target).value)"
+                  />
+                </td>
+                <td>
+                  <select
+                    class="inline-select"
+                    [value]="editRoleId()"
+                    (change)="editRoleId.set(+$any($event.target).value)"
+                  >
+                    @for (r of roles; track r.id) {
+                      <option [value]="r.id">
+                        {{ "roles." + r.name | translate }}
+                      </option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="checkbox"
+                    [checked]="editIsActive()"
+                    (change)="editIsActive.set($any($event.target).checked)"
+                  />
+                </td>
+                <td class="actions">
+                  <input
+                    class="inline-input inline-input--pw"
+                    type="password"
+                    [value]="editPassword()"
+                    (input)="editPassword.set($any($event.target).value)"
+                    [placeholder]="'users.field_new_password_ph' | translate"
+                  />
+                  @if (editSave() === "error") {
+                    <span class="inline-error">{{
+                      editError() | translate
+                    }}</span>
+                  }
+                  <button
+                    class="btn-action btn-action--save"
+                    [disabled]="editSave() === 'saving'"
+                    (click)="submitEdit()"
+                  >
+                    {{
+                      editSave() === "saving"
+                        ? "…"
+                        : ("common.save" | translate)
+                    }}
+                  </button>
+                  <button class="btn-action" (click)="cancelEdit()">
+                    {{ "common.cancel" | translate }}
+                  </button>
+                </td>
+              </tr>
+            } @else {
+              <!-- Display row -->
+              <tr class="row-data" [class.row-data--inactive]="!u.is_active">
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>
+                  <span class="role-badge role-badge--{{ u.role.name }}">{{
+                    "roles." + u.role.name | translate
+                  }}</span>
+                </td>
+                <td>
+                  @if (u.is_active) {
+                    <span class="active-dot active-dot--on"></span>
+                  } @else {
+                    <span class="active-dot active-dot--off"></span>
+                  }
+                </td>
+                <td class="actions">
+                  @if (deleteId() === u.id) {
+                    <span class="delete-confirm">
+                      @if (deleteSave() === "error") {
+                        <span class="delete-error">{{
+                          "users.delete_error" | translate
+                        }}</span>
+                      }
+                      <span>{{ "users.confirm_delete" | translate }}</span>
+                      <button
+                        class="btn-action btn-action--danger"
+                        [disabled]="deleteSave() === 'saving'"
+                        (click)="submitDelete()"
+                      >
+                        {{
+                          deleteSave() === "saving"
+                            ? "…"
+                            : ("common.delete" | translate)
+                        }}
+                      </button>
+                      <button class="btn-action" (click)="cancelDelete()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    </span>
+                  } @else {
+                    <button
+                      class="btn-icon btn-icon--edit"
+                      [title]="'common.edit' | translate"
+                      (click)="startEdit(u)"
+                    >
+                      <svg viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      class="btn-icon btn-icon--delete"
+                      [title]="'common.delete' | translate"
+                      (click)="startDelete(u.id)"
+                    >
+                      <svg viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M3 4h10M6 4V3h4v1M5 4v8h6V4H5z"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty-msg">
+                {{ "users.no_data" | translate }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

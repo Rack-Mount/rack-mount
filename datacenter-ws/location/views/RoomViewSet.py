@@ -2,9 +2,10 @@ from rest_framework import viewsets, parsers
 from location.models import Room
 from location.serializers import RoomSerializer
 from shared.mixins import StandardFilterMixin
+from accounts.mixins import RoleBasedViewSetMixin
 
 
-class RoomViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class RoomViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
     """
     RoomViewSet is a viewset for handling CRUD operations on the Room model.
 

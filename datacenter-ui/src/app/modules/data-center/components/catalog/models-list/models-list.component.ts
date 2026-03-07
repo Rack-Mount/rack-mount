@@ -33,6 +33,7 @@ import {
 } from '../../../../core/constants';
 import { BackendErrorService } from '../../../../core/services/backend-error.service';
 import { MultipartUploadService } from '../../../../core/services/multipart-upload.service';
+import { RoleService } from '../../../../core/services/role.service';
 import {
   DestroyableState,
   PaginatedListState,
@@ -91,6 +92,7 @@ function emptyForm(): ModelForm {
 })
 export class ModelsListComponent {
   private readonly svc = inject(AssetService);
+  protected readonly role = inject(RoleService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
   private readonly uploadSvc = inject(MultipartUploadService);

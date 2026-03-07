@@ -21,6 +21,7 @@ from django.conf import settings
 from location import urls as location_urls
 from asset import urls as asset_urls
 from django.urls import path, include
+import accounts.urls as accounts_urls
 from django.contrib import admin
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from asset.views.ImageView import ImageView
@@ -35,6 +36,7 @@ urlpatterns = [
     path('asset/', include(asset_urls.urlpatterns)),
     path('admin/', admin.site.urls),
     path('auth/me/', MeView.as_view(), name='auth-me'),
+    path('auth/', include(accounts_urls.urlpatterns)),
     path('auth/token/', TokenObtainPairView.as_view(), name='token-obtain'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
     # path('', get_schema_view(

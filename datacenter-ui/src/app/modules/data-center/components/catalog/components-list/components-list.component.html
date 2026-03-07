@@ -68,17 +68,19 @@
           "components.count_badge" | translate: { count: totalCount() }
         }}</span>
       }
-      <button class="btn-new" (click)="openCreate()">
-        <svg viewBox="0 0 16 16" fill="none">
-          <path
-            d="M8 3v10M3 8h10"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-          />
-        </svg>
-        {{ "components.new_btn" | translate }}
-      </button>
+      @if (role.canCreate()) {
+        <button class="btn-new" (click)="openCreate()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 3v10M3 8h10"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{ "components.new_btn" | translate }}
+        </button>
+      }
     </div>
   </div>
 
@@ -247,37 +249,41 @@
                   </div>
                 } @else {
                   <div class="action-group">
-                    <button
-                      class="btn-edit"
-                      [title]="'common.edit' | translate"
-                      (click)="openEdit(c)"
-                    >
-                      <svg viewBox="0 0 16 16" fill="none">
-                        <path
-                          d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
-                          stroke="currentColor"
-                          stroke-width="1.4"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      {{ "common.edit" | translate }}
-                    </button>
-                    <button
-                      class="btn-delete"
-                      [title]="'common.delete' | translate"
-                      (click)="confirmDelete(c.id)"
-                    >
-                      <svg viewBox="0 0 16 16" fill="none">
-                        <path
-                          d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
-                          stroke="currentColor"
-                          stroke-width="1.4"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      {{ "common.delete" | translate }}
-                    </button>
+                    @if (role.canEdit()) {
+                      <button
+                        class="btn-edit"
+                        [title]="'common.edit' | translate"
+                        (click)="openEdit(c)"
+                      >
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        {{ "common.edit" | translate }}
+                      </button>
+                    }
+                    @if (role.canDelete()) {
+                      <button
+                        class="btn-delete"
+                        [title]="'common.delete' | translate"
+                        (click)="confirmDelete(c.id)"
+                      >
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        {{ "common.delete" | translate }}
+                      </button>
+                    }
                   </div>
                 }
               </td>

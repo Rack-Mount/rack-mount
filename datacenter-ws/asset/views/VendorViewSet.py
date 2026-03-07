@@ -4,9 +4,10 @@ from rest_framework.response import Response
 from asset.serializers import VendorSerializer
 from asset.models import Vendor
 from shared.mixins import NameSearchMixin
+from accounts.mixins import RoleBasedViewSetMixin
 
 
-class VendorViewSet(NameSearchMixin, viewsets.ModelViewSet):
+class VendorViewSet(RoleBasedViewSetMixin, NameSearchMixin, viewsets.ModelViewSet):
     """
     VendorViewSet handles CRUD operations on the Vendor model.
     """

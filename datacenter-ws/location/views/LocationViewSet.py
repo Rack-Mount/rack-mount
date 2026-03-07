@@ -2,9 +2,10 @@ from rest_framework import viewsets
 from location.models import Location
 from location.serializers import LocationSerializer
 from shared.mixins import StandardFilterMixin
+from accounts.mixins import RoleBasedViewSetMixin
 
 
-class LocationViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class LocationViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
     """
     LocationViewSet is a viewset for handling CRUD operations on Location model.
 

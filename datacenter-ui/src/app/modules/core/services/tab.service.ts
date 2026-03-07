@@ -251,6 +251,33 @@ export class TabService {
     if (this.upsertComponentsTab()) this.persistTabs();
   }
 
+  // ── Admin tab ────────────────────────────────────────────
+
+  private upsertAdminTab(): boolean {
+    if (this._tabs().some((t) => t.id === 'admin')) return false;
+    this._tabs.update((tabs) => [
+      {
+        id: 'admin',
+        label: 'Users',
+        labelKey: 'tabs.admin',
+        type: 'admin' as const,
+        pinned: false,
+      },
+      ...tabs,
+    ]);
+    return true;
+  }
+
+  openAdmin(): void {
+    this.upsertAdminTab();
+    this.persistTabs();
+    this._activate$.next('admin');
+  }
+
+  ensureAdminTab(): void {
+    if (this.upsertAdminTab()) this.persistTabs();
+  }
+
   reportRackNotFound(rackName: string): void {
     this.closeTab(`rack-${rackName}`);
     this._rackNotFound$.next(rackName);

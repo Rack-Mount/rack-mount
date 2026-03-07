@@ -12,8 +12,13 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { AuthMeRetrieve200Response } from '../model/models';
+import { PaginatedUserListList } from '../model/models';
+import { PatchedUserUpdate } from '../model/models';
 import { TokenObtainPair } from '../model/models';
 import { TokenRefresh } from '../model/models';
+import { UserCreate } from '../model/models';
+import { UserList } from '../model/models';
+import { UserUpdate } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -27,6 +32,33 @@ export interface AuthTokenRefreshCreateRequestParams {
     tokenRefresh: TokenRefresh;
 }
 
+export interface AuthUsersCreateRequestParams {
+    userCreate: UserCreate;
+}
+
+export interface AuthUsersDestroyRequestParams {
+    id: number;
+}
+
+export interface AuthUsersListRequestParams {
+    limit?: number;
+    offset?: number;
+}
+
+export interface AuthUsersPartialUpdateRequestParams {
+    id: number;
+    patchedUserUpdate?: PatchedUserUpdate;
+}
+
+export interface AuthUsersRetrieveRequestParams {
+    id: number;
+}
+
+export interface AuthUsersUpdateRequestParams {
+    id: number;
+    userUpdate?: UserUpdate;
+}
+
 
 export interface AuthServiceInterface {
     defaultHeaders: HttpHeaders;
@@ -34,7 +66,7 @@ export interface AuthServiceInterface {
 
     /**
      * 
-     * Returns basic info about the currently authenticated user.
+     * Returns basic info and role permissions for the currently authenticated user.
      * @endpoint get /auth/me/
 */
     authMeRetrieve(extraHttpRequestParams?: any): Observable<AuthMeRetrieve200Response>;
@@ -54,5 +86,53 @@ export interface AuthServiceInterface {
 * @param requestParameters
      */
     authTokenRefreshCreate(requestParameters: AuthTokenRefreshCreateRequestParams, extraHttpRequestParams?: any): Observable<TokenRefresh>;
+
+    /**
+     * 
+     * CRUD for User management. Accessible only by Admin role.
+     * @endpoint post /auth/users/
+* @param requestParameters
+     */
+    authUsersCreate(requestParameters: AuthUsersCreateRequestParams, extraHttpRequestParams?: any): Observable<UserCreate>;
+
+    /**
+     * 
+     * CRUD for User management. Accessible only by Admin role.
+     * @endpoint delete /auth/users/{id}/
+* @param requestParameters
+     */
+    authUsersDestroy(requestParameters: AuthUsersDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * CRUD for User management. Accessible only by Admin role.
+     * @endpoint get /auth/users/
+* @param requestParameters
+     */
+    authUsersList(requestParameters: AuthUsersListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedUserListList>;
+
+    /**
+     * 
+     * CRUD for User management. Accessible only by Admin role.
+     * @endpoint patch /auth/users/{id}/
+* @param requestParameters
+     */
+    authUsersPartialUpdate(requestParameters: AuthUsersPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<UserUpdate>;
+
+    /**
+     * 
+     * CRUD for User management. Accessible only by Admin role.
+     * @endpoint get /auth/users/{id}/
+* @param requestParameters
+     */
+    authUsersRetrieve(requestParameters: AuthUsersRetrieveRequestParams, extraHttpRequestParams?: any): Observable<UserList>;
+
+    /**
+     * 
+     * CRUD for User management. Accessible only by Admin role.
+     * @endpoint put /auth/users/{id}/
+* @param requestParameters
+     */
+    authUsersUpdate(requestParameters: AuthUsersUpdateRequestParams, extraHttpRequestParams?: any): Observable<UserUpdate>;
 
 }

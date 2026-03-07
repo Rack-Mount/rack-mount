@@ -5,9 +5,10 @@ from django.db.models import Count, Sum
 from asset.serializers import RackSerializer
 from asset.models import Rack, RackUnit
 from shared.mixins import StandardFilterMixin
+from accounts.mixins import RoleBasedViewSetMixin
 
 
-class RackViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class RackViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
     """
     RackViewSet is a viewset for handling CRUD operations on Rack objects.
     """

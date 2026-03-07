@@ -2,9 +2,10 @@ from rest_framework import viewsets
 from location.models import LocationCustomField
 from location.serializers import LocationCustomFieldSerializer
 from shared.mixins import StandardFilterMixin
+from accounts.mixins import RoleBasedViewSetMixin
 
 
-class LocationCustomFieldViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class LocationCustomFieldViewSet(RoleBasedViewSetMixin, StandardFilterMixin, viewsets.ModelViewSet):
     """
     ViewSet for viewing and editing LocationCustomField instances.
     """

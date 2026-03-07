@@ -1,6 +1,10 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './modules/core/components/login/login.component';
-import { authGuard, noAuthGuard } from './modules/core/guards/auth.guard';
+import {
+  adminGuard,
+  authGuard,
+  noAuthGuard,
+} from './modules/core/guards/auth.guard';
 
 /**
  * Routes are used only for URL state management (no <router-outlet>).
@@ -18,6 +22,7 @@ export const routes: Routes = [
   { path: 'components', canActivate: [authGuard], children: [] },
   { path: 'map/:id', canActivate: [authGuard], children: [] },
   { path: 'rack/:name', canActivate: [authGuard], children: [] },
+  { path: 'admin', canActivate: [authGuard, adminGuard], children: [] },
   { path: 'not-found', canActivate: [authGuard], children: [] },
   { path: '**', redirectTo: 'not-found' },
 ];

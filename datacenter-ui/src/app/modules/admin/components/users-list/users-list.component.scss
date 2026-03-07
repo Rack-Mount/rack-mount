@@ -1,0 +1,322 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+}
+
+.users-list {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.users-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.users-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.btn-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  background: var(--color-primary, #4472c4);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+/* ── Create form ──────────────────────────────────────────────────────────── */
+.create-form {
+  background: var(--color-surface-2, #f5f5f5);
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.form-label {
+  width: 130px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #666);
+  flex-shrink: 0;
+}
+
+.form-input,
+.form-select {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 5px;
+  font-size: 0.85rem;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #222);
+}
+
+.form-error {
+  color: var(--color-danger, #d32f2f);
+  font-size: 0.8rem;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn-save {
+  padding: 0.4rem 1rem;
+  background: var(--color-primary, #4472c4);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+}
+
+.btn-cancel {
+  padding: 0.4rem 0.9rem;
+  background: transparent;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 5px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ── Table ────────────────────────────────────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  th {
+    text-align: left;
+    padding: 0.55rem 0.75rem;
+    border-bottom: 2px solid var(--color-border, #ddd);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--color-border-light, #eee);
+    vertical-align: middle;
+  }
+
+  .row-data--inactive td {
+    opacity: 0.55;
+  }
+}
+
+.empty-msg {
+  text-align: center;
+  color: var(--color-text-muted, #888);
+  padding: 1.5rem !important;
+}
+
+/* ── Inline edit ──────────────────────────────────────────────────────────── */
+.inline-input {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  width: 100%;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #222);
+
+  &.inline-input--pw {
+    width: auto;
+  }
+}
+
+.inline-select {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #222);
+}
+
+.inline-error {
+  font-size: 0.78rem;
+  color: var(--color-danger, #d32f2f);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+/* ── Action buttons ───────────────────────────────────────────────────────── */
+td.actions {
+  white-space: nowrap;
+}
+
+.btn-action {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 4px;
+  background: transparent;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin-right: 0.3rem;
+
+  &.btn-action--save {
+    background: var(--color-primary, #4472c4);
+    color: #fff;
+    border-color: transparent;
+  }
+
+  &.btn-action--danger {
+    color: var(--color-danger, #d32f2f);
+    border-color: var(--color-danger, #d32f2f);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.btn-icon {
+  padding: 0.3rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  margin-right: 0.15rem;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+  &.btn-icon--edit:hover {
+    border-color: var(--color-primary, #4472c4);
+    color: var(--color-primary, #4472c4);
+  }
+
+  &.btn-icon--delete:hover {
+    border-color: var(--color-danger, #d32f2f);
+    color: var(--color-danger, #d32f2f);
+  }
+}
+
+.delete-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+}
+
+/* ── Role badge ───────────────────────────────────────────────────────────── */
+.role-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+
+  &.role-badge--admin {
+    background: #fde8e8;
+    color: #c62828;
+  }
+
+  &.role-badge--editor {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+
+  &.role-badge--viewer {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.role-badge--guest {
+    background: #f3e5f5;
+    color: #6a1b9a;
+  }
+}
+
+/* ── Status dot ───────────────────────────────────────────────────────────── */
+.active-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  &.active-dot--on {
+    background: #4caf50;
+  }
+
+  &.active-dot--off {
+    background: #bdbdbd;
+  }
+}
+
+/* ── States ───────────────────────────────────────────────────────────────── */
+.state-full {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--color-text-muted, #888);
+
+  &.state-full--error {
+    color: var(--color-danger, #d32f2f);
+  }
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-border, #ddd);
+  border-top-color: var(--color-primary, #4472c4);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

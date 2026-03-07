@@ -8,10 +8,12 @@ from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import filters
+from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from drf_spectacular.types import OpenApiTypes
 
+from accounts.permissions import IsEditorOrAbove
 from asset.models import Asset
 from asset.views.AssetViewSet import AssetFilter
 
@@ -69,6 +71,7 @@ class AssetExportView(APIView):
     Accepts the same filters as AssetViewSet (search, state, model__type, ordering, ids).
     Returns an .xlsx file.
     """
+    permission_classes = [IsAuthenticated, IsEditorOrAbove]
     filter_backends = (filters.OrderingFilter,
                        filters.SearchFilter, DjangoFilterBackend)
     search_fields = ['hostname', 'sap_id', 'serial_number', 'order_id',

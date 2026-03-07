@@ -4,9 +4,10 @@ from asset.models import GenericComponent
 from asset.serializers import GenericComponentSerializer
 from shared.mixins import ImageTransformMixin
 from shared.paginations import StandardResultsSetPagination
+from accounts.mixins import RoleBasedViewSetMixin
 
 
-class GenericComponentViewSet(ImageTransformMixin, viewsets.ModelViewSet):
+class GenericComponentViewSet(RoleBasedViewSetMixin, ImageTransformMixin, viewsets.ModelViewSet):
     """
     ViewSet for managing GenericComponent objects (cable managers, blanking panels,
     patch panels, PDUs, shelves, and other consumable rack accessories).

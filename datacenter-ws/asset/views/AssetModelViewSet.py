@@ -6,9 +6,10 @@ from asset.serializers import AssetModelSerializer
 from asset.models import AssetModel
 from shared.mixins import ImageTransformMixin
 from shared.paginations import StandardResultsSetPagination
+from accounts.mixins import RoleBasedViewSetMixin
 
 
-class AssetModelViewSet(ImageTransformMixin, viewsets.ModelViewSet):
+class AssetModelViewSet(RoleBasedViewSetMixin, ImageTransformMixin, viewsets.ModelViewSet):
     """
     AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 

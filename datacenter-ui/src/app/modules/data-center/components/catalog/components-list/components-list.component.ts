@@ -30,6 +30,7 @@ import {
   DEFAULT_PAGE_SIZE,
   SEARCH_DEBOUNCE_MS,
 } from '../../../../core/constants';
+import { RoleService } from '../../../../core/services/role.service';
 import {
   DestroyableState,
   PaginatedListState,
@@ -50,6 +51,7 @@ const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 export class ComponentsListComponent {
   private readonly svc = inject(AssetService);
   private readonly destroyRef = inject(DestroyRef);
+  protected readonly role = inject(RoleService);
 
   protected readonly componentTypes = Object.entries(COMPONENT_TYPE_LABELS) as [
     ComponentTypeEnum,

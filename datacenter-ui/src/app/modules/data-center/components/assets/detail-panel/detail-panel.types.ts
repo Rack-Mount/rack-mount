@@ -11,7 +11,8 @@ export interface PanelTab {
     | 'components'
     | 'racks'
     | 'room'
-    | 'rack';
+    | 'rack'
+    | 'admin';
   roomId?: number;
   rackName?: string;
   /** Pinned tabs are always visible and cannot be closed */
