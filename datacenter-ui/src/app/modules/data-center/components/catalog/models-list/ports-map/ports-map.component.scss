@@ -29,8 +29,9 @@
 .pm-dialog {
   display: flex;
   flex-direction: column;
-  max-width: min(1200px, 96vw);
-  max-height: 96dvh;
+  width: 98vw;
+  max-width: 98vw;
+  max-height: 98dvh;
   background: var(--dc-bg-panel, #1e1e2e);
   border: 1px solid var(--dc-border, #313244);
   border-radius: 10px;
@@ -106,6 +107,8 @@
   overflow: hidden;
   flex: 1 1 auto;
   min-height: 0;
+  min-width: 0;
+  height: 100%;
   background: #111;
 
   &--placing {
@@ -115,9 +118,10 @@
 
 .pm-img {
   display: block;
+  width: 100%;
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
-  width: 100%;
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
@@ -127,6 +131,7 @@
 
 .pm-marker {
   position: absolute;
+  // Center on the stored coordinate
   transform: translate(-50%, -50%);
   z-index: 10;
   cursor: default;
@@ -135,25 +140,529 @@
   &--hovered {
     z-index: 20;
   }
+
+  &--dragging {
+    z-index: 30;
+    cursor: grabbing;
+    opacity: 0.85;
+  }
 }
 
-.pm-marker-dot {
+// ── Port face (replaces the old dot for saved ports) ───────────────────────
+
+.pm-port-face {
+  position: relative;
   display: block;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--dc-accent, #89b4fa);
-  border: 2px solid #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  border-radius: 3px;
+  border: 1px solid rgba(90, 90, 115, 0.85);
+  background: linear-gradient(175deg, #2e2e42 0%, #1c1c2c 100%);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
   transition:
-    transform 120ms,
-    background 120ms;
+    border-color 100ms,
+    box-shadow 100ms;
+  overflow: hidden;
+
+  // Default size (generic / OTHER)
+  width: 34px;
+  height: 28px;
+
+  // ── Black port opening (the physical recess) ──
+  &::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    background: #000;
+    border-radius: 2px;
+    box-shadow:
+      inset 0 2px 8px rgba(0, 0, 0, 1),
+      inset 0 0 6px rgba(0, 0, 0, 1);
+  }
+
+  // No gripper lines – the black recess is the defining feature
+  &::after {
+    display: none;
+  }
 
   .pm-marker:hover &,
   .pm-marker--hovered & {
-    transform: scale(1.4);
-    background: var(--dc-warning, #f9e2af);
+    border-color: rgba(249, 226, 175, 0.9);
+    box-shadow:
+      0 0 0 2px rgba(249, 226, 175, 0.2),
+      0 2px 8px rgba(0, 0, 0, 0.8);
   }
+
+  .pm-marker--dragging & {
+    border-color: #cba6f7;
+    box-shadow:
+      0 0 0 3px rgba(203, 166, 247, 0.3),
+      0 4px 16px rgba(0, 0, 0, 0.8);
+  }
+}
+
+// ── Type-specific sizes and accent colours ─────────────────────────────────
+// Orientamento realistico: RJ45/MGMT usano landscape con tab di blocco;
+// SFP/QSFP usano landscape (più larghi che alti, come sui pannelli reali);
+// USB-A mostra la linguetta interna bianca; USB-C usa slot ovale;
+// Serial/VGA usano il contorno D-sub trapezoidale; LC mostra 2 cerchi; FC circolare.
+
+// RJ45 (1GbE) — rettangolo landscape con tab di blocco in basso, blu
+.pm-port-face--rj45 {
+  width: 44px;
+  height: 34px;
+  border-radius: 2px;
+  border-color: rgba(89, 149, 250, 0.8);
+  // apertura nera lascia spazio al tab in basso
+  &::before {
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 11px;
+    border-radius: 1px;
+  }
+  // tab di blocco (latch)
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 7px;
+    background: linear-gradient(
+      180deg,
+      rgba(50, 100, 200, 0.7) 0%,
+      rgba(30, 60, 140, 0.7) 100%
+    );
+    border-radius: 1px 1px 3px 3px;
+    border: 1px solid rgba(89, 149, 250, 0.35);
+  }
+}
+
+// SFP (1G) — cage con apertura nera piena, pull-tab sottile in basso, verde chiaro
+.pm-port-face--sfp {
+  width: 34px;
+  height: 28px;
+  border-radius: 2px;
+  border-width: 1px;
+  border-color: rgba(74, 222, 128, 0.8);
+  background: #060606; // tutto nero come una cage reale
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 1px rgba(74, 222, 128, 0.12);
+  // nessun recess separato: il corpo stesso è nero
+  &::before {
+    display: none;
+  }
+  // pull-tab colorato sul bordo inferiore (1px strip)
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(74, 222, 128, 0.6) 20%,
+      rgba(74, 222, 128, 0.6) 80%,
+      transparent 100%
+    );
+    border-radius: 0 0 1px 1px;
+  }
+}
+
+// SFP+ (10G) — identica struttura, verde medio
+.pm-port-face--sfp_ {
+  width: 34px;
+  height: 28px;
+  border-radius: 2px;
+  border-width: 1px;
+  border-color: rgba(34, 197, 94, 0.9);
+  background: #060606;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 1px rgba(34, 197, 94, 0.12);
+  &::before {
+    display: none;
+  }
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(34, 197, 94, 0.6) 20%,
+      rgba(34, 197, 94, 0.6) 80%,
+      transparent 100%
+    );
+    border-radius: 0 0 1px 1px;
+  }
+}
+
+// SFP28 (25G) — identica struttura, lime
+.pm-port-face--sfp28 {
+  width: 34px;
+  height: 28px;
+  border-radius: 2px;
+  border-width: 1px;
+  border-color: rgba(163, 230, 53, 0.9);
+  background: #060606;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 1px rgba(163, 230, 53, 0.12);
+  &::before {
+    display: none;
+  }
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(163, 230, 53, 0.6) 20%,
+      rgba(163, 230, 53, 0.6) 80%,
+      transparent 100%
+    );
+    border-radius: 0 0 1px 1px;
+  }
+}
+
+// QSFP+ (40G) — cage landscape più larga, teal  (slug: qsfp_)
+.pm-port-face--qsfp_ {
+  width: 38px;
+  height: 22px;
+  border-radius: 1px;
+  border-color: rgba(34, 211, 238, 0.85);
+  &::before {
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border-radius: 1px;
+  }
+}
+
+// QSFP28 (100G) — stessa cage, teal più profondo
+.pm-port-face--qsfp28 {
+  width: 38px;
+  height: 22px;
+  border-radius: 1px;
+  border-color: rgba(6, 182, 212, 0.9);
+  &::before {
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border-radius: 1px;
+  }
+}
+
+// QSFP-DD (400G) — double density: due fila di contatti visibili  (slug: qsfp_dd)
+.pm-port-face--qsfp_dd {
+  width: 40px;
+  height: 30px;
+  border-radius: 1px;
+  border-color: rgba(8, 145, 178, 0.95);
+  // riga superiore
+  &::before {
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: auto;
+    height: 9px;
+    border-radius: 1px;
+    background: #000;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
+  }
+  // riga inferiore
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    left: 3px;
+    right: 3px;
+    height: 9px;
+    background: #000;
+    border-radius: 1px;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
+  }
+}
+
+// USB-A — slot orizzontale con linguetta plastica interna visibile, giallo
+.pm-port-face--usb_a {
+  width: 40px;
+  height: 22px;
+  border-radius: 2px;
+  border-color: rgba(251, 191, 36, 0.85);
+  &::before {
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border-radius: 1px;
+  }
+  // linguetta in plastica bianca/grigia
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 6px;
+    right: 6px;
+    height: 6px;
+    background: linear-gradient(180deg, #d8d7c8 0%, #a8a898 100%);
+    border-radius: 1px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+}
+
+// USB-C — slot ovale sottile, giallo
+.pm-port-face--usb_c {
+  width: 30px;
+  height: 18px;
+  border-radius: 3px;
+  border-color: rgba(251, 191, 36, 0.85);
+  &::before {
+    top: 5px;
+    bottom: 5px;
+    left: 4px;
+    right: 4px;
+    border-radius: 5px; // pill shape
+  }
+}
+
+// SERIAL (DB-9) — trapezio D-sub con cornice metallica, arancione
+.pm-port-face--serial {
+  width: 54px;
+  height: 30px;
+  border-radius: 3px 3px 8px 8px;
+  border-color: rgba(251, 146, 60, 0.85);
+  &::before {
+    top: 3px;
+    left: 5px;
+    right: 5px;
+    bottom: 3px;
+    border-radius: 2px 2px 6px 6px;
+    background: #080808;
+  }
+  // divisore centrale tra le due righe di pin
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    right: 8px;
+    height: 1px;
+    transform: translateY(-50%);
+    background: rgba(251, 146, 60, 0.2);
+  }
+}
+
+// MGMT — identico a RJ45, colore ambra
+.pm-port-face--mgmt {
+  width: 44px;
+  height: 34px;
+  border-radius: 2px;
+  border-color: rgba(245, 158, 11, 0.85);
+  &::before {
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 11px;
+    border-radius: 1px;
+  }
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 7px;
+    background: linear-gradient(
+      180deg,
+      rgba(160, 90, 10, 0.7) 0%,
+      rgba(100, 55, 5, 0.7) 100%
+    );
+    border-radius: 1px 1px 3px 3px;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+  }
+}
+
+// HDMI Type-A — trapezio sottile (più largo in alto), viola
+.pm-port-face--hdmi {
+  width: 44px;
+  height: 22px;
+  border-radius: 2px 2px 8px 8px;
+  border-color: rgba(167, 139, 250, 0.85);
+  &::before {
+    top: 3px;
+    left: 4px;
+    right: 4px;
+    bottom: 3px;
+    border-radius: 1px 1px 6px 6px;
+  }
+}
+
+// VGA (DB-15) — trapezio D-sub largo, viola
+.pm-port-face--vga {
+  width: 54px;
+  height: 30px;
+  border-radius: 3px 3px 8px 8px;
+  border-color: rgba(167, 139, 250, 0.85);
+  &::before {
+    top: 3px;
+    left: 5px;
+    right: 5px;
+    bottom: 3px;
+    border-radius: 2px 2px 6px 6px;
+    background: #080808;
+  }
+  // divisore centrale tra le tre righe di pin
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    right: 8px;
+    height: 1px;
+    transform: translateY(-50%);
+    background: rgba(167, 139, 250, 0.2);
+  }
+}
+
+// LC Fiber duplex — due fori circolari affiancati, cyan
+.pm-port-face--lc {
+  width: 30px;
+  height: 20px;
+  border-radius: 2px;
+  border-color: rgba(34, 211, 238, 0.85);
+  // cerchio sinistro
+  &::before {
+    width: 10px;
+    height: 10px;
+    top: 50%;
+    left: 4px;
+    right: auto;
+    bottom: auto;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: #000;
+    box-shadow:
+      inset 0 1px 4px rgba(0, 0, 0, 0.9),
+      0 0 0 1px rgba(34, 211, 238, 0.3);
+  }
+  // cerchio destro
+  &::after {
+    display: block;
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 50%;
+    right: 4px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: #000;
+    box-shadow:
+      inset 0 1px 4px rgba(0, 0, 0, 0.9),
+      0 0 0 1px rgba(34, 211, 238, 0.3);
+  }
+}
+
+// SC Fiber — singolo foro quadrato grande, cyan
+.pm-port-face--sc {
+  width: 26px;
+  height: 26px;
+  border-radius: 3px;
+  border-color: rgba(34, 211, 238, 0.8);
+  &::before {
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border-radius: 2px;
+  }
+}
+
+// FC (Fibre Channel) — connettore circolare con vite, oro
+.pm-port-face--fc {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border-color: rgba(234, 179, 8, 0.9);
+  background: linear-gradient(135deg, #3a3020 0%, #1c1808 100%);
+  &::before {
+    border-radius: 50%;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    background: #000;
+    box-shadow:
+      inset 0 2px 6px rgba(0, 0, 0, 0.95),
+      0 0 0 2px rgba(234, 179, 8, 0.2);
+  }
+}
+
+// ── Port label — strip at the bottom of the bezel ────────────────────────
+
+.pm-port-label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  right: 0;
+  z-index: 1;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(190, 195, 220, 0.95);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 2px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 1);
+  pointer-events: none;
+  line-height: 1;
+
+  .pm-marker--dragging & {
+    color: rgba(203, 166, 247, 0.95);
+  }
+}
+
+// ── Canvas drag state ──────────────────────────────────────────────────────
+
+.pm-canvas--dragging {
+  cursor: grabbing;
+}
+
+// Tooltip hidden while any drag is active
+.pm-marker-tooltip--hidden {
+  display: none !important;
 }
 
 .pm-marker-tooltip {
@@ -254,4 +763,299 @@
   color: var(--dc-text-muted, #6c7086);
   font-size: 11px;
   margin-left: 2px;
+}
+
+// ── Suggestion legend items ────────────────────────────────────────────────
+
+.pm-legend-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--dc-border, #313244);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.pm-legend-item--suggestion {
+  opacity: 0.85;
+}
+
+.pm-legend-dot--suggestion {
+  background: #34d399;
+}
+
+.pm-legend-conf {
+  font-size: 10px;
+  color: #fbbf24;
+  margin-left: 2px;
+}
+
+// ── Analyze header elements ────────────────────────────────────────────────
+
+.pm-btn-analyze {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #34d399;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+  }
+
+  &:hover:not(:disabled) {
+    background: rgba(52, 211, 153, 0.65);
+    color: #fff;
+    border-color: rgba(52, 211, 153, 0.65);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.pm-spinner {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border: 2px solid rgba(52, 211, 153, 0.3);
+  border-top-color: #34d399;
+  border-radius: 50%;
+  animation: pmSpin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pmSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pm-sugg-count {
+  font-size: 11px;
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  border-radius: 12px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.pm-analyze-error {
+  font-size: 11px;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 12px;
+  padding: 2px 8px;
+}
+
+// ── Hint bar ───────────────────────────────────────────────────────────────
+
+.pm-hint-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  font-size: 11px;
+  color: var(--dc-text-muted, #6c7086);
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--dc-border, #313244);
+  flex-shrink: 0;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+}
+
+// ── Canvas editing cursor ──────────────────────────────────────────────────
+
+.pm-canvas--editing {
+  cursor: crosshair;
+
+  // In edit mode, port faces show a grab cursor to hint at drag
+  .pm-port-face {
+    cursor: grab;
+  }
+}
+
+// ── Suggestion markers ─────────────────────────────────────────────────────
+
+.pm-marker--suggestion {
+  cursor: pointer;
+}
+
+.pm-marker--suggestion .pm-marker-dot {
+  background: #34d399;
+  width: 13px;
+  height: 13px;
+  border-color: rgba(255, 255, 255, 0.9);
+  animation: pmPulse 2s ease-in-out infinite;
+}
+
+@keyframes pmPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(52, 211, 153, 0);
+  }
+}
+
+// Suggestion tooltip accent
+.pm-marker-tooltip--suggestion {
+  border-color: rgba(52, 211, 153, 0.4);
+  background: #1a2b23;
+}
+
+// ── Pending (quick-add) marker ─────────────────────────────────────────────
+
+.pm-marker--pending {
+  pointer-events: none;
+}
+
+.pm-marker--pending .pm-marker-dot {
+  background: #fbbf24;
+  width: 16px;
+  height: 16px;
+  border-color: #fff;
+  animation: pmPulseYellow 0.7s ease-in-out infinite;
+}
+
+@keyframes pmPulseYellow {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+// ── Tooltip extras ─────────────────────────────────────────────────────────
+
+.pm-conf {
+  color: #fbbf24;
+  font-size: 11px;
+}
+
+.pm-action-hint {
+  font-size: 10px;
+  color: var(--dc-text-muted, #6c7086);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 4px;
+  margin-top: 2px;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+// ── Quick-add floating popup ───────────────────────────────────────────────
+
+.pm-quick-form {
+  position: fixed;
+  z-index: 9100;
+  background: #1e1e2e;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 244px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pm-quick-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #34d399;
+}
+
+.pm-quick-input,
+.pm-quick-select {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  color: var(--dc-text, #cdd6f4);
+  font-size: 12px;
+  padding: 5px 8px;
+  outline: none;
+
+  &:focus {
+    border-color: #34d399;
+  }
+}
+
+.pm-quick-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%236c7086' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 14px;
+  padding-right: 24px;
+}
+
+.pm-quick-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.pm-quick-cancel {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: var(--dc-text-muted, #6c7086);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+
+  &:hover {
+    color: var(--dc-text, #cdd6f4);
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.pm-quick-confirm {
+  padding: 5px 12px;
+  border-radius: 5px;
+  border: none;
+  background: #34d399;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #4ade80;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 }

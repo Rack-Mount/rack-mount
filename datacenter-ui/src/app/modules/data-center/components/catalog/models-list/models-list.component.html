@@ -1450,7 +1450,12 @@
     "
     [ports]="portsForMap()"
     [placingPortId]="placingPortId()"
+    [analyzeEnabled]="!pm.readonly"
+    [currentSide]="pm.side"
     (portPicked)="onPortPicked($event)"
+    (portAdded)="onPortAddedFromMap($event)"
+    (portEdited)="onPortEditedFromMap($event)"
+    (portRemoved)="onPortRemovedFromMap($event)"
     (closed)="closePortsMap()"
   />
 }

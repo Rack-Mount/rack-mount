@@ -1,8 +1,10 @@
-<div class="pm-overlay" (click)="closed.emit()">
+<!-- ── Main overlay ──────────────────────────────────────────────────────── -->
+<div class="pm-overlay" (click)="onOverlayClick()">
   <div class="pm-dialog" (click)="$event.stopPropagation()">
     <!-- Header -->
     <div class="pm-header">
       <span class="pm-title">{{ sideLabel() }}</span>
+
       @if (isPlacingMode()) {
         <span class="pm-placing-hint">
           <svg viewBox="0 0 16 16" fill="none" class="pm-hint-icon">
@@ -23,11 +25,76 @@
           {{ "models.ports_map_placing_hint" | translate }}
         </span>
       }
+
+      @if (!isPlacingMode() && analyzeEnabled()) {
+        @if (suggestions().length > 0 && !analyzing()) {
+          <span class="pm-sugg-count">
+            {{ suggestions().length }}
+            {{ "models.ports_map_sugg_found" | translate }}
+          </span>
+        }
+        @if (analyzeError()) {
+          <span class="pm-analyze-error">{{
+            "models.ports_analyze_error" | translate
+          }}</span>
+        }
+        <button
+          class="pm-btn-analyze"
+          type="button"
+          [disabled]="analyzing()"
+          (click)="runAnalyze()"
+        >
+          @if (analyzing()) {
+            <span class="pm-spinner"></span>
+            {{ "models.ports_map_analyzing" | translate }}
+          } @else {
+            <svg viewBox="0 0 16 16" fill="none">
+              <circle
+                cx="6.5"
+                cy="6.5"
+                r="4"
+                stroke="currentColor"
+                stroke-width="1.6"
+              />
+              <path
+                d="M9.5 9.5L13 13"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+              />
+            </svg>
+            {{ "models.ports_map_identify" | translate }}
+          }
+        </button>
+      }
+
       <button class="pm-close" (click)="closed.emit()">&#215;</button>
     </div>
 
+    <!-- Edit hint bar -->
+    @if (!isPlacingMode() && analyzeEnabled()) {
+      <div class="pm-hint-bar">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 2a6 6 0 100 12A6 6 0 008 2zm0 9V7m0-2.5v.01"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{ "models.ports_map_add_hint" | translate }}
+      </div>
+    }
+
     <!-- Image canvas -->
-    <div class="pm-canvas" [class.pm-canvas--placing]="isPlacingMode()">
+    <div
+      class="pm-canvas"
+      [class.pm-canvas--placing]="isPlacingMode()"
+      [class.pm-canvas--editing]="
+        !isPlacingMode() && analyzeEnabled() && !quickAdd()
+      "
+      [class.pm-canvas--dragging]="!!draggingPort()"
+    >
       <img
         #imgEl
         class="pm-img"
@@ -36,31 +103,78 @@
         draggable="false"
       />
 
-      <!-- Port markers -->
+      <!-- Saved port markers -->
       @for (port of positionedPorts(); track port.id) {
         <div
           class="pm-marker"
           [class.pm-marker--hovered]="hoveredPortId() === port.id"
+          [class.pm-marker--dragging]="draggingPort()?.portId === port.id"
           [style.left.%]="port.pos_x!"
           [style.top.%]="port.pos_y!"
           (mouseenter)="onPortHover(port.id)"
           (mouseleave)="onPortHover(null)"
-          [title]="port.name + ' (' + portTypeLabel(port.port_type) + ')'"
+          (pointerdown)="onMarkerPointerDown(port.id, $any($event))"
+          (click)="onMarkerClick(port.id, $event)"
+          (dblclick)="onMarkerDblClick(port.id, $event)"
         >
-          <span class="pm-marker-dot"></span>
-          <div class="pm-marker-tooltip">
+          <div [class]="portFaceClass(port.port_type)">
+            <span class="pm-port-label">{{ port.name | slice: 0 : 13 }}</span>
+          </div>
+          <div
+            class="pm-marker-tooltip"
+            [class.pm-marker-tooltip--hidden]="!!draggingPort()"
+          >
             <strong>{{ port.name }}</strong>
             <span>{{ portTypeLabel(port.port_type) }}</span>
             @if (port.notes) {
               <span class="pm-marker-notes">{{ port.notes }}</span>
             }
+            @if (analyzeEnabled()) {
+              <span class="pm-action-hint">{{
+                "models.ports_map_remove_hint" | translate
+              }}</span>
+            }
           </div>
+        </div>
+      }
+
+      <!-- Suggestion markers (TF.js) -->
+      @for (s of suggestions(); track s.id) {
+        <div
+          class="pm-marker pm-marker--suggestion"
+          [style.left.%]="s.pos_x"
+          [style.top.%]="s.pos_y"
+          (click)="onSuggestionClick(s, $event)"
+        >
+          <span class="pm-marker-dot"></span>
+          <div class="pm-marker-tooltip pm-marker-tooltip--suggestion">
+            <strong>{{ s.name }}</strong>
+            <span>{{ portTypeLabel(s.port_type) }}</span>
+            <span class="pm-conf"
+              >{{ "models.ports_analyze_confidence" | translate }}:
+              {{ confPct(s.confidence) }}</span
+            >
+            <span class="pm-action-hint">{{
+              "models.ports_map_sugg_hint" | translate
+            }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- Pending quick-add position indicator -->
+      @if (quickAdd()) {
+        <div
+          class="pm-marker pm-marker--pending"
+          [style.left.%]="quickAdd()!.pos_x"
+          [style.top.%]="quickAdd()!.pos_y"
+        >
+          <span class="pm-marker-dot"></span>
         </div>
       }
     </div>
 
-    <!-- Port legend (below image) -->
-    @if (ports().length > 0) {
+    <!-- Port legend -->
+    @if (ports().length > 0 || suggestions().length > 0) {
       <div class="pm-legend">
         @for (port of ports(); track port.id) {
           <div
@@ -80,7 +194,71 @@
             }
           </div>
         }
+        @if (suggestions().length > 0) {
+          <div class="pm-legend-sep"></div>
+          @for (s of suggestions(); track s.id) {
+            <div class="pm-legend-item pm-legend-item--suggestion">
+              <span class="pm-legend-dot pm-legend-dot--suggestion"></span>
+              <span class="pm-legend-name">{{ s.name }}</span>
+              <span class="pm-legend-type">{{
+                portTypeLabel(s.port_type)
+              }}</span>
+              <span class="pm-legend-conf">{{ confPct(s.confidence) }}</span>
+            </div>
+          }
+        }
       </div>
     }
   </div>
 </div>
+
+<!-- ── Quick-add popup (fixed, outside overlay DOM subtree) ──────────────── -->
+@if (quickAdd()) {
+  <div
+    class="pm-quick-form"
+    [style.left.px]="quickLeft()"
+    [style.top.px]="quickTop()"
+    (click)="$event.stopPropagation()"
+  >
+    <span class="pm-quick-title">{{
+      "models.ports_map_add_port" | translate
+    }}</span>
+    <input
+      #quickInput
+      class="pm-quick-input"
+      type="text"
+      [value]="quickAdd()!.name"
+      [placeholder]="'models.ports_col_name' | translate"
+      (input)="setQuickField('name', $any($event.target).value)"
+      (keydown.enter)="submitQuickAdd()"
+      (keydown.escape)="cancelQuickAdd()"
+    />
+    <select
+      class="pm-quick-select"
+      [value]="quickAdd()!.port_type"
+      (change)="setQuickField('port_type', $any($event.target).value)"
+    >
+      @for (t of portTypes; track t.value) {
+        <option
+          [value]="t.value"
+          [selected]="quickAdd()!.port_type === t.value"
+        >
+          {{ t.label }}
+        </option>
+      }
+    </select>
+    <div class="pm-quick-actions">
+      <button class="pm-quick-cancel" type="button" (click)="cancelQuickAdd()">
+        &#215;
+      </button>
+      <button
+        class="pm-quick-confirm"
+        type="button"
+        [disabled]="!quickAdd()!.name.trim()"
+        (click)="submitQuickAdd()"
+      >
+        {{ "models.ports_map_add_confirm" | translate }}
+      </button>
+    </div>
+  </div>
+}

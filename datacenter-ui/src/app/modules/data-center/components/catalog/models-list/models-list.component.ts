@@ -55,6 +55,8 @@ import {
   ImageEditParams,
 } from './image-editor/image-editor.component';
 import {
+  PortAddEvent,
+  PortEditEvent,
   PortPickEvent,
   PortsMapComponent,
 } from './ports-map/ports-map.component';
@@ -913,7 +915,7 @@ export class ModelsListComponent {
   protected loadPortsForModel(modelId: number): void {
     this.portsLoading.set(true);
     this.svc
-      .assetAssetModelPortList({ assetModel: modelId })
+      .assetAssetModelPortList({ assetModel: modelId, pageSize: 500 })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (r) => {
@@ -1117,5 +1119,57 @@ export class ModelsListComponent {
         (t: { value: PortTypeEnum; label: string }) => t.value === type,
       )?.label ?? type
     );
+  }
+
+  // ── Port map events ─────────────────────────────────────────────────────────
+
+  protected onPortAddedFromMap(event: PortAddEvent): void {
+    const modelId = this.drawerEditId();
+    if (!modelId) return;
+    const side = this.portsMapOpen()?.side ?? 'rear';
+    this.svc
+      .assetAssetModelPortCreate({
+        assetModelPort: {
+          asset_model: modelId,
+          name: event.name,
+          port_type: event.port_type,
+          side,
+          notes: '',
+          pos_x: event.pos_x,
+          pos_y: event.pos_y,
+        } as AssetModelPort,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (saved: AssetModelPort) =>
+          this.ports.update((prev) => [...prev, saved]),
+      });
+  }
+
+  protected onPortRemovedFromMap(portId: number): void {
+    this.svc
+      .assetAssetModelPortDestroy({ id: portId })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.ports.update((prev) => prev.filter((p) => p.id !== portId));
+          if (this.placingPortId() === portId) this.placingPortId.set(null);
+        },
+      });
+  }
+
+  protected onPortEditedFromMap(event: PortEditEvent): void {
+    this.svc
+      .assetAssetModelPortPartialUpdate({
+        id: event.portId,
+        patchedAssetModelPort: { name: event.name, port_type: event.port_type },
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (saved: AssetModelPort) =>
+          this.ports.update((prev) =>
+            prev.map((p) => (p.id === saved.id ? saved : p)),
+          ),
+      });
   }
 }
