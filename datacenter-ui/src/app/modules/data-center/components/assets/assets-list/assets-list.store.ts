@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   computed,
   DestroyRef,
+  effect,
   inject,
   Injectable,
   signal,
@@ -78,13 +79,25 @@ export class AssetsListStore {
   );
 
   // ── Filter params ─────────────────────────────────────────────────────────
-  readonly params = signal({
-    search: '',
-    stateId: null as number | null,
-    typeId: null as number | null,
-    page: 1,
-    ordering: null as string | null,
-  });
+  private static readonly SS_KEY = 'dc:assets-params';
+
+  private static loadParams() {
+    try {
+      const raw = sessionStorage.getItem(AssetsListStore.SS_KEY);
+      if (raw) return JSON.parse(raw) as { search: string; stateId: number | null; typeId: number | null; page: number; ordering: string | null };
+    } catch { /* ignore */ }
+    return null;
+  }
+
+  readonly params = signal(
+    AssetsListStore.loadParams() ?? {
+      search: '',
+      stateId: null as number | null,
+      typeId: null as number | null,
+      page: 1,
+      ordering: null as string | null,
+    },
+  );
 
   readonly sortField = computed(() => {
     const o = this.params().ordering;
@@ -171,6 +184,13 @@ export class AssetsListStore {
   private readonly _searchInput = new Subject<string>();
 
   constructor() {
+    // Persist params to sessionStorage so they survive tab switches
+    effect(() => {
+      try {
+        sessionStorage.setItem(AssetsListStore.SS_KEY, JSON.stringify(this.params()));
+      } catch { /* ignore */ }
+    });
+
     // Load filter options
     this.assetService
       .assetAssetStateList({ pageSize: 100 })
