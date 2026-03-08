@@ -89,6 +89,16 @@ class ExportAssetsPermission(permissions.BasePermission):
         return role is not None and bool(role.can_export_assets)
 
 
+class DeleteAssetPermission(permissions.BasePermission):
+    """Required for the asset bulk_delete custom action."""
+
+    def has_permission(self, request: Request, view) -> bool:
+        if not request.user or not request.user.is_authenticated:
+            return False
+        role = _get_role(request)
+        return role is not None and bool(role.can_delete_assets)
+
+
 class CatalogResourcePermission(permissions.BasePermission):
     """
     Granular per-method permission for the Catalog section
@@ -142,6 +152,16 @@ class AssetLookupPermission(permissions.BasePermission):
         if request.method == 'POST':
             return bool(role.can_create_catalog)
         return False
+
+
+class DeleteCatalogPermission(permissions.BasePermission):
+    """Required for catalog bulk delete actions."""
+
+    def has_permission(self, request: Request, view) -> bool:
+        if not request.user or not request.user.is_authenticated:
+            return False
+        role = _get_role(request)
+        return role is not None and bool(role.can_delete_catalog)
 
 
 class ImportCatalogPermission(permissions.BasePermission):

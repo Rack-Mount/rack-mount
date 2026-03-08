@@ -122,6 +122,36 @@ $text-muted: mx.$text-muted;
   }
 }
 
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--dc-export-bg);
+  border: 1px solid var(--dc-export-border);
+  border-radius: 8px;
+  color: var(--dc-export-color);
+  font-size: 0.83rem;
+  font-weight: 500;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+  &:hover {
+    background: var(--dc-export-bg-hover);
+  }
+  &--busy,
+  &:disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
 .spinner-xs {
   width: 12px;
   height: 12px;
@@ -447,6 +477,102 @@ $text-muted: mx.$text-muted;
 }
 .page-btn {
   @include mx.page-btn();
+}
+
+// ── Checkbox column ────────────────────────────────────────────────────────
+.col-check {
+  width: 40px;
+  text-align: center;
+  padding: 0 8px !important;
+}
+
+.row-check {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: var(--dc-accent-text);
+  vertical-align: middle;
+}
+
+// ── Selection bar ──────────────────────────────────────────────────────────
+.selection-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--dc-selection-bg);
+  border: 1px solid var(--dc-selection-border);
+  border-radius: 6px;
+  margin: 8px 16px 0;
+  flex-shrink: 0;
+
+  .selection-count {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--dc-selection-color);
+    white-space: nowrap;
+  }
+
+  .selection-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+    align-items: center;
+  }
+
+  .selection-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    border: 1px solid var(--dc-border-strong);
+    background: transparent;
+    color: $text-secondary;
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      color 0.15s;
+
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    &:hover {
+      background: var(--dc-hover-subtle);
+      color: $text-primary;
+    }
+
+    &--danger {
+      border-color: var(--dc-danger-border);
+      color: var(--dc-danger-text);
+
+      &:hover:not(:disabled) {
+        background: var(--dc-danger-bg);
+      }
+
+      &.is-saving,
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .bulk-delete-confirm {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--dc-danger-text);
+    white-space: nowrap;
+  }
+
+  .bulk-delete-error {
+    font-size: 0.78rem;
+    color: var(--dc-danger-text);
+    white-space: nowrap;
+  }
 }
 
 // ── Drawer ─────────────────────────────────────────────────────────────────

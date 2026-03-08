@@ -23,6 +23,7 @@ class ImageView(APIView):
     """
 
     permission_classes = [AllowAny]
+    throttle_classes = []  # Static file serving — no rate limit
 
     def get(self, request, filename):
         media_root = os.path.abspath(settings.MEDIA_ROOT)

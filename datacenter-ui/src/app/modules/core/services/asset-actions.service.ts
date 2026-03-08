@@ -70,4 +70,33 @@ export class AssetActionsService {
       { params },
     );
   }
+
+  bulkDelete(
+    options:
+      | { ids: number[] }
+      | {
+          allPages: true;
+          search?: string;
+          stateId?: number | null;
+          typeId?: number | null;
+        },
+  ): Observable<{ deleted: number; skipped: number }> {
+    if ('ids' in options) {
+      return this.http.post<{ deleted: number; skipped: number }>(
+        `${this.basePath}/asset/asset/bulk_delete`,
+        { ids: options.ids },
+      );
+    }
+    let params = new HttpParams();
+    if (options.search) params = params.set('search', options.search);
+    if (options.stateId != null)
+      params = params.set('state', String(options.stateId));
+    if (options.typeId != null)
+      params = params.set('model__type', String(options.typeId));
+    return this.http.post<{ deleted: number; skipped: number }>(
+      `${this.basePath}/asset/asset/bulk_delete`,
+      {},
+      { params },
+    );
+  }
 }

@@ -21,6 +21,8 @@ import { Asset } from '../model/asset';
 // @ts-ignore
 import { AssetAssetModelImportCreateRequest } from '../model/assetAssetModelImportCreateRequest';
 // @ts-ignore
+import { AssetCatalogImportCreateRequest } from '../model/assetCatalogImportCreateRequest';
+// @ts-ignore
 import { AssetCustomField } from '../model/assetCustomField';
 // @ts-ignore
 import { AssetModel } from '../model/assetModel';
@@ -86,6 +88,7 @@ import { BaseService } from '../api.base.service';
 import {
     AssetServiceInterface,
     AssetAssetBulkCloneCreateRequestParams,
+    AssetAssetBulkDeleteCreateRequestParams,
     AssetAssetBulkStatePartialUpdateRequestParams,
     AssetAssetCloneCreateRequestParams,
     AssetAssetCreateRequestParams,
@@ -120,6 +123,7 @@ import {
     AssetAssetTypeRetrieveRequestParams,
     AssetAssetTypeUpdateRequestParams,
     AssetAssetUpdateRequestParams,
+    AssetCatalogImportCreateRequestParams,
     AssetGenericComponentCreateRequestParams,
     AssetGenericComponentDestroyRequestParams,
     AssetGenericComponentListRequestParams,
@@ -222,6 +226,80 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarPath = `/asset/asset/bulk_clone`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Asset>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: asset,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * POST /asset/asset/bulk_delete Body: { \&quot;ids\&quot;: [1, 2, 3] }   → delete those specific assets       {}  + filter params    → delete all assets matching current filters  Assets currently mounted in a rack are skipped. Returns: { \&quot;deleted\&quot;: &lt;int&gt;, \&quot;skipped\&quot;: &lt;int&gt; }
+     * @endpoint post /asset/asset/bulk_delete
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetBulkDeleteCreate(requestParameters: AssetAssetBulkDeleteCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Asset>;
+    public assetAssetBulkDeleteCreate(requestParameters: AssetAssetBulkDeleteCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Asset>>;
+    public assetAssetBulkDeleteCreate(requestParameters: AssetAssetBulkDeleteCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Asset>>;
+    public assetAssetBulkDeleteCreate(requestParameters: AssetAssetBulkDeleteCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const asset = requestParameters?.asset;
+        if (asset === null || asset === undefined) {
+            throw new Error('Required parameter asset was null or undefined when calling assetAssetBulkDeleteCreate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (cookieAuth) required
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset/bulk_delete`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Asset>('post', `${basePath}${localVarPath}`,
             {
@@ -3024,6 +3102,132 @@ export class AssetService extends BaseService implements AssetServiceInterface {
             {
                 context: localVarHttpContext,
                 body: asset,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Export catalog as JSON
+     * GET /asset/catalog/export  Returns the full catalog as a JSON object: - &#x60;&#x60;vendors&#x60;&#x60;          – list of vendor names - &#x60;&#x60;asset_types&#x60;&#x60;      – list of asset-type names - &#x60;&#x60;asset_models&#x60;&#x60;     – list of models with vendor/type resolved to names                          and images encoded as base64 Data URLs - &#x60;&#x60;generic_components&#x60;&#x60; – list of generic / consumable components
+     * @endpoint get /asset/catalog/export
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetCatalogExportRetrieve(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public assetCatalogExportRetrieve(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public assetCatalogExportRetrieve(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public assetCatalogExportRetrieve(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (cookieAuth) required
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/catalog/export`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Import full catalog from JSON
+     * POST /asset/catalog/import — bulk-import a full catalog JSON.
+     * @endpoint post /asset/catalog/import
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetCatalogImportCreate(requestParameters?: AssetCatalogImportCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public assetCatalogImportCreate(requestParameters?: AssetCatalogImportCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public assetCatalogImportCreate(requestParameters?: AssetCatalogImportCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public assetCatalogImportCreate(requestParameters?: AssetCatalogImportCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const assetCatalogImportCreateRequest = requestParameters?.assetCatalogImportCreateRequest;
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (cookieAuth) required
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/catalog/import`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: assetCatalogImportCreateRequest,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

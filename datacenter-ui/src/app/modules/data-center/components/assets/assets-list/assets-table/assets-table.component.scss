@@ -307,6 +307,36 @@ $text-muted: mx.$text-muted;
         cursor: not-allowed;
       }
     }
+
+    &--danger {
+      border-color: var(--dc-danger-border);
+      color: var(--dc-danger-text);
+
+      &:hover:not(:disabled) {
+        background: var(--dc-danger-bg);
+        border-color: var(--dc-danger-border);
+        color: var(--dc-danger-text);
+      }
+
+      &.is-saving,
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .bulk-delete-confirm {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--dc-danger-text);
+    white-space: nowrap;
+  }
+
+  .bulk-delete-error {
+    font-size: 0.78rem;
+    color: var(--dc-danger-text);
+    white-space: nowrap;
   }
 }
 

@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import (
     AssetResourcePermission,
     CloneAssetPermission,
+    DeleteAssetPermission,
     EditAssetPermission,
 )
 
@@ -54,6 +55,8 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
             return [IsAuthenticated(), CloneAssetPermission()]
         if self.action == 'bulk_state':
             return [IsAuthenticated(), EditAssetPermission()]
+        if self.action == 'bulk_delete':
+            return [IsAuthenticated(), DeleteAssetPermission()]
         return [IsAuthenticated(), AssetResourcePermission()]
 
     queryset = Asset.objects.select_related(
@@ -170,3 +173,33 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
             response_data['errors'] = errors
             return Response(response_data, status=status.HTTP_207_MULTI_STATUS)
         return Response(response_data)
+
+    # ── Bulk delete ───────────────────────────────────────────────────────────
+    @action(detail=False, methods=['post'], url_path='bulk_delete')
+    def bulk_delete(self, request):
+        """
+        POST /asset/asset/bulk_delete
+        Body: { "ids": [1, 2, 3] }   → delete those specific assets
+              {}  + filter params    → delete all assets matching current filters
+
+        Assets currently mounted in a rack are skipped.
+        Returns: { "deleted": <int>, "skipped": <int> }
+        """
+        ids = request.data.get('ids')
+        if ids is not None:
+            if not isinstance(ids, list):
+                return Response(
+                    {'error': _('ids must be a list')},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            queryset = Asset.objects.filter(id__in=ids)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+
+        mounted_ids = set(
+            RackUnit.objects.filter(device__in=queryset)
+            .values_list('device_id', flat=True)
+        )
+        to_delete = queryset.exclude(id__in=mounted_ids)
+        deleted_count, _ = to_delete.delete()
+        return Response({'deleted': deleted_count, 'skipped': len(mounted_ids)})

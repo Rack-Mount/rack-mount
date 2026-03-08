@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status, filters
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
 from django_filters.rest_framework import DjangoFilterBackend
@@ -7,7 +8,7 @@ from asset.models import AssetModel
 from shared.mixins import ImageTransformMixin
 from shared.paginations import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
-from accounts.permissions import CatalogResourcePermission
+from accounts.permissions import CatalogResourcePermission, DeleteCatalogPermission
 
 
 class AssetModelViewSet(ImageTransformMixin, viewsets.ModelViewSet):
@@ -25,6 +26,12 @@ class AssetModelViewSet(ImageTransformMixin, viewsets.ModelViewSet):
         filterset_fields (list): The fields that can be used for filtering the results.
     """
     permission_classes = [IsAuthenticated, CatalogResourcePermission]
+
+    def get_permissions(self):
+        if self.action == 'bulk_delete':
+            return [IsAuthenticated(), DeleteCatalogPermission()]
+        return [IsAuthenticated(), CatalogResourcePermission()]
+
     queryset = AssetModel.objects.select_related('vendor', 'type').all()
     serializer_class = AssetModelSerializer
     pagination_class = StandardResultsSetPagination
@@ -49,3 +56,26 @@ class AssetModelViewSet(ImageTransformMixin, viewsets.ModelViewSet):
                 status=status.HTTP_409_CONFLICT,
             )
         return super().destroy(request, *args, **kwargs)
+
+    # ── Bulk delete ───────────────────────────────────────────────────────────
+    @action(detail=False, methods=['post'], url_path='bulk_delete')
+    def bulk_delete(self, request):
+        """
+        POST /asset/asset_model/bulk_delete
+        Body: { "ids": [1, 2, 3] }
+        Skips models currently in use (have assets attached).
+        Returns: { "deleted": <int>, "skipped": <int> }
+        """
+        ids = request.data.get('ids')
+        if ids is None or not isinstance(ids, list):
+            return Response(
+                {'error': _('ids must be a list')},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        queryset = AssetModel.objects.filter(id__in=ids)
+        in_use_ids = set(
+            queryset.filter(assets__isnull=False).values_list('id', flat=True)
+        )
+        to_delete = queryset.exclude(id__in=in_use_ids)
+        deleted_count, _ = to_delete.delete()
+        return Response({'deleted': deleted_count, 'skipped': len(in_use_ids)})

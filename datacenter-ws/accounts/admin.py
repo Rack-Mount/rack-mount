@@ -53,6 +53,11 @@ class RoleAdmin(admin.ModelAdmin):
         'user_count',
     )
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj is not None:
+            return ('name',)
+        return ()
+
     fieldsets = (
         (None, {
             'fields': ('name',),

@@ -5,6 +5,19 @@ import { BASE_PATH, Configuration } from '../api/v1';
 import { AssetModel } from '../api/v1/model/assetModel';
 import { GenericComponent } from '../api/v1/model/genericComponent';
 
+export interface CatalogImportSectionResult {
+  created: number;
+  skipped: number;
+  errors?: { index: number; message: string }[];
+}
+
+export interface CatalogImportResult {
+  vendors: CatalogImportSectionResult;
+  asset_types: CatalogImportSectionResult;
+  asset_models: CatalogImportSectionResult;
+  generic_components: CatalogImportSectionResult;
+}
+
 /**
  * Wraps multipart/form-data POST and PATCH requests for resources that
  * include image uploads (AssetModel, GenericComponent).
@@ -57,6 +70,26 @@ export class MultipartUploadService {
   importAssetModel(payload: unknown): Observable<AssetModel> {
     return this.http.post<AssetModel>(
       `${this.basePath}/asset/asset-model/import`,
+      payload,
+    );
+  }
+
+  /**
+   * Export the full catalog as JSON (GET /asset/catalog/export).
+   * Returns the raw JSON blob so the caller can trigger a file download.
+   */
+  exportCatalog(): Observable<Blob> {
+    return this.http.get(`${this.basePath}/asset/catalog/export`, {
+      responseType: 'blob',
+    });
+  }
+
+  /**
+   * Import the full catalog from a JSON payload (POST /asset/catalog/import).
+   */
+  importCatalog(payload: unknown): Observable<CatalogImportResult> {
+    return this.http.post<CatalogImportResult>(
+      `${this.basePath}/asset/catalog/import`,
       payload,
     );
   }

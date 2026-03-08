@@ -24,6 +24,8 @@ from asset.views import AssetViewSet, AssetModelViewSet, VendorViewSet, AssetSta
 from asset.views.AssetExportView import AssetExportView
 from asset.views.AssetModelImportView import AssetModelImportView
 from asset.views.AssetImportCsvView import AssetImportCsvView
+from asset.views.CatalogExportView import CatalogExportView
+from asset.views.CatalogImportView import CatalogImportView
 
 router = DefaultRouter(trailing_slash=False)
 router.register('asset', AssetViewSet)
@@ -42,5 +44,7 @@ urlpatterns = [
     path('asset/import-csv', AssetImportCsvView.as_view(), name='asset-import-csv'),
     path('asset-model/import', AssetModelImportView.as_view(),
          name='asset-model-import'),
+    path('catalog/export', CatalogExportView.as_view(), name='catalog-export'),
+    path('catalog/import', CatalogImportView.as_view(), name='catalog-import'),
     path('', include(router.urls)),
 ]

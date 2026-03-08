@@ -83,8 +83,10 @@ export class AssetsListComponent {
   >('idle');
   // ── Clone ───────────────────────────────────────────────────────────────────────
   protected readonly cloneInProgressId = signal<number | null>(null);
-  protected readonly bulkCloneState = signal<'idle' | 'saving'>('idle');
-  // ── Edit asset ─────────────────────────────────────────────────────────────
+  protected readonly bulkCloneState = signal<'idle' | 'saving'>('idle'); // ── Bulk delete ────────────────────────────────────────────────────────────
+  protected readonly bulkDeleteState = signal<
+    'idle' | 'confirm' | 'saving' | 'error'
+  >('idle'); // ── Edit asset ─────────────────────────────────────────────────────────────
   protected readonly editingAsset = signal<Asset | null>(null);
 
   // ── Filter params (single signal for reactivity) ──────────────────────────
@@ -176,6 +178,36 @@ export class AssetsListComponent {
 
   protected selectAcrossAllPages(): void {
     this.selectAllPages.set(true);
+  }
+
+  protected onBulkDeleteClicked(): void {
+    this.bulkDeleteState.set('confirm');
+  }
+
+  protected onBulkDeleteCancelled(): void {
+    this.bulkDeleteState.set('idle');
+  }
+
+  protected onBulkDeleteConfirmed(): void {
+    this.bulkDeleteState.set('saving');
+    const p = this.params();
+    const obs = this.selectAllPages()
+      ? this.assetActionsSvc.bulkDelete({
+          allPages: true,
+          search: p.search || undefined,
+          stateId: p.stateId,
+          typeId: p.typeId,
+        })
+      : this.assetActionsSvc.bulkDelete({ ids: [...this.selectedIds()] });
+
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.bulkDeleteState.set('idle');
+        this.clearSelection();
+        this.params.update((cur) => ({ ...cur, page: 1 }));
+      },
+      error: () => this.bulkDeleteState.set('error'),
+    });
   }
 
   protected onBulkPickerOpen(e: BulkPickerOpenEvent): void {

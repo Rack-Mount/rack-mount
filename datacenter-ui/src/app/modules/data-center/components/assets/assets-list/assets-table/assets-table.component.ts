@@ -66,6 +66,9 @@ export class AssetsTableComponent {
   @Input() deleteConfirmId: number | null = null;
   @Input() deleteSaveState: 'idle' | 'saving' | 'error' | 'mounted' = 'idle';
 
+  // ── Bulk delete ────────────────────────────────────────────────────────────
+  @Input() bulkDeleteState: 'idle' | 'confirm' | 'saving' | 'error' = 'idle';
+
   // ── Clone ──────────────────────────────────────────────────────────────────
   @Input() cloneInProgressId: number | null = null;
 
@@ -87,6 +90,9 @@ export class AssetsTableComponent {
   @Output() cloneRequested = new EventEmitter<number>();
   @Output() bulkCloneRequested = new EventEmitter<void>();
   @Output() bulkPickerOpen = new EventEmitter<BulkPickerOpenEvent>();
+  @Output() bulkDeleteClicked = new EventEmitter<void>();
+  @Output() bulkDeleteConfirmed = new EventEmitter<void>();
+  @Output() bulkDeleteCancelled = new EventEmitter<void>();
   @Output() pageChange = new EventEmitter<number>();
   @Output() exportRequested = new EventEmitter<void>();
   @Output() retryLoad = new EventEmitter<void>();

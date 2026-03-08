@@ -1,5 +1,5 @@
 import { SlicePipe } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -21,6 +21,7 @@ import {
   Subject,
   switchMap,
 } from 'rxjs';
+import { environment } from '../../../../../../environments/environment';
 import {
   AssetModel,
   AssetService,
@@ -32,7 +33,10 @@ import {
   SEARCH_DEBOUNCE_MS,
 } from '../../../../core/constants';
 import { BackendErrorService } from '../../../../core/services/backend-error.service';
-import { MultipartUploadService } from '../../../../core/services/multipart-upload.service';
+import {
+  CatalogImportResult,
+  MultipartUploadService,
+} from '../../../../core/services/multipart-upload.service';
 import { RoleService } from '../../../../core/services/role.service';
 import {
   DestroyableState,
@@ -47,6 +51,8 @@ import {
 const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 type ImportState = 'idle' | 'importing' | 'error' | 'conflict' | 'bad_format';
+type ExportState = 'idle' | 'exporting' | 'error';
+type CatalogImportState = 'idle' | 'importing' | 'error' | 'bad_format';
 
 export interface ModelForm {
   name: string;
@@ -96,6 +102,7 @@ export class ModelsListComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
   private readonly uploadSvc = inject(MultipartUploadService);
+  private readonly http = inject(HttpClient);
 
   // ── Reference data ────────────────────────────────────────────────────────
   protected readonly vendors = signal<Vendor[]>([]);
@@ -150,8 +157,34 @@ export class ModelsListComponent {
   protected readonly deleteId = signal<number | null>(null);
   protected readonly deleteSave = signal<DestroyableState>('idle');
 
+  // ── Selection ─────────────────────────────────────────────────────────────
+  protected readonly selectedIds = signal<Set<number>>(new Set());
+  protected readonly isAllSelected = computed(() => {
+    const list = this.models();
+    if (!list.length) return false;
+    return list.every((m) => this.selectedIds().has(m.id));
+  });
+  protected readonly isSomeSelected = computed(
+    () => !this.isAllSelected() && this.selectedIds().size > 0,
+  );
+  protected readonly selectedCount = computed(() => this.selectedIds().size);
+
+  // ── Bulk delete ────────────────────────────────────────────────────────────
+  protected readonly bulkDeleteState = signal<
+    'idle' | 'confirm' | 'saving' | 'error'
+  >('idle');
+
   // ── Import ────────────────────────────────────────────────────────────────
   protected readonly importState = signal<ImportState>('idle');
+
+  // ── Export ────────────────────────────────────────────────────────────────
+  protected readonly exportState = signal<ExportState>('idle');
+
+  // ── Catalog import ────────────────────────────────────────────────────────
+  protected readonly catalogImportState = signal<CatalogImportState>('idle');
+  protected readonly catalogImportResult = signal<CatalogImportResult | null>(
+    null,
+  );
 
   // ── Image editor ──────────────────────────────────────────────────────────
   /** Which image side is currently open in the editor ('front' | 'rear' | null) */
@@ -274,7 +307,12 @@ export class ModelsListComponent {
         ),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((s) => this.listState.set(s));
+      .subscribe((s) => {
+        this.listState.set(s);
+        if (s.status === 'loading') {
+          this.selectedIds.set(new Set());
+        }
+      });
   }
 
   // ── Filters ───────────────────────────────────────────────────────────────
@@ -647,6 +685,68 @@ export class ModelsListComponent {
     return pages;
   });
 
+  // ── JSON Export ───────────────────────────────────────────────────────────
+  protected onExportCatalog(): void {
+    if (this.exportState() === 'exporting') return;
+    this.exportState.set('exporting');
+    this.uploadSvc
+      .exportCatalog()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (blob) => {
+          this.exportState.set('idle');
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          const date = new Date().toISOString().slice(0, 10);
+          a.href = url;
+          a.download = `catalog-export-${date}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+        },
+        error: () => {
+          this.exportState.set('error');
+          setTimeout(() => this.exportState.set('idle'), 3000);
+        },
+      });
+  }
+
+  // ── Catalog JSON Import ───────────────────────────────────────────────────
+  protected onImportCatalogJson(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      let payload: unknown;
+      try {
+        payload = JSON.parse(reader.result as string);
+      } catch {
+        this.catalogImportState.set('bad_format');
+        return;
+      }
+
+      this.catalogImportState.set('importing');
+      this.catalogImportResult.set(null);
+      this.uploadSvc
+        .importCatalog(payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (result) => {
+            this.catalogImportState.set('idle');
+            this.catalogImportResult.set(result);
+            // Refresh the list so newly imported models are visible
+            this.page.set(1);
+          },
+          error: () => {
+            this.catalogImportState.set('error');
+          },
+        });
+    };
+    reader.readAsText(file);
+  }
+
   // ── JSON Import ───────────────────────────────────────────────────────────
   protected onImportJson(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -687,5 +787,67 @@ export class ModelsListComponent {
         });
     };
     reader.readAsText(file);
+  }
+
+  // ── Multi-select ──────────────────────────────────────────────────────────
+  protected toggleSelectAll(): void {
+    if (this.isAllSelected()) {
+      this.selectedIds.set(new Set());
+    } else {
+      this.selectedIds.set(new Set(this.models().map((m) => m.id)));
+    }
+  }
+
+  protected toggleSelectRow(id: number, event: MouseEvent): void {
+    event.stopPropagation();
+    this.selectedIds.update((cur) => {
+      const next = new Set(cur);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  protected clearSelection(): void {
+    this.selectedIds.set(new Set());
+    this.bulkDeleteState.set('idle');
+  }
+
+  protected onBulkDeleteClicked(): void {
+    this.bulkDeleteState.set('confirm');
+  }
+
+  protected onBulkDeleteCancelled(): void {
+    this.bulkDeleteState.set('idle');
+  }
+
+  protected onBulkDeleteConfirmed(): void {
+    this.bulkDeleteState.set('saving');
+    const ids = [...this.selectedIds()];
+    this.http
+      .post<{ deleted: number; skipped: number }>(
+        `${environment.service_url}/asset/asset_model/bulk_delete`,
+        { ids },
+      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ deleted }) => {
+          this.bulkDeleteState.set('idle');
+          const deletedSet = new Set(ids);
+          this.listState.update((s) => {
+            if (s.status !== 'loaded') return s;
+            return {
+              ...s,
+              results: s.results.filter((r) => !deletedSet.has(r.id)),
+              count: Math.max(0, s.count - deleted),
+            };
+          });
+          this.selectedIds.set(new Set());
+        },
+        error: () => {
+          this.bulkDeleteState.set('error');
+          setTimeout(() => this.bulkDeleteState.set('idle'), 3000);
+        },
+      });
   }
 }

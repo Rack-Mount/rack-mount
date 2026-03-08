@@ -94,6 +94,85 @@
           "models.import_conflict" | translate
         }}</span>
       }
+      @if (role.canViewCatalog()) {
+        @if (exportState() === "error") {
+          <span class="import-msg import-msg--error">{{
+            "models.export_error" | translate
+          }}</span>
+        }
+        <button
+          class="btn-export"
+          type="button"
+          [class.btn-export--busy]="exportState() === 'exporting'"
+          [disabled]="exportState() === 'exporting'"
+          (click)="onExportCatalog()"
+          [title]="'models.export_btn' | translate"
+        >
+          @if (exportState() === "exporting") {
+            <span class="spinner-xs"></span>
+          } @else {
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M8 3v7M5 7l3 3 3-3M3 13h10"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          }
+          {{ "models.export_btn" | translate }}
+        </button>
+      }
+      @if (role.canImportCatalog()) {
+        @if (catalogImportState() === "error") {
+          <span class="import-msg import-msg--error">{{
+            "models.catalog_import_error" | translate
+          }}</span>
+        }
+        @if (catalogImportState() === "bad_format") {
+          <span class="import-msg import-msg--error">{{
+            "models.catalog_import_bad_format" | translate
+          }}</span>
+        }
+        @if (catalogImportResult(); as r) {
+          <span class="import-msg import-msg--ok">{{
+            "models.catalog_import_summary"
+              | translate
+                : {
+                    models: r.asset_models.created,
+                    vendors: r.vendors.created,
+                    types: r.asset_types.created,
+                    components: r.generic_components.created,
+                  }
+          }}</span>
+        }
+        <label
+          class="btn-import"
+          [class.btn-import--busy]="catalogImportState() === 'importing'"
+        >
+          @if (catalogImportState() === "importing") {
+            <span class="spinner-xs"></span>
+          } @else {
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M8 13V3M4 9l4 4 4-4"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          }
+          {{ "models.catalog_import_btn" | translate }}
+          <input
+            type="file"
+            accept=".json,application/json"
+            class="file-input-hidden"
+            (change)="onImportCatalogJson($event)"
+          />
+        </label>
+      }
       @if (role.canImportCatalog()) {
         <label
           class="btn-import"
@@ -136,7 +215,78 @@
       }
     </div>
   </div>
-
+  <!-- ── Selection bar ─────────────────────────────────────────── -->
+  @if (selectedCount() > 0) {
+    <div class="selection-bar">
+      <span class="selection-count">{{
+        "models.selected" | translate: { count: selectedCount() }
+      }}</span>
+      <div class="selection-actions">
+        @if (role.canDeleteCatalog()) {
+          @if (
+            bulkDeleteState() === "confirm" || bulkDeleteState() === "saving"
+          ) {
+            <span class="bulk-delete-confirm">{{
+              "models.bulk_delete_confirm"
+                | translate: { count: selectedCount() }
+            }}</span>
+            <button
+              class="selection-action selection-action--danger"
+              [class.is-saving]="bulkDeleteState() === 'saving'"
+              [disabled]="bulkDeleteState() === 'saving'"
+              (click)="onBulkDeleteConfirmed()"
+            >
+              {{
+                bulkDeleteState() === "saving"
+                  ? ("models.bulk_delete_saving" | translate)
+                  : ("models.bulk_delete_ok" | translate)
+              }}
+            </button>
+            <button
+              class="selection-action"
+              [disabled]="bulkDeleteState() === 'saving'"
+              (click)="onBulkDeleteCancelled()"
+            >
+              {{ "models.bulk_delete_cancel" | translate }}
+            </button>
+          } @else {
+            <button
+              class="selection-action selection-action--danger"
+              [title]="'models.delete_selected_title' | translate"
+              (click)="onBulkDeleteClicked()"
+            >
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M3 5h10M6 5V3h4v2M6 8v4M10 8v4M4.5 5l.5 8h6l.5-8"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              {{ "models.delete_selected" | translate }}
+            </button>
+          }
+          @if (bulkDeleteState() === "error") {
+            <span class="bulk-delete-error">{{
+              "models.bulk_delete_error" | translate
+            }}</span>
+          }
+        }
+        <button class="selection-action" (click)="clearSelection()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M12 4L4 12M4 4l8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{ "models.deselect_all" | translate }}
+        </button>
+      </div>
+    </div>
+  }
   <!-- ── Table ────────────────────────────────────────────────── -->
   <div class="table-wrap">
     @if (listState().status === "loading") {
@@ -152,6 +302,15 @@
       <table class="data-table">
         <thead>
           <tr>
+            <th class="col-check">
+              <input
+                type="checkbox"
+                class="row-check"
+                [checked]="isAllSelected()"
+                [indeterminate]="isSomeSelected()"
+                (click)="toggleSelectAll()"
+              />
+            </th>
             <th
               class="col-name th-sortable"
               [class.th-sortable--asc]="
@@ -236,9 +395,19 @@
             <tr
               class="row-data"
               [class.row-data--deleting]="deleteId() === m.id"
-              [class.row-data--selected]="previewModel()?.id === m.id"
+              [class.row-data--selected]="
+                previewModel()?.id === m.id || selectedIds().has(m.id)
+              "
               (click)="openPreview(m)"
             >
+              <td class="col-check" (click)="toggleSelectRow(m.id, $event)">
+                <input
+                  type="checkbox"
+                  class="row-check"
+                  [checked]="selectedIds().has(m.id)"
+                  (click)="toggleSelectRow(m.id, $event)"
+                />
+              </td>
               <td class="cell-name">{{ m.name }}</td>
               <td class="cell-vendor">
                 <span class="badge badge--vendor">{{ m.vendor.name }}</span>
@@ -419,7 +588,7 @@
 
           @if (models().length === 0) {
             <tr>
-              <td colspan="7" class="empty-row">
+              <td colspan="8" class="empty-row">
                 @if (hasFilters()) {
                   {{ "models.no_match" | translate }}
                 } @else {

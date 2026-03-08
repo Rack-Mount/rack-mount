@@ -13,6 +13,7 @@ import { Observable }                                        from 'rxjs';
 
 import { Asset } from '../model/models';
 import { AssetAssetModelImportCreateRequest } from '../model/models';
+import { AssetCatalogImportCreateRequest } from '../model/models';
 import { AssetCustomField } from '../model/models';
 import { AssetModel } from '../model/models';
 import { AssetState } from '../model/models';
@@ -48,6 +49,10 @@ import { Configuration }                                     from '../configurat
 
 
 export interface AssetAssetBulkCloneCreateRequestParams {
+    asset: Asset;
+}
+
+export interface AssetAssetBulkDeleteCreateRequestParams {
     asset: Asset;
 }
 
@@ -228,6 +233,10 @@ export interface AssetAssetUpdateRequestParams {
     asset: Asset;
 }
 
+export interface AssetCatalogImportCreateRequestParams {
+    assetCatalogImportCreateRequest?: AssetCatalogImportCreateRequest;
+}
+
 export interface AssetGenericComponentCreateRequestParams {
     genericComponent: GenericComponent;
 }
@@ -394,6 +403,14 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetAssetBulkCloneCreate(requestParameters: AssetAssetBulkCloneCreateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
+     * POST /asset/asset/bulk_delete Body: { \&quot;ids\&quot;: [1, 2, 3] }   → delete those specific assets       {}  + filter params    → delete all assets matching current filters  Assets currently mounted in a rack are skipped. Returns: { \&quot;deleted\&quot;: &lt;int&gt;, \&quot;skipped\&quot;: &lt;int&gt; }
+     * @endpoint post /asset/asset/bulk_delete
+* @param requestParameters
+     */
+    assetAssetBulkDeleteCreate(requestParameters: AssetAssetBulkDeleteCreateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
 
     /**
      * 
@@ -680,6 +697,21 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetAssetUpdate(requestParameters: AssetAssetUpdateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * Export catalog as JSON
+     * GET /asset/catalog/export  Returns the full catalog as a JSON object: - &#x60;&#x60;vendors&#x60;&#x60;          – list of vendor names - &#x60;&#x60;asset_types&#x60;&#x60;      – list of asset-type names - &#x60;&#x60;asset_models&#x60;&#x60;     – list of models with vendor/type resolved to names                          and images encoded as base64 Data URLs - &#x60;&#x60;generic_components&#x60;&#x60; – list of generic / consumable components
+     * @endpoint get /asset/catalog/export
+*/
+    assetCatalogExportRetrieve(extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * Import full catalog from JSON
+     * POST /asset/catalog/import — bulk-import a full catalog JSON.
+     * @endpoint post /asset/catalog/import
+* @param requestParameters
+     */
+    assetCatalogImportCreate(requestParameters: AssetCatalogImportCreateRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
