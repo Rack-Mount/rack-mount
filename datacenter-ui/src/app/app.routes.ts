@@ -3,6 +3,9 @@ import { LoginComponent } from './modules/core/components/login/login.component'
 import {
   adminGuard,
   authGuard,
+  canViewAssetsGuard,
+  canViewCatalogGuard,
+  canViewInfrastructureGuard,
   noAuthGuard,
 } from './modules/core/guards/auth.guard';
 
@@ -17,7 +20,7 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', canActivate: [authGuard], children: [] },
   {
     path: 'assets',
-    canActivate: [authGuard],
+    canActivate: [authGuard, canViewAssetsGuard],
     loadComponent: () =>
       import('./modules/data-center/components/assets/assets-list/assets-list.component').then(
         (m) => m.AssetsListComponent,
@@ -25,7 +28,7 @@ export const routes: Routes = [
   },
   {
     path: 'vendors',
-    canActivate: [authGuard],
+    canActivate: [authGuard, canViewCatalogGuard],
     loadComponent: () =>
       import('./modules/data-center/components/catalog/vendors-list/vendors-list.component').then(
         (m) => m.VendorsListComponent,
@@ -33,7 +36,7 @@ export const routes: Routes = [
   },
   {
     path: 'models',
-    canActivate: [authGuard],
+    canActivate: [authGuard, canViewCatalogGuard],
     loadComponent: () =>
       import('./modules/data-center/components/catalog/models-list/models-list.component').then(
         (m) => m.ModelsListComponent,
@@ -41,7 +44,7 @@ export const routes: Routes = [
   },
   {
     path: 'racks',
-    canActivate: [authGuard],
+    canActivate: [authGuard, canViewInfrastructureGuard],
     loadComponent: () =>
       import('./modules/data-center/components/infrastructure/racks-list/racks-list.component').then(
         (m) => m.RacksListComponent,
@@ -49,14 +52,22 @@ export const routes: Routes = [
   },
   {
     path: 'components',
-    canActivate: [authGuard],
+    canActivate: [authGuard, canViewCatalogGuard],
     loadComponent: () =>
       import('./modules/data-center/components/catalog/components-list/components-list.component').then(
         (m) => m.ComponentsListComponent,
       ),
   },
-  { path: 'map/:id', canActivate: [authGuard], children: [] },
-  { path: 'rack/:name', canActivate: [authGuard], children: [] },
+  {
+    path: 'map/:id',
+    canActivate: [authGuard, canViewInfrastructureGuard],
+    children: [],
+  },
+  {
+    path: 'rack/:name',
+    canActivate: [authGuard, canViewInfrastructureGuard],
+    children: [],
+  },
   {
     path: 'admin',
     canActivate: [authGuard, adminGuard],

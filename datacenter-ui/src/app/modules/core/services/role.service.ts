@@ -16,6 +16,7 @@ export interface RoleData {
   can_delete_catalog: boolean;
   can_import_catalog: boolean;
   // Infrastructure
+  can_view_infrastructure: boolean;
   can_create_racks: boolean;
   can_edit_racks: boolean;
   can_delete_racks: boolean;
@@ -72,6 +73,9 @@ export class RoleService {
   );
 
   // Infrastructure
+  readonly canViewInfrastructure = computed(
+    () => this._role()?.can_view_infrastructure ?? false,
+  );
   readonly canCreateRacks = computed(
     () => this._role()?.can_create_racks ?? false,
   );

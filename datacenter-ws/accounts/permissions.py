@@ -120,7 +120,7 @@ class RackResourcePermission(permissions.BasePermission):
     """
     Granular per-method permission for Infrastructure
     (racks, rack units, rack types, locations, rooms).
-    GET/HEAD/OPTIONS → any authenticated user
+    GET/HEAD/OPTIONS → can_view_infrastructure
     POST             → can_create_racks
     PUT/PATCH        → can_edit_racks
     DELETE           → can_delete_racks
@@ -133,7 +133,7 @@ class RackResourcePermission(permissions.BasePermission):
         if role is None:
             return False
         if request.method in permissions.SAFE_METHODS:
-            return True
+            return bool(role.can_view_infrastructure)
         if request.method == 'DELETE':
             return bool(role.can_delete_racks)
         if request.method in ('PUT', 'PATCH'):
@@ -146,8 +146,8 @@ class RackResourcePermission(permissions.BasePermission):
 class MapEditPermission(permissions.BasePermission):
     """
     Required for floor-plan / room editing.
-    Read access is open to all authenticated users;
-    any mutation requires can_edit_map.
+    GET/HEAD/OPTIONS → can_view_infrastructure
+    any mutation     → can_edit_map
     """
 
     def has_permission(self, request: Request, view) -> bool:
@@ -157,5 +157,5 @@ class MapEditPermission(permissions.BasePermission):
         if role is None:
             return False
         if request.method in permissions.SAFE_METHODS:
-            return True
+            return bool(role.can_view_infrastructure)
         return bool(role.can_edit_map)

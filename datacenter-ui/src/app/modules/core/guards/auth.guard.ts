@@ -35,3 +35,24 @@ export const adminGuard: CanActivateFn = () => {
   const router = inject(Router);
   return role.isAdmin() ? true : router.createUrlTree(['/']);
 };
+
+/** Restricts access to users with can_view_assets. Redirects to / when denied. */
+export const canViewAssetsGuard: CanActivateFn = () => {
+  const role = inject(RoleService);
+  const router = inject(Router);
+  return role.canViewAssets() ? true : router.createUrlTree(['/']);
+};
+
+/** Restricts access to users with can_view_catalog. Redirects to / when denied. */
+export const canViewCatalogGuard: CanActivateFn = () => {
+  const role = inject(RoleService);
+  const router = inject(Router);
+  return role.canViewCatalog() ? true : router.createUrlTree(['/']);
+};
+
+/** Restricts access to users with can_view_infrastructure. Redirects to / when denied. */
+export const canViewInfrastructureGuard: CanActivateFn = () => {
+  const role = inject(RoleService);
+  const router = inject(Router);
+  return role.canViewInfrastructure() ? true : router.createUrlTree(['/']);
+};

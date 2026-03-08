@@ -16,6 +16,7 @@ class RoleSerializer(serializers.ModelSerializer):
             'can_view_catalog', 'can_create_catalog', 'can_edit_catalog',
             'can_delete_catalog', 'can_import_catalog',
             # Infrastructure
+            'can_view_infrastructure',
             'can_create_racks', 'can_edit_racks', 'can_delete_racks',
             'can_edit_map',
             # Admin

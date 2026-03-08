@@ -24,6 +24,7 @@ export interface Role {
     readonly can_edit_catalog: boolean;
     readonly can_delete_catalog: boolean;
     readonly can_import_catalog: boolean;
+    readonly can_view_infrastructure: boolean;
     readonly can_create_racks: boolean;
     readonly can_edit_racks: boolean;
     readonly can_delete_racks: boolean;

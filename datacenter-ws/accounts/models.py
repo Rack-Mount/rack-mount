@@ -49,6 +49,8 @@ class Role(models.Model):
         default=False, verbose_name=_('Can import catalog'))
 
     # ── Infrastructure permissions (racks, map, locations) ────────────────
+    can_view_infrastructure = models.BooleanField(
+        default=False, verbose_name=_('Can view infrastructure (racks, rooms, map)'))
     can_create_racks = models.BooleanField(
         default=False, verbose_name=_('Can create racks'))
     can_edit_racks = models.BooleanField(
