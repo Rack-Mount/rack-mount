@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Inject, Injectable, Optional } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BASE_PATH, Configuration } from '../api/v1';
 import { Asset } from '../api/v1/model/asset';
@@ -17,15 +17,15 @@ export interface ImportCsvResult {
 @Injectable({ providedIn: 'root' })
 export class AssetActionsService {
   private readonly http = inject(HttpClient);
-  private readonly basePath: string;
-
-  constructor(
-    @Optional() configuration?: Configuration,
-    @Optional() @Inject(BASE_PATH) basePath?: string | string[],
-  ) {
-    const first = Array.isArray(basePath) ? basePath[0] : basePath;
-    this.basePath = configuration?.basePath ?? first ?? 'http://localhost';
-  }
+  private readonly basePath: string = (() => {
+    const configuration = inject(Configuration, { optional: true });
+    const base = inject(BASE_PATH, { optional: true }) as
+      | string
+      | string[]
+      | null;
+    const first = Array.isArray(base) ? base[0] : base;
+    return configuration?.basePath ?? first ?? 'http://localhost';
+  })();
 
   importCsv(file: File): Observable<ImportCsvResult> {
     const fd = new FormData();

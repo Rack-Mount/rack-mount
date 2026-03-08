@@ -8,7 +8,7 @@ import {
   ElementRef,
   HostListener,
   inject,
-  Input,
+  input,
   OnDestroy,
   ViewChild,
 } from '@angular/core';
@@ -75,17 +75,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   readonly settingsService = inject(SettingsService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly translate = inject(TranslateService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly locationService = inject(LocationService);
+  private readonly assetService = inject(AssetService);
+  private readonly router = inject(Router);
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private locationService: LocationService,
-    private assetService: AssetService,
-    private router: Router,
-  ) {}
   selectedTool: string = 'select';
 
   /** When provided, the map is pre-loaded to this room (tab mode). */
-  @Input() roomId?: number;
+  readonly roomId = input<number>();
 
   // Rack snap / collision feedback
   rackCreationBlocked = false;
@@ -328,8 +326,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   loadLocations(): void {
     // Use @Input roomId if provided, otherwise fall back to URL parsing
     let roomIdFromRoute: string | null = null;
-    if (this.roomId != null) {
-      roomIdFromRoute = String(this.roomId);
+    if (this.roomId() != null) {
+      roomIdFromRoute = String(this.roomId());
     } else {
       const tree = this.router.parseUrl(this.router.url);
       const segments = tree.root.children['primary']?.segments ?? [];
@@ -360,7 +358,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.selectedLocationId = loc.id ?? null;
         this.filteredRooms = loc.rooms ?? [];
         // Update tab label with the real room name if opened as a tab
-        if (this.roomId != null && match.name) {
+        if (this.roomId() != null && match.name) {
           this.tabService.updateTabLabel(`room-${roomId}`, match.name);
         }
         break;
@@ -441,7 +439,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       },
       error: (err) => {
         console.error('Failed to load floor plan', err);
-        if (this.roomId != null) {
+        if (this.roomId() != null) {
           this.tabService.reportRoomNotFound(id);
         }
       },
