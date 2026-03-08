@@ -1,44 +1,19 @@
 <div class="racks-page">
   <!-- ─── Toolbar ────────────────────────────────────────── -->
-  <app-racks-toolbar
-    [locations]="locations()"
-    [filteredRooms]="filteredRooms()"
-    [locationFilter]="locationFilter()"
-    [roomFilter]="roomFilter()"
-    [searchQuery]="searchQuery()"
-    [itemCount]="
-      listState().status === 'loaded' ? $any(listState()).count : null
-    "
-    (locationFilterChange)="onLocationFilter($event)"
-    (roomFilterChange)="onRoomFilter($event)"
-    (searchChange)="onSearch($event)"
-    (newClick)="onNew()"
-  />
+  <app-racks-toolbar />
 
   <!-- ─── Table ─────────────────────────────────────────── -->
   <div class="table-wrap">
-    <app-racks-table
-      [listState]="listState()"
-      [ordering]="ordering()"
-      [deleteState]="deleteState()"
-      [searchQuery]="searchQuery()"
-      (sort)="onSort($event)"
-      (openVisualizer)="onOpenVisualizer($event)"
-      (openPreview)="onOpenPreview($event)"
-      (edit)="onEdit($event)"
-      (deleteRequest)="onDeleteRequest($event)"
-      (deleteConfirm)="onDeleteConfirm($event)"
-      (deleteCancel)="onDeleteCancel()"
-    />
+    <app-racks-table />
   </div>
 </div>
 
 <!-- ─── Drawer ──────────────────────────────────────────── -->
-@if (drawerMode() !== null) {
+@if (store.drawerMode() !== null) {
   <app-rack-create-drawer
-    [mode]="drawerMode()!"
-    [rack]="editingRack()"
-    (saved)="onDrawerSaved($event)"
-    (cancelled)="onDrawerClose()"
+    [mode]="store.drawerMode()!"
+    [rack]="store.editingRack()"
+    (saved)="store.onDrawerSaved($event)"
+    (cancelled)="store.onDrawerClose()"
   />
 }

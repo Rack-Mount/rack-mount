@@ -1,15 +1,17 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  output,
+  signal,
 } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
+import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import { AssetService, Rack } from '../../../../core/api/v1';
 import { RackComponent } from '../../infrastructure/rack/rack.component';
 import { PanelTab } from './detail-panel.types';
@@ -22,52 +24,48 @@ import { PanelTab } from './detail-panel.types';
   styleUrl: './detail-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DetailPanelComponent implements OnChanges {
-  @Input() tabs: PanelTab[] = [];
-  @Input() activeTabId: string | null = null;
+export class DetailPanelComponent {
+  private readonly assetService = inject(AssetService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  @Output() tabClose = new EventEmitter<string>();
-  @Output() tabActivate = new EventEmitter<string>();
-  @Output() panelClose = new EventEmitter<void>();
+  readonly tabs = input<PanelTab[]>([]);
+  readonly activeTabId = input<string | null>(null);
 
-  activeRack: Rack | null = null;
-  loading = false;
+  readonly tabClose = output<string>();
+  readonly tabActivate = output<string>();
+  readonly panelClose = output<void>();
 
-  constructor(
-    private readonly assetService: AssetService,
-    private readonly cdr: ChangeDetectorRef,
-  ) {}
+  readonly activeTab = computed<PanelTab | undefined>(() =>
+    this.tabs().find((t) => t.id === this.activeTabId()),
+  );
 
-  get activeTab(): PanelTab | undefined {
-    return this.tabs.find((t) => t.id === this.activeTabId);
-  }
+  protected readonly activeRack = signal<Rack | null>(null);
+  protected readonly loading = signal(false);
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['activeTabId'] || changes['tabs']) {
-      this.loadActiveRack();
-    }
-  }
-
-  private loadActiveRack(): void {
-    const tab = this.activeTab;
-    if (tab?.type === 'rack' && tab.rackName) {
-      this.loading = true;
-      this.activeRack = null;
-      this.assetService.assetRackRetrieve({ name: tab.rackName }).subscribe({
-        next: (rack) => {
-          this.activeRack = rack;
-          this.loading = false;
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          console.error('Failed to load rack detail', err);
-          this.loading = false;
-          this.cdr.markForCheck();
-        },
+  constructor() {
+    toObservable(this.activeTab)
+      .pipe(
+        switchMap((tab) => {
+          if (tab?.type === 'rack' && tab.rackName) {
+            return this.assetService
+              .assetRackRetrieve({ name: tab.rackName })
+              .pipe(
+                map((rack) => ({ rack, loading: false })),
+                catchError((err) => {
+                  console.error('Failed to load rack detail', err);
+                  return of({ rack: null, loading: false });
+                }),
+                startWith({ rack: null, loading: true }),
+              );
+          }
+          return of({ rack: null, loading: false });
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(({ rack, loading }) => {
+        this.activeRack.set(rack);
+        this.loading.set(loading);
       });
-    } else {
-      this.activeRack = null;
-    }
   }
 
   activate(tabId: string): void {

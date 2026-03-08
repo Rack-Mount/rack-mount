@@ -1,16 +1,16 @@
-@if (listState.status === "loading") {
+@if (store.listState().status === "loading") {
   <div class="loading-state">
     <span class="spinner"></span>
     {{ "common.loading" | translate }}
   </div>
-} @else if (listState.status === "error") {
+} @else if (store.listState().status === "error") {
   <div class="empty-state">{{ "common.error_loading" | translate }}</div>
 } @else {
-  @let loaded = $any(listState);
+  @let loaded = $any(store.listState());
   @if (loaded.results.length === 0) {
     <div class="empty-state">
       {{
-        searchQuery
+        store.searchQuery()
           ? ("racks.no_match" | translate)
           : ("racks.no_data" | translate)
       }}
@@ -19,7 +19,7 @@
     <table class="rack-table">
       <thead>
         <tr>
-          <th class="col-name th--sortable" (click)="sort.emit('name')">
+          <th class="col-name th--sortable" (click)="store.onSort('name')">
             {{ "racks.col_name" | translate }}
             <span
               class="sort-indicator"
@@ -27,7 +27,10 @@
               [class.sort-indicator--desc]="sortDir('name') === 'desc'"
             ></span>
           </th>
-          <th class="col-place th--sortable" (click)="sort.emit('room__name')">
+          <th
+            class="col-place th--sortable"
+            (click)="store.onSort('room__name')"
+          >
             {{ "racks.col_location" | translate }} /
             {{ "racks.col_room" | translate }}
             <span
@@ -38,7 +41,7 @@
           </th>
           <th
             class="col-model th--sortable"
-            (click)="sort.emit('model__model')"
+            (click)="store.onSort('model__model')"
           >
             {{ "racks.col_model" | translate }}
             <span
@@ -49,7 +52,7 @@
           </th>
           <th
             class="col-capacity th--sortable"
-            (click)="sort.emit('used_units')"
+            (click)="store.onSort('used_units')"
           >
             {{ "racks.col_capacity" | translate }}
             <span
@@ -60,7 +63,7 @@
           </th>
           <th
             class="col-power th--sortable"
-            (click)="sort.emit('total_power_watt')"
+            (click)="store.onSort('total_power_watt')"
           >
             {{ "racks.col_power" | translate }}
             <span
@@ -78,7 +81,7 @@
       </thead>
       <tbody>
         @for (rack of loaded.results; track rack.id) {
-          @let del = deleteState;
+          @let del = store.deleteState();
           <tr
             [class.row--deleting]="
               del.id === rack.id && $any(del).status === 'deleting'
@@ -88,7 +91,7 @@
             <td class="col-name">
               <button
                 class="rack-name-link"
-                (click)="openVisualizer.emit(rack)"
+                (click)="store.openVisualizer(rack)"
                 [title]="'racks.open_visualizer' | translate"
               >
                 <svg viewBox="0 0 20 20" fill="none">
@@ -165,13 +168,13 @@
                     <div class="delete-confirm__btns">
                       <button
                         class="btn-danger-sm"
-                        (click)="deleteConfirm.emit(rack)"
+                        (click)="store.onDeleteConfirm(rack)"
                       >
                         {{ "common.delete" | translate }}
                       </button>
                       <button
                         class="btn-ghost-sm"
-                        (click)="deleteCancel.emit()"
+                        (click)="store.onDeleteCancel()"
                       >
                         {{ "common.cancel" | translate }}
                       </button>
@@ -186,7 +189,10 @@
                     <span class="action-msg action-msg--error">{{
                       "racks.delete_has_units" | translate
                     }}</span>
-                    <button class="btn-ghost-sm" (click)="deleteCancel.emit()">
+                    <button
+                      class="btn-ghost-sm"
+                      (click)="store.onDeleteCancel()"
+                    >
                       {{ "common.cancel" | translate }}
                     </button>
                   </div>
@@ -195,7 +201,10 @@
                     <span class="action-msg action-msg--error">{{
                       "common.error_retry" | translate
                     }}</span>
-                    <button class="btn-ghost-sm" (click)="deleteCancel.emit()">
+                    <button
+                      class="btn-ghost-sm"
+                      (click)="store.onDeleteCancel()"
+                    >
                       {{ "common.cancel" | translate }}
                     </button>
                   </div>
@@ -205,7 +214,7 @@
                   <!-- Preview -->
                   <button
                     class="btn-row-action"
-                    (click)="openPreview.emit(rack)"
+                    (click)="store.openPreview(rack)"
                     [title]="'racks.open_preview' | translate"
                   >
                     <svg viewBox="0 0 20 20" fill="none">
@@ -228,7 +237,7 @@
                   @if (role.canEditRacks()) {
                     <button
                       class="btn-row-action"
-                      (click)="edit.emit(rack)"
+                      (click)="store.onEdit(rack)"
                       [title]="'common.edit' | translate"
                     >
                       <svg viewBox="0 0 20 20" fill="none">
@@ -246,7 +255,7 @@
                   @if (role.canDeleteRacks()) {
                     <button
                       class="btn-row-action btn-row-action--danger"
-                      (click)="deleteRequest.emit(rack)"
+                      (click)="store.onDeleteRequest(rack)"
                       [title]="'common.delete' | translate"
                     >
                       <svg viewBox="0 0 20 20" fill="none">

@@ -1,15 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Rack, RackType } from '../../../../../core/api/v1';
 import { RoleService } from '../../../../../core/services/role.service';
-import { DeleteState, ListState } from '../racks.types';
+import { RacksListStore } from '../racks-list.store';
 
 @Component({
   selector: 'app-racks-table',
@@ -21,24 +14,10 @@ import { DeleteState, ListState } from '../racks.types';
 })
 export class RacksTableComponent {
   protected readonly role = inject(RoleService);
-
-  @Input() listState: ListState = { status: 'loading' };
-  @Input() ordering = 'name';
-  @Input() deleteState: DeleteState = { id: 'none' };
-  @Input() searchQuery = '';
-
-  @Output() sort = new EventEmitter<string>();
-  @Output() openVisualizer = new EventEmitter<Rack>();
-  @Output() openPreview = new EventEmitter<Rack>();
-  @Output() edit = new EventEmitter<Rack>();
-  @Output() deleteRequest = new EventEmitter<Rack>();
-  @Output() deleteConfirm = new EventEmitter<Rack>();
-  @Output() deleteCancel = new EventEmitter<void>();
+  protected readonly store = inject(RacksListStore);
 
   protected sortDir(field: string): 'asc' | 'desc' | null {
-    if (this.ordering === field) return 'asc';
-    if (this.ordering === `-${field}`) return 'desc';
-    return null;
+    return this.store.sortDir(field);
   }
 
   protected capacityLabel(model: RackType): string {

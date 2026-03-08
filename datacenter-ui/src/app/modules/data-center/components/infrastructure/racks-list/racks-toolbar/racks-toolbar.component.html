@@ -3,11 +3,11 @@
     <!-- Datacenter filter -->
     <select
       class="dc-filter"
-      [value]="locationFilter ?? ''"
+      [value]="store.locationFilter() ?? ''"
       (change)="onLocationFilter($any($event.target).value)"
     >
       <option value="">{{ "racks.filter_all_dc" | translate }}</option>
-      @for (loc of locations; track loc.id) {
+      @for (loc of store.locations(); track loc.id) {
         <option [value]="loc.id">{{ loc.name }}</option>
       }
     </select>
@@ -15,11 +15,11 @@
     <!-- Room filter -->
     <select
       class="dc-filter"
-      [value]="roomFilter ?? ''"
+      [value]="store.roomFilter() ?? ''"
       (change)="onRoomFilter($any($event.target).value)"
     >
       <option value="">{{ "racks.filter_all_rooms" | translate }}</option>
-      @for (room of filteredRooms; track room.id) {
+      @for (room of store.filteredRooms(); track room.id) {
         <option [value]="room.id">{{ room.name }}</option>
       }
     </select>
@@ -44,11 +44,11 @@
       <input
         class="search-input"
         type="text"
-        [value]="searchQuery"
+        [value]="store.searchQuery()"
         (input)="onSearch($any($event.target).value)"
         [placeholder]="'racks.search_placeholder' | translate"
       />
-      @if (searchQuery) {
+      @if (store.searchQuery()) {
         <button
           class="search-clear"
           (click)="clearSearch()"
@@ -60,16 +60,16 @@
     </div>
 
     <!-- Count badge -->
-    @if (itemCount !== null) {
+    @if (store.itemCount() !== null) {
       <span class="count-badge">
-        {{ itemCount }} {{ "racks.count_badge_suffix" | translate }}
+        {{ store.itemCount() }} {{ "racks.count_badge_suffix" | translate }}
       </span>
     }
   </div>
 
   <div class="toolbar-right">
     @if (role.canCreateRacks()) {
-      <button class="btn-new" (click)="newClick.emit()">
+      <button class="btn-new" (click)="store.onNew()">
         <svg viewBox="0 0 20 20" fill="none">
           <path
             d="M10 4v12M4 10h12"
