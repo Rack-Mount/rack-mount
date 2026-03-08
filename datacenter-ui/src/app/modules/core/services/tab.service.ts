@@ -136,6 +136,7 @@ export class TabService {
   private upsertAssetsTab(): boolean {
     if (this._tabs().some((t) => t.id === 'assets')) return false;
     this._tabs.update((tabs) => [
+      ...tabs,
       {
         id: 'assets',
         label: 'Asset',
@@ -143,7 +144,6 @@ export class TabService {
         type: 'assets',
         pinned: false,
       },
-      ...tabs,
     ]);
     return true;
   }
@@ -167,6 +167,7 @@ export class TabService {
   private upsertVendorsTab(): boolean {
     if (this._tabs().some((t) => t.id === 'vendors')) return false;
     this._tabs.update((tabs) => [
+      ...tabs,
       {
         id: 'vendors',
         label: 'Vendor',
@@ -174,7 +175,6 @@ export class TabService {
         type: 'vendors',
         pinned: false,
       },
-      ...tabs,
     ]);
     return true;
   }
@@ -195,6 +195,7 @@ export class TabService {
   private upsertModelsTab(): boolean {
     if (this._tabs().some((t) => t.id === 'models')) return false;
     this._tabs.update((tabs) => [
+      ...tabs,
       {
         id: 'models',
         label: 'Apparati',
@@ -202,7 +203,6 @@ export class TabService {
         type: 'models',
         pinned: false,
       },
-      ...tabs,
     ]);
     return true;
   }
@@ -223,6 +223,7 @@ export class TabService {
   private upsertRacksTab(): boolean {
     if (this._tabs().some((t) => t.id === 'racks')) return false;
     this._tabs.update((tabs) => [
+      ...tabs,
       {
         id: 'racks',
         label: 'Rack',
@@ -230,7 +231,6 @@ export class TabService {
         type: 'racks',
         pinned: false,
       },
-      ...tabs,
     ]);
     return true;
   }
@@ -251,6 +251,7 @@ export class TabService {
   private upsertComponentsTab(): boolean {
     if (this._tabs().some((t) => t.id === 'components')) return false;
     this._tabs.update((tabs) => [
+      ...tabs,
       {
         id: 'components',
         label: 'Componenti',
@@ -258,7 +259,6 @@ export class TabService {
         type: 'components',
         pinned: false,
       },
-      ...tabs,
     ]);
     return true;
   }
@@ -279,6 +279,7 @@ export class TabService {
   private upsertAdminTab(): boolean {
     if (this._tabs().some((t) => t.id === 'admin')) return false;
     this._tabs.update((tabs) => [
+      ...tabs,
       {
         id: 'admin',
         label: 'Users',
@@ -286,7 +287,6 @@ export class TabService {
         type: 'admin' as const,
         pinned: false,
       },
-      ...tabs,
     ]);
     return true;
   }
@@ -306,6 +306,7 @@ export class TabService {
   private upsertChangePasswordTab(): boolean {
     if (this._tabs().some((t) => t.id === 'change-password')) return false;
     this._tabs.update((tabs) => [
+      ...tabs,
       {
         id: 'change-password',
         label: 'Password',
@@ -313,7 +314,6 @@ export class TabService {
         type: 'change-password' as const,
         pinned: false,
       },
-      ...tabs,
     ]);
     return true;
   }
