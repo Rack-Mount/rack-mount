@@ -12,14 +12,20 @@ import {
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, map, of, startWith, switchMap } from 'rxjs';
-import { AssetService, Rack } from '../../../../core/api/v1';
+import { Asset, AssetService, Rack } from '../../../../core/api/v1';
 import { RackComponent } from '../../infrastructure/rack/rack.component';
+import { AssetDeviceViewComponent } from './asset-device-view/asset-device-view.component';
 import { PanelTab } from './detail-panel.types';
 
 @Component({
   selector: 'app-detail-panel',
   standalone: true,
-  imports: [CommonModule, RackComponent, TranslatePipe],
+  imports: [
+    CommonModule,
+    RackComponent,
+    AssetDeviceViewComponent,
+    TranslatePipe,
+  ],
   templateUrl: './detail-panel.component.html',
   styleUrl: './detail-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +46,7 @@ export class DetailPanelComponent {
   );
 
   protected readonly activeRack = signal<Rack | null>(null);
+  protected readonly activeAsset = signal<Asset | null>(null);
   protected readonly loading = signal(false);
 
   constructor() {
@@ -50,20 +57,33 @@ export class DetailPanelComponent {
             return this.assetService
               .assetRackRetrieve({ name: tab.rackName })
               .pipe(
-                map((rack) => ({ rack, loading: false })),
+                map((rack) => ({ rack, asset: null, loading: false })),
                 catchError((err) => {
                   console.error('Failed to load rack detail', err);
-                  return of({ rack: null, loading: false });
+                  return of({ rack: null, asset: null, loading: false });
                 }),
-                startWith({ rack: null, loading: true }),
+                startWith({ rack: null, asset: null, loading: true }),
               );
           }
-          return of({ rack: null, loading: false });
+          if (tab?.type === 'asset' && tab.assetId != null) {
+            return this.assetService
+              .assetAssetRetrieve({ id: tab.assetId })
+              .pipe(
+                map((asset) => ({ asset, rack: null, loading: false })),
+                catchError((err) => {
+                  console.error('Failed to load asset detail', err);
+                  return of({ asset: null, rack: null, loading: false });
+                }),
+                startWith({ asset: null, rack: null, loading: true }),
+              );
+          }
+          return of({ rack: null, asset: null, loading: false });
         }),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(({ rack, loading }) => {
+      .subscribe(({ rack, asset, loading }) => {
         this.activeRack.set(rack);
+        this.activeAsset.set(asset);
         this.loading.set(loading);
       });
   }

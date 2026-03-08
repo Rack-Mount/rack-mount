@@ -65,6 +65,7 @@ export class TabService {
     )
       return this.role.canViewInfrastructure();
     if (tab.id === 'admin') return this.role.canManageUsers();
+    if (tab.id.startsWith('asset-')) return this.role.canViewAssets();
     return true;
   }
 
@@ -326,6 +327,35 @@ export class TabService {
 
   ensureChangePasswordTab(): void {
     if (this.upsertChangePasswordTab()) this.persistTabs();
+  }
+
+  // ── Asset (device monitor) tabs ────────────────────────────────────
+
+  private upsertAssetTab(
+    tabId: string,
+    assetId: number,
+    label: string,
+  ): boolean {
+    if (this._tabs().some((t) => t.id === tabId)) return false;
+    this._tabs.update((tabs) => [
+      ...tabs,
+      { id: tabId, label, type: 'asset', assetId, pinned: false },
+    ]);
+    return true;
+  }
+
+  openAsset(assetId: number, label: string): void {
+    if (!this.role.canViewAssets()) return;
+    const tabId = `asset-${assetId}`;
+    this.upsertAssetTab(tabId, assetId, label);
+    this.persistTabs();
+    this._activate$.next(tabId);
+  }
+
+  /** Creates an asset tab without triggering navigation (used for direct URL restore). */
+  ensureAssetTab(assetId: number, label: string): void {
+    const tabId = `asset-${assetId}`;
+    if (this.upsertAssetTab(tabId, assetId, label)) this.persistTabs();
   }
 
   reportRackNotFound(rackName: string): void {

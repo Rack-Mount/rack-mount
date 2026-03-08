@@ -13,6 +13,8 @@
           <span class="tab-icon">
             @if (tab.type === "rack") {
               🖥️
+            } @else if (tab.type === "asset") {
+              📡
             } @else {
               📋
             }
@@ -49,6 +51,14 @@
       } @else {
         <div class="loading">
           {{ "detail_panel.rack_not_found" | translate }}
+        </div>
+      }
+    } @else if (activeTab()?.type === "asset") {
+      @if (activeTab()?.assetId; as assetId) {
+        <app-asset-device-view [assetId]="assetId" />
+      } @else {
+        <div class="loading">
+          {{ "detail_panel.asset_not_found" | translate }}
         </div>
       }
     }

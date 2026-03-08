@@ -1,5 +1,5 @@
 <div class="assets-page">
-  <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
+  <!-- ── Toolbar ─────────────────────────────────────────────────────── -->
   <app-assets-toolbar
     [params]="store.filterParams()"
     [availableStates]="store.availableStates()"
@@ -20,7 +20,7 @@
     (importCsvDismiss)="store.onImportCsvDismiss()"
   />
 
-  <!-- ── Table + selection bar + pagination ─────────────────────────────── -->
+  <!-- ── Table + selection bar + pagination ──────────────────────────── -->
   <app-assets-table />
 </div>
 

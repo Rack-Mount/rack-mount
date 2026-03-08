@@ -243,7 +243,8 @@
     "no_data": "No assets found",
     "state_change_title": "Click to change state",
     "prev_page": "Previous page",
-    "next_page": "Next page"
+    "next_page": "Next page",
+    "monitor_title": "Open device monitor"
   },
   "asset_form": {
     "title": "New asset",
@@ -310,7 +311,38 @@
     "close_tab": "Close tab",
     "close_panel": "Close panel",
     "loading_rack": "Loading rack…",
-    "rack_not_found": "Rack not found."
+    "rack_not_found": "Rack not found.",
+    "loading_asset": "Loading device…",
+    "asset_not_found": "Device not found."
+  },
+  "asset_device_view": {
+    "loading": "Loading device…",
+    "load_error": "Could not load device.",
+    "front": "Front",
+    "rear": "Rear",
+    "no_image": "No image",
+    "section_identity": "Identity",
+    "hostname": "Hostname",
+    "serial": "Serial",
+    "sap_id": "SAP ID",
+    "state": "State",
+    "section_device": "Device",
+    "model": "Model",
+    "vendor": "Vendor",
+    "type": "Type",
+    "rack_units": "Rack units",
+    "power": "Power",
+    "power_supplies": "Power supplies",
+    "section_location": "Location",
+    "rack": "Rack",
+    "rack_position": "Position",
+    "not_installed": "Not installed in a rack",
+    "section_lifecycle": "Lifecycle",
+    "purchase": "Purchase date",
+    "warranty": "Warranty",
+    "support": "Support",
+    "expired": "Expired",
+    "note": "Note"
   },
   "rack": {
     "error_loading": "Error loading rack units",

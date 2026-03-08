@@ -204,6 +204,22 @@
             </td>
             <td class="col-hostname">
               <span class="hostname">{{ asset.hostname || "—" }}</span>
+              <button
+                class="btn-monitor"
+                (click)="onOpenMonitor(asset.id, $event)"
+                [title]="'assets.monitor_title' | translate"
+              >
+                <svg viewBox="0 0 16 16" fill="none">
+                  <circle
+                    cx="8"
+                    cy="8"
+                    r="5.5"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                  />
+                  <circle cx="8" cy="8" r="2" fill="currentColor" />
+                </svg>
+              </button>
             </td>
             <td class="col-model">
               <span class="model-name">{{ asset.model.name || "—" }}</span>

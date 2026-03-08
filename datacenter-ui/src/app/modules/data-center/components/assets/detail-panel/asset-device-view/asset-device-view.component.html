@@ -1,0 +1,204 @@
+@if (loadState().status === "loading") {
+  <div class="device-view device-view--placeholder">
+    <div class="loading-state">
+      {{ "asset_device_view.loading" | translate }}
+    </div>
+  </div>
+} @else if (loadState().status === "error") {
+  <div class="device-view device-view--placeholder">
+    <div class="error-state">
+      {{ "asset_device_view.load_error" | translate }}
+    </div>
+  </div>
+} @else if (asset(); as a) {
+  <div class="device-view">
+    <!-- ── Device panels: front + rear ──────────────────────────────────────── -->
+    <div class="panels-row">
+      <!-- Front -->
+      <div class="device-panel">
+        <div class="panel-label">
+          {{ "asset_device_view.front" | translate }}
+        </div>
+        <div class="panel-frame">
+          @if (frontImage(); as img) {
+            <img
+              class="panel-img"
+              [src]="img"
+              [alt]="a.hostname || a.model.name"
+              loading="lazy"
+            />
+          } @else {
+            <div class="panel-placeholder">
+              <span class="panel-icon">{{ typeIcon() }}</span>
+              <span class="panel-placeholder-label">{{
+                "asset_device_view.no_image" | translate
+              }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Rear -->
+      <div class="device-panel">
+        <div class="panel-label">
+          {{ "asset_device_view.rear" | translate }}
+        </div>
+        <div class="panel-frame panel-frame--rear">
+          @if (rearImage(); as img) {
+            <img
+              class="panel-img"
+              [src]="img"
+              [alt]="a.hostname || a.model.name"
+              loading="lazy"
+            />
+          } @else {
+            <div class="panel-placeholder">
+              <span class="panel-icon">{{ typeIcon() }}</span>
+              <span class="panel-placeholder-label">{{
+                "asset_device_view.no_image" | translate
+              }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Monitoring info grid ──────────────────────────────────────────────── -->
+    <div class="info-grid">
+      <!-- Identity -->
+      <div class="info-section">
+        <h4 class="info-title">
+          {{ "asset_device_view.section_identity" | translate }}
+        </h4>
+        <dl class="info-list">
+          <div class="info-item">
+            <dt>{{ "asset_device_view.hostname" | translate }}</dt>
+            <dd class="mono">{{ a.hostname || "—" }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>{{ "asset_device_view.serial" | translate }}</dt>
+            <dd class="mono">{{ a.serial_number || "—" }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>{{ "asset_device_view.sap_id" | translate }}</dt>
+            <dd class="mono">{{ a.sap_id || "—" }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>{{ "asset_device_view.state" | translate }}</dt>
+            <dd>
+              <span
+                class="state-badge"
+                [attr.data-color]="stateColor(a.state.name)"
+              >
+                {{ a.state.name }}
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Device -->
+      <div class="info-section">
+        <h4 class="info-title">
+          {{ "asset_device_view.section_device" | translate }}
+        </h4>
+        <dl class="info-list">
+          <div class="info-item">
+            <dt>{{ "asset_device_view.model" | translate }}</dt>
+            <dd>{{ a.model.name || "—" }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>{{ "asset_device_view.vendor" | translate }}</dt>
+            <dd>{{ a.model.vendor.name }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>{{ "asset_device_view.type" | translate }}</dt>
+            <dd>{{ a.model.type.name }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>{{ "asset_device_view.rack_units" | translate }}</dt>
+            <dd>{{ a.model.rack_units }}U</dd>
+          </div>
+          @if (a.power_cosumption_watt) {
+            <div class="info-item">
+              <dt>{{ "asset_device_view.power" | translate }}</dt>
+              <dd>{{ a.power_cosumption_watt }} W</dd>
+            </div>
+          }
+          @if (a.power_supplies) {
+            <div class="info-item">
+              <dt>{{ "asset_device_view.power_supplies" | translate }}</dt>
+              <dd>{{ a.power_supplies }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+
+      <!-- Location -->
+      <div class="info-section">
+        <h4 class="info-title">
+          {{ "asset_device_view.section_location" | translate }}
+        </h4>
+        <dl class="info-list">
+          @if (a.rack; as r) {
+            <div class="info-item">
+              <dt>{{ "asset_device_view.rack" | translate }}</dt>
+              <dd>{{ r.name }}</dd>
+            </div>
+            <div class="info-item">
+              <dt>{{ "asset_device_view.rack_position" | translate }}</dt>
+              <dd>U{{ r.position }}</dd>
+            </div>
+          } @else {
+            <div class="info-item info-item--full">
+              <dd class="text-muted">
+                {{ "asset_device_view.not_installed" | translate }}
+              </dd>
+            </div>
+          }
+        </dl>
+      </div>
+
+      <!-- Lifecycle -->
+      <div class="info-section">
+        <h4 class="info-title">
+          {{ "asset_device_view.section_lifecycle" | translate }}
+        </h4>
+        <dl class="info-list">
+          <div class="info-item">
+            <dt>{{ "asset_device_view.purchase" | translate }}</dt>
+            <dd>{{ formatDate(a.purchase_date) }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>{{ "asset_device_view.warranty" | translate }}</dt>
+            <dd [class.date--expired]="warrantyExpired()">
+              {{ formatDate(a.warranty_expiration) }}
+              @if (warrantyExpired()) {
+                <span class="expired-badge">{{
+                  "asset_device_view.expired" | translate
+                }}</span>
+              }
+            </dd>
+          </div>
+          <div class="info-item">
+            <dt>{{ "asset_device_view.support" | translate }}</dt>
+            <dd [class.date--expired]="supportExpired()">
+              {{ formatDate(a.support_expiration) }}
+              @if (supportExpired()) {
+                <span class="expired-badge">{{
+                  "asset_device_view.expired" | translate
+                }}</span>
+              }
+            </dd>
+          </div>
+          @if (a.note) {
+            <div class="info-item info-item--full">
+              <dt>{{ "asset_device_view.note" | translate }}</dt>
+              <dd class="note-text">{{ a.note }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+    </div>
+  </div>
+}

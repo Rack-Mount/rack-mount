@@ -241,7 +241,8 @@
     "no_data": "Aucun équipement trouvé",
     "state_change_title": "Cliquer pour changer l'état",
     "prev_page": "Page précédente",
-    "next_page": "Page suivante"
+    "next_page": "Page suivante",
+    "monitor_title": "Ouvrir le moniteur de l'appareil"
   },
   "asset_form": {
     "title": "Nouvel équipement",
@@ -308,7 +309,38 @@
     "close_tab": "Fermer l'onglet",
     "close_panel": "Fermer le panneau",
     "loading_rack": "Chargement de la baie…",
-    "rack_not_found": "Baie introuvable."
+    "rack_not_found": "Baie introuvable.",
+    "loading_asset": "Chargement de l'appareil…",
+    "asset_not_found": "Appareil introuvable."
+  },
+  "asset_device_view": {
+    "loading": "Chargement du dispositif…",
+    "load_error": "Impossible de charger le dispositif.",
+    "front": "Face avant",
+    "rear": "Face arrière",
+    "no_image": "Pas d'image",
+    "section_identity": "Identité",
+    "hostname": "Nom d'hôte",
+    "serial": "Série",
+    "sap_id": "ID SAP",
+    "state": "État",
+    "section_device": "Appareil",
+    "model": "Modèle",
+    "vendor": "Fabricant",
+    "type": "Type",
+    "rack_units": "Unités rack",
+    "power": "Puissance",
+    "power_supplies": "Alimentations",
+    "section_location": "Emplacement",
+    "rack": "Baie",
+    "rack_position": "Position",
+    "not_installed": "Non installé dans une baie",
+    "section_lifecycle": "Cycle de vie",
+    "purchase": "Date d'achat",
+    "warranty": "Garantie",
+    "support": "Support",
+    "expired": "Expiré",
+    "note": "Note"
   },
   "rack": {
     "error_loading": "Erreur lors du chargement des unités de baie",

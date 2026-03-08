@@ -19,6 +19,7 @@ import { AuthService } from './modules/core/services/auth.service';
 import { RoleService } from './modules/core/services/role.service';
 import { TabService } from './modules/core/services/tab.service';
 import { ThemeService } from './modules/core/services/theme.service';
+import { AssetDeviceViewComponent } from './modules/data-center/components/assets/detail-panel/asset-device-view/asset-device-view.component';
 import { PanelTab } from './modules/data-center/components/assets/detail-panel/detail-panel.types';
 import { MapComponent } from './modules/data-center/components/infrastructure/map/map.component';
 import { RackComponent } from './modules/data-center/components/infrastructure/rack/rack.component';
@@ -64,6 +65,7 @@ const STATIC_TABS = new Set([
     HomeComponent,
     MapComponent,
     RackComponent,
+    AssetDeviceViewComponent,
     ToastComponent,
   ],
   templateUrl: './app.component.html',
@@ -142,6 +144,18 @@ export class AppComponent implements OnInit {
     const tree = this.router.parseUrl(this.router.url);
     const segments = tree.root.children['primary']?.segments ?? [];
     const first = segments[0]?.path;
+
+    if (first === 'asset') {
+      const assetId = +(segments[1]?.path ?? '');
+      if (!isNaN(assetId) && assetId > 0 && this.role.canViewAssets()) {
+        this.tabService.ensureAssetTab(assetId, `Asset #${assetId}`);
+        this.activeTabId.set(`asset-${assetId}`);
+      } else {
+        this.activeTabId.set('home');
+        this.router.navigate(['/']);
+      }
+      return;
+    }
 
     if (first === 'rack') {
       const rackName = segments[1]?.path;
@@ -268,6 +282,10 @@ export class AppComponent implements OnInit {
     }
     if (tabId.startsWith('rack-')) {
       this.router.navigate(['/rack', tabId.slice(5)]);
+      return;
+    }
+    if (tabId.startsWith('asset-')) {
+      this.router.navigate(['/asset', +tabId.slice(6)]);
     }
   }
 

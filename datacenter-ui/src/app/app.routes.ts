@@ -69,6 +69,11 @@ export const routes: Routes = [
     children: [],
   },
   {
+    path: 'asset/:id',
+    canActivate: [authGuard, canViewAssetsGuard],
+    children: [],
+  },
+  {
     path: 'admin',
     canActivate: [authGuard, adminGuard],
     loadComponent: () =>

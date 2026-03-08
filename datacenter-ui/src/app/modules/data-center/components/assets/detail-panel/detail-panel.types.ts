@@ -13,9 +13,12 @@ export interface PanelTab {
     | 'room'
     | 'rack'
     | 'admin'
-    | 'change-password';
+    | 'change-password'
+    | 'asset';
   roomId?: number;
   rackName?: string;
+  /** ID of the asset — used when type === 'asset' */
+  assetId?: number;
   /** Pinned tabs are always visible and cannot be closed */
   pinned: boolean;
 }

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RoleService } from '../../../../../core/services/role.service';
+import { TabService } from '../../../../../core/services/tab.service';
 import { AssetRowDetailComponent } from '../asset-row-detail/asset-row-detail.component';
 import { formatDate, relativeDate, stateColor } from '../assets-list-utils';
 import { AssetsListStore } from '../assets-list.store';
@@ -23,6 +24,7 @@ import { AssetsPaginationComponent } from './assets-pagination/assets-pagination
 export class AssetsTableComponent {
   protected readonly store = inject(AssetsListStore);
   protected readonly role = inject(RoleService);
+  private readonly tabService = inject(TabService);
 
   protected readonly stateColor = stateColor;
   protected readonly formatDate = formatDate;
@@ -48,5 +50,14 @@ export class AssetsTableComponent {
   protected onSelectRow(assetId: number, event: MouseEvent): void {
     event.stopPropagation();
     this.store.toggleSelectRow(assetId);
+  }
+
+  protected onOpenMonitor(assetId: number, event: MouseEvent): void {
+    event.stopPropagation();
+    const asset = this.store.assets().find((a) => a.id === assetId);
+    if (asset) {
+      const label = asset.hostname || asset.model.name || `#${asset.id}`;
+      this.tabService.openAsset(asset.id, label);
+    }
   }
 }

@@ -209,6 +209,42 @@ $text-muted: mx.$text-muted;
   color: var(--dc-hostname-color);
 }
 
+// ── Monitor button (shown on row hover) ───────────────────────────────────────
+.col-hostname {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-monitor {
+  flex-shrink: 0;
+  display: none;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--dc-text-muted);
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 0;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  &:hover {
+    color: var(--dc-accent-text);
+    background: var(--dc-bg-row-hover);
+  }
+}
+
+.asset-row:hover .btn-monitor {
+  display: flex;
+}
+
 // ── Row checkbox ──────────────────────────────────────────────────────────────
 .row-check {
   width: 15px;

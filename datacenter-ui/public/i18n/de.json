@@ -214,7 +214,8 @@
     "no_data": "Keine Geräte gefunden",
     "state_change_title": "Zum Ändern des Status klicken",
     "prev_page": "Vorherige Seite",
-    "next_page": "Nächste Seite"
+    "next_page": "Nächste Seite",
+    "monitor_title": "Gerät überwachen"
   },
   "asset_form": {
     "title": "Neues Gerät",
@@ -281,7 +282,38 @@
     "close_tab": "Tab schließen",
     "close_panel": "Panel schließen",
     "loading_rack": "Rack wird geladen…",
-    "rack_not_found": "Rack nicht gefunden."
+    "rack_not_found": "Rack nicht gefunden.",
+    "loading_asset": "Gerät wird geladen…",
+    "asset_not_found": "Gerät nicht gefunden."
+  },
+  "asset_device_view": {
+    "loading": "Gerät wird geladen…",
+    "load_error": "Gerät konnte nicht geladen werden.",
+    "front": "Vorderseite",
+    "rear": "Rückseite",
+    "no_image": "Kein Bild",
+    "section_identity": "Identität",
+    "hostname": "Hostname",
+    "serial": "Seriennummer",
+    "sap_id": "SAP-ID",
+    "state": "Status",
+    "section_device": "Gerät",
+    "model": "Modell",
+    "vendor": "Hersteller",
+    "type": "Typ",
+    "rack_units": "Rack-Einheiten",
+    "power": "Leistung",
+    "power_supplies": "Netzteile",
+    "section_location": "Standort",
+    "rack": "Rack",
+    "rack_position": "Position",
+    "not_installed": "Nicht in einem Rack installiert",
+    "section_lifecycle": "Lebenszyklus",
+    "purchase": "Kaufdatum",
+    "warranty": "Garantie",
+    "support": "Support",
+    "expired": "Abgelaufen",
+    "note": "Notiz"
   },
   "rack": {
     "error_loading": "Fehler beim Laden der Rack-Einheiten",

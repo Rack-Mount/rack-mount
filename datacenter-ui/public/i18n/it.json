@@ -243,7 +243,8 @@
     "no_data": "Nessun asset trovato",
     "state_change_title": "Clicca per cambiare stato",
     "prev_page": "Pagina precedente",
-    "next_page": "Pagina successiva"
+    "next_page": "Pagina successiva",
+    "monitor_title": "Apri monitoraggio dispositivo"
   },
   "asset_form": {
     "title": "Nuovo asset",
@@ -310,7 +311,38 @@
     "close_tab": "Chiudi scheda",
     "close_panel": "Chiudi pannello",
     "loading_rack": "Caricamento rack…",
-    "rack_not_found": "Rack non trovato."
+    "rack_not_found": "Rack non trovato.",
+    "loading_asset": "Caricamento dispositivo…",
+    "asset_not_found": "Dispositivo non trovato."
+  },
+  "asset_device_view": {
+    "loading": "Caricamento dispositivo…",
+    "load_error": "Impossibile caricare il dispositivo.",
+    "front": "Fronte",
+    "rear": "Retro",
+    "no_image": "Nessuna immagine",
+    "section_identity": "Identità",
+    "hostname": "Hostname",
+    "serial": "Seriale",
+    "sap_id": "SAP ID",
+    "state": "Stato",
+    "section_device": "Dispositivo",
+    "model": "Modello",
+    "vendor": "Produttore",
+    "type": "Tipo",
+    "rack_units": "Unità rack",
+    "power": "Potenza",
+    "power_supplies": "Alimentatori",
+    "section_location": "Posizione",
+    "rack": "Rack",
+    "rack_position": "Posizione",
+    "not_installed": "Non installato in un rack",
+    "section_lifecycle": "Ciclo di vita",
+    "purchase": "Data acquisto",
+    "warranty": "Garanzia",
+    "support": "Supporto",
+    "expired": "Scaduto",
+    "note": "Note"
   },
   "rack": {
     "error_loading": "Errore nel caricamento delle unità rack",

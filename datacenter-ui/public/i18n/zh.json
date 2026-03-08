@@ -243,7 +243,8 @@
     "no_data": "未找到设备",
     "state_change_title": "点击更改状态",
     "prev_page": "上一页",
-    "next_page": "下一页"
+    "next_page": "下一页",
+    "monitor_title": "打开设备监控"
   },
   "asset_form": {
     "title": "新建设备",
@@ -310,7 +311,38 @@
     "close_tab": "关闭标签",
     "close_panel": "关闭面板",
     "loading_rack": "加载机柜…",
-    "rack_not_found": "未找到机柜。"
+    "rack_not_found": "未找到机柜。",
+    "loading_asset": "正在加载设备…",
+    "asset_not_found": "未找到设备。"
+  },
+  "asset_device_view": {
+    "loading": "正在加载设备…",
+    "load_error": "无法加载设备。",
+    "front": "正面",
+    "rear": "背面",
+    "no_image": "无图片",
+    "section_identity": "身份信息",
+    "hostname": "主机名",
+    "serial": "序列号",
+    "sap_id": "SAP ID",
+    "state": "状态",
+    "section_device": "设备",
+    "model": "型号",
+    "vendor": "厂商",
+    "type": "类型",
+    "rack_units": "机柜单元",
+    "power": "功耗",
+    "power_supplies": "电源供应",
+    "section_location": "位置",
+    "rack": "机柜",
+    "rack_position": "位置",
+    "not_installed": "未安装到机柜",
+    "section_lifecycle": "生命周期",
+    "purchase": "购买日期",
+    "warranty": "保修",
+    "support": "支持",
+    "expired": "已过期",
+    "note": "备注"
   },
   "rack": {
     "error_loading": "加载机柜单元时出错",
