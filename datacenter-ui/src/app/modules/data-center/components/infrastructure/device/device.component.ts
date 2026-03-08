@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   ElementRef,
+  inject,
   input,
 } from '@angular/core';
 import { environment } from '../../../../../../environments/environment';
@@ -59,10 +60,8 @@ export class DeviceComponent {
   protected tooltipFlipped = false;
   protected readonly serviceUrl = environment.service_url;
 
-  constructor(
-    private readonly el: ElementRef<HTMLElement>,
-    private readonly cdr: ChangeDetectorRef,
-  ) {}
+  private readonly el = inject(ElementRef<HTMLElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   /** CSS modifier class derived from device_type (e.g. 'server', 'switch'). */
   protected readonly typeClass = computed(() => {

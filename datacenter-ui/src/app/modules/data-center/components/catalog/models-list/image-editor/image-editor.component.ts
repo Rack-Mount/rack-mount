@@ -2,16 +2,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  effect,
   ElementRef,
-  EventEmitter,
-  Input,
-  OnChanges,
+  inject,
+  input,
   OnDestroy,
   OnInit,
-  Output,
-  SimpleChanges,
+  output,
   ViewChild,
-  inject,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -146,15 +144,19 @@ function affineFromTriangles(
   styleUrl: './image-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ImageEditorComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() imageFile: File | null = null;
-  @Input() imageUrl: string | null = null;
+export class ImageEditorComponent implements OnInit, OnDestroy {
+  readonly imageFile = input<File | null>(null);
+  readonly imageUrl = input<string | null>(null);
 
-  @Output() confirmed = new EventEmitter<{
+  readonly confirmed = output<{
     params: ImageEditParams;
     previewDataUrl: string;
   }>();
-  @Output() cancelled = new EventEmitter<void>();
+  readonly cancelled = output<void>();
+
+  constructor() {
+    effect(() => this.loadImage());
+  }
 
   @ViewChild('editorCanvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -227,12 +229,6 @@ export class ImageEditorComponent implements OnInit, OnChanges, OnDestroy {
     this.resizeObs.observe(this.wrapRef.nativeElement);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['imageFile'] || changes['imageUrl']) {
-      this.loadImage();
-    }
-  }
-
   ngOnDestroy(): void {
     cancelAnimationFrame(this.raf);
     this.resizeObs?.disconnect();
@@ -262,12 +258,12 @@ export class ImageEditorComponent implements OnInit, OnChanges, OnDestroy {
 
     let src: string | null = null;
 
-    if (this.imageFile) {
-      src = URL.createObjectURL(this.imageFile);
+    if (this.imageFile()) {
+      src = URL.createObjectURL(this.imageFile()!);
       this.blobUrl = src;
-    } else if (this.imageUrl) {
+    } else if (this.imageUrl()) {
       try {
-        const resp = await fetch(this.imageUrl);
+        const resp = await fetch(this.imageUrl()!);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const blob = await resp.blob();
         src = URL.createObjectURL(blob);

@@ -1,15 +1,15 @@
-<div class="sidebar" [class.disabled]="disabled">
+<div class="sidebar" [class.disabled]="disabled()">
   <div class="title">{{ "map_sidebar.title" | translate }}</div>
   <div class="tools-container">
     @for (tool of tools; track tool.id) {
       @if (tool.id === "select" || role.canEditMap()) {
         <div
           class="tool-item"
-          [class.active]="activeTool === tool.id"
-          [class.disabled]="disabled"
+          [class.active]="activeTool() === tool.id"
+          [class.disabled]="disabled()"
           (click)="selectTool(tool.id)"
           [title]="
-            disabled
+            disabled()
               ? ('map_sidebar.disabled_hint' | translate)
               : (tool.label | translate)
           "

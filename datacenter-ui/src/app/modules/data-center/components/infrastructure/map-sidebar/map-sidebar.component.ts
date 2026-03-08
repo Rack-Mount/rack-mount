@@ -1,10 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   inject,
-  Input,
-  Output,
+  input,
+  output,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RoleService } from '../../../../core/services/role.service';
@@ -20,11 +19,11 @@ import { RoleService } from '../../../../core/services/role.service';
 export class MapSidebarComponent {
   protected readonly role = inject(RoleService);
 
-  @Input() activeTool: string = 'select';
-  @Input() disabled: boolean = false;
-  @Output() toolChange = new EventEmitter<string>();
+  readonly activeTool = input<string>('select');
+  readonly disabled = input<boolean>(false);
+  readonly toolChange = output<string>();
 
-  tools = [
+  readonly tools = [
     { id: 'select', label: 'map_sidebar.tool_select', icon: '✥' },
     { id: 'move', label: 'map_sidebar.tool_move', icon: '📝' },
     { id: 'wall', label: 'map_sidebar.tool_wall', icon: '🧱' },
@@ -34,7 +33,7 @@ export class MapSidebarComponent {
   ];
 
   selectTool(toolId: string): void {
-    if (this.disabled) return;
+    if (this.disabled()) return;
     this.toolChange.emit(toolId);
   }
 }
