@@ -1,6 +1,8 @@
 @use "styles/mixins" as mx;
 
-$bg-base: mx.$bg-base;
+@include mx.page-host(relative);
+
+// ── Variables ──────────────────────────────────────────────────────────────
 $bg-surface: mx.$bg-surface;
 $bg-row: mx.$bg-row;
 $bg-row-hover: mx.$bg-row-hover;
@@ -11,17 +13,6 @@ $danger: var(--dc-danger);
 $text-primary: mx.$text-primary;
 $text-secondary: mx.$text-secondary;
 $text-muted: mx.$text-muted;
-
-:host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-  background: $bg-base;
-  font-family: "Inter", "Segoe UI", sans-serif;
-  color: $text-primary;
-  position: relative;
-}
 
 .components-page {
   display: flex;

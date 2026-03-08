@@ -1,7 +1,8 @@
 @use "styles/mixins" as mx;
 
+@include mx.page-host();
+
 // ── Variables ──────────────────────────────────────────────────────────────
-$bg-base: mx.$bg-base;
 $bg-surface: mx.$bg-surface;
 $bg-row: mx.$bg-row;
 $bg-row-alt: mx.$bg-row-alt;
@@ -11,16 +12,6 @@ $border-strong: mx.$border-strong;
 $text-primary: mx.$text-primary;
 $text-secondary: mx.$text-secondary;
 $text-muted: mx.$text-muted;
-
-:host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-  background: $bg-base;
-  font-family: "Inter", "Segoe UI", sans-serif;
-  color: $text-primary;
-}
 
 .racks-page {
   display: flex;

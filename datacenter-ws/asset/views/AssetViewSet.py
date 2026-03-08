@@ -98,6 +98,13 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
                 {'error': _('state_id is required')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        try:
+            state_id = int(state_id)
+        except (TypeError, ValueError):
+            return Response(
+                {'error': _('Invalid state_id')},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         if not AssetState.objects.filter(pk=state_id).exists():
             return Response(
                 {'error': _('Invalid state_id')},

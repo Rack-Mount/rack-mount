@@ -25,6 +25,7 @@ import {
   AssetService,
   AssetState,
   AssetType,
+  PatchedAsset,
 } from '../../../../core/api/v1';
 import { AssetActionsService } from '../../../../core/services/asset-actions.service';
 import { TabService } from '../../../../core/services/tab.service';
@@ -252,10 +253,9 @@ export class AssetsListComponent {
     this.bulkEditState.set('saving');
     forkJoin(
       ids.map((id) =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.assetService.assetAssetPartialUpdate({
           id,
-          patchedAsset: { state_id: stateId } as any,
+          patchedAsset: { state_id: stateId } satisfies PatchedAsset,
         }),
       ),
     )
@@ -457,10 +457,9 @@ export class AssetsListComponent {
     if (!assetId) return;
     this.stateEditState.set('saving');
     this.assetService
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .assetAssetPartialUpdate({
         id: assetId,
-        patchedAsset: { state_id: stateId } as any,
+        patchedAsset: { state_id: stateId } satisfies PatchedAsset,
       })
       .subscribe({
         next: (updated) => {

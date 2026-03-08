@@ -16,16 +16,7 @@ from drf_spectacular.types import OpenApiTypes
 from accounts.permissions import ExportAssetsPermission
 from asset.models import Asset
 from asset.views.AssetViewSet import AssetFilter
-
-# Characters that trigger formula execution in spreadsheet apps (CSV injection).
-_FORMULA_PREFIXES = ('=', '+', '-', '@', '\t', '\r')
-
-
-def _safe_cell(value: str) -> str:
-    """Prevent formula injection by prefixing dangerous leading characters."""
-    if value and value[0] in _FORMULA_PREFIXES:
-        return "'" + value
-    return value
+from asset.utils.csv_sanitize import sanitize_cell as _safe_cell
 
 
 COLUMNS = [

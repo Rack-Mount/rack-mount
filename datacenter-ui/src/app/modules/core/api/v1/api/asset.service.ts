@@ -101,6 +101,7 @@ import {
     AssetAssetDestroyRequestParams,
     AssetAssetImportCsvCreateRequestParams,
     AssetAssetListRequestParams,
+    AssetAssetModelBulkDeleteCreateRequestParams,
     AssetAssetModelCreateRequestParams,
     AssetAssetModelDestroyRequestParams,
     AssetAssetModelImportCreateRequestParams,
@@ -1414,6 +1415,80 @@ export class AssetService extends BaseService implements AssetServiceInterface {
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * POST /asset/asset_model/bulk_delete Body: { \&quot;ids\&quot;: [1, 2, 3] } Skips models currently in use (have assets attached). Returns: { \&quot;deleted\&quot;: &lt;int&gt;, \&quot;skipped\&quot;: &lt;int&gt; }
+     * @endpoint post /asset/asset_model/bulk_delete
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetModelBulkDeleteCreate(requestParameters: AssetAssetModelBulkDeleteCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetModel>;
+    public assetAssetModelBulkDeleteCreate(requestParameters: AssetAssetModelBulkDeleteCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetModel>>;
+    public assetAssetModelBulkDeleteCreate(requestParameters: AssetAssetModelBulkDeleteCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetModel>>;
+    public assetAssetModelBulkDeleteCreate(requestParameters: AssetAssetModelBulkDeleteCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const assetModel = requestParameters?.assetModel;
+        if (assetModel === null || assetModel === undefined) {
+            throw new Error('Required parameter assetModel was null or undefined when calling assetAssetModelBulkDeleteCreate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (cookieAuth) required
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset_model/bulk_delete`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetModel>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: assetModel,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

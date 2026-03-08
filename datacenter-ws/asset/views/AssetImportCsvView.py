@@ -25,6 +25,7 @@ Response JSON (POST):
 """
 
 from __future__ import annotations
+from asset.utils.csv_sanitize import sanitize_cell as _sanitize_cell
 import datetime
 from asset.models.AssetState import AssetState
 from asset.models.AssetModel import AssetModel
@@ -44,16 +45,6 @@ import io
 
 # Max 50 MB CSV file
 _MAX_CSV_BYTES = 50 * 1024 * 1024
-
-# Characters that trigger formula execution in spreadsheet apps (CSV injection)
-_FORMULA_PREFIXES = ('=', '+', '-', '@', '\t', '\r')
-
-
-def _sanitize_cell(value: str) -> str:
-    """Prevent CSV/formula injection by prefixing dangerous characters."""
-    if value and value[0] in _FORMULA_PREFIXES:
-        return "'" + value
-    return value
 
 
 # ─────── CSV column definitions ───────────────────────────────────────────────

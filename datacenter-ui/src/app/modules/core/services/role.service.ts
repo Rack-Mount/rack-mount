@@ -36,63 +36,68 @@ export class RoleService {
 
   readonly isAdmin = computed(() => this._role()?.name === 'admin');
 
+  // ── Permission signals ────────────────────────────────────────────────────
+  // All grouped into one base computed so _role() is read once per change cycle.
+  private readonly _p = computed(() => this._role());
+
   // Assets
-  readonly canViewAssets = computed(
-    () => this._role()?.can_view_assets ?? false,
-  );
+  readonly canViewAssets = computed(() => this._p()?.can_view_assets ?? false);
   readonly canCreateAssets = computed(
-    () => this._role()?.can_create_assets ?? false,
+    () => this._p()?.can_create_assets ?? false,
   );
-  readonly canEditAssets = computed(
-    () => this._role()?.can_edit_assets ?? false,
-  );
+  readonly canEditAssets = computed(() => this._p()?.can_edit_assets ?? false);
   readonly canDeleteAssets = computed(
-    () => this._role()?.can_delete_assets ?? false,
+    () => this._p()?.can_delete_assets ?? false,
   );
   readonly canImportAssets = computed(
-    () => this._role()?.can_import_assets ?? false,
+    () => this._p()?.can_import_assets ?? false,
   );
   readonly canExportAssets = computed(
-    () => this._role()?.can_export_assets ?? false,
+    () => this._p()?.can_export_assets ?? false,
   );
   readonly canCloneAssets = computed(
-    () => this._role()?.can_clone_assets ?? false,
+    () => this._p()?.can_clone_assets ?? false,
   );
 
   // Catalog
   readonly canViewCatalog = computed(
-    () => this._role()?.can_view_catalog ?? false,
+    () => this._p()?.can_view_catalog ?? false,
   );
   readonly canCreateCatalog = computed(
-    () => this._role()?.can_create_catalog ?? false,
+    () => this._p()?.can_create_catalog ?? false,
   );
   readonly canEditCatalog = computed(
-    () => this._role()?.can_edit_catalog ?? false,
+    () => this._p()?.can_edit_catalog ?? false,
   );
   readonly canDeleteCatalog = computed(
-    () => this._role()?.can_delete_catalog ?? false,
+    () => this._p()?.can_delete_catalog ?? false,
   );
   readonly canImportCatalog = computed(
-    () => this._role()?.can_import_catalog ?? false,
+    () => this._p()?.can_import_catalog ?? false,
   );
 
   // Infrastructure
   readonly canViewInfrastructure = computed(
-    () => this._role()?.can_view_infrastructure ?? false,
+    () => this._p()?.can_view_infrastructure ?? false,
   );
   readonly canCreateRacks = computed(
-    () => this._role()?.can_create_racks ?? false,
+    () => this._p()?.can_create_racks ?? false,
   );
-  readonly canEditRacks = computed(() => this._role()?.can_edit_racks ?? false);
+  readonly canEditRacks = computed(() => this._p()?.can_edit_racks ?? false);
   readonly canDeleteRacks = computed(
-    () => this._role()?.can_delete_racks ?? false,
+    () => this._p()?.can_delete_racks ?? false,
   );
-  readonly canEditMap = computed(() => this._role()?.can_edit_map ?? false);
+  readonly canEditMap = computed(() => this._p()?.can_edit_map ?? false);
 
   // Admin
   readonly canManageUsers = computed(
-    () => this._role()?.can_manage_users ?? false,
+    () => this._p()?.can_manage_users ?? false,
   );
+
+  /** Imperative helper for TypeScript code: `role.can('can_delete_catalog')` */
+  can(flag: keyof Omit<RoleData, 'name'>): boolean {
+    return !!this._role()?.[flag];
+  }
 
   private _loadFromStorage(): RoleData | null {
     try {

@@ -1,7 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Value
+from django.db.models.functions import Coalesce
 from asset.serializers import RackSerializer
 from asset.models import Rack, RackUnit
 from shared.mixins import StandardFilterMixin
@@ -19,7 +20,9 @@ class RackViewSet(StandardFilterMixin, viewsets.ModelViewSet):
         'model', 'room', 'room__location'
     ).annotate(
         used_units=Count('rackunit__position', distinct=True),
-        total_power_watt=Sum('rackunit__device__power_cosumption_watt'),
+        total_power_watt=Coalesce(
+            Sum('rackunit__device__power_cosumption_watt'), Value(0)
+        ),
     ).all()
     serializer_class = RackSerializer
     ordering_fields = ['name', 'room__location__name', 'room__name',

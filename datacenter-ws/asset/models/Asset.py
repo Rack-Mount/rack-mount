@@ -90,3 +90,12 @@ class Asset(models.Model):
         verbose_name = _('Asset')
         verbose_name_plural = _('Assets')
         db_table = 'asset'
+        indexes = [
+            # hostname is the default ordering and a frequent search/filter field
+            models.Index(fields=['hostname'], name='asset_hostname_idx'),
+            # composite index for filtered list queries (state + model)
+            models.Index(fields=['state', 'model'],
+                         name='asset_state_model_idx'),
+            # updated_at is an ordering_field in AssetViewSet
+            models.Index(fields=['-updated_at'], name='asset_updated_at_idx'),
+        ]

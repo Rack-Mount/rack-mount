@@ -123,6 +123,10 @@ export interface AssetAssetListRequestParams {
     state?: number;
 }
 
+export interface AssetAssetModelBulkDeleteCreateRequestParams {
+    assetModel: AssetModel;
+}
+
 export interface AssetAssetModelCreateRequestParams {
     assetModel: AssetModel;
 }
@@ -521,6 +525,14 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetAssetList(requestParameters: AssetAssetListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedAssetList>;
+
+    /**
+     * 
+     * POST /asset/asset_model/bulk_delete Body: { \&quot;ids\&quot;: [1, 2, 3] } Skips models currently in use (have assets attached). Returns: { \&quot;deleted\&quot;: &lt;int&gt;, \&quot;skipped\&quot;: &lt;int&gt; }
+     * @endpoint post /asset/asset_model/bulk_delete
+* @param requestParameters
+     */
+    assetAssetModelBulkDeleteCreate(requestParameters: AssetAssetModelBulkDeleteCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
 
     /**
      * 

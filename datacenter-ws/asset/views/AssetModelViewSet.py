@@ -45,8 +45,8 @@ class AssetModelViewSet(ImageTransformMixin, viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        if instance.assets.exists():
-            asset_count = instance.assets.count()
+        asset_count = instance.assets.count()
+        if asset_count:
             return Response(
                 {
                     'detail': _('Cannot delete: this model is used by %(count)d asset(s).') % {'count': asset_count},
