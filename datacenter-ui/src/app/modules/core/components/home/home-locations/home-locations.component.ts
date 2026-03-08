@@ -24,6 +24,10 @@ export class HomeLocationsComponent {
   readonly loading = input.required<boolean>();
   readonly locations = input.required<DjLocation[]>();
 
+  readonly canViewAssets = input<boolean>(false);
+  readonly canViewCatalog = input<boolean>(false);
+  readonly canViewInfrastructure = input<boolean>(false);
+
   readonly roomOpen = output<RoomOpenEvent>();
   readonly assetsOpen = output<void>();
   readonly vendorsOpen = output<void>();

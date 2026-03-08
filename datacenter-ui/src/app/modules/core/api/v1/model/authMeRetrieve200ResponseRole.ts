@@ -23,6 +23,7 @@ export interface AuthMeRetrieve200ResponseRole {
     can_edit_catalog?: boolean;
     can_delete_catalog?: boolean;
     can_import_catalog?: boolean;
+    can_view_infrastructure?: boolean;
     can_create_racks?: boolean;
     can_edit_racks?: boolean;
     can_delete_racks?: boolean;

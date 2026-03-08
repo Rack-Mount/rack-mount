@@ -1,11 +1,13 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 import { PanelTab } from '../../data-center/components/assets/detail-panel/detail-panel.types';
+import { RoleService } from './role.service';
 
 const LS_TABS_KEY = 'dc:tabs';
 
 @Injectable({ providedIn: 'root' })
 export class TabService {
+  private readonly role = inject(RoleService);
   private readonly _tabs = signal<PanelTab[]>(this.loadTabsFromStorage());
 
   /** Emits a tab id whenever it should become active */
@@ -40,6 +42,7 @@ export class TabService {
       return raw
         ? (JSON.parse(raw) as PanelTab[])
             .filter((t) => !RESERVED.has(t.id))
+            .filter((t) => this.isTabAllowed(t))
             .map((t) =>
               STATIC_LABEL_KEYS[t.id] && !t.labelKey
                 ? { ...t, labelKey: STATIC_LABEL_KEYS[t.id] }
@@ -49,6 +52,20 @@ export class TabService {
     } catch {
       return [];
     }
+  }
+
+  private isTabAllowed(tab: PanelTab): boolean {
+    if (tab.id === 'assets') return this.role.canViewAssets();
+    if (tab.id === 'vendors' || tab.id === 'models' || tab.id === 'components')
+      return this.role.canViewCatalog();
+    if (
+      tab.id === 'racks' ||
+      tab.id.startsWith('rack-') ||
+      tab.id.startsWith('room-')
+    )
+      return this.role.canViewInfrastructure();
+    if (tab.id === 'admin') return this.role.canManageUsers();
+    return true;
   }
 
   private persistTabs(): void {
@@ -84,6 +101,7 @@ export class TabService {
   // ── Room tabs ─────────────────────────────────────────────
 
   openRoom(roomId: number, roomName: string): void {
+    if (!this.role.canViewInfrastructure()) return;
     const tabId = `room-${roomId}`;
     this.upsertRoomTab(tabId, roomId, roomName);
     this.persistTabs();
@@ -131,6 +149,7 @@ export class TabService {
   }
 
   openAssets(): void {
+    if (!this.role.canViewAssets()) return;
     this.upsertAssetsTab();
     this.persistTabs();
     this._activate$.next('assets');
@@ -161,6 +180,7 @@ export class TabService {
   }
 
   openVendors(): void {
+    if (!this.role.canViewCatalog()) return;
     this.upsertVendorsTab();
     this.persistTabs();
     this._activate$.next('vendors');
@@ -188,6 +208,7 @@ export class TabService {
   }
 
   openModels(): void {
+    if (!this.role.canViewCatalog()) return;
     this.upsertModelsTab();
     this.persistTabs();
     this._activate$.next('models');
@@ -215,6 +236,7 @@ export class TabService {
   }
 
   openRacks(): void {
+    if (!this.role.canViewInfrastructure()) return;
     this.upsertRacksTab();
     this.persistTabs();
     this._activate$.next('racks');
@@ -242,6 +264,7 @@ export class TabService {
   }
 
   openComponents(): void {
+    if (!this.role.canViewCatalog()) return;
     this.upsertComponentsTab();
     this.persistTabs();
     this._activate$.next('components');
@@ -321,6 +344,12 @@ export class TabService {
   ensureRackTab(rackName: string): void {
     const tabId = `rack-${rackName}`;
     this.upsertRackTab(tabId, rackName);
+    this.persistTabs();
+  }
+
+  /** Removes any tab the current user no longer has permission to see. */
+  purgeForbiddenTabs(): void {
+    this._tabs.update((tabs) => tabs.filter((t) => this.isTabAllowed(t)));
     this.persistTabs();
   }
 

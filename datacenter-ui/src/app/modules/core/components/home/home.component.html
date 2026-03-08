@@ -11,6 +11,9 @@
   <app-home-locations
     [loading]="loading"
     [locations]="locations"
+    [canViewAssets]="role.canViewAssets()"
+    [canViewCatalog]="role.canViewCatalog()"
+    [canViewInfrastructure]="role.canViewInfrastructure()"
     (roomOpen)="onRoomOpen($event)"
     (assetsOpen)="onAssetsOpen()"
     (vendorsOpen)="onVendorsOpen()"

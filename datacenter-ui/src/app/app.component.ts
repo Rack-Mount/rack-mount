@@ -16,6 +16,7 @@ import { HomeComponent } from './modules/core/components/home/home.component';
 import { TabBarComponent } from './modules/core/components/tab-bar/tab-bar.component';
 import { ToastComponent } from './modules/core/components/toast/toast.component';
 import { AuthService } from './modules/core/services/auth.service';
+import { RoleService } from './modules/core/services/role.service';
 import { TabService } from './modules/core/services/tab.service';
 import { ThemeService } from './modules/core/services/theme.service';
 import { PanelTab } from './modules/data-center/components/assets/detail-panel/detail-panel.types';
@@ -75,6 +76,7 @@ export class AppComponent implements OnInit {
   readonly tabService = inject(TabService);
   private readonly themeService = inject(ThemeService);
   readonly auth = inject(AuthService);
+  private readonly role = inject(RoleService);
 
   readonly homeTab: PanelTab = {
     id: 'home',
@@ -93,6 +95,20 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // Apply the persisted or OS-default theme immediately
     this.themeService.init();
+
+    // Re-fetch the role from the server on every cold start so that
+    // permission changes made in Django admin take effect without a new login.
+    if (this.auth.isAuthenticated()) {
+      this.auth
+        .fetchAndLoadRole()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          // Drop any tabs that are no longer allowed under the refreshed role.
+          this.tabService.purgeForbiddenTabs();
+          // Re-evaluate the current URL in case the active tab became forbidden.
+          this.syncFromUrl();
+        });
+    }
 
     // Sync active tab from URL on every navigation
     this.router.events
@@ -129,44 +145,66 @@ export class AppComponent implements OnInit {
 
     if (first === 'rack') {
       const rackName = segments[1]?.path;
-      if (rackName) {
+      if (rackName && this.role.canViewInfrastructure()) {
         this.tabService.ensureRackTab(rackName);
         this.activeTabId.set(`rack-${rackName}`);
       } else {
         this.activeTabId.set('home');
+        this.router.navigate(['/']);
       }
       return;
     }
 
     if (first === 'map') {
       const roomId = +(segments[1]?.path ?? '');
-      if (!isNaN(roomId)) {
+      if (!isNaN(roomId) && this.role.canViewInfrastructure()) {
         this.tabService.ensureRoomTab(roomId, `Room #${roomId}`);
         this.activeTabId.set(`room-${roomId}`);
       } else {
         this.activeTabId.set('home');
+        this.router.navigate(['/']);
       }
       return;
     }
 
     const urlEnsureMap: Record<string, () => void> = {
       assets: () => {
+        if (!this.role.canViewAssets()) {
+          this.activeTabId.set('home');
+          return;
+        }
         this.tabService.ensureAssetsTab();
         this.activeTabId.set('assets');
       },
       vendors: () => {
+        if (!this.role.canViewCatalog()) {
+          this.activeTabId.set('home');
+          return;
+        }
         this.tabService.ensureVendorsTab();
         this.activeTabId.set('vendors');
       },
       models: () => {
+        if (!this.role.canViewCatalog()) {
+          this.activeTabId.set('home');
+          return;
+        }
         this.tabService.ensureModelsTab();
         this.activeTabId.set('models');
       },
       components: () => {
+        if (!this.role.canViewCatalog()) {
+          this.activeTabId.set('home');
+          return;
+        }
         this.tabService.ensureComponentsTab();
         this.activeTabId.set('components');
       },
       racks: () => {
+        if (!this.role.canViewInfrastructure()) {
+          this.activeTabId.set('home');
+          return;
+        }
         this.tabService.ensureRacksTab();
         this.activeTabId.set('racks');
       },

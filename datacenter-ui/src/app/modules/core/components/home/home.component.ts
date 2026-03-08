@@ -9,6 +9,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocationService } from '../../api/v1/api/location.service';
 import { Location as DjLocation } from '../../api/v1/model/location';
+import { RoleService } from '../../services/role.service';
 import { TabService } from '../../services/tab.service';
 import { HomeHeroComponent } from './home-hero/home-hero.component';
 import {
@@ -27,6 +28,7 @@ import { HomeStatsComponent } from './home-stats/home-stats.component';
 })
 export class HomeComponent implements OnInit {
   private readonly tabService = inject(TabService);
+  protected readonly role = inject(RoleService);
   private readonly locationService = inject(LocationService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
@@ -36,6 +38,11 @@ export class HomeComponent implements OnInit {
   loading = true;
 
   ngOnInit(): void {
+    if (!this.role.canViewInfrastructure()) {
+      this.loading = false;
+      return;
+    }
+
     this.locationService
       .locationLocationList({})
       .pipe(takeUntilDestroyed(this.destroyRef))

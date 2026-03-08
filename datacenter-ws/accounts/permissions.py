@@ -106,6 +106,34 @@ class CatalogResourcePermission(permissions.BasePermission):
         return False
 
 
+class AssetLookupPermission(permissions.BasePermission):
+    """
+    Permission for catalog lookup tables that are also consumed by the Assets
+    section (AssetType, AssetState).  These records need to be readable by
+    anyone who can see assets OR the catalog.
+    GET/HEAD/OPTIONS → can_view_assets OR can_view_catalog
+    POST             → can_create_catalog
+    PUT/PATCH        → can_edit_catalog
+    DELETE           → can_delete_catalog
+    """
+
+    def has_permission(self, request: Request, view) -> bool:
+        if not request.user or not request.user.is_authenticated:
+            return False
+        role = _get_role(request)
+        if role is None:
+            return False
+        if request.method in permissions.SAFE_METHODS:
+            return bool(role.can_view_assets) or bool(role.can_view_catalog)
+        if request.method == 'DELETE':
+            return bool(role.can_delete_catalog)
+        if request.method in ('PUT', 'PATCH'):
+            return bool(role.can_edit_catalog)
+        if request.method == 'POST':
+            return bool(role.can_create_catalog)
+        return False
+
+
 class ImportCatalogPermission(permissions.BasePermission):
     """Required for the asset-model CSV import view."""
 
