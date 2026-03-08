@@ -66,7 +66,7 @@
         </svg>
         {{ "assets.deselect_all" | translate }}
       </button>
-      @if (role.canImportExportAssets()) {
+      @if (role.canExportAssets()) {
         <button
           class="selection-action"
           (click)="exportRequested.emit()"
@@ -139,7 +139,12 @@
     <thead>
       <tr>
         <th class="col-check">
-          @if (role.canEditAssets() || role.canCloneAssets() || role.canImportExportAssets()) {
+          @if (
+            role.canEditAssets() ||
+            role.canCloneAssets() ||
+            role.canImportAssets() ||
+            role.canExportAssets()
+          ) {
             <input
               type="checkbox"
               class="row-check"
@@ -309,13 +314,19 @@
             <td
               class="col-check"
               (click)="
-                role.canEditAssets() || role.canCloneAssets() || role.canImportExportAssets()
+                role.canEditAssets() ||
+                role.canCloneAssets() ||
+                role.canImportAssets() ||
+                role.canExportAssets()
                   ? onSelectRow(asset.id, $event)
                   : null
               "
             >
               @if (
-                role.canEditAssets() || role.canCloneAssets() || role.canImportExportAssets()
+                role.canEditAssets() ||
+                role.canCloneAssets() ||
+                role.canImportAssets() ||
+                role.canExportAssets()
               ) {
                 <input
                   type="checkbox"

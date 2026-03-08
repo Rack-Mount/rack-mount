@@ -61,7 +61,7 @@ class RoleAdmin(admin.ModelAdmin):
             'fields': (
                 'can_view_assets',
                 ('can_create_assets', 'can_edit_assets', 'can_delete_assets'),
-                ('can_import_export_assets', 'can_clone_assets'),
+                ('can_import_assets', 'can_export_assets', 'can_clone_assets'),
             ),
         }),
         (_('Catalog'), {
@@ -102,7 +102,8 @@ class RoleAdmin(admin.ModelAdmin):
             ('create',       obj.can_create_assets),
             ('edit',         obj.can_edit_assets),
             ('delete',       obj.can_delete_assets),
-            ('import/export', obj.can_import_export_assets),
+            ('import', obj.can_import_assets),
+            ('export', obj.can_export_assets),
             ('clone',        obj.can_clone_assets),
         ])
 

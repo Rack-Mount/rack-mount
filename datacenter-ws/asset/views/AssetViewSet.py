@@ -13,7 +13,6 @@ from accounts.permissions import (
     AssetResourcePermission,
     CloneAssetPermission,
     EditAssetPermission,
-    ImportExportAssetsPermission,
 )
 
 

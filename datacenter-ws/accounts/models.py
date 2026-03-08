@@ -31,8 +31,10 @@ class Role(models.Model):
         default=False, verbose_name=_('Can edit assets'))
     can_delete_assets = models.BooleanField(
         default=False, verbose_name=_('Can delete assets'))
-    can_import_export_assets = models.BooleanField(
-        default=False, verbose_name=_('Can import/export assets'))
+    can_import_assets = models.BooleanField(
+        default=False, verbose_name=_('Can import assets'))
+    can_export_assets = models.BooleanField(
+        default=False, verbose_name=_('Can export assets'))
     can_clone_assets = models.BooleanField(
         default=False, verbose_name=_('Can clone assets'))
 

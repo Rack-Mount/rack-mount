@@ -69,14 +69,24 @@ class EditAssetPermission(permissions.BasePermission):
         return role is not None and bool(role.can_edit_assets)
 
 
-class ImportExportAssetsPermission(permissions.BasePermission):
-    """Required for asset CSV import and export views."""
+class ImportAssetsPermission(permissions.BasePermission):
+    """Required for the asset CSV import view."""
 
     def has_permission(self, request: Request, view) -> bool:
         if not request.user or not request.user.is_authenticated:
             return False
         role = _get_role(request)
-        return role is not None and bool(role.can_import_export_assets)
+        return role is not None and bool(role.can_import_assets)
+
+
+class ExportAssetsPermission(permissions.BasePermission):
+    """Required for the asset export view."""
+
+    def has_permission(self, request: Request, view) -> bool:
+        if not request.user or not request.user.is_authenticated:
+            return False
+        role = _get_role(request)
+        return role is not None and bool(role.can_export_assets)
 
 
 class CatalogResourcePermission(permissions.BasePermission):

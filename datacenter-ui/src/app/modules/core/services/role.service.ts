@@ -7,7 +7,8 @@ export interface RoleData {
   can_create_assets: boolean;
   can_edit_assets: boolean;
   can_delete_assets: boolean;
-  can_import_export_assets: boolean;
+  can_import_assets: boolean;
+  can_export_assets: boolean;
   can_clone_assets: boolean;
   // Catalog
   can_view_catalog: boolean;
@@ -48,8 +49,11 @@ export class RoleService {
   readonly canDeleteAssets = computed(
     () => this._role()?.can_delete_assets ?? false,
   );
-  readonly canImportExportAssets = computed(
-    () => this._role()?.can_import_export_assets ?? false,
+  readonly canImportAssets = computed(
+    () => this._role()?.can_import_assets ?? false,
+  );
+  readonly canExportAssets = computed(
+    () => this._role()?.can_export_assets ?? false,
   );
   readonly canCloneAssets = computed(
     () => this._role()?.can_clone_assets ?? false,

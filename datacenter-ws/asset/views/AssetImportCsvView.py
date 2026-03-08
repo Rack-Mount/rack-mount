@@ -37,7 +37,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.http import HttpResponse
-from accounts.permissions import ImportExportAssetsPermission
+from accounts.permissions import ImportAssetsPermission
 
 import csv
 import io
@@ -103,7 +103,7 @@ def _int_or_none(value: str, field_name: str) -> int | None:
 # ─────── View ─────────────────────────────────────────────────────────────────
 
 class AssetImportCsvView(APIView):
-    permission_classes = [IsAuthenticated, ImportExportAssetsPermission]
+    permission_classes = [IsAuthenticated, ImportAssetsPermission]
     parser_classes = [MultiPartParser]
 
     @extend_schema(

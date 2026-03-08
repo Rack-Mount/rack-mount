@@ -11,7 +11,7 @@ class RoleSerializer(serializers.ModelSerializer):
             'id', 'name',
             # Assets
             'can_view_assets', 'can_create_assets', 'can_edit_assets',
-            'can_delete_assets', 'can_import_export_assets', 'can_clone_assets',
+            'can_delete_assets', 'can_import_assets', 'can_export_assets', 'can_clone_assets',
             # Catalog
             'can_view_catalog', 'can_create_catalog', 'can_edit_catalog',
             'can_delete_catalog', 'can_import_catalog',
