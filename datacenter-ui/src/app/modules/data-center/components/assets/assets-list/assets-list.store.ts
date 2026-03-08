@@ -84,8 +84,17 @@ export class AssetsListStore {
   private static loadParams() {
     try {
       const raw = sessionStorage.getItem(AssetsListStore.SS_KEY);
-      if (raw) return JSON.parse(raw) as { search: string; stateId: number | null; typeId: number | null; page: number; ordering: string | null };
-    } catch { /* ignore */ }
+      if (raw)
+        return JSON.parse(raw) as {
+          search: string;
+          stateId: number | null;
+          typeId: number | null;
+          page: number;
+          ordering: string | null;
+        };
+    } catch {
+      /* ignore */
+    }
     return null;
   }
 
@@ -187,8 +196,13 @@ export class AssetsListStore {
     // Persist params to sessionStorage so they survive tab switches
     effect(() => {
       try {
-        sessionStorage.setItem(AssetsListStore.SS_KEY, JSON.stringify(this.params()));
-      } catch { /* ignore */ }
+        sessionStorage.setItem(
+          AssetsListStore.SS_KEY,
+          JSON.stringify(this.params()),
+        );
+      } catch {
+        /* ignore */
+      }
     });
 
     // Load filter options
