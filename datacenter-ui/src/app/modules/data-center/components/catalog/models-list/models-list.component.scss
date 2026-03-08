@@ -1191,3 +1191,275 @@ $text-muted: mx.$text-muted;
   font-size: 0.83rem;
   line-height: 1.55;
 }
+
+// ── Fullscreen image button ───────────────────────────────────────────────
+.btn-fullscreen-img {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition:
+    background 0.15s,
+    opacity 0.15s;
+  opacity: 0;
+  z-index: 5;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+  }
+}
+
+// Show fullscreen btn on hover for img-preview-wrap
+.img-preview-wrap:hover .btn-fullscreen-img,
+.preview-img-wrap:hover .btn-fullscreen-img {
+  opacity: 1;
+}
+
+.ports-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 8px;
+  background: $accent;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+  padding: 0 3px;
+  pointer-events: none;
+}
+
+// ── Preview image wrap (for hover-revealed button) ────────────────────────
+.preview-img-wrap {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+// ── Ports section in edit drawer ─────────────────────────────────────────
+.ports-section {
+  margin-top: 24px;
+  border-top: 1px solid $border;
+  padding-top: 16px;
+}
+
+.ports-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  h4 {
+    flex: 1;
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $text-primary;
+  }
+}
+
+.btn-ports-add {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: var(--dc-accent-dim, rgba(96, 165, 250, 0.12));
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  color: var(--dc-accent-text, #60a5fa);
+  cursor: pointer;
+  transition: background 0.15s;
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  &:hover {
+    background: $accent;
+    color: #fff;
+    border-color: $accent;
+  }
+}
+
+.ports-loading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: $text-muted;
+  padding: 6px 0;
+}
+
+.ports-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+
+  th {
+    text-align: left;
+    padding: 5px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $text-muted;
+    border-bottom: 1px solid $border;
+  }
+
+  td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: $text-primary;
+    vertical-align: middle;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background: rgba(255, 255, 255, 0.025);
+  }
+}
+
+.port-type-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(96, 165, 250, 0.12);
+  color: var(--dc-accent-text, #60a5fa);
+  border: 1px solid rgba(96, 165, 250, 0.25);
+}
+
+.port-side-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.06);
+  color: $text-secondary;
+  border: 1px solid $border;
+}
+
+.port-pos-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dc-success-text, #4ade80);
+  vertical-align: middle;
+}
+
+.btn-port-pick,
+.btn-port-edit,
+.btn-port-delete {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  border: 1px solid $border;
+  background: transparent;
+  color: $text-secondary;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition:
+    background 0.12s,
+    color 0.12s;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: $text-primary;
+  }
+}
+
+.btn-port-delete:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.port-form {
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid $border;
+  background: rgba(255, 255, 255, 0.025);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.port-form-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  .form-group {
+    flex: 1;
+    min-width: 100px;
+  }
+}
+
+.port-form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.ports-empty {
+  text-align: center;
+  color: $text-muted;
+  font-size: 0.82rem;
+  padding: 16px 0;
+}
+
+.port-delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  font-size: 0.8rem;
+  color: #f87171;
+  flex-wrap: wrap;
+
+  span {
+    flex: 1;
+  }
+}

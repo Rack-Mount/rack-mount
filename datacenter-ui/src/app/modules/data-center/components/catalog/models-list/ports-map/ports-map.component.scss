@@ -1,0 +1,257 @@
+:host {
+  display: contents;
+}
+
+// ── Overlay ────────────────────────────────────────────────────────────────
+
+.pm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pmFadeIn 150ms ease;
+}
+
+@keyframes pmFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ── Dialog ─────────────────────────────────────────────────────────────────
+
+.pm-dialog {
+  display: flex;
+  flex-direction: column;
+  max-width: min(1200px, 96vw);
+  max-height: 96dvh;
+  background: var(--dc-bg-panel, #1e1e2e);
+  border: 1px solid var(--dc-border, #313244);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+}
+
+// ── Header ─────────────────────────────────────────────────────────────────
+
+.pm-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--dc-border, #313244);
+  flex-shrink: 0;
+}
+
+.pm-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--dc-text, #cdd6f4);
+  flex: 1;
+}
+
+.pm-placing-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--dc-warning, #f9e2af);
+  background: rgba(249, 226, 175, 0.1);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(249, 226, 175, 0.25);
+}
+
+.pm-hint-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.pm-close {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--dc-border, #313244);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dc-text-muted, #6c7086);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 150ms,
+    background 150ms;
+
+  &:hover {
+    color: var(--dc-text, #cdd6f4);
+    background: var(--dc-bg-hover, #313244);
+  }
+}
+
+// ── Image canvas ───────────────────────────────────────────────────────────
+
+.pm-canvas {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 1;
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #111;
+
+  &--placing {
+    cursor: crosshair;
+  }
+}
+
+.pm-img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+// ── Port markers ───────────────────────────────────────────────────────────
+
+.pm-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  cursor: default;
+
+  &:hover,
+  &--hovered {
+    z-index: 20;
+  }
+}
+
+.pm-marker-dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--dc-accent, #89b4fa);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  transition:
+    transform 120ms,
+    background 120ms;
+
+  .pm-marker:hover &,
+  .pm-marker--hovered & {
+    transform: scale(1.4);
+    background: var(--dc-warning, #f9e2af);
+  }
+}
+
+.pm-marker-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--dc-bg-panel, #1e1e2e);
+  border: 1px solid var(--dc-border, #313244);
+  border-radius: 6px;
+  padding: 6px 10px;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--dc-text, #cdd6f4);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+
+  strong {
+    font-size: 13px;
+  }
+
+  span {
+    color: var(--dc-text-muted, #6c7086);
+    font-size: 11px;
+  }
+
+  .pm-marker-notes {
+    color: var(--dc-text, #cdd6f4);
+    font-style: italic;
+  }
+
+  .pm-marker:hover &,
+  .pm-marker--hovered & {
+    opacity: 1;
+  }
+}
+
+// ── Legend ─────────────────────────────────────────────────────────────────
+
+.pm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--dc-border, #313244);
+  background: var(--dc-bg, #181825);
+  max-height: 130px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.pm-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--dc-text, #cdd6f4);
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 120ms;
+
+  &--hovered {
+    background: var(--dc-bg-hover, #313244);
+  }
+
+  &--unpositioned {
+    opacity: 0.5;
+
+    .pm-legend-dot {
+      background: var(--dc-text-muted, #6c7086);
+    }
+  }
+}
+
+.pm-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dc-accent, #89b4fa);
+  flex-shrink: 0;
+}
+
+.pm-legend-name {
+  font-weight: 500;
+}
+
+.pm-legend-type {
+  color: var(--dc-text-muted, #6c7086);
+  font-size: 11px;
+}
+
+.pm-legend-no-pos {
+  color: var(--dc-text-muted, #6c7086);
+  font-size: 11px;
+  margin-left: 2px;
+}

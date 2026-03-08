@@ -5,6 +5,7 @@ from .Rack import Rack
 from .AssetState import AssetState
 from .AssetType import AssetType
 from .AssetModel import AssetModel
+from .AssetModelPort import AssetModelPort
 from .NetworkSwitchAssetModel import NetworkSwitchAssetModel
 from .Asset import Asset
 from .AssetCustomField import AssetCustomField
@@ -19,6 +20,7 @@ __all__ = [
     'AssetState',
     'AssetType',
     'AssetModel',
+    'AssetModelPort',
     'NetworkSwitchAssetModel',
     'Asset',
     'AssetCustomField',

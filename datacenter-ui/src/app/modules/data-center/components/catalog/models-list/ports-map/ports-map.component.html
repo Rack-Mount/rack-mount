@@ -1,0 +1,86 @@
+<div class="pm-overlay" (click)="closed.emit()">
+  <div class="pm-dialog" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="pm-header">
+      <span class="pm-title">{{ sideLabel() }}</span>
+      @if (isPlacingMode()) {
+        <span class="pm-placing-hint">
+          <svg viewBox="0 0 16 16" fill="none" class="pm-hint-icon">
+            <circle
+              cx="8"
+              cy="8"
+              r="5.5"
+              stroke="currentColor"
+              stroke-width="1.4"
+            />
+            <path
+              d="M8 5v3.5l2 2"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{ "models.ports_map_placing_hint" | translate }}
+        </span>
+      }
+      <button class="pm-close" (click)="closed.emit()">&#215;</button>
+    </div>
+
+    <!-- Image canvas -->
+    <div class="pm-canvas" [class.pm-canvas--placing]="isPlacingMode()">
+      <img
+        #imgEl
+        class="pm-img"
+        [src]="imageUrl()"
+        (click)="onImageClick($event)"
+        draggable="false"
+      />
+
+      <!-- Port markers -->
+      @for (port of positionedPorts(); track port.id) {
+        <div
+          class="pm-marker"
+          [class.pm-marker--hovered]="hoveredPortId() === port.id"
+          [style.left.%]="port.pos_x!"
+          [style.top.%]="port.pos_y!"
+          (mouseenter)="onPortHover(port.id)"
+          (mouseleave)="onPortHover(null)"
+          [title]="port.name + ' (' + portTypeLabel(port.port_type) + ')'"
+        >
+          <span class="pm-marker-dot"></span>
+          <div class="pm-marker-tooltip">
+            <strong>{{ port.name }}</strong>
+            <span>{{ portTypeLabel(port.port_type) }}</span>
+            @if (port.notes) {
+              <span class="pm-marker-notes">{{ port.notes }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Port legend (below image) -->
+    @if (ports().length > 0) {
+      <div class="pm-legend">
+        @for (port of ports(); track port.id) {
+          <div
+            class="pm-legend-item"
+            [class.pm-legend-item--hovered]="hoveredPortId() === port.id"
+            [class.pm-legend-item--unpositioned]="port.pos_x === null"
+            (mouseenter)="onPortHover(port.id)"
+            (mouseleave)="onPortHover(null)"
+          >
+            <span class="pm-legend-dot"></span>
+            <span class="pm-legend-name">{{ port.name }}</span>
+            <span class="pm-legend-type">{{
+              portTypeLabel(port.port_type)
+            }}</span>
+            @if (port.pos_x === null) {
+              <span class="pm-legend-no-pos">—</span>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

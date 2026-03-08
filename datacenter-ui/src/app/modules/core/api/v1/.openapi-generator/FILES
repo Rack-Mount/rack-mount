@@ -19,6 +19,7 @@ model/assetCatalogImportCreateRequest.ts
 model/assetCatalogImportCreateRequestVendorsInner.ts
 model/assetCustomField.ts
 model/assetModel.ts
+model/assetModelPort.ts
 model/assetRack.ts
 model/assetState.ts
 model/assetType.ts
@@ -34,6 +35,7 @@ model/nameEnum.ts
 model/paginatedAssetCustomFieldList.ts
 model/paginatedAssetList.ts
 model/paginatedAssetModelList.ts
+model/paginatedAssetModelPortList.ts
 model/paginatedAssetStateList.ts
 model/paginatedAssetTypeList.ts
 model/paginatedGenericComponentList.ts
@@ -48,6 +50,7 @@ model/paginatedVendorList.ts
 model/patchedAsset.ts
 model/patchedAssetCustomField.ts
 model/patchedAssetModel.ts
+model/patchedAssetModelPort.ts
 model/patchedAssetState.ts
 model/patchedAssetType.ts
 model/patchedGenericComponent.ts
@@ -59,12 +62,14 @@ model/patchedRackUnit.ts
 model/patchedRoom.ts
 model/patchedUserUpdate.ts
 model/patchedVendor.ts
+model/portTypeEnum.ts
 model/rack.ts
 model/rackType.ts
 model/rackUnit.ts
 model/role.ts
 model/room.ts
 model/roomTypeEnum.ts
+model/sideEnum.ts
 model/tokenObtainPair.ts
 model/tokenRefresh.ts
 model/userCreate.ts

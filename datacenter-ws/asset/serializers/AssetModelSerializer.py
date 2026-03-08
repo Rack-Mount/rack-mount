@@ -2,7 +2,9 @@ from rest_framework import serializers
 from asset.models import AssetModel
 from asset.models.Vendor import Vendor
 from asset.models.AssetType import AssetType
+from asset.models.AssetModelPort import AssetModelPort
 from asset.serializers import VendorSerializer, AssetTypeSerializer
+from asset.serializers.AssetModelPortSerializer import AssetModelPortSerializer
 
 
 class AssetModelSerializer(serializers.ModelSerializer):
@@ -34,6 +36,8 @@ class AssetModelSerializer(serializers.ModelSerializer):
     rear_image_transform = serializers.CharField(
         write_only=True, required=False, allow_blank=True, default=''
     )
+    ports = AssetModelPortSerializer(
+        source='network_ports', many=True, read_only=True)
 
     class Meta:
         model = AssetModel
@@ -51,5 +55,6 @@ class AssetModelSerializer(serializers.ModelSerializer):
             'rear_image',
             'rear_image_transform',
             'note',
+            'ports',
         ]
         read_only_fields = ['uuid']

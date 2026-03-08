@@ -676,12 +676,32 @@
                 <span class="preview-img-label">{{
                   "models.preview_front" | translate
                 }}</span>
-                <img
-                  class="preview-img"
-                  [src]="imgW(m.front_image, 640)"
-                  [attr.alt]="'models.front' | translate"
-                  loading="lazy"
-                />
+                <div class="preview-img-wrap">
+                  <img
+                    class="preview-img"
+                    [src]="imgW(m.front_image, 640)"
+                    [attr.alt]="'models.front' | translate"
+                    loading="lazy"
+                  />
+                  <button
+                    class="btn-fullscreen-img"
+                    type="button"
+                    [title]="'models.ports_map_open' | translate"
+                    (click)="openPortsMap('front', m.front_image!, true)"
+                  >
+                    <svg viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M2 2h4M2 2v4M14 2h-4M14 2v4M2 14h4M2 14v-4M14 14h-4M14 14v-4"
+                        stroke="currentColor"
+                        stroke-width="1.4"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    @if (m.ports.length) {
+                      <span class="ports-badge">{{ m.ports.length }}</span>
+                    }
+                  </button>
+                </div>
               </div>
             }
             @if (m.rear_image) {
@@ -689,12 +709,32 @@
                 <span class="preview-img-label">{{
                   "models.preview_rear" | translate
                 }}</span>
-                <img
-                  class="preview-img"
-                  [src]="imgW(m.rear_image, 640)"
-                  [attr.alt]="'models.rear' | translate"
-                  loading="lazy"
-                />
+                <div class="preview-img-wrap">
+                  <img
+                    class="preview-img"
+                    [src]="imgW(m.rear_image, 640)"
+                    [attr.alt]="'models.rear' | translate"
+                    loading="lazy"
+                  />
+                  <button
+                    class="btn-fullscreen-img"
+                    type="button"
+                    [title]="'models.ports_map_open' | translate"
+                    (click)="openPortsMap('rear', m.rear_image!, true)"
+                  >
+                    <svg viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M2 2h4M2 2v4M14 2h-4M14 2v4M2 14h4M2 14v-4M14 14h-4M14 14v-4"
+                        stroke="currentColor"
+                        stroke-width="1.4"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    @if (m.ports.length) {
+                      <span class="ports-badge">{{ m.ports.length }}</span>
+                    }
+                  </button>
+                </div>
               </div>
             }
           </div>
@@ -909,6 +949,28 @@
                   <span class="transform-dot"></span>
                 }
               </button>
+              @if (drawerEditId()) {
+                <button
+                  class="btn-fullscreen-img"
+                  type="button"
+                  [title]="'models.ports_map_open' | translate"
+                  (click)="
+                    openPortsMap('front', form().front_image_url! || '', false)
+                  "
+                >
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M2 2h4M2 2v4M14 2h-4M14 2v4M2 14h4M2 14v-4M14 14h-4M14 14v-4"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  @if (frontPorts().length) {
+                    <span class="ports-badge">{{ frontPorts().length }}</span>
+                  }
+                </button>
+              }
               <button
                 class="img-clear-btn"
                 type="button"
@@ -983,6 +1045,28 @@
                   <span class="transform-dot"></span>
                 }
               </button>
+              @if (drawerEditId()) {
+                <button
+                  class="btn-fullscreen-img"
+                  type="button"
+                  [title]="'models.ports_map_open' | translate"
+                  (click)="
+                    openPortsMap('rear', form().rear_image_url! || '', false)
+                  "
+                >
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M2 2h4M2 2v4M14 2h-4M14 2v4M2 14h4M2 14v-4M14 14h-4M14 14v-4"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  @if (rearPorts().length) {
+                    <span class="ports-badge">{{ rearPorts().length }}</span>
+                  }
+                </button>
+              }
               <button
                 class="img-clear-btn"
                 type="button"
@@ -1020,6 +1104,285 @@
             />
           </label>
         </div>
+
+        <!-- ── Network ports (edit mode only) ──────────────────── -->
+        @if (drawerEditId()) {
+          <div class="field ports-section">
+            <div class="ports-header">
+              <span class="field-label">{{
+                "models.ports_section" | translate
+              }}</span>
+              @if (portsLoading()) {
+                <span class="spinner-xs"></span>
+              }
+              @if (role.canEditCatalog()) {
+                <button
+                  class="btn-ports-add"
+                  type="button"
+                  (click)="openPortCreate()"
+                >
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M8 3v10M3 8h10"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  {{ "models.ports_add" | translate }}
+                </button>
+              }
+            </div>
+
+            @if (ports().length > 0) {
+              <table class="ports-table">
+                <thead>
+                  <tr>
+                    <th>{{ "models.ports_col_name" | translate }}</th>
+                    <th>{{ "models.ports_col_type" | translate }}</th>
+                    <th>{{ "models.ports_col_side" | translate }}</th>
+                    <th>{{ "models.ports_col_pos" | translate }}</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (p of ports(); track p.id) {
+                    <tr [class.ports-row--deleting]="portDeleteId() === p.id">
+                      <td class="port-cell-name">{{ p.name }}</td>
+                      <td class="port-cell-type">
+                        <span class="port-type-badge">{{
+                          portTypeLabel(p.port_type)
+                        }}</span>
+                      </td>
+                      <td class="port-cell-side">
+                        <span
+                          class="port-side-badge"
+                          [class.port-side-badge--front]="p.side === 'front'"
+                          [class.port-side-badge--rear]="p.side === 'rear'"
+                        >
+                          {{
+                            p.side === "front"
+                              ? ("models.ports_front" | translate)
+                              : ("models.ports_rear" | translate)
+                          }}
+                        </span>
+                      </td>
+                      <td class="port-cell-pos">
+                        @if (p.pos_x !== null) {
+                          <span
+                            class="port-pos-dot"
+                            [title]="p.pos_x + '%, ' + p.pos_y + '%'"
+                          ></span>
+                          @if (role.canEditCatalog()) {
+                            <button
+                              class="btn-port-clear-pos"
+                              type="button"
+                              [title]="'models.ports_clear_pos' | translate"
+                              (click)="clearPortPosition(p.id)"
+                            >
+                              ×
+                            </button>
+                          }
+                        } @else {
+                          <span class="port-no-pos">—</span>
+                          @if (role.canEditCatalog()) {
+                            <button
+                              class="btn-port-pick"
+                              type="button"
+                              [title]="'models.ports_pick_pos' | translate"
+                              (click)="
+                                openPortsMap(
+                                  p.side,
+                                  p.side === 'front'
+                                    ? form().front_image_url || ''
+                                    : form().rear_image_url || '',
+                                  false
+                                );
+                                startPlacingPort(p.id)
+                              "
+                            >
+                              <svg viewBox="0 0 16 16" fill="none">
+                                <circle
+                                  cx="8"
+                                  cy="8"
+                                  r="3"
+                                  stroke="currentColor"
+                                  stroke-width="1.4"
+                                />
+                                <path
+                                  d="M8 1v2M8 13v2M1 8h2M13 8h2"
+                                  stroke="currentColor"
+                                  stroke-width="1.4"
+                                  stroke-linecap="round"
+                                />
+                              </svg>
+                            </button>
+                          }
+                        }
+                      </td>
+                      <td class="port-cell-actions">
+                        @if (portDeleteId() === p.id) {
+                          <div class="port-delete-confirm">
+                            <button
+                              class="btn-confirm btn-confirm--danger"
+                              [disabled]="portDeleteState() === 'saving'"
+                              (click)="submitDeletePort()"
+                            >
+                              @if (portDeleteState() === "saving") {
+                                …
+                              } @else {
+                                {{ "common.delete" | translate }}
+                              }
+                            </button>
+                            <button
+                              class="btn-confirm"
+                              (click)="cancelDeletePort()"
+                            >
+                              {{ "common.cancel" | translate }}
+                            </button>
+                          </div>
+                        } @else {
+                          @if (role.canEditCatalog()) {
+                            <button
+                              class="btn-port-edit"
+                              type="button"
+                              (click)="openPortEdit(p)"
+                            >
+                              <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                  d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                                  stroke="currentColor"
+                                  stroke-width="1.4"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </button>
+                          }
+                          @if (role.canDeleteCatalog()) {
+                            <button
+                              class="btn-port-delete"
+                              type="button"
+                              (click)="confirmDeletePort(p.id)"
+                            >
+                              <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                  d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                                  stroke="currentColor"
+                                  stroke-width="1.4"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </button>
+                          }
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else if (!portsLoading()) {
+              <p class="ports-empty">{{ "models.ports_empty" | translate }}</p>
+            }
+
+            <!-- Port inline form -->
+            @if (portFormOpen()) {
+              <div class="port-form">
+                <div class="port-form-row">
+                  <label class="port-form-field">
+                    <span class="port-form-label"
+                      >{{ "models.ports_col_name" | translate }}
+                      <span class="req">*</span></span
+                    >
+                    <input
+                      class="field-input"
+                      type="text"
+                      [value]="portForm().name"
+                      (input)="setPortField('name', $any($event.target).value)"
+                    />
+                  </label>
+                  <label class="port-form-field">
+                    <span class="port-form-label">{{
+                      "models.ports_col_type" | translate
+                    }}</span>
+                    <select
+                      class="field-input"
+                      [value]="portForm().port_type"
+                      (change)="
+                        setPortField('port_type', $any($event.target).value)
+                      "
+                    >
+                      @for (t of portTypes; track t.value) {
+                        <option
+                          [value]="t.value"
+                          [selected]="portForm().port_type === t.value"
+                        >
+                          {{ t.label }}
+                        </option>
+                      }
+                    </select>
+                  </label>
+                  <label class="port-form-field">
+                    <span class="port-form-label">{{
+                      "models.ports_col_side" | translate
+                    }}</span>
+                    <select
+                      class="field-input"
+                      [value]="portForm().side"
+                      (change)="setPortField('side', $any($event.target).value)"
+                    >
+                      <option value="front">
+                        {{ "models.ports_front" | translate }}
+                      </option>
+                      <option value="rear">
+                        {{ "models.ports_rear" | translate }}
+                      </option>
+                    </select>
+                  </label>
+                </div>
+                <label class="port-form-field">
+                  <span class="port-form-label">{{
+                    "models.ports_col_notes" | translate
+                  }}</span>
+                  <input
+                    class="field-input"
+                    type="text"
+                    [value]="portForm().notes"
+                    (input)="setPortField('notes', $any($event.target).value)"
+                  />
+                </label>
+                <div class="port-form-actions">
+                  @if (portSaveState() === "error") {
+                    <span class="port-save-error">{{
+                      "common.error" | translate
+                    }}</span>
+                  }
+                  <button
+                    class="btn-cancel"
+                    type="button"
+                    (click)="portFormOpen.set(false)"
+                  >
+                    {{ "common.cancel" | translate }}
+                  </button>
+                  <button
+                    class="btn-save"
+                    type="button"
+                    [disabled]="
+                      !portForm().name.trim() || portSaveState() === 'saving'
+                    "
+                    (click)="submitPortForm()"
+                  >
+                    @if (portSaveState() === "saving") {
+                      …
+                    } @else {
+                      {{ "common.save" | translate }}
+                    }
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
 
         @if (drawerSave() === "error") {
           <div class="save-error">{{ drawerSaveMsg() }}</div>
@@ -1076,3 +1439,18 @@
     </aside>
   }
 </div>
+
+@if (portsMapOpen(); as pm) {
+  <app-ports-map
+    [imageUrl]="pm.imageUrl"
+    [sideLabel]="
+      pm.side === 'front'
+        ? ('models.preview_front' | translate)
+        : ('models.preview_rear' | translate)
+    "
+    [ports]="portsForMap()"
+    [placingPortId]="placingPortId()"
+    (portPicked)="onPortPicked($event)"
+    (closed)="closePortsMap()"
+  />
+}

@@ -8,6 +8,7 @@
  * Do not edit the class manually.
  */
 import { AssetType } from './assetType';
+import { AssetModelPort } from './assetModelPort';
 import { Vendor } from './vendor';
 
 
@@ -28,5 +29,6 @@ export interface PatchedAssetModel {
     rear_image?: string | null;
     rear_image_transform?: string;
     note?: string;
+    ports?: Array<AssetModelPort>;
 }
 

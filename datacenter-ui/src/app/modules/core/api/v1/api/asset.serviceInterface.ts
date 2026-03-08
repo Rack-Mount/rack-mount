@@ -16,12 +16,14 @@ import { AssetAssetModelImportCreateRequest } from '../model/models';
 import { AssetCatalogImportCreateRequest } from '../model/models';
 import { AssetCustomField } from '../model/models';
 import { AssetModel } from '../model/models';
+import { AssetModelPort } from '../model/models';
 import { AssetState } from '../model/models';
 import { AssetType } from '../model/models';
 import { GenericComponent } from '../model/models';
 import { PaginatedAssetCustomFieldList } from '../model/models';
 import { PaginatedAssetList } from '../model/models';
 import { PaginatedAssetModelList } from '../model/models';
+import { PaginatedAssetModelPortList } from '../model/models';
 import { PaginatedAssetStateList } from '../model/models';
 import { PaginatedAssetTypeList } from '../model/models';
 import { PaginatedGenericComponentList } from '../model/models';
@@ -32,6 +34,7 @@ import { PaginatedVendorList } from '../model/models';
 import { PatchedAsset } from '../model/models';
 import { PatchedAssetCustomField } from '../model/models';
 import { PatchedAssetModel } from '../model/models';
+import { PatchedAssetModelPort } from '../model/models';
 import { PatchedAssetState } from '../model/models';
 import { PatchedAssetType } from '../model/models';
 import { PatchedGenericComponent } from '../model/models';
@@ -152,6 +155,35 @@ export interface AssetAssetModelListRequestParams {
 export interface AssetAssetModelPartialUpdateRequestParams {
     id: number;
     patchedAssetModel?: PatchedAssetModel;
+}
+
+export interface AssetAssetModelPortCreateRequestParams {
+    assetModelPort: AssetModelPort;
+}
+
+export interface AssetAssetModelPortDestroyRequestParams {
+    id: number;
+}
+
+export interface AssetAssetModelPortListRequestParams {
+    assetModel?: number;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+}
+
+export interface AssetAssetModelPortPartialUpdateRequestParams {
+    id: number;
+    patchedAssetModelPort?: PatchedAssetModelPort;
+}
+
+export interface AssetAssetModelPortRetrieveRequestParams {
+    id: number;
+}
+
+export interface AssetAssetModelPortUpdateRequestParams {
+    id: number;
+    assetModelPort: AssetModelPort;
 }
 
 export interface AssetAssetModelRetrieveRequestParams {
@@ -573,6 +605,54 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetAssetModelPartialUpdate(requestParameters: AssetAssetModelPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
+
+    /**
+     * 
+     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * @endpoint post /asset/asset_model_port
+* @param requestParameters
+     */
+    assetAssetModelPortCreate(requestParameters: AssetAssetModelPortCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetModelPort>;
+
+    /**
+     * 
+     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * @endpoint delete /asset/asset_model_port/{id}
+* @param requestParameters
+     */
+    assetAssetModelPortDestroy(requestParameters: AssetAssetModelPortDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * @endpoint get /asset/asset_model_port
+* @param requestParameters
+     */
+    assetAssetModelPortList(requestParameters: AssetAssetModelPortListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedAssetModelPortList>;
+
+    /**
+     * 
+     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * @endpoint patch /asset/asset_model_port/{id}
+* @param requestParameters
+     */
+    assetAssetModelPortPartialUpdate(requestParameters: AssetAssetModelPortPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<AssetModelPort>;
+
+    /**
+     * 
+     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * @endpoint get /asset/asset_model_port/{id}
+* @param requestParameters
+     */
+    assetAssetModelPortRetrieve(requestParameters: AssetAssetModelPortRetrieveRequestParams, extraHttpRequestParams?: any): Observable<AssetModelPort>;
+
+    /**
+     * 
+     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * @endpoint put /asset/asset_model_port/{id}
+* @param requestParameters
+     */
+    assetAssetModelPortUpdate(requestParameters: AssetAssetModelPortUpdateRequestParams, extraHttpRequestParams?: any): Observable<AssetModelPort>;
 
     /**
      * 
