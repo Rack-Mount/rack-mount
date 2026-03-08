@@ -8,6 +8,7 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { Asset } from '../../../../../core/api/v1';
 import { RoleService } from '../../../../../core/services/role.service';
+import { formatDate } from '../assets-list-utils';
 
 @Component({
   selector: 'app-asset-row-detail',
@@ -59,12 +60,5 @@ export class AssetRowDetailComponent {
     this.deleteCancelled.emit();
   }
 
-  protected formatDate(iso: string | null | undefined): string {
-    if (!iso) return '—';
-    return new Intl.DateTimeFormat('it-IT', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(new Date(iso));
-  }
+  protected readonly formatDate = formatDate;
 }

@@ -1,0 +1,18 @@
+@use "styles/mixins" as mx;
+
+:host {
+  display: contents;
+}
+
+.pagination {
+  @include mx.pagination();
+}
+
+.page-btn {
+  @include mx.page-btn();
+}
+
+.page-info {
+  font-size: 0.8rem;
+  color: var(--dc-text-secondary);
+}

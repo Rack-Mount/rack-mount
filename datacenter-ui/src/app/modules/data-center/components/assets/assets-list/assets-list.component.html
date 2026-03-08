@@ -1,111 +1,75 @@
 <div class="assets-page">
   <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
   <app-assets-toolbar
-    [params]="filterParams()"
-    [availableStates]="availableStates()"
-    [availableTypes]="availableTypes()"
-    [totalCount]="listState().status === 'loaded' ? totalCount() : null"
-    [importCsvState]="importCsvState()"
-    [importCsvSummary]="importCsvSummary()"
-    [importCsvErrors]="importCsvErrors()"
-    [importCsvRows]="importCsvRows()"
-    (searchChange)="onSearchInput($event)"
-    (stateFilterChange)="onStateFilter($event)"
-    (typeFilterChange)="onTypeFilter($event)"
-    (filtersReset)="resetFilters()"
-    (newClick)="openCreateDrawer()"
-    (importCsvFile)="onImportCsvFile($event)"
-    (importCsvDismiss)="onImportCsvDismiss()"
+    [params]="store.filterParams()"
+    [availableStates]="store.availableStates()"
+    [availableTypes]="store.availableTypes()"
+    [totalCount]="
+      store.listState().status === 'loaded' ? store.totalCount() : null
+    "
+    [importCsvState]="store.importCsvState()"
+    [importCsvSummary]="store.importCsvSummary()"
+    [importCsvErrors]="store.importCsvErrors()"
+    [importCsvRows]="store.importCsvRows()"
+    (searchChange)="store.onSearchInput($event)"
+    (stateFilterChange)="store.onStateFilter($event)"
+    (typeFilterChange)="store.onTypeFilter($event)"
+    (filtersReset)="store.resetFilters()"
+    (newClick)="store.openCreateDrawer()"
+    (importCsvFile)="store.onImportCsvFile($event)"
+    (importCsvDismiss)="store.onImportCsvDismiss()"
   />
 
   <!-- ── Table + selection bar + pagination ─────────────────────────────── -->
-  <app-assets-table
-    [listState]="listState()"
-    [availableStates]="availableStates()"
-    [sortField]="sortField()"
-    [sortDir]="sortDir()"
-    [selectedIds]="selectedIds()"
-    [selectAllPages]="selectAllPages()"
-    [isAllSelected]="isAllSelected()"
-    [isSomeSelected]="isSomeSelected()"
-    [canSelectAllPages]="canSelectAllPages()"
-    [selectedCount]="selectedCount()"
-    [totalCount]="totalCount()"
-    [bulkEditState]="bulkEditState()"
-    [bulkDeleteState]="bulkDeleteState()"
-    [expandedId]="expandedId()"
-    [totalPages]="totalPages()"
-    [startIndex]="startIndex()"
-    [endIndex]="endIndex()"
-    [currentPage]="params().page"
-    [deleteConfirmId]="deleteConfirmId()"
-    [deleteSaveState]="deleteSaveState()"
-    [cloneInProgressId]="cloneInProgressId()"
-    [today]="today"
-    (sortChange)="sortBy($event)"
-    (expandToggle)="toggleExpand($event)"
-    (selectAllToggle)="toggleSelectAll()"
-    (selectRowToggle)="toggleSelectRow($event)"
-    (selectionCleared)="clearSelection()"
-    (allPagesSelected)="selectAcrossAllPages()"
-    (statePickerOpen)="onStatePickerOpen($event)"
-    (editRequested)="openEditDrawer($event)"
-    (deleteRequested)="requestDelete($event)"
-    (deleteConfirmed)="confirmDelete($event)"
-    (deleteCancelled)="cancelDelete()"
-    (cloneRequested)="cloneAsset($event)"
-    (bulkCloneRequested)="bulkCloneSelected()"
-    (bulkPickerOpen)="onBulkPickerOpen($event)"
-    (bulkDeleteClicked)="onBulkDeleteClicked()"
-    (bulkDeleteConfirmed)="onBulkDeleteConfirmed()"
-    (bulkDeleteCancelled)="onBulkDeleteCancelled()"
-    (pageChange)="goToPage($event)"
-    (exportRequested)="exportToExcel(true)"
-    (retryLoad)="resetFilters()"
-  />
+  <app-assets-table />
 </div>
 
-<!-- ── State picker overlay ────────────────────────────────────────────────── -->
-@if (statePickerAssetId() !== null) {
-  <app-asset-state-picker
-    [states]="availableStates()"
-    [x]="statePickerX()"
-    [y]="statePickerY()"
-    [editState]="stateEditState()"
-    (picked)="pickState($event)"
-    (closed)="closeStatePicker()"
-  />
+<!-- ── Overlays — deferred until first use (separate lazy chunk) ─────────── -->
+@defer (
+  when store.statePickerAssetId() !== null || store.bulkPickerOpen();
+  on idle
+) {
+  @if (store.statePickerAssetId() !== null) {
+    <app-asset-state-picker
+      [states]="store.availableStates()"
+      [x]="store.statePickerX()"
+      [y]="store.statePickerY()"
+      [editState]="store.stateEditState()"
+      (picked)="store.pickState($event)"
+      (closed)="store.closeStatePicker()"
+    />
+  }
+  @if (store.bulkPickerOpen()) {
+    <app-asset-state-picker
+      [states]="store.availableStates()"
+      [x]="store.bulkPickerX()"
+      [y]="store.bulkPickerY()"
+      [editState]="store.bulkEditState()"
+      [bulkCount]="store.selectedCount()"
+      (picked)="store.bulkPickState($event)"
+      (closed)="store.closeBulkPicker()"
+    />
+  }
 }
 
-<!-- ── Create asset drawer ──────────────────────────────────────────────────── -->
-@if (createDrawerOpen()) {
-  <app-asset-create-drawer
-    [availableStates]="availableStates()"
-    (saved)="onDrawerSaved()"
-    (cancelled)="closeCreateDrawer()"
-  />
-}
-
-<!-- ── Edit asset drawer ────────────────────────────────────────────────────── -->
-@if (editingAsset() !== null) {
-  <app-asset-create-drawer
-    mode="edit"
-    [editAsset]="editingAsset()"
-    [availableStates]="availableStates()"
-    (saved)="onEditSaved()"
-    (cancelled)="closeEditDrawer()"
-  />
-}
-
-<!-- ── Bulk state picker overlay ────────────────────────────────────────────── -->
-@if (bulkPickerOpen()) {
-  <app-asset-state-picker
-    [states]="availableStates()"
-    [x]="bulkPickerX()"
-    [y]="bulkPickerY()"
-    [editState]="bulkEditState()"
-    [bulkCount]="selectedCount()"
-    (picked)="bulkPickState($event)"
-    (closed)="closeBulkPicker()"
-  />
+@defer (
+  when store.createDrawerOpen() || store.editingAsset() !== null;
+  on idle
+) {
+  @if (store.createDrawerOpen()) {
+    <app-asset-create-drawer
+      [availableStates]="store.availableStates()"
+      (saved)="store.onDrawerSaved()"
+      (cancelled)="store.closeCreateDrawer()"
+    />
+  }
+  @if (store.editingAsset() !== null) {
+    <app-asset-create-drawer
+      mode="edit"
+      [editAsset]="store.editingAsset()"
+      [availableStates]="store.availableStates()"
+      (saved)="store.onEditSaved()"
+      (cancelled)="store.closeEditDrawer()"
+    />
+  }
 }

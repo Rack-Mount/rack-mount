@@ -1,0 +1,192 @@
+@if (store.selectedCount() > 0) {
+  <div class="selection-bar">
+    <span class="selection-count">{{
+      "assets.selected" | translate: { count: (store.selectedCount() | number) }
+    }}</span>
+
+    @if (store.canSelectAllPages()) {
+      <span class="select-all-banner">
+        {{
+          "assets.select_all_msg"
+            | translate: { page: store.selectedIds().size }
+        }}
+        <button class="select-all-link" (click)="store.selectAcrossAllPages()">
+          {{
+            "assets.select_all_link"
+              | translate: { count: (store.totalCount() | number) }
+          }}
+        </button>
+      </span>
+    }
+    @if (store.selectAllPages()) {
+      <span class="select-all-banner select-all-banner--active">
+        {{
+          "assets.all_selected_msg"
+            | translate: { count: (store.totalCount() | number) }
+        }}
+      </span>
+    }
+
+    <div class="selection-actions">
+      @if (role.canEditAssets()) {
+        <button
+          class="selection-action selection-action--primary"
+          [class.is-saving]="store.bulkEditState() === 'saving'"
+          [disabled]="store.bulkEditState() === 'saving'"
+          (click)="openBulkPicker($event)"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <circle
+              cx="8"
+              cy="8"
+              r="5"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <path
+              d="M8 5v3l2 1"
+              stroke="currentColor"
+              stroke-width="1.3"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{
+            store.bulkEditState() === "saving"
+              ? ("assets.saving_state" | translate)
+              : ("assets.change_state" | translate)
+          }}
+        </button>
+      }
+
+      <button class="selection-action" (click)="store.clearSelection()">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path
+            d="M12 4L4 12M4 4l8 8"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{ "assets.deselect_all" | translate }}
+      </button>
+
+      @if (role.canExportAssets()) {
+        <button
+          class="selection-action"
+          (click)="store.exportToExcel(true)"
+          [title]="'assets.export_selected_title' | translate"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect
+              x="2"
+              y="1"
+              width="9"
+              height="12"
+              rx="1"
+              stroke="currentColor"
+              stroke-width="1.3"
+            />
+            <path
+              d="M5 5h5M5 7.5h5M5 10h3"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M11 9v5m0 0l-1.5-1.5M11 14l1.5-1.5"
+              stroke="currentColor"
+              stroke-width="1.3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          {{ "assets.export_excel" | translate }}
+        </button>
+      }
+
+      @if (role.canCloneAssets()) {
+        <button
+          class="selection-action"
+          (click)="store.bulkCloneSelected()"
+          [title]="'assets.clone_selected_title' | translate"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect
+              x="5"
+              y="1"
+              width="9"
+              height="11"
+              rx="1.5"
+              stroke="currentColor"
+              stroke-width="1.3"
+            />
+            <rect
+              x="2"
+              y="4"
+              width="9"
+              height="11"
+              rx="1.5"
+              stroke="currentColor"
+              stroke-width="1.3"
+              fill="var(--dc-bg-panel, #1e1e2e)"
+            />
+          </svg>
+          {{ "assets.clone_selected" | translate }}
+        </button>
+      }
+
+      @if (role.canDeleteAssets()) {
+        @if (
+          store.bulkDeleteState() === "confirm" ||
+          store.bulkDeleteState() === "saving"
+        ) {
+          <span class="bulk-delete-confirm">{{
+            "assets.bulk_delete_confirm"
+              | translate: { count: store.selectedCount() }
+          }}</span>
+          <button
+            class="selection-action selection-action--danger"
+            [class.is-saving]="store.bulkDeleteState() === 'saving'"
+            [disabled]="store.bulkDeleteState() === 'saving'"
+            (click)="store.onBulkDeleteConfirmed()"
+          >
+            {{
+              store.bulkDeleteState() === "saving"
+                ? ("assets.bulk_delete_saving" | translate)
+                : ("assets.bulk_delete_ok" | translate)
+            }}
+          </button>
+          <button
+            class="selection-action"
+            [disabled]="store.bulkDeleteState() === 'saving'"
+            (click)="store.onBulkDeleteCancelled()"
+          >
+            {{ "assets.bulk_delete_cancel" | translate }}
+          </button>
+        } @else {
+          <button
+            class="selection-action selection-action--danger"
+            [title]="'assets.delete_selected_title' | translate"
+            (click)="store.onBulkDeleteClicked()"
+          >
+            <svg viewBox="0 0 16 16" fill="none">
+              <path
+                d="M3 5h10M6 5V3h4v2M6 8v4M10 8v4M4.5 5l.5 8h6l.5-8"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            {{ "assets.delete_selected" | translate }}
+          </button>
+        }
+        @if (store.bulkDeleteState() === "error") {
+          <span class="bulk-delete-error">{{
+            "assets.bulk_delete_error" | translate
+          }}</span>
+        }
+      }
+    </div>
+  </div>
+}

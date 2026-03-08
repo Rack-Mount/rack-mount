@@ -1,0 +1,26 @@
+@if (store.totalPages() > 1) {
+  <div class="pagination">
+    <button
+      class="page-btn"
+      [disabled]="store.params().page === 1"
+      (click)="store.goToPage(store.params().page - 1)"
+      [title]="'assets.prev_page' | translate"
+    >
+      ‹
+    </button>
+
+    <span class="page-info">
+      {{ store.startIndex() }}–{{ store.endIndex() }} di
+      {{ store.totalCount() | number }}
+    </span>
+
+    <button
+      class="page-btn"
+      [disabled]="store.params().page === store.totalPages()"
+      (click)="store.goToPage(store.params().page + 1)"
+      [title]="'assets.next_page' | translate"
+    >
+      ›
+    </button>
+  </div>
+}
