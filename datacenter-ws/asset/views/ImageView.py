@@ -26,11 +26,11 @@ class ImageView(APIView):
     throttle_classes = []  # Static file serving — no rate limit
 
     def get(self, request, filename):
-        media_root = os.path.abspath(settings.MEDIA_ROOT)
-        original_path = os.path.normpath(os.path.join(media_root, filename))
+        media_root = os.path.realpath(settings.MEDIA_ROOT)
+        original_path = os.path.realpath(os.path.join(media_root, filename))
 
         # Security: disallow path traversal outside MEDIA_ROOT
-        if not original_path.startswith(os.path.abspath(media_root)):
+        if os.path.commonpath([media_root, original_path]) != media_root:
             raise Http404
 
         if not os.path.isfile(original_path):
