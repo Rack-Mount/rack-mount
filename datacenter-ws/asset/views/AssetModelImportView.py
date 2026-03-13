@@ -200,14 +200,20 @@ class AssetModelImportView(APIView):
         if front_raw:
             try:
                 instance.front_image = _decode_image(front_raw, 'front_image')
-            except ValueError:
-                return Response({'front_image': _('Invalid image data.')}, status=status.HTTP_400_BAD_REQUEST)
+            except ValueError as exc:
+                return Response(
+                    {'front_image': _('Invalid front image data.')},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         if rear_raw:
             try:
                 instance.rear_image = _decode_image(rear_raw, 'rear_image')
-            except ValueError:
-                return Response({'rear_image': _('Invalid image data.')}, status=status.HTTP_400_BAD_REQUEST)
+            except ValueError as exc:
+                return Response(
+                    {'rear_image': _('Invalid rear image data.')},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         instance.save()
 
