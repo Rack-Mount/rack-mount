@@ -42,6 +42,9 @@ from accounts.permissions import ImportAssetsPermission
 
 import csv
 import io
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Max 50 MB CSV file
 _MAX_CSV_BYTES = 50 * 1024 * 1024
@@ -308,9 +311,27 @@ class AssetImportCsvView(APIView):
                             'serial_number': serial_number})
 
             except ValueError as exc:
-                errors.append({'row': row_num, 'message': str(exc)})
-            except Exception as exc:
+                logger.warning(
+                    "Errore di validazione durante l'import CSV alla riga %s: %s",
+                    row_num,
+                    exc,
+                )
                 errors.append(
-                    {'row': row_num, 'message': f'Errore imprevisto: {exc}'})
+                    {
+                        'row': row_num,
+                        'message': 'Valore non valido nei dati della riga.',
+                    }
+                )
+            except Exception as exc:
+                logger.exception(
+                    "Errore imprevisto durante l'import CSV alla riga %s",
+                    row_num,
+                )
+                errors.append(
+                    {
+                        'row': row_num,
+                        'message': 'Errore imprevisto durante l\'importazione della riga.',
+                    }
+                )
 
         return Response({'created': created, 'rows': rows, 'errors': errors}, status=status.HTTP_200_OK)
