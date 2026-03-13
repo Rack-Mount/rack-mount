@@ -26,8 +26,9 @@ class ImageView(APIView):
     throttle_classes = []  # Static file serving — no rate limit
 
     def get(self, request, filename):
-        media_root = os.path.realpath(settings.MEDIA_ROOT)
-        original_path = os.path.realpath(os.path.join(media_root, filename))
+        media_root = os.path.abspath(settings.MEDIA_ROOT)
+        cache_root = os.path.normpath(os.path.join(media_root, CACHE_SUBDIR))
+        original_path = os.path.normpath(os.path.join(media_root, filename))
 
         # Security: disallow path traversal outside MEDIA_ROOT
         if os.path.commonpath([media_root, original_path]) != media_root:
@@ -51,7 +52,7 @@ class ImageView(APIView):
                 (w for w in ALLOWED_WIDTHS if w <= requested_w),
                 default=min(ALLOWED_WIDTHS),
             )
-            return self._serve_resized(original_path, media_root, filename, width)
+            return self._serve_resized(original_path, media_root, cache_root, filename, width)
 
         return self._serve_file(original_path)
 
@@ -72,6 +73,10 @@ class ImageView(APIView):
 
         # Security: ensure cache_path stays within the cache_root directory
         if not (cache_path == cache_root or cache_path.startswith(cache_root + os.sep)):
+            raise Http404
+
+        # Security: ensure cache path stays within the cache root
+        if os.path.commonpath([cache_root, cache_path]) != cache_root:
             raise Http404
 
         if not os.path.isfile(cache_path):
