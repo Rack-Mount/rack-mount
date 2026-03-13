@@ -1,5 +1,6 @@
 import hashlib
 import os
+import pathlib
 
 from django.conf import settings
 from django.http import FileResponse, Http404, HttpResponse
@@ -26,11 +27,15 @@ class ImageView(APIView):
     throttle_classes = []  # Static file serving — no rate limit
 
     def get(self, request, filename):
+        # Security: reject tainted input before it reaches any path expression
+        if not self._is_safe_relpath(filename):
+            raise Http404
+
         media_root = os.path.abspath(settings.MEDIA_ROOT)
         cache_root = os.path.normpath(os.path.join(media_root, CACHE_SUBDIR))
         original_path = os.path.normpath(os.path.join(media_root, filename))
 
-        # Security: disallow path traversal outside MEDIA_ROOT
+        # Secondary guard: disallow path traversal outside MEDIA_ROOT
         if os.path.commonpath([media_root, original_path]) != media_root:
             raise Http404
 
@@ -52,7 +57,7 @@ class ImageView(APIView):
                 (w for w in ALLOWED_WIDTHS if w <= requested_w),
                 default=min(ALLOWED_WIDTHS),
             )
-            return self._serve_resized(original_path, media_root, cache_root, filename, width)
+            return self._serve_resized(original_path, media_root, filename, width)
 
         return self._serve_file(original_path)
 
@@ -116,6 +121,18 @@ class ImageView(APIView):
                 return self._serve_file(original_path)
 
         return self._serve_file(cache_path)
+
+    @staticmethod
+    def _is_safe_relpath(relpath: str) -> bool:
+        """Return True only if *relpath* is a safe relative path with no traversal."""
+        if not relpath or '\x00' in relpath:
+            return False
+        # Reject absolute paths (os.path.join silently discards the base for them)
+        if os.path.isabs(relpath):
+            return False
+        # Reject any '..' or '.' component that could escape the base directory
+        parts = pathlib.PurePosixPath(relpath).parts
+        return not any(part in ('..', '.') for part in parts)
 
     @staticmethod
     def _content_type(path):
