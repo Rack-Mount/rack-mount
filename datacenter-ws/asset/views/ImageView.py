@@ -65,10 +65,15 @@ class ImageView(APIView):
         response['Cache-Control'] = 'public, max-age=31536000, immutable'
         return response
 
-    def _serve_resized(self, original_path, media_root, cache_root, filename, width):
-        cache_path = os.path.normpath(
-            os.path.join(cache_root, f'w{width}', filename),
-        )
+    def _serve_resized(self, original_path, media_root, filename, width):
+        cache_root = os.path.join(os.path.realpath(media_root), CACHE_SUBDIR)
+        cache_path = os.path.realpath(os.path.join(
+            cache_root, f'w{width}', filename,
+        ))
+
+        # Security: disallow path traversal outside cache directory
+        if os.path.commonpath([cache_root, cache_path]) != cache_root:
+            raise Http404
 
         # Security: ensure cache path stays within the cache root
         if os.path.commonpath([cache_root, cache_path]) != cache_root:
