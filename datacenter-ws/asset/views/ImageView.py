@@ -31,9 +31,10 @@ class ImageView(APIView):
         if not self._is_safe_relpath(filename):
             raise Http404
 
-        media_root = os.path.abspath(settings.MEDIA_ROOT)
-        cache_root = os.path.normpath(os.path.join(media_root, CACHE_SUBDIR))
-        original_path = os.path.normpath(os.path.join(media_root, filename))
+        media_root = os.path.realpath(settings.MEDIA_ROOT)
+        cache_root = os.path.realpath(os.path.join(media_root, CACHE_SUBDIR))
+        # realpath resolves all symlinks → prevents symlink-escape attacks
+        original_path = os.path.realpath(os.path.join(media_root, filename))
 
         # Secondary guard: disallow path traversal outside MEDIA_ROOT
         if os.path.commonpath([media_root, original_path]) != media_root:
@@ -72,9 +73,9 @@ class ImageView(APIView):
 
     def _serve_resized(self, original_path, media_root, filename, width):
         # Build a dedicated cache root under MEDIA_ROOT and normalise
-        cache_root = os.path.abspath(os.path.join(media_root, CACHE_SUBDIR))
+        cache_root = os.path.realpath(os.path.join(media_root, CACHE_SUBDIR))
         cache_rel = os.path.join(f'w{width}', filename)
-        cache_path = os.path.normpath(os.path.join(cache_root, cache_rel))
+        cache_path = os.path.realpath(os.path.join(cache_root, cache_rel))
 
         # Security: ensure cache_path stays within the cache_root directory
         if not (cache_path == cache_root or cache_path.startswith(cache_root + os.sep)):
