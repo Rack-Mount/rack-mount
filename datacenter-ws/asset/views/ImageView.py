@@ -27,10 +27,11 @@ class ImageView(APIView):
 
     def get(self, request, filename):
         media_root = os.path.abspath(settings.MEDIA_ROOT)
+        cache_root = os.path.normpath(os.path.join(media_root, CACHE_SUBDIR))
         original_path = os.path.normpath(os.path.join(media_root, filename))
 
         # Security: disallow path traversal outside MEDIA_ROOT
-        if not original_path.startswith(os.path.abspath(media_root)):
+        if os.path.commonpath([media_root, original_path]) != media_root:
             raise Http404
 
         if not os.path.isfile(original_path):
@@ -51,7 +52,7 @@ class ImageView(APIView):
                 (w for w in ALLOWED_WIDTHS if w <= requested_w),
                 default=min(ALLOWED_WIDTHS),
             )
-            return self._serve_resized(original_path, media_root, filename, width)
+            return self._serve_resized(original_path, media_root, cache_root, filename, width)
 
         return self._serve_file(original_path)
 
@@ -64,10 +65,14 @@ class ImageView(APIView):
         response['Cache-Control'] = 'public, max-age=31536000, immutable'
         return response
 
-    def _serve_resized(self, original_path, media_root, filename, width):
-        cache_path = os.path.join(
-            media_root, CACHE_SUBDIR, f'w{width}', filename,
+    def _serve_resized(self, original_path, media_root, cache_root, filename, width):
+        cache_path = os.path.normpath(
+            os.path.join(cache_root, f'w{width}', filename),
         )
+
+        # Security: ensure cache path stays within the cache root
+        if os.path.commonpath([cache_root, cache_path]) != cache_root:
+            raise Http404
 
         if not os.path.isfile(cache_path):
             os.makedirs(os.path.dirname(cache_path), exist_ok=True)
