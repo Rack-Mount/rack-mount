@@ -65,9 +65,14 @@ class ImageView(APIView):
         return response
 
     def _serve_resized(self, original_path, media_root, filename, width):
-        cache_path = os.path.join(
-            media_root, CACHE_SUBDIR, f'w{width}', filename,
-        )
+        # Build a dedicated cache root under MEDIA_ROOT and normalise
+        cache_root = os.path.abspath(os.path.join(media_root, CACHE_SUBDIR))
+        cache_rel = os.path.join(f'w{width}', filename)
+        cache_path = os.path.normpath(os.path.join(cache_root, cache_rel))
+
+        # Security: ensure cache_path stays within the cache_root directory
+        if not (cache_path == cache_root or cache_path.startswith(cache_root + os.sep)):
+            raise Http404
 
         if not os.path.isfile(cache_path):
             os.makedirs(os.path.dirname(cache_path), exist_ok=True)
