@@ -37,7 +37,7 @@ class ImageView(APIView):
         original_path = os.path.realpath(os.path.join(media_root, filename))
 
         # Secondary guard: disallow path traversal outside MEDIA_ROOT
-        if os.path.commonpath([media_root, original_path]) != media_root:
+        if not original_path.startswith(media_root + os.sep):
             raise Http404
 
         if not os.path.isfile(original_path):
@@ -78,11 +78,7 @@ class ImageView(APIView):
         cache_path = os.path.realpath(os.path.join(cache_root, cache_rel))
 
         # Security: ensure cache_path stays within the cache_root directory
-        if not (cache_path == cache_root or cache_path.startswith(cache_root + os.sep)):
-            raise Http404
-
-        # Security: ensure cache path stays within the cache root
-        if os.path.commonpath([cache_root, cache_path]) != cache_root:
+        if not cache_path.startswith(cache_root + os.sep):
             raise Http404
 
         if not os.path.isfile(cache_path):
