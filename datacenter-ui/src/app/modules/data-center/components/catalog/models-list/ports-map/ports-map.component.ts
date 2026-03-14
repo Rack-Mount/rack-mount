@@ -93,6 +93,12 @@ export class PortsMapComponent {
   protected readonly suggestions = signal<PortSuggestion[]>([]);
   protected readonly quickAdd = signal<QuickAdd | null>(null);
 
+  /** Remembers the last port type used so the quick-add popup pre-selects it. */
+  protected readonly lastPortType = signal<PortTypeEnum>(
+    (localStorage.getItem('portsMap.lastPortType') as PortTypeEnum) ??
+      ('RJ45' as PortTypeEnum),
+  );
+
   /** Non-null while the user is dragging a saved port marker. */
   protected readonly draggingPort = signal<{
     portId: number;
@@ -250,7 +256,7 @@ export class PortsMapComponent {
       clientX: event.clientX,
       clientY: event.clientY,
       name: this.nextPortName(),
-      port_type: 'RJ45' as PortTypeEnum,
+      port_type: this.lastPortType(),
     });
   }
 
@@ -380,6 +386,8 @@ export class PortsMapComponent {
       return;
     }
 
+    this.lastPortType.set(q.port_type);
+    localStorage.setItem('portsMap.lastPortType', q.port_type);
     this.portAdded.emit({
       name: q.name.trim(),
       port_type: q.port_type,
