@@ -1,0 +1,237 @@
+"""
+Management command: train_port_detector
+
+Legge dal database tutti gli AssetModelPort che hanno coordinate (pos_x, pos_y)
+impostate, genera le label YOLO corrispondenti e (opzionalmente) avvia il
+fine-tuning di YOLOv8n.
+
+Uso:
+    python manage.py train_port_detector              # solo genera label
+    python manage.py train_port_detector --train      # genera + addestra
+    python manage.py train_port_detector --train --epochs 100 --imgsz 640
+"""
+import hashlib
+import os
+import shutil
+
+import yaml
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
+
+# ── Mapping port_type → YOLO class_id ─────────────────────────────────────────
+# Tipi non rilevabili otticamente (fiber, mgmt, ecc.) vengono mappati al tipo
+# più vicino; tipi sconosciuti vengono saltati.
+PORT_CLASS_ID = {
+    'RJ45':    0,
+    'MGMT':    0,  # visivamente simile a RJ45
+    'SFP':     1,
+    'SFP28':   1,  # stessa cage SFP
+    'SFP+':    2,
+    'QSFP+':   2,
+    'QSFP28':  2,
+    'QSFP-DD': 2,
+    'USB-A':   3,
+    'USB-C':   3,
+    'SERIAL':  4,
+    'LC':      5,
+    'SC':      5,  # stessa fisica della cage LC
+    'FC':      5,
+}
+
+# Dimensioni stimate del bounding box (frazione dell'immagine)
+PORT_BW = {
+    0: 0.045,   # RJ45
+    1: 0.030,   # SFP
+    2: 0.030,   # SFP+
+    3: 0.040,   # USB
+    4: 0.060,   # SERIAL
+    5: 0.035,   # LC
+}
+PORT_BH = {
+    0: 0.055,
+    1: 0.050,
+    2: 0.050,
+    3: 0.045,
+    4: 0.040,
+    5: 0.060,
+}
+
+CLASS_NAMES = ['RJ45', 'SFP', 'SFP+', 'USB-A', 'SERIAL', 'LC']
+
+
+class Command(BaseCommand):
+    help = 'Genera label YOLO dai port annotati nel DB e (opzionalmente) addestra YOLOv8'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--train',  action='store_true',
+                            help='Avvia il training YOLO dopo aver generato le label')
+        parser.add_argument('--epochs', type=int, default=50)
+        parser.add_argument('--imgsz',  type=int, default=640)
+        parser.add_argument('--force',  action='store_true',
+                            help='Rigenera le label anche se già esistono')
+
+    def handle(self, *args, **options):
+        from asset.models.AssetModelPort import AssetModelPort
+
+        media_root  = os.path.realpath(settings.MEDIA_ROOT)
+        train_imgs  = os.path.join(media_root, 'training', 'images')
+        train_labs  = os.path.join(media_root, 'training', 'labels')
+        data_yaml   = os.path.join(media_root, 'training', 'data.yaml')
+        models_dir  = os.path.join(media_root, 'models')
+
+        for split in ('train', 'val'):
+            os.makedirs(os.path.join(train_imgs, split), exist_ok=True)
+            os.makedirs(os.path.join(train_labs, split), exist_ok=True)
+        os.makedirs(models_dir, exist_ok=True)
+
+        # ── 1. Leggi porte con coordinate dal DB ──────────────────────────────
+        ports_qs = (
+            AssetModelPort.objects
+            .filter(pos_x__isnull=False, pos_y__isnull=False)
+            .select_related('asset_model')
+        )
+
+        total_ports = ports_qs.count()
+        if total_ports == 0:
+            self.stdout.write(self.style.WARNING(
+                'Nessun port con coordinate trovato nel database. '
+                'Aggiungi manualmente le porte con posizione nel pannello.'
+            ))
+            return
+
+        self.stdout.write(f'Porte con coordinate nel DB: {total_ports}')
+
+        # ── 2. Raggruppa per (asset_model, side) ─────────────────────────────
+        groups: dict = {}
+        for p in ports_qs:
+            am = p.asset_model
+            img_field = am.front_image if p.side == 'front' else am.rear_image
+            if not img_field:
+                continue
+            img_rel = str(img_field)   # percorso relativo a MEDIA_ROOT
+            key = (img_rel, p.side)
+            groups.setdefault(key, []).append(p)
+
+        self.stdout.write(f'Immagini con porte annotate: {len(groups)}')
+
+        generated = 0
+        skipped   = 0
+
+        for (img_rel, side), ports in groups.items():
+            abs_img = os.path.join(media_root, img_rel)
+            if not os.path.isfile(abs_img):
+                self.stdout.write(self.style.WARNING(f'  Immagine non trovata: {img_rel}'))
+                continue
+
+            # Key univoca per questo (immagine, lato)
+            h = hashlib.sha256(f'{img_rel}|{side}'.encode()).hexdigest()[:16]
+            # Deterministic 80/20 split: first hex char mod 5 == 0 → val (~20 %)
+            split = 'val' if int(h[0], 16) % 5 == 0 else 'train'
+            dest_img = os.path.join(train_imgs, split, f'{h}.jpg')
+            dest_lbl = os.path.join(train_labs, split, f'{h}.txt')
+
+            if os.path.isfile(dest_lbl) and not options['force']:
+                skipped += 1
+                continue
+
+            # Filtra porte con tipo supportato
+            valid = [(p, PORT_CLASS_ID[p.port_type])
+                     for p in ports if p.port_type in PORT_CLASS_ID]
+            if not valid:
+                continue
+
+            # Copia immagine
+            if not os.path.isfile(dest_img):
+                shutil.copy2(abs_img, dest_img)
+
+            # Scrivi label YOLO (cx cy bw bh tutti in 0-1)
+            with open(dest_lbl, 'w') as f:
+                for p, cls_id in valid:
+                    bw = PORT_BW[cls_id]
+                    bh = PORT_BH[cls_id]
+                    cx = max(bw / 2, min(1 - bw / 2, p.pos_x / 100.0))
+                    cy = max(bh / 2, min(1 - bh / 2, p.pos_y / 100.0))
+                    f.write(f'{cls_id} {cx:.4f} {cy:.4f} {bw:.4f} {bh:.4f}\n')
+
+            generated += 1
+            # Conta anche porte senza tipo supportato per il riepilogo
+            self.stdout.write(
+                f'  {img_rel} [{side}] → {len(valid)} porte su {len(ports)}'
+            )
+
+        total_labeled = 0
+        for sub in ('train', 'val'):
+            sub_dir = os.path.join(train_labs, sub)
+            if os.path.isdir(sub_dir):
+                total_labeled += sum(1 for fn in os.listdir(sub_dir) if fn.endswith('.txt'))
+
+        # ── 3. Aggiorna data.yaml ─────────────────────────────────────────────
+        train_img_split = os.path.join(train_imgs, 'train')
+        val_img_split   = os.path.join(train_imgs, 'val')
+        # Fall back to train images if no val split exists yet
+        if not os.path.isdir(val_img_split) or not os.listdir(val_img_split):
+            val_img_split = train_img_split
+        with open(data_yaml, 'w') as f:
+            yaml.dump({
+                'train': train_img_split,
+                'val':   val_img_split,
+                'nc':    len(CLASS_NAMES),
+                'names': CLASS_NAMES,
+            }, f, default_flow_style=False)
+
+        self.stdout.write(self.style.SUCCESS(
+            f'\nLabel generate: {generated} nuove, {skipped} già presenti\n'
+            f'Totale immagini etichettate: {total_labeled}\n'
+            f'data.yaml: {data_yaml}'
+        ))
+
+        if not options['train']:
+            self.stdout.write(
+                '\nPer avviare il training:\n'
+                '  python manage.py train_port_detector --train'
+            )
+            return
+
+        # ── 4. Training YOLOv8 ────────────────────────────────────────────────
+        if total_labeled == 0:
+            self.stdout.write(self.style.ERROR('Nessun dato per il training.'))
+            return
+
+        try:
+            from ultralytics import YOLO
+        except ImportError:
+            self.stdout.write(self.style.ERROR(
+                'ultralytics non installato. Esegui: pip install ultralytics'
+            ))
+            return
+
+        epochs = options['epochs']
+        imgsz  = options['imgsz']
+        self.stdout.write(
+            f'\nAvvio training YOLOv8n: '
+            f'epochs={epochs}, imgsz={imgsz}, immagini={total_labeled}'
+        )
+
+        model = YOLO('yolov8n.pt')
+        model.train(
+            data=data_yaml,
+            epochs=epochs,
+            patience=20,       # early stopping: halt when val loss stalls
+            imgsz=imgsz,
+            optimizer='AdamW',
+            project=models_dir,
+            name='port-yolo',
+            exist_ok=True,
+        )
+
+        # Promuovi il modello migliore
+        best = os.path.join(models_dir, 'port-yolo', 'weights', 'best.pt')
+        dest = os.path.join(models_dir, 'port-yolo.pt')
+        if os.path.isfile(best):
+            shutil.copy2(best, dest)
+            self.stdout.write(self.style.SUCCESS(f'\nModello salvato in: {dest}'))
+        else:
+            self.stdout.write(self.style.WARNING(
+                f'best.pt non trovato in {best}'
+            ))

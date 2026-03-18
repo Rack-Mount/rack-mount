@@ -144,6 +144,7 @@
     "ports_map_add_port": "添加端口",
     "ports_map_add_confirm": "添加",
     "ports_map_sugg_found": "个接口已检测到",
+    "ports_map_confirm_all": "全部添加",
     "ports_map_remove_hint": "Alt+点击以删除",
     "ports_map_sugg_hint": "点击：添加 · Alt+点击：放弃",
     "ports_section": "网络接口",

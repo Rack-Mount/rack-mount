@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './modules/core/components/login/login.component';
 import {
   adminGuard,
   authGuard,
@@ -16,7 +15,14 @@ import {
  * The /login route is the only one rendered via <router-outlet>.
  */
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent, canActivate: [noAuthGuard] },
+  {
+    path: 'login',
+    canActivate: [noAuthGuard],
+    loadComponent: () =>
+      import('./modules/core/components/login/login.component').then(
+        (m) => m.LoginComponent,
+      ),
+  },
   { path: '', pathMatch: 'full', canActivate: [authGuard], children: [] },
   {
     path: 'assets',

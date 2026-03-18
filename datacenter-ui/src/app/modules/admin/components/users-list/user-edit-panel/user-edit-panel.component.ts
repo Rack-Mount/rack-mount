@@ -53,8 +53,8 @@ export class UserEditPanelComponent {
     // Re-initialize the form whenever the bound user changes
     effect(() => {
       const u = this.user();
-      this.editUsername.set(u.username);
-      this.editEmail.set(u.email);
+      this.editUsername.set(u.username ?? '');
+      this.editEmail.set(u.email ?? '');
       this.editRoleId.set(u.role?.id ?? null);
       this.editIsActive.set(u.is_active);
       this.editPassword.set('');

@@ -142,6 +142,7 @@
     "ports_map_add_port": "Port hinzufügen",
     "ports_map_add_confirm": "Hinzufügen",
     "ports_map_sugg_found": "Schnittstellen erkannt",
+    "ports_map_confirm_all": "Alle hinzufügen",
     "ports_map_remove_hint": "Alt+Klick zum Entfernen",
     "ports_map_sugg_hint": "Klick: hinzufügen · Alt+Klick: verwerfen",
     "ports_section": "Netzwerkschnittstellen",

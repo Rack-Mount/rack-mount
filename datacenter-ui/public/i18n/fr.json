@@ -142,6 +142,7 @@
     "ports_map_add_port": "Ajouter un port",
     "ports_map_add_confirm": "Ajouter",
     "ports_map_sugg_found": "interfaces détectées",
+    "ports_map_confirm_all": "Tout ajouter",
     "ports_map_remove_hint": "Alt+clic pour supprimer",
     "ports_map_sugg_hint": "Clic : ajouter · Alt+clic : ignorer",
     "ports_section": "Interfaces réseau",

@@ -209,13 +209,47 @@ export class PortsMapComponent {
     this.portAnalyzer
       .analyzeImage(this.imageUrl(), this.currentSide())
       .then((s) => {
-        this.suggestions.set(s);
+        // Remove suggestions that overlap with ports already saved in the DB
+        // (e.g. localStorage items from previous sessions that were already confirmed).
+        const existing = this.positionedPorts();
+        const fresh = s.filter(
+          (sugg) =>
+            !existing.some(
+              (p) =>
+                Math.abs((p.pos_x ?? 0) - sugg.pos_x) < 4 &&
+                Math.abs((p.pos_y ?? 0) - sugg.pos_y) < 4,
+            ),
+        );
+        this.suggestions.set(fresh);
         this.analyzing.set(false);
       })
       .catch(() => {
         this.analyzeError.set(true);
         this.analyzing.set(false);
       });
+  }
+
+  protected confirmAllSuggestions(): void {
+    const toAdd = this.suggestions();
+    if (!toAdd.length) return;
+    for (const s of toAdd) {
+      this.portAdded.emit({
+        name: s.name,
+        port_type: s.port_type,
+        pos_x: s.pos_x,
+        pos_y: s.pos_y,
+      });
+      this.portAnalyzer.learnFromAnnotation(this.imageUrl(), this.currentSide(), {
+        name: s.name,
+        port_type: s.port_type,
+        pos_x: s.pos_x,
+        pos_y: s.pos_y,
+      });
+    }
+    // Once confirmed, annotations are in the DB – clear the localStorage cache
+    // so they don't re-appear as suggestions on subsequent analyze runs.
+    this.portAnalyzer.clearLearned(this.imageUrl(), this.currentSide());
+    this.suggestions.set([]);
   }
 
   // ── Click handlers ───────────────────────────────────────────────────────
@@ -268,7 +302,18 @@ export class PortsMapComponent {
     }
     event.stopPropagation();
     if (event.altKey) {
-      if (this.analyzeEnabled()) this.portRemoved.emit(portId);
+      if (this.analyzeEnabled()) {
+        const port = this.ports().find((p) => p.id === portId);
+        if (port?.pos_x != null && port?.pos_y != null) {
+          this.portAnalyzer.removeAnnotation(
+            this.imageUrl(),
+            this.currentSide(),
+            port.pos_x,
+            port.pos_y,
+          );
+        }
+        this.portRemoved.emit(portId);
+      }
       return;
     }
     this.hoveredPortId.update((cur) => (cur === portId ? null : portId));
@@ -376,7 +421,21 @@ export class PortsMapComponent {
     if (!q || !q.name.trim()) return;
 
     if (q.editingPortId != null) {
-      // Edit existing port
+      // Edit existing port – update the learned annotation so future analyses
+      // reflect the corrected name / type and the port isn't treated as unknown.
+      const orig = this.ports().find((p) => p.id === q.editingPortId);
+      if (orig?.pos_x != null && orig?.pos_y != null) {
+        this.portAnalyzer.learnFromAnnotation(
+          this.imageUrl(),
+          this.currentSide(),
+          {
+            name: q.name.trim(),
+            port_type: q.port_type,
+            pos_x: orig.pos_x,
+            pos_y: orig.pos_y,
+          },
+        );
+      }
       this.portEdited.emit({
         portId: q.editingPortId,
         name: q.name.trim(),

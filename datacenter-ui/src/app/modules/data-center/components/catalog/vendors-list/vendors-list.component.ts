@@ -209,7 +209,7 @@ export class VendorsListComponent {
   protected startEdit(v: Vendor): void {
     this.createOpen.set(false);
     this.editId.set(v.id);
-    this.editName.set(v.name);
+    this.editName.set(v.name ?? '');
     this.editSave.set('idle');
     this.editSaveMsg.set('');
   }

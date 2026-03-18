@@ -144,6 +144,7 @@
     "ports_map_add_port": "Add port",
     "ports_map_add_confirm": "Add",
     "ports_map_sugg_found": "interfaces detected",
+    "ports_map_confirm_all": "Add all",
     "ports_map_remove_hint": "Alt+click to remove",
     "ports_map_sugg_hint": "Click: add · Alt+click: discard",
     "ports_section": "Network interfaces",

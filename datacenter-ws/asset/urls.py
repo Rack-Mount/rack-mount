@@ -26,6 +26,8 @@ from asset.views.AssetModelImportView import AssetModelImportView
 from asset.views.AssetImportCsvView import AssetImportCsvView
 from asset.views.CatalogExportView import CatalogExportView
 from asset.views.CatalogImportView import CatalogImportView
+from asset.views.PortAnalyzeView import PortAnalyzeView
+from asset.views.PortAnnotateView import PortAnnotateView
 
 router = DefaultRouter(trailing_slash=False)
 router.register('asset', AssetViewSet)
@@ -47,5 +49,7 @@ urlpatterns = [
          name='asset-model-import'),
     path('catalog/export', CatalogExportView.as_view(), name='catalog-export'),
     path('catalog/import', CatalogImportView.as_view(), name='catalog-import'),
+    path('port-analyze', PortAnalyzeView.as_view(), name='port-analyze'),
+    path('port-annotate', PortAnnotateView.as_view(), name='port-annotate'),
     path('', include(router.urls)),
 ]

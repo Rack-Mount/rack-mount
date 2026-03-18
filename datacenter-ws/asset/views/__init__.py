@@ -10,3 +10,5 @@ from .RackViewSet import RackViewSet
 from .RackUnitViewSet import RackUnitViewSet
 from .AssetCustomFieldViewSet import AssetCustomFieldViewSet
 from .GenericComponentViewSet import GenericComponentViewSet
+from .PortAnalyzeView import PortAnalyzeView
+from .PortAnnotateView import PortAnnotateView

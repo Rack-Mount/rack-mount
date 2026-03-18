@@ -32,6 +32,13 @@
             {{ suggestions().length }}
             {{ "models.ports_map_sugg_found" | translate }}
           </span>
+          <button
+            class="pm-btn-confirm-all"
+            type="button"
+            (click)="confirmAllSuggestions()"
+          >
+            {{ "models.ports_map_confirm_all" | translate }}
+          </button>
         }
         @if (analyzeError()) {
           <span class="pm-analyze-error">{{

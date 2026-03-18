@@ -825,6 +825,26 @@
   }
 }
 
+.pm-btn-confirm-all {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(99, 179, 237, 0.12);
+  border: 1px solid rgba(99, 179, 237, 0.35);
+  color: #63b3ed;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  &:hover {
+    background: rgba(99, 179, 237, 0.6);
+    color: #fff;
+    border-color: rgba(99, 179, 237, 0.6);
+  }
+}
+
 .pm-spinner {
   display: inline-block;
   width: 11px;

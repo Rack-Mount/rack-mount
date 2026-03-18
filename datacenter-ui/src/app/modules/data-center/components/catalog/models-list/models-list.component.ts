@@ -938,7 +938,7 @@ export class ModelsListComponent {
     this.portFormMode.set('edit');
     this.portEditId.set(p.id);
     this.portForm.set({
-      name: p.name,
+      name: p.name ?? '',
       port_type: p.port_type ?? 'RJ45',
       side: p.side ?? 'rear',
       notes: p.notes ?? '',
