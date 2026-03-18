@@ -17,7 +17,8 @@ _PORT_CONFIG = {
     'LC':     {'ar_min': 0.00, 'ar_max': 0.80, 'class_id': 5},
     'SFP+':   {'ar_min': 0.80, 'ar_max': 1.00, 'class_id': 2},
     'SFP':    {'ar_min': 1.00, 'ar_max': 1.20, 'class_id': 1},
-    'RJ45':   {'ar_min': 1.20, 'ar_max': 2.00, 'class_id': 0},   # lowered from 1.35
+    # lowered from 1.35
+    'RJ45':   {'ar_min': 1.20, 'ar_max': 2.00, 'class_id': 0},
     'USB-A':  {'ar_min': 2.00, 'ar_max': 2.90, 'class_id': 3},
     'SERIAL': {'ar_min': 2.90, 'ar_max': 99.0, 'class_id': 4},
 }
@@ -217,7 +218,8 @@ def _reclassify_by_cluster(detections: list) -> list:
 
         type_counts: dict = {}
         for c in row:
-            type_counts[c['port_type']] = type_counts.get(c['port_type'], 0) + 1
+            type_counts[c['port_type']] = type_counts.get(
+                c['port_type'], 0) + 1
 
         dominant = max(type_counts, key=lambda t: type_counts[t])
         if type_counts[dominant] / len(row) >= 0.65:
@@ -282,7 +284,8 @@ def _detect_with_opencv(image_path: str) -> list:
 
     # RETR_CCOMP returns both external contours and holes, so we catch port
     # openings that sit inside a larger bezel frame.
-    contours, _ = cv2.findContours(edges, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(
+        edges, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
     # Area floor: absolute pixel minimum prevents noise detections on small images.
     min_area = max(100, W * H * 0.0004)
@@ -328,8 +331,10 @@ def _detect_with_opencv(image_path: str) -> list:
         # Darkness score – port holes are darker than the surrounding bezel.
         roi_mean = float(np.mean(gray[y:y + h, x:x + w]))
         margin = max(4, min(16, int(min(w, h) * 0.30)))
-        sy0 = max(0, y - margin);  sy1 = min(H, y + h + margin)
-        sx0 = max(0, x - margin);  sx1 = min(W, x + w + margin)
+        sy0 = max(0, y - margin)
+        sy1 = min(H, y + h + margin)
+        sx0 = max(0, x - margin)
+        sx1 = min(W, x + w + margin)
         surround = gray[sy0:sy1, sx0:sx1]
         surround_mean = float(np.mean(surround)) if surround.size else roi_mean
         darkness = max(0.0, (surround_mean - roi_mean) / (surround_mean + 1.0))
@@ -338,10 +343,10 @@ def _detect_with_opencv(image_path: str) -> list:
 
         # Composite confidence (three independent signals)
         conf = min(1.0,
-            mar_fill   * 0.40 +
-            rect_fill  * 0.25 +
-            min(darkness * 1.75, 0.35)
-        )
+                   mar_fill * 0.40 +
+                   rect_fill * 0.25 +
+                   min(darkness * 1.75, 0.35)
+                   )
         if conf < 0.38:
             continue
 

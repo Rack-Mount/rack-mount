@@ -18,12 +18,12 @@ import numpy as np
 import yaml
 
 # ── Configurazione ─────────────────────────────────────────────────────────────
-BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
-FILES_DIR   = os.path.join(BASE_DIR, 'files')
-TRAIN_IMGS  = os.path.join(FILES_DIR, 'training', 'images')
-TRAIN_LABS  = os.path.join(FILES_DIR, 'training', 'labels')
-DATA_YAML   = os.path.join(FILES_DIR, 'training', 'data.yaml')
-MODELS_DIR  = os.path.join(FILES_DIR, 'models')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FILES_DIR = os.path.join(BASE_DIR, 'files')
+TRAIN_IMGS = os.path.join(FILES_DIR, 'training', 'images')
+TRAIN_LABS = os.path.join(FILES_DIR, 'training', 'labels')
+DATA_YAML = os.path.join(FILES_DIR, 'training', 'data.yaml')
+MODELS_DIR = os.path.join(FILES_DIR, 'models')
 
 CLASS_NAMES = ['RJ45', 'SFP', 'SFP+', 'USB-A', 'SERIAL', 'LC']
 
@@ -56,13 +56,14 @@ def detect_ports(image_path: str):
         return []
 
     H, W = img.shape[:2]
-    gray    = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    edges   = cv2.Canny(blurred, 30, 100)
-    kernel  = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    edges   = cv2.dilate(edges, kernel, iterations=1)
+    edges = cv2.Canny(blurred, 30, 100)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    edges = cv2.dilate(edges, kernel, iterations=1)
 
-    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(
+        edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     min_area = W * H * 0.0008
     max_area = W * H * 0.06
@@ -74,7 +75,7 @@ def detect_ports(image_path: str):
         if area < min_area or area > max_area:
             continue
 
-        peri  = cv2.arcLength(cnt, True)
+        peri = cv2.arcLength(cnt, True)
         approx = cv2.approxPolyDP(cnt, 0.04 * peri, True)
         if len(approx) < 4 or len(approx) > 6:
             continue
@@ -87,17 +88,17 @@ def detect_ports(image_path: str):
         if ar < 0.4 or ar > 5.0:
             continue
 
-        rect_area     = w * h
+        rect_area = w * h
         rectangularity = area / rect_area
         if rectangularity < 0.55:
             continue
 
-        roi_mean     = float(np.mean(gray[y:y+h, x:x+w]))
-        margin       = max(4, min(12, int(min(w, h) * 0.25)))
-        sy0, sy1     = max(0, y - margin), min(H, y + h + margin)
-        sx0, sx1     = max(0, x - margin), min(W, x + w + margin)
+        roi_mean = float(np.mean(gray[y:y+h, x:x+w]))
+        margin = max(4, min(12, int(min(w, h) * 0.25)))
+        sy0, sy1 = max(0, y - margin), min(H, y + h + margin)
+        sx0, sx1 = max(0, x - margin), min(W, x + w + margin)
         surround_mean = float(np.mean(gray[sy0:sy1, sx0:sx1]))
-        darkness     = max(0.0, (surround_mean - roi_mean) / (surround_mean + 1))
+        darkness = max(0.0, (surround_mean - roi_mean) / (surround_mean + 1))
 
         if darkness < 0.06:
             continue
@@ -110,7 +111,8 @@ def detect_ports(image_path: str):
         cx = (x + w / 2) / W
         cy = (y + h / 2) / H
 
-        candidates.append({'pt': pt, 'cfg': cfg, 'cx': cx, 'cy': cy, 'conf': confidence})
+        candidates.append({'pt': pt, 'cfg': cfg, 'cx': cx,
+                          'cy': cy, 'conf': confidence})
         bboxes.append((w, h))
 
     # Size-consistency filter
@@ -140,7 +142,8 @@ def hash_path(path: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--train',  action='store_true', help='Avvia training YOLO dopo la generazione delle label')
+    parser.add_argument('--train',  action='store_true',
+                        help='Avvia training YOLO dopo la generazione delle label')
     parser.add_argument('--epochs', type=int, default=50)
     parser.add_argument('--imgsz',  type=int, default=640)
     args = parser.parse_args()
@@ -162,8 +165,8 @@ def main():
     print(f"Immagini trovate: {len(all_images)}")
 
     generated = 0
-    skipped   = 0
-    empty     = 0
+    skipped = 0
+    empty = 0
 
     for img_path in all_images:
         h = hash_path(img_path)
@@ -188,17 +191,20 @@ def main():
         with open(dest_lbl, 'w') as f:
             for p in ports:
                 cls_id = p['cfg']['class_id']
-                bw     = p['cfg']['bw']
-                bh     = p['cfg']['bh']
-                cx     = max(bw/2, min(1 - bw/2, p['cx']))
-                cy     = max(bh/2, min(1 - bh/2, p['cy']))
+                bw = p['cfg']['bw']
+                bh = p['cfg']['bh']
+                cx = max(bw/2, min(1 - bw/2, p['cx']))
+                cy = max(bh/2, min(1 - bh/2, p['cy']))
                 f.write(f"{cls_id} {cx:.4f} {cy:.4f} {bw:.4f} {bh:.4f}\n")
 
         generated += 1
-        print(f"  [{generated:>3}] {os.path.basename(img_path)} → {len(ports)} porte")
+        print(
+            f"  [{generated:>3}] {os.path.basename(img_path)} → {len(ports)} porte")
 
-    total_labeled = sum(1 for fn in os.listdir(TRAIN_LABS) if fn.endswith('.txt'))
-    print(f"\nRisultato: {generated} nuove label, {skipped} già presenti, {empty} immagini senza porte")
+    total_labeled = sum(1 for fn in os.listdir(
+        TRAIN_LABS) if fn.endswith('.txt'))
+    print(
+        f"\nRisultato: {generated} nuove label, {skipped} già presenti, {empty} immagini senza porte")
     print(f"Totale immagini etichettate: {total_labeled}")
 
     # Aggiorna data.yaml
@@ -217,7 +223,8 @@ def main():
 
     if not args.train:
         print("\nPer avviare il training esegui:")
-        print(f"  python bootstrap_training.py --train --epochs {args.epochs} --imgsz {args.imgsz}")
+        print(
+            f"  python bootstrap_training.py --train --epochs {args.epochs} --imgsz {args.imgsz}")
         sys.exit(0)
 
     # ── Training ───────────────────────────────────────────────────────────────
@@ -227,7 +234,8 @@ def main():
         print("ultralytics non installato. Esegui: pip install ultralytics")
         sys.exit(1)
 
-    print(f"\nAvvio training YOLOv8n: epochs={args.epochs}, imgsz={args.imgsz}, immagini={total_labeled}")
+    print(
+        f"\nAvvio training YOLOv8n: epochs={args.epochs}, imgsz={args.imgsz}, immagini={total_labeled}")
     model = YOLO('yolov8n.pt')
     results = model.train(
         data=DATA_YAML,

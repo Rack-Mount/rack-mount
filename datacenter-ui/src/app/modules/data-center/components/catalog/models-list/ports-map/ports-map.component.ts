@@ -239,12 +239,16 @@ export class PortsMapComponent {
         pos_x: s.pos_x,
         pos_y: s.pos_y,
       });
-      this.portAnalyzer.learnFromAnnotation(this.imageUrl(), this.currentSide(), {
-        name: s.name,
-        port_type: s.port_type,
-        pos_x: s.pos_x,
-        pos_y: s.pos_y,
-      });
+      this.portAnalyzer.learnFromAnnotation(
+        this.imageUrl(),
+        this.currentSide(),
+        {
+          name: s.name,
+          port_type: s.port_type,
+          pos_x: s.pos_x,
+          pos_y: s.pos_y,
+        },
+      );
     }
     // Once confirmed, annotations are in the DB – clear the localStorage cache
     // so they don't re-appear as suggestions on subsequent analyze runs.

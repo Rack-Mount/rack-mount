@@ -56,7 +56,7 @@ def _is_safe_relpath(relpath: str) -> bool:
 def _write_data_yaml(training_dir: str) -> str:
     data_yaml = os.path.join(training_dir, 'data.yaml')
     train_img = os.path.join(training_dir, 'images', 'train')
-    val_img   = os.path.join(training_dir, 'images', 'val')
+    val_img = os.path.join(training_dir, 'images', 'val')
     # If there is no dedicated val split yet, fall back to using train images
     # for validation so YOLO doesn't abort.
     if not os.path.isdir(val_img) or not os.listdir(val_img):
@@ -185,7 +185,8 @@ class PortAnnotateView(APIView):
         for sub in ('train', 'val'):
             sub_dir = os.path.join(labels_dir, sub)
             if os.path.isdir(sub_dir):
-                label_count += sum(1 for fn in os.listdir(sub_dir) if fn.endswith('.txt'))
+                label_count += sum(1 for fn in os.listdir(sub_dir)
+                                   if fn.endswith('.txt'))
         models_dir = os.path.join(media_root, 'models')
         os.makedirs(models_dir, exist_ok=True)
 

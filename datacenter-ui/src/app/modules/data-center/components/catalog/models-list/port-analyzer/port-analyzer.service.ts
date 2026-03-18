@@ -44,7 +44,10 @@ export class PortAnalyzerService {
             name: string;
             confidence: number;
           }>
-        >(`${this.basePath}/asset/port-analyze`, { image_path: imagePath, side }),
+        >(`${this.basePath}/asset/port-analyze`, {
+          image_path: imagePath,
+          side,
+        }),
       );
       detected = (raw ?? []).map((p, i) => ({
         id: `sugg-${Date.now()}-${i}`,
@@ -126,9 +129,10 @@ export class PortAnalyzerService {
   ): void {
     try {
       const key = this.learnKey(imageUrl, side);
-      const existing = JSON.parse(
-        localStorage.getItem(key) ?? '[]',
-      ) as Array<{ pos_x: number; pos_y: number }>;
+      const existing = JSON.parse(localStorage.getItem(key) ?? '[]') as Array<{
+        pos_x: number;
+        pos_y: number;
+      }>;
       const updated = existing.filter(
         (a) =>
           !(Math.abs(a.pos_x - pos_x) < 3 && Math.abs(a.pos_y - pos_y) < 3),

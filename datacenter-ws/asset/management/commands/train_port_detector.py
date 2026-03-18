@@ -74,11 +74,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from asset.models.AssetModelPort import AssetModelPort
 
-        media_root  = os.path.realpath(settings.MEDIA_ROOT)
-        train_imgs  = os.path.join(media_root, 'training', 'images')
-        train_labs  = os.path.join(media_root, 'training', 'labels')
-        data_yaml   = os.path.join(media_root, 'training', 'data.yaml')
-        models_dir  = os.path.join(media_root, 'models')
+        media_root = os.path.realpath(settings.MEDIA_ROOT)
+        train_imgs = os.path.join(media_root, 'training', 'images')
+        train_labs = os.path.join(media_root, 'training', 'labels')
+        data_yaml = os.path.join(media_root, 'training', 'data.yaml')
+        models_dir = os.path.join(media_root, 'models')
 
         for split in ('train', 'val'):
             os.makedirs(os.path.join(train_imgs, split), exist_ok=True)
@@ -116,12 +116,13 @@ class Command(BaseCommand):
         self.stdout.write(f'Immagini con porte annotate: {len(groups)}')
 
         generated = 0
-        skipped   = 0
+        skipped = 0
 
         for (img_rel, side), ports in groups.items():
             abs_img = os.path.join(media_root, img_rel)
             if not os.path.isfile(abs_img):
-                self.stdout.write(self.style.WARNING(f'  Immagine non trovata: {img_rel}'))
+                self.stdout.write(self.style.WARNING(
+                    f'  Immagine non trovata: {img_rel}'))
                 continue
 
             # Key univoca per questo (immagine, lato)
@@ -164,11 +165,12 @@ class Command(BaseCommand):
         for sub in ('train', 'val'):
             sub_dir = os.path.join(train_labs, sub)
             if os.path.isdir(sub_dir):
-                total_labeled += sum(1 for fn in os.listdir(sub_dir) if fn.endswith('.txt'))
+                total_labeled += sum(1 for fn in os.listdir(sub_dir)
+                                     if fn.endswith('.txt'))
 
         # ── 3. Aggiorna data.yaml ─────────────────────────────────────────────
         train_img_split = os.path.join(train_imgs, 'train')
-        val_img_split   = os.path.join(train_imgs, 'val')
+        val_img_split = os.path.join(train_imgs, 'val')
         # Fall back to train images if no val split exists yet
         if not os.path.isdir(val_img_split) or not os.listdir(val_img_split):
             val_img_split = train_img_split
@@ -207,7 +209,7 @@ class Command(BaseCommand):
             return
 
         epochs = options['epochs']
-        imgsz  = options['imgsz']
+        imgsz = options['imgsz']
         self.stdout.write(
             f'\nAvvio training YOLOv8n: '
             f'epochs={epochs}, imgsz={imgsz}, immagini={total_labeled}'
@@ -230,7 +232,8 @@ class Command(BaseCommand):
         dest = os.path.join(models_dir, 'port-yolo.pt')
         if os.path.isfile(best):
             shutil.copy2(best, dest)
-            self.stdout.write(self.style.SUCCESS(f'\nModello salvato in: {dest}'))
+            self.stdout.write(self.style.SUCCESS(
+                f'\nModello salvato in: {dest}'))
         else:
             self.stdout.write(self.style.WARNING(
                 f'best.pt non trovato in {best}'
