@@ -65,20 +65,55 @@ def _best_device() -> str:
     """
     Return the fastest available compute device:
       CUDA  → 'cuda' (NVIDIA GPU via CUDA)
+      MPS   → 'mps'  (Apple Silicon via Metal, with runtime bug-fix patch)
       else  → 'cpu'
-
-    MPS (Apple Silicon) is intentionally skipped: PyTorch MPS has a known bug
-    where boolean tensor indexing returns an incorrect element count, causing a
-    shape mismatch inside ultralytics' TaskAlignedAssigner.get_box_metrics().
-    Training must run on CPU on Apple Silicon until this is fixed upstream.
     """
     try:
         import torch
         if torch.cuda.is_available():
             return 'cuda'
+        if getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
+            return 'mps'
     except Exception:
         pass
     return 'cpu'
+
+
+def _apply_mps_training_patch() -> None:
+    """
+    Monkey-patch ultralytics TaskAlignedAssigner.get_box_metrics to work around
+    a PyTorch MPS bug: boolean tensor indexing (tensor[bool_mask]) returns an
+    inconsistent element count across multiple calls on the same mask, causing:
+
+        RuntimeError: shape mismatch: value tensor of shape [N] cannot be
+        broadcast to indexing result of shape [M]
+
+    Fix: run only the get_box_metrics step on CPU; the main forward/backward
+    pass and all other ops continue to execute on MPS.
+    """
+    try:
+        from ultralytics.utils.tal import TaskAlignedAssigner
+
+        _orig = TaskAlignedAssigner.get_box_metrics
+
+        def _patched(self, pd_scores, pd_bboxes, gt_labels, gt_bboxes, mask_gt):
+            device = pd_bboxes.device
+            if device.type != 'mps':
+                return _orig(self, pd_scores, pd_bboxes,
+                             gt_labels, gt_bboxes, mask_gt)
+            # Move inputs to CPU, compute (no boolean-indexing MPS bug there),
+            # then move results back to MPS for the rest of the training step.
+            cpu_result = _orig(
+                self,
+                pd_scores.cpu(), pd_bboxes.cpu(),
+                gt_labels.cpu(), gt_bboxes.cpu(),
+                mask_gt.cpu(),
+            )
+            return tuple(t.to(device) for t in cpu_result)
+
+        TaskAlignedAssigner.get_box_metrics = _patched
+    except Exception:
+        pass
 
 
 # ── Offline augmentation helpers ───────────────────────────────────────────────
@@ -325,6 +360,9 @@ class Command(BaseCommand):
             f'\nAvvio training YOLOv8n: '
             f'epochs={epochs}, imgsz={imgsz}, device={device}, immagini={total_labeled}'
         )
+
+        if device == 'mps':
+            _apply_mps_training_patch()
 
         model = YOLO('yolov8n.pt')
         model.train(
