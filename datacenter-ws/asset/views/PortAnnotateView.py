@@ -36,6 +36,24 @@ _training_state = {'is_training': False}
 _training_lock = threading.Lock()
 
 
+def _best_device() -> str:
+    """
+    Return the fastest available compute device:
+      CUDA  → 'cuda'  (NVIDIA GPU)
+      MPS   → 'mps'   (Apple Silicon)
+      else  → 'cpu'
+    """
+    try:
+        import torch
+        if torch.cuda.is_available():
+            return 'cuda'
+        if getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
+            return 'mps'
+    except Exception:
+        pass
+    return 'cpu'
+
+
 # ── Security helpers ───────────────────────────────────────────────────────────
 
 def _get_media_root() -> str:
@@ -75,6 +93,7 @@ def _write_data_yaml(training_dir: str) -> str:
 def _background_train(data_yaml: str, models_dir: str) -> None:
     try:
         from ultralytics import YOLO
+        device = _best_device()
         model = YOLO('yolov8n.pt')
         model.train(
             data=data_yaml,
@@ -82,6 +101,7 @@ def _background_train(data_yaml: str, models_dir: str) -> None:
             patience=20,     # stop if val loss doesn't improve for 20 epochs
             imgsz=640,
             optimizer='AdamW',
+            device=device,
             project=models_dir,
             name='port-yolo',
             exist_ok=True,

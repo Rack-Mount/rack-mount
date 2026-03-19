@@ -133,32 +133,127 @@ def _auto_canny(gray):
     return cv2.Canny(gray, lo, hi)
 
 
-def _centroid_nms(
-    candidates: list,
-    x_thresh: float = 3.0,
-    y_thresh: float = 5.0,
-    max_det: int = 96,
-) -> list:
-    """
-    Asymmetric centroid-based NMS.
+# Per-type default box sizes (% of image) used when explicit size is missing.
+_DEFAULT_BW = {'RJ45': 4.5, 'SFP': 3.0, 'SFP+': 3.0,
+               'USB-A': 4.0, 'SERIAL': 6.0, 'LC': 3.5}
+_DEFAULT_BH = {'RJ45': 5.5, 'SFP': 5.0, 'SFP+': 5.0,
+               'USB-A': 4.5, 'SERIAL': 4.0, 'LC': 6.0}
 
-    Ports in a dense row are much closer horizontally than vertically, so
-    x_thresh < y_thresh avoids suppressing neighbouring ports in the same row
-    while still removing true duplicates.
+
+def _bbox_nms(candidates: list, iou_thresh: float = 0.30,
+              max_det: int = 96) -> list:
     """
+    IoU-based NMS for port detections.
+
+    More robust than centroid-distance NMS: uses the actual bounding-box
+    overlap ratio, so a small inner contour produced by the same port hole as
+    a larger outer contour (which fooled the old fixed-distance check) is
+    correctly suppressed.
+
+    iou_thresh=0.30 is intentionally lower than YOLO's default 0.45 to
+    aggressively collapse near-duplicate detections.
+
+    Candidates may carry '_bw_pct' / '_bh_pct' (bbox size in % of image);
+    falls back to per-type defaults when those fields are absent.
+    The temporary size fields are stripped before returning.
+    """
+    if not candidates:
+        return candidates
+
     ordered = sorted(candidates, key=lambda c: c['confidence'], reverse=True)
-    final = []
+    final: list = []
+
     for c in ordered:
-        if any(
-            abs(c['pos_x'] - f['pos_x']) < x_thresh and
-            abs(c['pos_y'] - f['pos_y']) < y_thresh
-            for f in final
-        ):
-            continue
-        final.append(c)
+        cx, cy = c['pos_x'], c['pos_y']
+        pt = c.get('port_type', 'RJ45')
+        bw = c.get('_bw_pct', _DEFAULT_BW.get(pt, 4.0))
+        bh = c.get('_bh_pct', _DEFAULT_BH.get(pt, 5.0))
+        x1, y1, x2, y2 = cx - bw / 2, cy - bh / 2, cx + bw / 2, cy + bh / 2
+
+        overlaps = False
+        for f in final:
+            fx, fy = f['pos_x'], f['pos_y']
+            fpt = f.get('port_type', 'RJ45')
+            fbw = f.get('_bw_pct', _DEFAULT_BW.get(fpt, 4.0))
+            fbh = f.get('_bh_pct', _DEFAULT_BH.get(fpt, 5.0))
+            fx1, fy1 = fx - fbw / 2, fy - fbh / 2
+            fx2, fy2 = fx + fbw / 2, fy + fbh / 2
+
+            ix1 = max(x1, fx1)
+            iy1 = max(y1, fy1)
+            ix2 = min(x2, fx2)
+            iy2 = min(y2, fy2)
+            if ix2 <= ix1 or iy2 <= iy1:
+                continue
+            inter = (ix2 - ix1) * (iy2 - iy1)
+            union = bw * bh + fbw * fbh - inter
+            if union > 0 and inter / union > iou_thresh:
+                overlaps = True
+                break
+
+        if not overlaps:
+            final.append(c)
         if len(final) >= max_det:
             break
+
+    for c in final:
+        c.pop('_bw_pct', None)
+        c.pop('_bh_pct', None)
     return final
+
+
+def _deduplicate_by_grid(detections: list) -> list:
+    """
+    Row-level duplicate removal based on regular port-grid spacing.
+
+    Within each detected horizontal row, any port whose X centre is closer
+    than half the median inter-port X gap to an already-accepted port is
+    treated as a duplicate and removed (lowest confidence wins suppression).
+
+    This catches the residual near-duplicate contours that survive IoU NMS
+    because the inner and outer frame of the same port hole don't overlap
+    enough to exceed the IoU threshold.
+    """
+    if len(detections) < 3:
+        return detections
+
+    by_y = sorted(detections, key=lambda c: c['pos_y'])
+    y_vals = [c['pos_y'] for c in by_y]
+    gaps = [y_vals[i + 1] - y_vals[i] for i in range(len(y_vals) - 1)]
+    median_gap = sorted(gaps)[len(gaps) // 2] if gaps else 1.0
+    row_threshold = max(8.0, median_gap * 2.0)
+
+    rows: list = []
+    current: list = [by_y[0]]
+    for i, c in enumerate(by_y[1:]):
+        if gaps[i] > row_threshold:
+            rows.append(current)
+            current = [c]
+        else:
+            current.append(c)
+    rows.append(current)
+
+    keep: set = set()
+    for row in rows:
+        row_x = sorted(row, key=lambda c: c['pos_x'])
+        if len(row_x) < 2:
+            keep.update(id(c) for c in row_x)
+            continue
+
+        xs = [c['pos_x'] for c in row_x]
+        x_gaps = [xs[i + 1] - xs[i] for i in range(len(xs) - 1)]
+        med_xg = sorted(x_gaps)[len(x_gaps) // 2]
+        min_dist = max(0.5, med_xg * 0.5)   # min tolerated gap between ports
+
+        # Greedy: highest confidence first; accept only if far enough from
+        # every already-accepted port in this row.
+        kept: list = []
+        for c in sorted(row_x, key=lambda c: c['confidence'], reverse=True):
+            if not any(abs(c['pos_x'] - k['pos_x']) < min_dist for k in kept):
+                kept.append(c)
+        keep.update(id(c) for c in kept)
+
+    return [c for c in detections if id(c) in keep]
 
 
 def _reclassify_by_cluster(detections: list) -> list:
@@ -351,6 +446,14 @@ def _detect_with_opencv(image_path: str) -> list:
             continue
 
         port_type = _classify_port_type(ar)
+
+        # Portrait USB-A: connector mounted vertically (cable plugs in from
+        # top/bottom), so the opening is taller than wide (ar < 0.55).
+        # LC fibre cages are small → bbox area < 0.2 % of image;
+        # a USB-A opening is physically larger → bbox area > 0.2 %.
+        if port_type == 'LC' and ar < 0.55 and (w * h) / (W * H) > 0.002:
+            port_type = 'USB-A'
+
         cx_pct = round((x + w / 2) / W * 100, 1)
         cy_pct = round((y + h / 2) / H * 100, 1)
 
@@ -361,6 +464,8 @@ def _detect_with_opencv(image_path: str) -> list:
             'confidence': round(conf, 2),
             '_ar': ar,
             '_darkness': darkness,   # used for texture tiebreak; removed before return
+            '_bw_pct': round(w / W * 100, 2),   # bbox size for IoU NMS
+            '_bh_pct': round(h / H * 100, 2),
         })
         bboxes_px.append((w, h))
 
@@ -400,55 +505,19 @@ def _detect_with_opencv(image_path: str) -> list:
                 # Low contrast interior → plastic insert → RJ45
                 c['port_type'] = 'RJ45'
 
-    # ── Asymmetric centroid NMS + cluster reclassification ────────────────────
+    # ── IoU NMS → grid deduplication → cluster reclassification ──────────────
     return _reclassify_by_cluster(
-        _centroid_nms(candidates, x_thresh=3.0, y_thresh=5.0)
+        _deduplicate_by_grid(
+            _bbox_nms(candidates)
+        )
     )
 
 
 # ── YOLO detection ─────────────────────────────────────────────────────────────
 
-def _detect_with_yolo(image_path: str, model_path: str) -> list:
-    """
-    Run YOLOv8 inference with panorama-aware imgsz and tighter thresholds.
-
-    Improvements over V1:
-    • conf raised from 0.10 → 0.20 to reduce false positives.
-    • iou set to 0.45 for stricter internal NMS on dense panels.
-    • imgsz adapted to the image aspect ratio: very wide images (>3.5:1)
-      use a (384 × 1280) rectangle instead of a square crop, which avoids
-      losing ports in the resized lateral sections.
-    • Asymmetric centroid NMS applied after YOLO to eliminate any residual
-      duplicate detections.
-    """
-    from ultralytics import YOLO
-
-    id_to_type = {cfg['class_id']: pt for pt, cfg in _PORT_CONFIG.items()}
-    model = YOLO(model_path)
-
-    # Detect aspect ratio to choose an appropriate inference resolution.
-    imgsz = 640
-    try:
-        import cv2
-        img_h = cv2.imread(image_path)
-        if img_h is not None:
-            H_i, W_i = img_h.shape[:2]
-            if W_i / max(H_i, 1) > 3.5:
-                imgsz = (384, 1280)   # wide-panel mode
-            elif W_i > 900:
-                imgsz = 1280
-    except Exception:
-        pass
-
-    results = model.predict(
-        image_path,
-        verbose=False,
-        conf=0.20,
-        iou=0.45,
-        imgsz=imgsz,
-    )
-
-    detections = []
+def _extract_yolo_detections(results, id_to_type: dict) -> list:
+    """Convert ultralytics Results to the internal detection dict format."""
+    out = []
     for r in results:
         if r.boxes is None:
             continue
@@ -456,20 +525,96 @@ def _detect_with_yolo(image_path: str, model_path: str) -> list:
             cls_id = int(box.cls[0].item())
             port_type = id_to_type.get(cls_id, 'RJ45')
             norm = box.xywhn[0].tolist()   # [cx, cy, w, h] normalised 0–1
-            cx_pct = round(norm[0] * 100, 1)
-            cy_pct = round(norm[1] * 100, 1)
-            conf = round(float(box.conf[0].item()), 2)
-            detections.append({
+            out.append({
                 'port_type': port_type,
-                'pos_x': cx_pct,
-                'pos_y': cy_pct,
-                'confidence': conf,
+                'pos_x': round(norm[0] * 100, 1),
+                'pos_y': round(norm[1] * 100, 1),
+                'confidence': round(float(box.conf[0].item()), 2),
+                '_bw_pct': round(norm[2] * 100, 2),
+                '_bh_pct': round(norm[3] * 100, 2),
             })
+    return out
 
-    # Post-NMS with the same asymmetric thresholds, then cluster-level
-    # majority-vote reclassification (same pipeline as the OpenCV path).
+
+def _detect_with_yolo(image_path: str, model_path: str) -> list:
+    """
+    Run YOLOv8 inference with panorama-aware imgsz and tighter thresholds.
+
+    Test-Time Augmentation (TTA):
+      The model is trained mostly on normally-oriented panels, so RJ45 ports
+      in a 180°-rotated image are often missed.  To fix this WITHOUT requiring
+      a retrain we run a second inference pass on the 180°-rotated image, flip
+      the resulting coordinates back ( cx' = 100-cx, cy' = 100-cy ), and merge
+      both passes before NMS.  Ports detected by both passes converge to the
+      same position and are collapsed by IoU NMS; ports only visible in one
+      pass are kept.
+    """
+    import tempfile
+    from ultralytics import YOLO
+
+    id_to_type = {cfg['class_id']: pt for pt, cfg in _PORT_CONFIG.items()}
+    model = YOLO(model_path)
+
+    # ── Determine inference resolution from image aspect ratio ────────────────
+    imgsz = 640
+    img_orig = None
+    rotated_tmp = None
+    try:
+        import cv2
+        img_orig = cv2.imread(image_path)
+        if img_orig is not None:
+            H_i, W_i = img_orig.shape[:2]
+            if W_i / max(H_i, 1) > 3.5:
+                imgsz = (384, 1280)   # wide-panel mode
+            elif W_i > 900:
+                imgsz = 1280
+    except Exception:
+        pass
+
+    predict_kwargs = dict(verbose=False, conf=0.20, iou=0.45, imgsz=imgsz)
+
+    # ── Pass 1: original image ─────────────────────────────────────────────────
+    detections = _extract_yolo_detections(
+        model.predict(image_path, **predict_kwargs), id_to_type
+    )
+
+    # ── Pass 2: 180°-rotated image (TTA) ──────────────────────────────────────
+    # A model trained on standard-orientation panels often fails on 180°-
+    # rotated panels because it has learned orientation-specific features
+    # (RJ45 clip position, LED placement, etc.).  Running inference on the
+    # rotated copy and flipping the coordinates back covers these cases.
+    if img_orig is not None:
+        try:
+            import cv2
+            img_r180 = cv2.rotate(img_orig, cv2.ROTATE_180)
+            tmp = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False)
+            tmp.close()
+            rotated_tmp = tmp.name
+            cv2.imwrite(rotated_tmp, img_r180, [cv2.IMWRITE_JPEG_QUALITY, 95])
+
+            r180_dets = _extract_yolo_detections(
+                model.predict(rotated_tmp, **predict_kwargs), id_to_type
+            )
+            # Transform coordinates back: 180° rotation → cx' = 100-cx, cy' = 100-cy
+            # bbox dimensions (bw, bh) are unchanged.
+            for d in r180_dets:
+                d['pos_x'] = round(100.0 - d['pos_x'], 1)
+                d['pos_y'] = round(100.0 - d['pos_y'], 1)
+            detections.extend(r180_dets)
+        except Exception:
+            pass
+        finally:
+            if rotated_tmp:
+                try:
+                    os.remove(rotated_tmp)
+                except OSError:
+                    pass
+
+    # ── IoU NMS → grid deduplication → cluster reclassification ──────────────
     return _reclassify_by_cluster(
-        _centroid_nms(detections, x_thresh=3.0, y_thresh=5.0)
+        _deduplicate_by_grid(
+            _bbox_nms(detections)
+        )
     )
 
 
