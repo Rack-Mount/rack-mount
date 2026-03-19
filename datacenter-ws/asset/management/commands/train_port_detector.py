@@ -65,15 +65,17 @@ def _best_device() -> str:
     """
     Return the fastest available compute device:
       CUDA  → 'cuda' (NVIDIA GPU via CUDA)
-      MPS   → 'mps'  (Apple Silicon via Metal)
       else  → 'cpu'
+
+    MPS (Apple Silicon) is intentionally skipped: PyTorch MPS has a known bug
+    where boolean tensor indexing returns an incorrect element count, causing a
+    shape mismatch inside ultralytics' TaskAlignedAssigner.get_box_metrics().
+    Training must run on CPU on Apple Silicon until this is fixed upstream.
     """
     try:
         import torch
         if torch.cuda.is_available():
             return 'cuda'
-        if getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
-            return 'mps'
     except Exception:
         pass
     return 'cpu'
