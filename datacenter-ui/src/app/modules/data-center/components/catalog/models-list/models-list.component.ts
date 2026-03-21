@@ -29,7 +29,6 @@ import {
   Vendor,
 } from '../../../../core/api/v1';
 import { AssetModelPort } from '../../../../core/api/v1/model/assetModelPort';
-import { PortTypeEnum } from '../../../../core/api/v1/model/portTypeEnum';
 import {
   DEFAULT_PAGE_SIZE,
   SEARCH_DEBOUNCE_MS,
@@ -49,11 +48,8 @@ import {
   ImageEditorComponent,
   ImageEditParams,
 } from './image-editor/image-editor.component';
-import {
-  ASSET_MODEL_PORT_TYPES,
-  AssetModelPortSide,
-  AssetModelPortType,
-} from './port-types';
+import { ModelPortsService, PortForm } from './model-ports.service';
+import { AssetModelPortType } from './port-types';
 import {
   PortAddEvent,
   PortEditEvent,
@@ -118,8 +114,10 @@ function emptyForm(): ModelForm {
   templateUrl: './models-list.component.html',
   styleUrl: './models-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ModelPortsService],
 })
 export class ModelsListComponent {
+  private readonly portsSvc = inject(ModelPortsService);
   private readonly svc = inject(AssetService);
   protected readonly role = inject(RoleService);
   private readonly destroyRef = inject(DestroyRef);
@@ -213,45 +211,21 @@ export class ModelsListComponent {
   /** Which image side is currently open in the editor ('front' | 'rear' | null) */
   protected readonly editingImage = signal<'front' | 'rear' | null>(null);
 
-  // ── Ports ─────────────────────────────────────────────────────────────────
-  protected readonly ports = signal<AssetModelPort[]>([]);
-  protected readonly portsLoading = signal(false);
-  protected readonly portTypes = ASSET_MODEL_PORT_TYPES;
-
-  protected readonly frontPorts = computed(() =>
-    this.ports().filter((p) => p.side === ('front' as const)),
-  );
-  protected readonly rearPorts = computed(() =>
-    this.ports().filter((p) => p.side === ('rear' as const)),
-  );
-
-  // Port inline form
-  protected readonly portFormOpen = signal(false);
-  protected readonly portFormMode = signal<'create' | 'edit'>('create');
-  protected readonly portEditId = signal<number | null>(null);
-  protected readonly portForm = signal<{
-    name: string;
-    port_type: AssetModelPortType;
-    side: AssetModelPortSide;
-    notes: string;
-  }>({ name: '', port_type: 'RJ45', side: 'rear', notes: '' });
-  protected readonly portSaveState = signal<'idle' | 'saving' | 'error'>(
-    'idle',
-  );
-  protected readonly portDeleteId = signal<number | null>(null);
-  protected readonly portDeleteState = signal<'idle' | 'saving' | 'error'>(
-    'idle',
-  );
-
-  /** Fullscreen ports map state. */
-  protected readonly portsMapOpen = signal<{
-    side: 'front' | 'rear';
-    imageUrl: string;
-    readonly: boolean;
-  } | null>(null);
-
-  /** Port id currently being positioned by clicking on the fullscreen image. */
-  protected readonly placingPortId = signal<number | null>(null);
+  // ── Ports (delegated to ModelPortsService) ────────────────────────────────
+  protected get ports() { return this.portsSvc.ports; }
+  protected get portsLoading() { return this.portsSvc.portsLoading; }
+  protected get portTypes() { return this.portsSvc.portTypes; }
+  protected get frontPorts() { return this.portsSvc.frontPorts; }
+  protected get rearPorts() { return this.portsSvc.rearPorts; }
+  protected get portFormOpen() { return this.portsSvc.portFormOpen; }
+  protected get portFormMode() { return this.portsSvc.portFormMode; }
+  protected get portEditId() { return this.portsSvc.portEditId; }
+  protected get portForm() { return this.portsSvc.portForm; }
+  protected get portSaveState() { return this.portsSvc.portSaveState; }
+  protected get portDeleteId() { return this.portsSvc.portDeleteId; }
+  protected get portDeleteState() { return this.portsSvc.portDeleteState; }
+  protected get portsMapOpen() { return this.portsSvc.portsMapOpen; }
+  protected get placingPortId() { return this.portsSvc.placingPortId; }
 
   // ── Autocomplete inputs for vendor / type ─────────────────────────────────
   protected readonly vendorSearch = signal('');
@@ -428,45 +402,25 @@ export class ModelsListComponent {
   }
 
   protected openEdit(m: AssetModel): void {
-    this.vendorSearch.set(m.vendor?.name ?? '');
-    this.typeSearch.set(m.type?.name ?? '');
-    this.vendorDropdownOpen.set(false);
-    this.typeDropdownOpen.set(false);
-    this.form.set({
-      name: m.name ?? '',
-      vendor_id: m.vendor?.id ?? null,
-      type_id: m.type?.id ?? null,
-      rack_units: m.rack_units ?? null,
-      width_mm: m.width_mm ?? null,
-      height_mm: m.height_mm ?? null,
-      depth_mm: m.depth_mm ?? null,
-      weight_kg: m.weight_kg ?? '',
-      power_consumption_watt: m.power_consumption_watt ?? null,
-      note: m.note ?? '',
-      front_image_file: null,
-      rear_image_file: null,
-      front_image_url: m.front_image ?? null,
-      rear_image_url: m.rear_image ?? null,
-      front_transform: null,
-      rear_transform: null,
-      front_preview_url: null,
-      rear_preview_url: null,
-    });
-    this.drawerSave.set('idle');
-    this.drawerSaveMsg.set('');
-    this.drawerMode.set('edit');
-    this.drawerEditId.set(m.id);
-    this.drawerOpen.set(true);
+    this.openDrawerFromModel(m, 'edit');
     this.loadPortsForModel(m.id);
   }
 
   protected cloneModel(m: AssetModel): void {
+    this.openDrawerFromModel(m, 'create', `(CLONE) ${m.name ?? ''}`);
+  }
+
+  private openDrawerFromModel(
+    m: AssetModel,
+    mode: 'create' | 'edit',
+    nameOverride?: string,
+  ): void {
     this.vendorSearch.set(m.vendor?.name ?? '');
     this.typeSearch.set(m.type?.name ?? '');
     this.vendorDropdownOpen.set(false);
     this.typeDropdownOpen.set(false);
     this.form.set({
-      name: `(CLONE) ${m.name ?? ''}`,
+      name: nameOverride ?? m.name ?? '',
       vendor_id: m.vendor?.id ?? null,
       type_id: m.type?.id ?? null,
       rack_units: m.rack_units ?? null,
@@ -487,18 +441,14 @@ export class ModelsListComponent {
     });
     this.drawerSave.set('idle');
     this.drawerSaveMsg.set('');
-    this.drawerMode.set('create');
-    this.drawerEditId.set(null);
+    this.drawerMode.set(mode);
+    this.drawerEditId.set(mode === 'edit' ? m.id : null);
     this.drawerOpen.set(true);
   }
 
   protected closeDrawer(): void {
     this.drawerOpen.set(false);
-    this.ports.set([]);
-    this.portFormOpen.set(false);
-    this.portEditId.set(null);
-    this.portsMapOpen.set(null);
-    this.placingPortId.set(null);
+    this.portsSvc.reset();
   }
 
   // ── Preview ───────────────────────────────────────────────────────────────
@@ -936,266 +886,37 @@ export class ModelsListComponent {
       });
   }
 
-  // ── Ports ─────────────────────────────────────────────────────────────────
+  // ── Ports (delegates to ModelPortsService) ────────────────────────────────
 
-  protected loadPortsForModel(modelId: number): void {
-    this.portsLoading.set(true);
-    this.svc
-      .assetAssetModelPortList({ assetModel: modelId, pageSize: 500 })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (r) => {
-          this.ports.set(r.results ?? []);
-          this.portsLoading.set(false);
-        },
-        error: () => this.portsLoading.set(false),
-      });
-  }
-
-  protected openPortCreate(): void {
-    this.portFormMode.set('create');
-    this.portEditId.set(null);
-    this.portForm.set({ name: '', port_type: 'RJ45', side: 'rear', notes: '' });
-    this.portSaveState.set('idle');
-    this.portFormOpen.set(true);
-  }
-
-  protected openPortEdit(p: AssetModelPort): void {
-    this.portFormMode.set('edit');
-    this.portEditId.set(p.id);
-    this.portForm.set({
-      name: p.name ?? '',
-      port_type: p.port_type ?? 'RJ45',
-      side: p.side ?? 'rear',
-      notes: p.notes ?? '',
-    });
-    this.portSaveState.set('idle');
-    this.portFormOpen.set(true);
-  }
-
-  protected setPortField<K extends keyof ReturnType<typeof this.portForm>>(
-    key: K,
-    value: ReturnType<typeof this.portForm>[K],
-  ): void {
-    this.portForm.update((f) => ({ ...f, [key]: value }));
-  }
-
-  protected submitPortForm(): void {
-    const modelId = this.drawerEditId();
-    if (!modelId) return;
-    const f = this.portForm();
-    if (!f.name.trim()) return;
-
-    this.portSaveState.set('saving');
-
-    if (this.portFormMode() === 'create') {
-      this.svc
-        .assetAssetModelPortCreate({
-          assetModelPort: {
-            asset_model: modelId,
-            name: f.name.trim(),
-            port_type: f.port_type,
-            side: f.side,
-            notes: f.notes,
-            pos_x: null,
-            pos_y: null,
-          } as AssetModelPort,
-        })
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (saved: AssetModelPort) => {
-            this.ports.update((prev) => [...prev, saved]);
-            this.portSaveState.set('idle');
-            this.portFormOpen.set(false);
-          },
-          error: () => this.portSaveState.set('error'),
-        });
-    } else {
-      const id = this.portEditId()!;
-      this.svc
-        .assetAssetModelPortPartialUpdate({
-          id,
-          patchedAssetModelPort: {
-            name: f.name.trim(),
-            port_type: f.port_type,
-            side: f.side,
-            notes: f.notes,
-          },
-        })
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (saved: AssetModelPort) => {
-            this.ports.update((prev) =>
-              prev.map((p) => (p.id === id ? saved : p)),
-            );
-            this.portSaveState.set('idle');
-            this.portFormOpen.set(false);
-          },
-          error: () => this.portSaveState.set('error'),
-        });
-    }
-  }
-
-  protected confirmDeletePort(id: number): void {
-    this.portDeleteId.set(id);
-    this.portDeleteState.set('idle');
-  }
-
-  protected cancelDeletePort(): void {
-    this.portDeleteId.set(null);
-  }
-
-  protected submitDeletePort(): void {
-    const id = this.portDeleteId();
-    if (!id) return;
-    this.portDeleteState.set('saving');
-    this.svc
-      .assetAssetModelPortDestroy({ id })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.ports.update((prev) => prev.filter((p) => p.id !== id));
-          this.portDeleteId.set(null);
-          this.portDeleteState.set('idle');
-          if (this.placingPortId() === id) this.placingPortId.set(null);
-        },
-        error: () => this.portDeleteState.set('error'),
-      });
-  }
-
-  /** Opens fullscreen ports map for the given side. */
-  protected openPortsMap(
-    side: string | undefined,
-    imageUrl: string,
-    readonly: boolean,
-  ): void {
-    this.portsMapOpen.set({
-      side: (side || 'front') as 'front' | 'rear',
-      imageUrl,
-      readonly,
-    });
-    if (!readonly) this.placingPortId.set(null);
-  }
-
-  protected closePortsMap(): void {
-    this.portsMapOpen.set(null);
-    this.placingPortId.set(null);
-  }
+  protected loadPortsForModel(modelId: number): void { this.portsSvc.loadPortsForModel(modelId); }
+  protected openPortCreate(): void { this.portsSvc.openPortCreate(); }
+  protected openPortEdit(p: AssetModelPort): void { this.portsSvc.openPortEdit(p); }
+  protected setPortField<K extends keyof PortForm>(key: K, value: PortForm[K]): void { this.portsSvc.setPortField(key, value); }
+  protected submitPortForm(): void { this.portsSvc.submitPortForm(this.drawerEditId()); }
+  protected confirmDeletePort(id: number): void { this.portsSvc.confirmDeletePort(id); }
+  protected cancelDeletePort(): void { this.portsSvc.cancelDeletePort(); }
+  protected submitDeletePort(): void { this.portsSvc.submitDeletePort(); }
+  protected openPortsMap(side: string | undefined, imageUrl: string, readonly: boolean): void { this.portsSvc.openPortsMap(side, imageUrl, readonly); }
+  protected closePortsMap(): void { this.portsSvc.closePortsMap(); }
+  protected startPlacingPort(portId: number): void { this.portsSvc.startPlacingPort(portId); }
+  protected stopPlacingPort(): void { this.portsSvc.stopPlacingPort(); }
+  protected onPortPicked(event: PortPickEvent): void { this.portsSvc.onPortPicked(event); }
+  protected clearPortPosition(portId: number): void { this.portsSvc.clearPortPosition(portId); }
+  protected portTypeLabel(type: AssetModelPortType | undefined): string { return this.portsSvc.portTypeLabel(type); }
+  protected onPortAddedFromMap(event: PortAddEvent): void { this.portsSvc.onPortAddedFromMap(event, this.drawerEditId()); }
+  protected onPortRemovedFromMap(portId: number): void { this.portsSvc.onPortRemovedFromMap(portId); }
+  protected onPortEditedFromMap(event: PortEditEvent): void { this.portsSvc.onPortEditedFromMap(event); }
 
   /** Returns ports for the currently open map side. */
   protected readonly portsForMap = computed(() => {
-    const map = this.portsMapOpen();
+    const map = this.portsSvc.portsMapOpen();
     if (!map) return [];
-    // For preview panel, read from previewModel.ports; for edit drawer use local ports signal.
     if (!map.readonly) {
-      return this.ports().filter((p) => (p.side as string) === map.side);
+      return this.portsSvc.ports().filter((p) => (p.side as string) === map.side);
     }
     return (this.previewModel()?.ports ?? []).filter(
       (p) => (p.side as string) === map.side,
     );
   });
-
-  /** Enters "place" mode: next image click will set position for this port. */
-  protected startPlacingPort(portId: number): void {
-    this.placingPortId.set(portId);
-  }
-
-  protected stopPlacingPort(): void {
-    this.placingPortId.set(null);
-  }
-
-  /** Called when the user clicks on the fullscreen image to place a port. */
-  protected onPortPicked(event: PortPickEvent): void {
-    this.svc
-      .assetAssetModelPortPartialUpdate({
-        id: event.portId,
-        patchedAssetModelPort: { pos_x: event.pos_x, pos_y: event.pos_y },
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (saved: AssetModelPort) => {
-          this.ports.update((prev) =>
-            prev.map((p) => (p.id === saved.id ? saved : p)),
-          );
-          this.placingPortId.set(null);
-        },
-      });
-  }
-
-  protected clearPortPosition(portId: number): void {
-    this.svc
-      .assetAssetModelPortPartialUpdate({
-        id: portId,
-        patchedAssetModelPort: { pos_x: null, pos_y: null },
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (saved: AssetModelPort) => {
-          this.ports.update((prev) =>
-            prev.map((p) => (p.id === saved.id ? saved : p)),
-          );
-        },
-      });
-  }
-
-  protected portTypeLabel(type: AssetModelPortType | undefined): string {
-    if (!type) return '';
-    return (
-      ASSET_MODEL_PORT_TYPES.find(
-        (t: { value: PortTypeEnum; label: string }) => t.value === type,
-      )?.label ?? type
-    );
-  }
-
-  // ── Port map events ─────────────────────────────────────────────────────────
-
-  protected onPortAddedFromMap(event: PortAddEvent): void {
-    const modelId = this.drawerEditId();
-    if (!modelId) return;
-    const side = this.portsMapOpen()?.side ?? 'rear';
-    this.svc
-      .assetAssetModelPortCreate({
-        assetModelPort: {
-          asset_model: modelId,
-          name: event.name,
-          port_type: event.port_type,
-          side,
-          notes: '',
-          pos_x: event.pos_x,
-          pos_y: event.pos_y,
-        } as AssetModelPort,
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (saved: AssetModelPort) =>
-          this.ports.update((prev) => [...prev, saved]),
-      });
-  }
-
-  protected onPortRemovedFromMap(portId: number): void {
-    this.svc
-      .assetAssetModelPortDestroy({ id: portId })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.ports.update((prev) => prev.filter((p) => p.id !== portId));
-          if (this.placingPortId() === portId) this.placingPortId.set(null);
-        },
-      });
-  }
-
-  protected onPortEditedFromMap(event: PortEditEvent): void {
-    this.svc
-      .assetAssetModelPortPartialUpdate({
-        id: event.portId,
-        patchedAssetModelPort: { name: event.name, port_type: event.port_type },
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (saved: AssetModelPort) =>
-          this.ports.update((prev) =>
-            prev.map((p) => (p.id === saved.id ? saved : p)),
-          ),
-      });
-  }
 }
+

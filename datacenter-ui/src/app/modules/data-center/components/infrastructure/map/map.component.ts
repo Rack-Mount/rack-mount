@@ -12,6 +12,8 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
+import { getBoundingBox, gridSnap } from './map-layout.utils';
+import { MapViewportService } from './map-viewport.service';
 import { FormsModule } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
@@ -78,7 +80,7 @@ import {
     MapFloorPlanToolbarComponent,
     MapZoomControlsComponent,
   ],
-  providers: [MapFloorPlanService],
+  providers: [MapFloorPlanService, MapViewportService],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -87,6 +89,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   // ── Injected services ─────────────────────────────────────────────────────
   readonly role = inject(RoleService);
   protected readonly fpService = inject(MapFloorPlanService);
+  readonly viewport = inject(MapViewportService);
   private readonly tabService = inject(TabService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly translate = inject(TranslateService);
@@ -142,6 +145,28 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.fpService.doorWidth.set(Number(w));
   }
 
+  // ── Viewport delegation (reads from MapViewportService) ──────────────────────
+  /** Current zoom level — forwards to the viewport service signal. */
+  get zoom(): number {
+    return this.viewport.zoom();
+  }
+  /** SVG inner-group transform string (translate + scale). */
+  get svgTransform(): string {
+    return this.viewport.svgTransform();
+  }
+  /** Whether a pan drag is in progress (used for cursor styling). */
+  get isPanning(): boolean {
+    return this.viewport.isPanning;
+  }
+  /** Minor (10 cm) grid SVG path string. */
+  get gridPath(): string {
+    return this.viewport.gridPath();
+  }
+  /** Major (60 cm) grid SVG path string. */
+  get gridPathMajor(): string {
+    return this.viewport.gridPathMajor();
+  }
+
   // ── Canvas drawing state ──────────────────────────────────────────────────
   selectedTool: string = 'select';
   elements: MapElement[] = [];
@@ -183,45 +208,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   intersectionPoint: Point | null = null;
   vertexSnapPoint: Point | null = null;
 
-  // Zoom & pan state
-  zoom = 1;
-  panX = 0;
-  panY = 0;
 
-  // Pan drag state
-  isPanning = false;
-  panDragStart: {
-    screenX: number;
-    screenY: number;
-    panX: number;
-    panY: number;
-  } | null = null;
-
-  get svgTransform(): string {
-    return `translate(${this.panX},${this.panY}) scale(${this.zoom})`;
-  }
-
-  // Adaptive grid: base step 10cm, doubles/halves to keep visual size in 15–150px
-  get gridPattern(): {
-    size: number;
-    offsetX: number;
-    offsetY: number;
-    step: number;
-  } {
-    let step = 10; // 10cm base
-    const MIN_PX = 15;
-    const MAX_PX = 150;
-    while (step * this.zoom < MIN_PX) step *= 10;
-    while (step * this.zoom > MAX_PX) step /= 10;
-    const size = step * this.zoom;
-    const offsetX = ((this.panX % size) + size) % size;
-    const offsetY = ((this.panY % size) + size) % size;
-    return { size, offsetX, offsetY, step };
-  }
-
-  // Pre-computed grid path string for SVG (screen-space lines), updated on zoom/pan
-  gridPath = ''; // 10cm minor grid
-  gridPathMajor = ''; // 1m major grid
 
   // Detected rooms (enclosed faces in the wall planar graph)
   rooms: Room[] = [];
@@ -230,53 +217,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   editingRackId: string | null = null;
   editingRackName = '';
 
-  private gridRafId: number | null = null;
-  private readonly resizeListener = (): void => this.scheduleUpdateGrid();
+  private readonly resizeListener = (): void => this.viewport.scheduleUpdateGrid();
 
   // Debounced grid update: at most once per animation frame
-  private scheduleUpdateGrid(): void {
-    if (this.gridRafId !== null) return;
-    this.gridRafId = requestAnimationFrame(() => {
-      this.gridRafId = null;
-      this.updateGrid();
-    });
-  }
-
-  private updateGrid(): void {
-    const svg = this.svgContainer?.nativeElement;
-    if (!svg) return;
-    const rect = svg.getBoundingClientRect();
-    const W = rect.width || svg.clientWidth || 1200;
-    const H = rect.height || svg.clientHeight || 800;
-    // Minor grid: 10cm
-    const minor = 10 * this.zoom;
-    if (minor < 2) {
-      this.gridPath = '';
-      this.gridPathMajor = '';
-      this.cdr.markForCheck();
-      return;
-    }
-    const offXm = ((this.panX % minor) + minor) % minor;
-    const offYm = ((this.panY % minor) + minor) % minor;
-    let dMinor = '';
-    for (let x = offXm; x <= W + minor; x += minor)
-      dMinor += `M${x},0 L${x},${H} `;
-    for (let y = offYm; y <= H + minor; y += minor)
-      dMinor += `M0,${y} L${W},${y} `;
-    this.gridPath = dMinor;
-    // Major grid: 60cm
-    const major = 60 * this.zoom;
-    const offXM = ((this.panX % major) + major) % major;
-    const offYM = ((this.panY % major) + major) % major;
-    let dMajor = '';
-    for (let x = offXM; x <= W + major; x += major)
-      dMajor += `M${x},0 L${x},${H} `;
-    for (let y = offYM; y <= H + major; y += major)
-      dMajor += `M0,${y} L${W},${y} `;
-    this.gridPathMajor = dMajor;
-    this.cdr.markForCheck();
-  }
-
   @ViewChild('svgContainer') svgContainer!: ElementRef<SVGSVGElement>;
   @ViewChild('activeRackInput')
   activeRackInputRef?: ElementRef<HTMLInputElement>;
@@ -349,13 +292,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    // Register the SVG element getter with the viewport service
+    this.viewport.init(() => this.svgContainer?.nativeElement ?? null);
+
     // Must use passive:false to call preventDefault() on wheel
     this.svgContainer.nativeElement.addEventListener(
       'wheel',
       (e: WheelEvent) => {
         e.preventDefault();
         const factor = e.deltaY < 0 ? 1.1 : 1 / 1.1;
-        this.applyZoom(factor, e.offsetX, e.offsetY);
+        this.viewport.applyZoom(
+          factor,
+          this.svgContainer.nativeElement,
+          e.offsetX,
+          e.offsetY,
+        );
+        this.rederiveAllWalls();
       },
       { passive: false },
     );
@@ -370,7 +322,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     );
 
     // Initial grid render
-    setTimeout(() => this.updateGrid(), 0);
+    setTimeout(() => this.viewport.updateGrid(), 0);
 
     // Update grid on window resize
     window.addEventListener('resize', this.resizeListener);
@@ -391,7 +343,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
     window.removeEventListener('resize', this.resizeListener);
-    if (this.gridRafId !== null) cancelAnimationFrame(this.gridRafId);
   }
 
   onLocationSelect(id: number | null): void {
@@ -500,108 +451,37 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   zoomIn(): void {
-    this.applyZoom(1.25);
+    this.viewport.zoomIn();
+    this.rederiveAllWalls();
   }
+
   zoomOut(): void {
-    this.applyZoom(1 / 1.25);
+    this.viewport.zoomOut();
+    this.rederiveAllWalls();
   }
+
   resetZoom(): void {
-    this.zoom = 1;
-    this.panX = 0;
-    this.panY = 0;
+    this.viewport.resetZoom();
     this.rederiveAllWalls();
   }
 
   fitToView(): void {
-    // Collect all content points
-    const xs: number[] = [];
-    const ys: number[] = [];
-    for (const el of this.elements) {
-      if (el.type === 'wall') {
-        for (const p of el.points) {
-          xs.push(p.x);
-          ys.push(p.y);
-        }
-      } else if (el.type === 'rack') {
-        xs.push(el.x, el.x + el.width);
-        ys.push(el.y, el.y + el.height);
-      } else if (el.type === 'door') {
-        xs.push(el.x, el.x2);
-        ys.push(el.y, el.y2);
-      } else {
-        xs.push(el.x);
-        ys.push(el.y);
-      }
-    }
-    if (xs.length === 0) {
-      this.resetZoom();
-      return;
-    }
-
-    const PADDING = 60; // px margin around content
-    const minX = Math.min(...xs);
-    const maxX = Math.max(...xs);
-    const minY = Math.min(...ys);
-    const maxY = Math.max(...ys);
-    const contentW = maxX - minX || 1;
-    const contentH = maxY - minY || 1;
-
-    const svg = this.svgContainer.nativeElement;
-    const svgW = svg.clientWidth;
-    const svgH = svg.clientHeight;
-
-    const newZoom = Math.min(
-      20,
-      Math.max(
-        0.1,
-        Math.min(
-          (svgW - PADDING * 2) / contentW,
-          (svgH - PADDING * 2) / contentH,
-        ),
-      ),
-    );
-
-    // Center the bounding box in the viewport
-    this.zoom = newZoom;
-    this.panX = (svgW - contentW * newZoom) / 2 - minX * newZoom;
-    this.panY = (svgH - contentH * newZoom) / 2 - minY * newZoom;
+    this.viewport.fitToView(this.elements, this.svgContainer.nativeElement);
     this.rederiveAllWalls();
   }
 
   /**
-   * Moves all floor-plan element coordinates so that the bounding-box
-   * top-left corner lands at (0, 0) — always on the 10 cm grid — then
-   * re-centres the viewport at the current zoom level (no zoom change).
+   * Translates all floor-plan elements so that the bounding-box top-left
+   * corner lands at (0, 0), then re-centres the viewport at the current zoom
+   * level (no zoom change).
    */
   centerAndSnapFloorPlan(): void {
     if (this.elements.length === 0) return;
 
-    // Compute bounding-box min from all elements
-    const xs: number[] = [];
-    const ys: number[] = [];
-    for (const el of this.elements) {
-      if (el.type === 'wall') {
-        for (const p of el.points) {
-          xs.push(p.x);
-          ys.push(p.y);
-        }
-      } else if (el.type === 'rack') {
-        xs.push(el.x, el.x + el.width);
-        ys.push(el.y, el.y + el.height);
-      } else if (el.type === 'door') {
-        xs.push(el.x, el.x2);
-        ys.push(el.y, el.y2);
-      } else {
-        xs.push(el.x);
-        ys.push(el.y);
-      }
-    }
-    const minX = Math.min(...xs);
-    const minY = Math.min(...ys);
-    const maxX = Math.max(...xs);
-    const maxY = Math.max(...ys);
+    const bbox = getBoundingBox(this.elements);
+    if (!bbox) return;
 
-    // Translate so (minX, minY) → (0, 0) — always on the 10 cm grid
+    const { minX, minY, maxX, maxY } = bbox;
     const dx = -minX;
     const dy = -minY;
 
@@ -621,27 +501,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.elements = [...this.elements];
     this.rederiveAllWalls();
 
-    // Centre the content at the current zoom level (no zoom change)
+    // Re-centre viewport (no zoom change)
     const contentW = maxX - minX || 1;
     const contentH = maxY - minY || 1;
     const svg = this.svgContainer.nativeElement;
-    this.panX = Math.round((svg.clientWidth - contentW * this.zoom) / 2);
-    this.panY = Math.round((svg.clientHeight - contentH * this.zoom) / 2);
+    this.viewport.panX.set(
+      Math.round((svg.clientWidth - contentW * this.zoom) / 2),
+    );
+    this.viewport.panY.set(
+      Math.round((svg.clientHeight - contentH * this.zoom) / 2),
+    );
 
-    this.scheduleUpdateGrid();
+    this.viewport.scheduleUpdateGrid();
     this.scheduleAutosave();
   }
 
-  private applyZoom(factor: number, pivotX?: number, pivotY?: number): void {
-    const svg = this.svgContainer.nativeElement;
-    const cx = pivotX ?? svg.clientWidth / 2;
-    const cy = pivotY ?? svg.clientHeight / 2;
-    const newZoom = Math.min(20, Math.max(0.1, this.zoom * factor));
-    this.panX = cx - (cx - this.panX) * (newZoom / this.zoom);
-    this.panY = cy - (cy - this.panY) * (newZoom / this.zoom);
-    this.zoom = newZoom;
-    this.rederiveAllWalls();
-  }
+
 
   private rederiveAllWalls(): void {
     for (const el of this.elements) {
@@ -650,7 +525,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     computeJunctionAngles(this.elements, this.zoom);
     this.roomFaces = computeRoomFaces(this.elements);
     this.rooms = restoreRoomNames(_computeRooms(this.elements), this.rooms);
-    this.scheduleUpdateGrid();
+    this.viewport.scheduleUpdateGrid();
   }
 
   startEditRack(el: RackElement, event: MouseEvent): void {
@@ -768,32 +643,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   getSvgPoint(event: MouseEvent): { x: number; y: number } {
-    const svg = this.svgContainer.nativeElement;
-    const pt = svg.createSVGPoint();
-    pt.x = event.clientX;
-    pt.y = event.clientY;
-    const svgP = pt.matrixTransform(svg.getScreenCTM()!.inverse());
-
-    // Unproject through inner <g> transform: translate(panX,panY) scale(zoom)
-    const contentX = (svgP.x - this.panX) / this.zoom;
-    const contentY = (svgP.y - this.panY) / this.zoom;
-
-    // Grid Snap (Alt key) — 10cm = 10 SVG units
-    if (event.altKey) {
-      const gridSize = 10;
-      return {
-        x: Math.round(contentX / gridSize) * gridSize,
-        y: Math.round(contentY / gridSize) * gridSize,
-      };
-    }
-
-    return { x: contentX, y: contentY };
-  }
-
-  /** Snaps a single SVG-unit value to the nearest 10 cm grid line. */
-  private gridSnap(v: number): number {
-    const grid = 10;
-    return Math.round(v / grid) * grid;
+    return this.viewport.getSvgPoint(event);
   }
 
   // Selected vertex for moving
@@ -996,13 +846,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       event.target === event.currentTarget;
     if (isMiddle || isSelectBackground) {
       event.preventDefault();
-      this.isPanning = true;
-      this.panDragStart = {
-        screenX: event.clientX,
-        screenY: event.clientY,
-        panX: this.panX,
-        panY: this.panY,
-      };
+      this.viewport.startPan(event.clientX, event.clientY);
       return;
     }
 
@@ -1296,12 +1140,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   onMouseMove(event: MouseEvent) {
     // Pan takes highest priority
-    if (this.isPanning && this.panDragStart) {
-      this.panX =
-        this.panDragStart.panX + (event.clientX - this.panDragStart.screenX);
-      this.panY =
-        this.panDragStart.panY + (event.clientY - this.panDragStart.screenY);
-      this.scheduleUpdateGrid();
+    if (this.viewport.isPanning) {
+      this.viewport.updatePan(event.clientX, event.clientY);
       return;
     }
 
@@ -1404,8 +1244,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         let actualDy = dy;
         if (event.altKey && refPoint) {
           // Snap the reference vertex to the nearest grid point and derive the real delta
-          const snappedX = this.gridSnap(refPoint.x + dx);
-          const snappedY = this.gridSnap(refPoint.y + dy);
+          const snappedX = gridSnap(refPoint.x + dx);
+          const snappedY = gridSnap(refPoint.y + dy);
           actualDx = snappedX - refPoint.x;
           actualDy = snappedY - refPoint.y;
         }
@@ -1453,8 +1293,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           let proposedX = el.x + dx;
           let proposedY = el.y + dy;
           if (event.altKey) {
-            proposedX = this.gridSnap(proposedX);
-            proposedY = this.gridSnap(proposedY);
+            proposedX = gridSnap(proposedX);
+            proposedY = gridSnap(proposedY);
           }
           const others = this.getRackRects(el.id);
           const snapRadius = event.shiftKey
@@ -1745,10 +1585,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const h = this.currentElement.height ?? 0;
       // Alt: snap top-left corner to grid; otherwise centre on cursor
       const rawX = event.altKey
-        ? this.gridSnap(point.x - w / 2)
+        ? gridSnap(point.x - w / 2)
         : point.x - w / 2;
       const rawY = event.altKey
-        ? this.gridSnap(point.y - h / 2)
+        ? gridSnap(point.y - h / 2)
         : point.y - h / 2;
 
       // Apply magnetic snap (Shift) and collision check
@@ -1784,9 +1624,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onMouseUp(event: MouseEvent) {
-    if (this.isPanning) {
-      this.isPanning = false;
-      this.panDragStart = null;
+    if (this.viewport.isPanning) {
+      this.viewport.endPan();
       return;
     }
 
