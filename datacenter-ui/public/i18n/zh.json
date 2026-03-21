@@ -17,7 +17,11 @@
     "reset": "重置",
     "name": "名称",
     "room": "机房",
-    "rooms": "机房"
+    "rooms": "机房",
+    "loading_rack": "加载机柜…",
+    "loading_room": "加载房间…",
+    "loading_device": "加载设备…",
+    "rack_not_found": "未找到机柜。"
   },
   "hero": {
     "badge": "数据中心基础设施管理",
@@ -143,7 +147,7 @@
     "bulk_delete_confirm": "删除 {{count}} 个型号？此操作不可撤销。",
     "bulk_delete_ok": "删除",
     "bulk_delete_cancel": "取消",
-    "bulk_delete_saving": "删除中\u2026",
+    "bulk_delete_saving": "删除中…",
     "bulk_delete_error": "删除时出错",
     "ports_map_open": "打开接口地图",
     "ports_map_placing_hint": "单击图像以定位接口",
@@ -182,7 +186,7 @@
     "ports_cancel": "取消",
     "ports_edit": "编辑接口",
     "ports_delete": "删除接口",
-    "ports_delete_confirm": "删除接口\u300a{{name}}\u300b？此操作不可逆。",
+    "ports_delete_confirm": "删除接口《{{name}}》？此操作不可逆。",
     "ports_delete_ok": "删除",
     "ports_deleting": "删除中…",
     "ports_save_error": "保存时出错，请重试。",

@@ -17,7 +17,11 @@
     "reset": "Reset",
     "name": "Nome",
     "room": "stanza",
-    "rooms": "stanze"
+    "rooms": "stanze",
+    "loading_rack": "Caricamento rack…",
+    "loading_room": "Caricamento room…",
+    "loading_device": "Caricamento dispositivo…",
+    "rack_not_found": "Rack non trovato."
   },
   "hero": {
     "badge": "Data Center Infrastructure Management",

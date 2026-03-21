@@ -17,7 +17,11 @@
     "reset": "Réinitialiser",
     "name": "Nom",
     "room": "salle",
-    "rooms": "salles"
+    "rooms": "salles",
+    "loading_rack": "Chargement de la baie…",
+    "loading_room": "Chargement de la salle…",
+    "loading_device": "Chargement de l'appareil…",
+    "rack_not_found": "Baie introuvable."
   },
   "hero": {
     "badge": "Data Center Infrastructure Management",
@@ -143,7 +147,7 @@
     "bulk_delete_confirm": "Supprimer {{count}} modèle(s) ? Cette action est irréversible.",
     "bulk_delete_ok": "Supprimer",
     "bulk_delete_cancel": "Annuler",
-    "bulk_delete_saving": "Suppression\u2026",
+    "bulk_delete_saving": "Suppression…",
     "bulk_delete_error": "Erreur lors de la suppression",
     "ports_map_open": "Ouvrir la carte des interfaces",
     "ports_map_placing_hint": "Cliquez sur l'image pour positionner l'interface",
@@ -182,7 +186,7 @@
     "ports_cancel": "Annuler",
     "ports_edit": "Modifier l'interface",
     "ports_delete": "Supprimer l'interface",
-    "ports_delete_confirm": "Supprimer l'interface \u00ab{{name}}\u00bb ? Cette action est irréversible.",
+    "ports_delete_confirm": "Supprimer l'interface «{{name}}» ? Cette action est irréversible.",
     "ports_delete_ok": "Supprimer",
     "ports_deleting": "Suppression…",
     "ports_save_error": "Erreur lors de l'enregistrement. Veuillez réessayer.",

@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { merge } from 'rxjs';
 import { filter, startWith } from 'rxjs/operators';
 import { HeaderComponent } from './modules/core/components/header/header.component';
@@ -67,6 +68,7 @@ const STATIC_TABS = new Set([
     RackComponent,
     AssetDeviceViewComponent,
     ToastComponent,
+    TranslatePipe,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

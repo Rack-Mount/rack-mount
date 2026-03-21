@@ -17,7 +17,11 @@
     "reset": "Reset",
     "name": "Name",
     "room": "room",
-    "rooms": "rooms"
+    "rooms": "rooms",
+    "loading_rack": "Loading rack…",
+    "loading_room": "Loading room…",
+    "loading_device": "Loading device…",
+    "rack_not_found": "Rack not found."
   },
   "hero": {
     "badge": "Data Center Infrastructure Management",
@@ -143,7 +147,7 @@
     "bulk_delete_confirm": "Delete {{count}} model(s)? This action cannot be undone.",
     "bulk_delete_ok": "Delete",
     "bulk_delete_cancel": "Cancel",
-    "bulk_delete_saving": "Deleting\u2026",
+    "bulk_delete_saving": "Deleting…",
     "bulk_delete_error": "Error during deletion",
     "ports_map_open": "Open interface map",
     "ports_map_placing_hint": "Click on the image to position the interface",
@@ -182,7 +186,7 @@
     "ports_cancel": "Cancel",
     "ports_edit": "Edit interface",
     "ports_delete": "Delete interface",
-    "ports_delete_confirm": "Delete interface \u00ab{{name}}\u00bb? This action is irreversible.",
+    "ports_delete_confirm": "Delete interface «{{name}}»? This action is irreversible.",
     "ports_delete_ok": "Delete",
     "ports_deleting": "Deleting…",
     "ports_save_error": "Error during save. Please retry.",
