@@ -219,13 +219,14 @@ class RackUnitSerializer(serializers.ModelSerializer):
             )
 
         if device and rack:
-            asset_depth = device.model.depth_mm
-            rack_depth = rack.model.depth
+            asset_depth_mm = device.model.depth_mm
+            rack_depth_cm = rack.model.depth
+            rack_depth_mm = rack_depth_cm * 10 if rack_depth_cm is not None else None
 
-            if asset_depth and rack_depth and asset_depth > rack_depth:
+            if asset_depth_mm and rack_depth_mm and asset_depth_mm > rack_depth_mm:
                 raise serializers.ValidationError(
                     _("The device is too deep for this rack (Device: {}mm > Rack: {}mm).").format(
-                        asset_depth, rack_depth)
+                        asset_depth_mm, rack_depth_mm)
                 )
 
         return attrs
