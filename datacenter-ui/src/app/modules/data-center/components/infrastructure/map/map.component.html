@@ -445,17 +445,25 @@
                 [attr.transform]="'translate(' + el.x + ',' + el.y + ')'"
                 (click)="onElementClick($event, el)"
                 (dblclick)="startEditText(el, $event)"
-                [style.cursor]="selectedTool === 'move' ? 'move' : 'text'"
+                [style.cursor]="
+                  selectedTool === 'move'
+                    ? 'move'
+                    : selectedTool === 'text'
+                      ? 'text'
+                      : 'default'
+                "
               >
                 <!-- Selection highlightBox (approx) -->
                 @if (selectedElementId === el.id) {
                   <rect
                     [attr.x]="-4 / zoom"
-                    [attr.y]="-14 / zoom"
+                    [attr.y]="-(el.fontSize || 14) / zoom"
                     [attr.width]="
-                      ((el.text?.length || 1) * 9) / zoom + 8 / zoom
+                      ((el.text?.length || 1) * (el.fontSize || 14) * 0.6) /
+                        zoom +
+                      8 / zoom
                     "
-                    [attr.height]="20 / zoom"
+                    [attr.height]="((el.fontSize || 14) * 1.4) / zoom"
                     fill="rgba(0, 123, 255, 0.1)"
                     stroke="#007bff"
                     [attr.stroke-width]="1 / zoom"

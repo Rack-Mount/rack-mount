@@ -23,6 +23,7 @@ import { Rack } from '../../../../core/api/v1/model/rack';
 import { RackType } from '../../../../core/api/v1/model/rackType';
 import { Room as DjRoom } from '../../../../core/api/v1/model/room';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
+import { RoleService } from '../../../../core/services/role.service';
 import { SettingsService } from '../../../../core/services/settings.service';
 import { TabService } from '../../../../core/services/tab.service';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
@@ -71,6 +72,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
+  readonly role = inject(RoleService);
   private readonly tabService = inject(TabService);
   readonly settingsService = inject(SettingsService);
   private readonly confirmDialog = inject(ConfirmDialogService);
@@ -872,6 +874,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   // Text element editing
   startEditText(el: MapElement, event: MouseEvent): void {
+    if (!this.role.canEditMap()) return;
+    if (this.selectedTool !== 'move' && this.selectedTool !== 'text') return;
     event.stopPropagation();
     event.preventDefault();
     this.editingTextId = el.id;
