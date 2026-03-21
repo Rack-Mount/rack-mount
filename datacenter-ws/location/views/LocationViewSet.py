@@ -3,11 +3,11 @@ from location.models import Location
 from location.serializers import LocationSerializer
 from shared.mixins import StandardFilterMixin
 from rest_framework.permissions import IsAuthenticated
-from accounts.permissions import RackResourcePermission
+from accounts.permissions import MapEditPermission
 
 
 class LocationViewSet(StandardFilterMixin, viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, RackResourcePermission]
+    permission_classes = [IsAuthenticated, MapEditPermission]
     """
     LocationViewSet is a viewset for handling CRUD operations on Location model.
 

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { AssetService } from '../../../../core/api/v1/api/asset.service';
@@ -36,22 +36,15 @@ export class MapFloorPlanService implements OnDestroy {
   private readonly settingsService = inject(SettingsService);
   private readonly router = inject(Router);
 
-  // ── Public state (read by the component for template bindings) ────────────
-  availableLocations: DjLocation[] = [];
-  filteredRooms: DjRoom[] = [];
-  selectedLocationId: number | null = null;
-  selectedRoomId: number | null = null;
-  availableRackTypes: RackType[] = [];
-  selectedRackType: RackType | null = null;
-  saveStatus: 'idle' | 'saving' | 'saved' | 'error' = 'idle';
-  doorWidth = 100;
-
-  // ── Change notifications ──────────────────────────────────────────────────
-  /**
-   * Emits whenever internal state changes that the component needs to reflect
-   * (save status, rack types loaded, etc.).
-   */
-  readonly stateChanged$ = new Subject<void>();
+  // ── Public state as Signals ───────────────────────────────────────────────
+  readonly availableLocations = signal<DjLocation[]>([]);
+  readonly filteredRooms = signal<DjRoom[]>([]);
+  readonly selectedLocationId = signal<number | null>(null);
+  readonly selectedRoomId = signal<number | null>(null);
+  readonly availableRackTypes = signal<RackType[]>([]);
+  readonly selectedRackType = signal<RackType | null>(null);
+  readonly saveStatus = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  readonly doorWidth = signal<number>(100);
 
   /**
    * Emits after `loadLocations()` completes with the room id that should be
@@ -74,14 +67,15 @@ export class MapFloorPlanService implements OnDestroy {
 
   get selectedLocationName(): string {
     return (
-      this.availableLocations.find((l) => l.id === this.selectedLocationId)
+      this.availableLocations().find((l) => l.id === this.selectedLocationId())
         ?.name ?? ''
     );
   }
 
   get selectedRoomName(): string {
     return (
-      this.filteredRooms.find((r) => r.id === this.selectedRoomId)?.name ?? ''
+      this.filteredRooms().find((r) => r.id === this.selectedRoomId())?.name ??
+      ''
     );
   }
 
@@ -110,13 +104,12 @@ export class MapFloorPlanService implements OnDestroy {
 
     this.locationService.locationLocationList({}).subscribe({
       next: (data) => {
-        this.availableLocations = data.results ?? [];
+        this.availableLocations.set(data.results ?? []);
         this.loadRackTypes();
         if (roomIdToLoad != null) {
           this.resolveRoomFromLocations(roomIdToLoad, roomIdFromInput);
         }
         this.locationsLoaded$.next(roomIdToLoad);
-        this.stateChanged$.next();
       },
       error: (err) => console.error('Failed to load locations', err),
     });
@@ -130,11 +123,11 @@ export class MapFloorPlanService implements OnDestroy {
     roomId: number,
     roomIdFromInput: number | undefined,
   ): void {
-    for (const loc of this.availableLocations) {
+    for (const loc of this.availableLocations()) {
       const match = loc.rooms?.find((r) => r.id === roomId);
       if (match) {
-        this.selectedLocationId = loc.id ?? null;
-        this.filteredRooms = loc.rooms ?? [];
+        this.selectedLocationId.set(loc.id ?? null);
+        this.filteredRooms.set(loc.rooms ?? []);
         if (roomIdFromInput != null && match.name) {
           this.tabService.updateTabLabel(`room-${roomId}`, match.name);
         }
@@ -148,13 +141,13 @@ export class MapFloorPlanService implements OnDestroy {
    * Clears the currently selected room.
    */
   selectLocation(id: number | null): void {
-    this.selectedLocationId = id ?? null;
-    this.selectedRoomId = null;
+    this.selectedLocationId.set(id ?? null);
+    this.selectedRoomId.set(null);
     if (id) {
-      const loc = this.availableLocations.find((l) => l.id === id);
-      this.filteredRooms = loc?.rooms ?? [];
+      const loc = this.availableLocations().find((l) => l.id === id);
+      this.filteredRooms.set(loc?.rooms ?? []);
     } else {
-      this.filteredRooms = [];
+      this.filteredRooms.set([]);
     }
   }
 
@@ -165,7 +158,7 @@ export class MapFloorPlanService implements OnDestroy {
   loadRoom(
     id: number,
   ): Observable<{ room: DjRoom; racks: { results?: Rack[] } }> {
-    this.selectedRoomId = id;
+    this.selectedRoomId.set(id);
     this.router.navigate(['/map', id]);
     return forkJoin({
       room: this.locationService.locationRoomRetrieve({ id }),
@@ -175,7 +168,7 @@ export class MapFloorPlanService implements OnDestroy {
 
   /** Clears the selected room and navigates back to `/map`. */
   clearRoom(): void {
-    this.selectedRoomId = null;
+    this.selectedRoomId.set(null);
     this.router.navigate(['/map']);
   }
 
@@ -192,11 +185,10 @@ export class MapFloorPlanService implements OnDestroy {
   private loadRackTypes(): void {
     this.assetService.assetRackTypeList({ pageSize: 100 }).subscribe({
       next: (data) => {
-        this.availableRackTypes = data.results ?? [];
-        if (this.availableRackTypes.length > 0 && !this.selectedRackType) {
-          this.selectedRackType = this.availableRackTypes[0];
+        this.availableRackTypes.set(data.results ?? []);
+        if (this.availableRackTypes().length > 0 && !this.selectedRackType()) {
+          this.selectedRackType.set(this.availableRackTypes()[0]);
         }
-        this.stateChanged$.next();
       },
       error: (err) => console.error('Failed to load rack types', err),
     });
@@ -207,10 +199,11 @@ export class MapFloorPlanService implements OnDestroy {
    * Falls back to 60 × 100 when nothing is selected.
    */
   getSelectedRackDimensions(): { w: number; h: number } {
-    if (this.selectedRackType) {
+    const rt = this.selectedRackType();
+    if (rt) {
       return {
-        w: Math.max(10, this.selectedRackType.width),
-        h: Math.max(10, this.selectedRackType.depth),
+        w: Math.max(10, rt.width),
+        h: Math.max(10, rt.depth),
       };
     }
     return { w: 60, h: 100 };
@@ -291,7 +284,7 @@ export class MapFloorPlanService implements OnDestroy {
    * Uses the selected rack type's model name as prefix (e.g. `APC-1`).
    */
   generateRackName(elements: MapElement[]): string {
-    const prefix = this.selectedRackType?.model ?? 'Rack';
+    const prefix = this.selectedRackType()?.model ?? 'Rack';
     const existingNames = new Set(
       elements
         .filter((el) => el.type === 'rack' && el.rackName)
@@ -314,8 +307,7 @@ export class MapFloorPlanService implements OnDestroy {
     rooms: Room[],
     onDone: () => void,
   ): void {
-    this.saveStatus = 'saving';
-    this.stateChanged$.next();
+    this.saveStatus.set('saving');
 
     const roomLabels = rooms
       .filter((r) => r.name)
@@ -330,15 +322,13 @@ export class MapFloorPlanService implements OnDestroy {
       })
       .subscribe({
         next: () => {
-          this.saveStatus = 'saved';
-          this.stateChanged$.next();
+          this.saveStatus.set('saved');
           this.resetSaveStatusAfterDelay();
           onDone();
         },
         error: (err) => {
           console.error('Failed to save floor plan', err);
-          this.saveStatus = 'error';
-          this.stateChanged$.next();
+          this.saveStatus.set('error');
           this.resetSaveStatusAfterDelay();
           onDone();
         },
@@ -350,7 +340,7 @@ export class MapFloorPlanService implements OnDestroy {
    * Does nothing when autosave is disabled or no room is selected.
    */
   scheduleAutosave(saveFn: () => void): void {
-    if (!this.autosave || this.selectedRoomId == null) return;
+    if (!this.autosave || this.selectedRoomId() == null) return;
     if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
     this.autosaveTimer = setTimeout(saveFn, 2000);
   }
@@ -358,8 +348,7 @@ export class MapFloorPlanService implements OnDestroy {
   private resetSaveStatusAfterDelay(): void {
     if (this.saveStatusTimer) clearTimeout(this.saveStatusTimer);
     this.saveStatusTimer = setTimeout(() => {
-      this.saveStatus = 'idle';
-      this.stateChanged$.next();
+      this.saveStatus.set('idle');
     }, 3000);
   }
 
@@ -391,7 +380,6 @@ export class MapFloorPlanService implements OnDestroy {
   ngOnDestroy(): void {
     if (this.saveStatusTimer) clearTimeout(this.saveStatusTimer);
     if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
-    this.stateChanged$.complete();
     this.locationsLoaded$.complete();
   }
 }

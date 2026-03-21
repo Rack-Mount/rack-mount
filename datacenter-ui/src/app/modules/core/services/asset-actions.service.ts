@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BASE_PATH, Configuration } from '../api/v1';
 import { Asset } from '../api/v1/model/asset';
+import { BaseApiService } from './base-api.service';
 
 export interface ImportCsvResult {
   created: number;
@@ -15,17 +15,8 @@ export interface ImportCsvResult {
  * OpenAPI service (bulk operations, clone, CSV import).
  */
 @Injectable({ providedIn: 'root' })
-export class AssetActionsService {
+export class AssetActionsService extends BaseApiService {
   private readonly http = inject(HttpClient);
-  private readonly basePath: string = (() => {
-    const configuration = inject(Configuration, { optional: true });
-    const base = inject(BASE_PATH, { optional: true }) as
-      | string
-      | string[]
-      | null;
-    const first = Array.isArray(base) ? base[0] : base;
-    return configuration?.basePath ?? first ?? 'http://localhost';
-  })();
 
   importCsv(file: File): Observable<ImportCsvResult> {
     const fd = new FormData();

@@ -36,8 +36,6 @@ export class TabService {
     };
     try {
       const raw = localStorage.getItem(LS_TABS_KEY);
-      // Filter out pinned tabs managed by AppComponent ('home', 'assets')
-      // to avoid duplicate or closeable entries after a session restore.
       const RESERVED = new Set(['home']);
       return raw
         ? (JSON.parse(raw) as PanelTab[])
@@ -77,67 +75,83 @@ export class TabService {
     }
   }
 
-  // ── Tab upsert helpers ────────────────────────────────────
+  // ── Generic core ──────────────────────────────────────────
 
-  /** Adds a room tab if not already present. Returns true if newly added. */
-  private upsertRoomTab(tabId: string, roomId: number, label: string): boolean {
-    if (this._tabs().some((t) => t.id === tabId)) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
-      { id: tabId, label, type: 'room', roomId, pinned: false },
-    ]);
+  /**
+   * Adds `tab` if no tab with the same `id` already exists.
+   * Returns `true` when a new tab was inserted.
+   */
+  upsertTab(tab: PanelTab): boolean {
+    if (this._tabs().some((t) => t.id === tab.id)) return false;
+    this._tabs.update((tabs) => [...tabs, tab]);
     return true;
   }
 
-  /** Adds a rack tab if not already present. Returns true if newly added. */
-  private upsertRackTab(tabId: string, rackName: string): boolean {
-    if (this._tabs().some((t) => t.id === tabId)) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
-      { id: tabId, label: rackName, type: 'rack', rackName, pinned: false },
-    ]);
-    return true;
+  /**
+   * Upserts a tab, persists, and activates it — optionally guarded by a
+   * permission check. Pass `allowed: false` to silently skip the open.
+   */
+  openTab(tab: PanelTab, allowed = true): void {
+    if (!allowed) return;
+    this.upsertTab(tab);
+    this.persistTabs();
+    this._activate$.next(tab.id);
   }
 
-  // ── Room tabs ─────────────────────────────────────────────
+  /**
+   * Upserts a tab and persists it without activating (used for session restore).
+   */
+  ensureTab(tab: PanelTab): void {
+    if (this.upsertTab(tab)) this.persistTabs();
+  }
+
+  // ── Typed helpers ─────────────────────────────────────────
 
   openRoom(roomId: number, roomName: string): void {
-    if (!this.role.canViewInfrastructure()) return;
-    const tabId = `room-${roomId}`;
-    this.upsertRoomTab(tabId, roomId, roomName);
-    this.persistTabs();
-    this._activate$.next(tabId);
-  }
-
-  /** Creates a room tab without triggering navigation (used for direct URL restore). */
-  ensureRoomTab(roomId: number, label: string): void {
-    const tabId = `room-${roomId}`;
-    if (this.upsertRoomTab(tabId, roomId, label)) {
-      this.persistTabs();
-    }
-  }
-
-  /** Updates the label of an existing tab (e.g. once the real room name is known). */
-  updateTabLabel(tabId: string, label: string): void {
-    this._tabs.update((tabs) =>
-      tabs.map((t) => (t.id === tabId ? { ...t, label } : t)),
+    this.openTab(
+      {
+        id: `room-${roomId}`,
+        label: roomName,
+        type: 'room',
+        roomId,
+        pinned: false,
+      },
+      this.role.canViewInfrastructure(),
     );
-    this.persistTabs();
   }
 
-  reportRoomNotFound(roomId: number): void {
-    this.closeTab(`room-${roomId}`);
-    this._roomNotFound$.next(roomId);
+  ensureRoomTab(roomId: number, label: string): void {
+    this.ensureTab({
+      id: `room-${roomId}`,
+      label,
+      type: 'room',
+      roomId,
+      pinned: false,
+    });
   }
 
-  // ── Rack tabs ─────────────────────────────────────────────
+  openRack(rackName: string): void {
+    this.openTab({
+      id: `rack-${rackName}`,
+      label: rackName,
+      type: 'rack',
+      rackName,
+      pinned: false,
+    });
+  }
 
-  // ── Assets tab ─────────────────────────────────────────
+  ensureRackTab(rackName: string): void {
+    this.ensureTab({
+      id: `rack-${rackName}`,
+      label: rackName,
+      type: 'rack',
+      rackName,
+      pinned: false,
+    });
+  }
 
-  private upsertAssetsTab(): boolean {
-    if (this._tabs().some((t) => t.id === 'assets')) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
+  openAssets(): void {
+    this.openTab(
       {
         id: 'assets',
         label: 'Asset',
@@ -145,30 +159,22 @@ export class TabService {
         type: 'assets',
         pinned: false,
       },
-    ]);
-    return true;
+      this.role.canViewAssets(),
+    );
   }
 
-  openAssets(): void {
-    if (!this.role.canViewAssets()) return;
-    this.upsertAssetsTab();
-    this.persistTabs();
-    this._activate$.next('assets');
-  }
-
-  /** Restores the assets tab without triggering navigation (used for direct URL restore). */
   ensureAssetsTab(): void {
-    if (this.upsertAssetsTab()) {
-      this.persistTabs();
-    }
+    this.ensureTab({
+      id: 'assets',
+      label: 'Asset',
+      labelKey: 'tabs.assets',
+      type: 'assets',
+      pinned: false,
+    });
   }
 
-  // ── Vendors tab ─────────────────────────────────────────
-
-  private upsertVendorsTab(): boolean {
-    if (this._tabs().some((t) => t.id === 'vendors')) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
+  openVendors(): void {
+    this.openTab(
       {
         id: 'vendors',
         label: 'Vendor',
@@ -176,27 +182,22 @@ export class TabService {
         type: 'vendors',
         pinned: false,
       },
-    ]);
-    return true;
-  }
-
-  openVendors(): void {
-    if (!this.role.canViewCatalog()) return;
-    this.upsertVendorsTab();
-    this.persistTabs();
-    this._activate$.next('vendors');
+      this.role.canViewCatalog(),
+    );
   }
 
   ensureVendorsTab(): void {
-    if (this.upsertVendorsTab()) this.persistTabs();
+    this.ensureTab({
+      id: 'vendors',
+      label: 'Vendor',
+      labelKey: 'tabs.vendors',
+      type: 'vendors',
+      pinned: false,
+    });
   }
 
-  // ── Models tab ──────────────────────────────────────────
-
-  private upsertModelsTab(): boolean {
-    if (this._tabs().some((t) => t.id === 'models')) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
+  openModels(): void {
+    this.openTab(
       {
         id: 'models',
         label: 'Apparati',
@@ -204,27 +205,22 @@ export class TabService {
         type: 'models',
         pinned: false,
       },
-    ]);
-    return true;
-  }
-
-  openModels(): void {
-    if (!this.role.canViewCatalog()) return;
-    this.upsertModelsTab();
-    this.persistTabs();
-    this._activate$.next('models');
+      this.role.canViewCatalog(),
+    );
   }
 
   ensureModelsTab(): void {
-    if (this.upsertModelsTab()) this.persistTabs();
+    this.ensureTab({
+      id: 'models',
+      label: 'Apparati',
+      labelKey: 'tabs.models',
+      type: 'models',
+      pinned: false,
+    });
   }
 
-  // ── Racks tab ───────────────────────────────────────────
-
-  private upsertRacksTab(): boolean {
-    if (this._tabs().some((t) => t.id === 'racks')) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
+  openRacks(): void {
+    this.openTab(
       {
         id: 'racks',
         label: 'Rack',
@@ -232,27 +228,22 @@ export class TabService {
         type: 'racks',
         pinned: false,
       },
-    ]);
-    return true;
-  }
-
-  openRacks(): void {
-    if (!this.role.canViewInfrastructure()) return;
-    this.upsertRacksTab();
-    this.persistTabs();
-    this._activate$.next('racks');
+      this.role.canViewInfrastructure(),
+    );
   }
 
   ensureRacksTab(): void {
-    if (this.upsertRacksTab()) this.persistTabs();
+    this.ensureTab({
+      id: 'racks',
+      label: 'Rack',
+      labelKey: 'tabs.racks',
+      type: 'racks',
+      pinned: false,
+    });
   }
 
-  // ── Components tab ──────────────────────────────────────
-
-  private upsertComponentsTab(): boolean {
-    if (this._tabs().some((t) => t.id === 'components')) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
+  openComponents(): void {
+    this.openTab(
       {
         id: 'components',
         label: 'Componenti',
@@ -260,102 +251,91 @@ export class TabService {
         type: 'components',
         pinned: false,
       },
-    ]);
-    return true;
-  }
-
-  openComponents(): void {
-    if (!this.role.canViewCatalog()) return;
-    this.upsertComponentsTab();
-    this.persistTabs();
-    this._activate$.next('components');
+      this.role.canViewCatalog(),
+    );
   }
 
   ensureComponentsTab(): void {
-    if (this.upsertComponentsTab()) this.persistTabs();
-  }
-
-  // ── Admin tab ────────────────────────────────────────────
-
-  private upsertAdminTab(): boolean {
-    if (this._tabs().some((t) => t.id === 'admin')) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
-      {
-        id: 'admin',
-        label: 'Users',
-        labelKey: 'tabs.admin',
-        type: 'admin' as const,
-        pinned: false,
-      },
-    ]);
-    return true;
+    this.ensureTab({
+      id: 'components',
+      label: 'Componenti',
+      labelKey: 'tabs.components',
+      type: 'components',
+      pinned: false,
+    });
   }
 
   openAdmin(): void {
-    this.upsertAdminTab();
-    this.persistTabs();
-    this._activate$.next('admin');
+    this.openTab({
+      id: 'admin',
+      label: 'Users',
+      labelKey: 'tabs.admin',
+      type: 'admin',
+      pinned: false,
+    });
   }
 
   ensureAdminTab(): void {
-    if (this.upsertAdminTab()) this.persistTabs();
-  }
-
-  // ── Change password tab ────────────────────────────────────
-
-  private upsertChangePasswordTab(): boolean {
-    if (this._tabs().some((t) => t.id === 'change-password')) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
-      {
-        id: 'change-password',
-        label: 'Password',
-        labelKey: 'tabs.change_password',
-        type: 'change-password' as const,
-        pinned: false,
-      },
-    ]);
-    return true;
+    this.ensureTab({
+      id: 'admin',
+      label: 'Users',
+      labelKey: 'tabs.admin',
+      type: 'admin',
+      pinned: false,
+    });
   }
 
   openChangePassword(): void {
-    this.upsertChangePasswordTab();
-    this.persistTabs();
-    this._activate$.next('change-password');
+    this.openTab({
+      id: 'change-password',
+      label: 'Password',
+      labelKey: 'tabs.change_password',
+      type: 'change-password',
+      pinned: false,
+    });
   }
 
   ensureChangePasswordTab(): void {
-    if (this.upsertChangePasswordTab()) this.persistTabs();
-  }
-
-  // ── Asset (device monitor) tabs ────────────────────────────────────
-
-  private upsertAssetTab(
-    tabId: string,
-    assetId: number,
-    label: string,
-  ): boolean {
-    if (this._tabs().some((t) => t.id === tabId)) return false;
-    this._tabs.update((tabs) => [
-      ...tabs,
-      { id: tabId, label, type: 'asset', assetId, pinned: false },
-    ]);
-    return true;
+    this.ensureTab({
+      id: 'change-password',
+      label: 'Password',
+      labelKey: 'tabs.change_password',
+      type: 'change-password',
+      pinned: false,
+    });
   }
 
   openAsset(assetId: number, label: string): void {
-    if (!this.role.canViewAssets()) return;
-    const tabId = `asset-${assetId}`;
-    this.upsertAssetTab(tabId, assetId, label);
-    this.persistTabs();
-    this._activate$.next(tabId);
+    this.openTab(
+      { id: `asset-${assetId}`, label, type: 'asset', assetId, pinned: false },
+      this.role.canViewAssets(),
+    );
   }
 
-  /** Creates an asset tab without triggering navigation (used for direct URL restore). */
   ensureAssetTab(assetId: number, label: string): void {
-    const tabId = `asset-${assetId}`;
-    if (this.upsertAssetTab(tabId, assetId, label)) this.persistTabs();
+    this.ensureTab({
+      id: `asset-${assetId}`,
+      label,
+      type: 'asset',
+      assetId,
+      pinned: false,
+    });
+  }
+
+  // ── Label update ──────────────────────────────────────────
+
+  updateTabLabel(tabId: string, label: string): void {
+    this._tabs.update((tabs) =>
+      tabs.map((t) => (t.id === tabId ? { ...t, label } : t)),
+    );
+    this.persistTabs();
+  }
+
+  // ── Not-found notification helpers ────────────────────────
+
+  reportRoomNotFound(roomId: number): void {
+    this.closeTab(`room-${roomId}`);
+    this._roomNotFound$.next(roomId);
   }
 
   reportRackNotFound(rackName: string): void {
@@ -363,19 +343,7 @@ export class TabService {
     this._rackNotFound$.next(rackName);
   }
 
-  openRack(rackName: string): void {
-    const tabId = `rack-${rackName}`;
-    this.upsertRackTab(tabId, rackName);
-    this.persistTabs();
-    this._activate$.next(tabId);
-  }
-
-  /** Creates a rack tab without triggering navigation (used for direct URL restore). */
-  ensureRackTab(rackName: string): void {
-    const tabId = `rack-${rackName}`;
-    this.upsertRackTab(tabId, rackName);
-    this.persistTabs();
-  }
+  // ── Permission filtering ──────────────────────────────────
 
   /** Removes any tab the current user no longer has permission to see. */
   purgeForbiddenTabs(): void {
@@ -383,12 +351,13 @@ export class TabService {
     this.persistTabs();
   }
 
-  // ── Close ─────────────────────────────────────────────────
+  // ── Close / reorder ───────────────────────────────────────
 
   closeTab(tabId: string): void {
     this._tabs.update((tabs) => tabs.filter((t) => t.id !== tabId));
     this.persistTabs();
   }
+
   /** Moves the tab with `fromId` to the position currently occupied by `toId`. */
   reorderTabs(fromId: string, toId: string): void {
     if (fromId === toId) return;

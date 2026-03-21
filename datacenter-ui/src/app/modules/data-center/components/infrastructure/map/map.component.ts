@@ -15,6 +15,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
+import { RackType } from '../../../../core/api/v1/model/rackType';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
 import { RoleService } from '../../../../core/services/role.service';
 import { TabService } from '../../../../core/services/tab.service';
@@ -87,28 +88,28 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   // ── Getters delegating to fpService (keep template bindings unchanged) ───
   get availableLocations() {
-    return this.fpService.availableLocations;
+    return this.fpService.availableLocations();
   }
   get filteredRooms() {
-    return this.fpService.filteredRooms;
+    return this.fpService.filteredRooms();
   }
   get selectedLocationId() {
-    return this.fpService.selectedLocationId;
+    return this.fpService.selectedLocationId();
   }
   get selectedRoomId() {
-    return this.fpService.selectedRoomId;
+    return this.fpService.selectedRoomId();
   }
   get availableRackTypes() {
-    return this.fpService.availableRackTypes;
+    return this.fpService.availableRackTypes();
   }
   get selectedRackType() {
-    return this.fpService.selectedRackType;
+    return this.fpService.selectedRackType();
   }
   get saveStatus() {
-    return this.fpService.saveStatus;
+    return this.fpService.saveStatus();
   }
   get doorWidth() {
-    return this.fpService.doorWidth;
+    return this.fpService.doorWidth();
   }
   get autosave(): boolean {
     return this.fpService.autosave;
@@ -123,14 +124,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.fpService.autosave = value;
   }
 
-  onRackTypeChange(rt: typeof this.fpService.selectedRackType): void {
-    this.fpService.selectedRackType = rt;
-    this.cdr.markForCheck();
+  onRackTypeChange(rt: RackType | null): void {
+    this.fpService.selectedRackType.set(rt);
   }
 
   onDoorWidthChange(w: number): void {
-    this.fpService.doorWidth = Number(w);
-    this.cdr.markForCheck();
+    this.fpService.doorWidth.set(Number(w));
   }
 
   // ── Canvas drawing state ──────────────────────────────────────────────────
@@ -366,11 +365,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // Update grid on window resize
     window.addEventListener('resize', this.resizeListener);
 
-    // Subscribe to service state-change notifications (triggers change detection)
-    this.fpService.stateChanged$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.cdr.markForCheck());
-
     // After locations are loaded, auto-select and load the room from the route/input
     this.fpService.locationsLoaded$
       .pipe(takeUntil(this.destroy$))
@@ -441,9 +435,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   saveFloorPlan(): void {
-    if (this.fpService.selectedRoomId == null) return;
+    if (this.fpService.selectedRoomId() == null) return;
     this.fpService.saveFloorPlan(
-      this.fpService.selectedRoomId,
+      this.fpService.selectedRoomId()!,
       this.elements,
       this.rooms,
       () => this.cdr.markForCheck(),
@@ -1218,10 +1212,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const start = wallSnap ? wallSnap.snapped : point;
       this.doorSnapDir = wallSnap ? wallSnap.dir : null;
       const x2 = this.doorSnapDir
-        ? start.x + this.doorSnapDir.dx * this.fpService.doorWidth
+        ? start.x + this.doorSnapDir.dx * this.fpService.doorWidth()
         : start.x;
       const y2 = this.doorSnapDir
-        ? start.y + this.doorSnapDir.dy * this.fpService.doorWidth
+        ? start.y + this.doorSnapDir.dy * this.fpService.doorWidth()
         : start.y;
       this.currentElement = {
         id: Date.now().toString(),
@@ -1230,7 +1224,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         y: start.y,
         x2,
         y2,
-        width: this.fpService.doorWidth,
+        width: this.fpService.doorWidth(),
       };
     } else if (this.selectedTool === 'rack') {
       const dims = this.fpService.getSelectedRackDimensions();
@@ -1881,14 +1875,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const rackName = this.fpService.generateRackName(this.elements);
         this.currentElement.rackName = rackName;
         if (
-          this.fpService.selectedRackType &&
-          this.fpService.selectedRoomId != null
+          this.fpService.selectedRackType() &&
+          this.fpService.selectedRoomId() != null
         ) {
           this.fpService
             .createRack(
               rackName,
-              this.fpService.selectedRackType.id,
-              this.fpService.selectedRoomId,
+              this.fpService.selectedRackType()!.id,
+              this.fpService.selectedRoomId()!,
             )
             .subscribe({
               next: () => this.cdr.markForCheck(),

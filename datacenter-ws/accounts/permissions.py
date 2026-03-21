@@ -71,8 +71,9 @@ class IsAdminRole(_RolePermission):
     """Allow access only to users with the 'admin' role."""
 
     def has_permission(self, request: Request, view) -> bool:
+        from accounts.models import Role
         role = self._role(request)
-        return role is not None and role.name == 'admin'
+        return role is not None and role.name == Role.Name.ADMIN
 
 
 # ── Per-section permission classes ────────────────────────────────────────────

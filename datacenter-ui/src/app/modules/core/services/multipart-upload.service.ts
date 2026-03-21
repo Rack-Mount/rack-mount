@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BASE_PATH, Configuration } from '../api/v1';
 import { AssetModel } from '../api/v1/model/assetModel';
 import { GenericComponent } from '../api/v1/model/genericComponent';
+import { BaseApiService } from './base-api.service';
 
 export interface CatalogImportSectionResult {
   created: number;
@@ -27,17 +27,8 @@ export interface CatalogImportResult {
  * from the shared Configuration token.
  */
 @Injectable({ providedIn: 'root' })
-export class MultipartUploadService {
+export class MultipartUploadService extends BaseApiService {
   private readonly http = inject(HttpClient);
-  private readonly basePath: string = (() => {
-    const configuration = inject(Configuration, { optional: true });
-    const base = inject(BASE_PATH, { optional: true }) as
-      | string
-      | string[]
-      | null;
-    const first = Array.isArray(base) ? base[0] : base;
-    return configuration?.basePath ?? first ?? 'http://localhost';
-  })();
 
   /**
    * Create (POST) or update (PATCH) an AssetModel.

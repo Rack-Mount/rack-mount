@@ -64,3 +64,14 @@ class RackUnit(models.Model):
         unique_together = ('rack', 'position', 'front')
         ordering = ['rack', '-position']
         db_table = 'rack_unit'
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    models.Q(device__isnull=False,
+                             generic_component__isnull=True)
+                    | models.Q(device__isnull=True, generic_component__isnull=False)
+                    | models.Q(device__isnull=True, generic_component__isnull=True)
+                ),
+                name='rack_unit_device_xor_generic_component',
+            )
+        ]
