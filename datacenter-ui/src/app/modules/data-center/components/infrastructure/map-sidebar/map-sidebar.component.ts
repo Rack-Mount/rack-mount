@@ -30,7 +30,7 @@ export class MapSidebarComponent {
       iconId: 'icon-select',
     },
     {
-      id: 'move',
+      id: 'edit',
       label: 'map_sidebar.tool_move',
       iconId: 'icon-move',
     },

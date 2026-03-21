@@ -65,7 +65,7 @@
     }
 
     /* Rack cursor in move tool */
-    &.tool-move g.rack-group {
+    &.tool-edit g.rack-group {
       cursor: grab;
 
       &:active {

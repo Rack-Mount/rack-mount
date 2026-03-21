@@ -875,7 +875,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   // Text element editing
   startEditText(el: MapElement, event: MouseEvent): void {
     if (!this.role.canEditMap()) return;
-    if (this.selectedTool !== 'move' && this.selectedTool !== 'text') return;
+    if (this.selectedTool !== 'edit' && this.selectedTool !== 'text') return;
     event.stopPropagation();
     event.preventDefault();
     this.editingTextId = el.id;
@@ -1201,7 +1201,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     if (this.selectedRoomId == null) return;
 
-    if (this.selectedTool === 'move') {
+    if (this.selectedTool === 'edit') {
       const point = this.getSvgPoint(event);
 
       // 1. Check Vertex Click (High Priority)
@@ -1484,7 +1484,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       // For text, we place and edit immediately, no drag creation step.
       this.isDrawing = false;
       this.currentElement = null;
-      this.selectedTool = 'move';
+      this.selectedTool = 'edit';
     }
   }
 
@@ -1538,13 +1538,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // Clear snap indicator when not dragging a vertex
     if (
-      !(this.selectedTool === 'move' && this.isDrawing && this.selectedVertex)
+      !(this.selectedTool === 'edit' && this.isDrawing && this.selectedVertex)
     ) {
       this.snapTargetVertex = null;
     }
 
     // Hover detection in move mode (when not dragging)
-    if (this.selectedTool === 'move' && !this.isDrawing) {
+    if (this.selectedTool === 'edit' && !this.isDrawing) {
       let found: {
         elementId: string;
         pointIndex: number;
@@ -1571,7 +1571,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // Whole Wall Moving Logic
     if (
-      this.selectedTool === 'move' &&
+      this.selectedTool === 'edit' &&
       this.isDrawing &&
       this.movingElementId &&
       this.lastMousePosition
@@ -1689,7 +1689,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Vertex Moving Logic
-    if (this.selectedTool === 'move' && this.isDrawing && this.selectedVertex) {
+    if (this.selectedTool === 'edit' && this.isDrawing && this.selectedVertex) {
       const el = this.elements.find(
         (e) => e.id === this.selectedVertex!.elementId,
       );
@@ -1998,7 +1998,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    if (this.selectedTool === 'move') {
+    if (this.selectedTool === 'edit') {
       // Attempt merge if vertex was snapped onto another wall
       if (this.selectedVertex && this.snapTargetVertex) {
         const elA = this.elements.find(
@@ -2120,7 +2120,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
       this.elements.push(this.currentElement);
-      this.selectedTool = 'move';
+      this.selectedTool = 'edit';
     }
 
     this.isDrawing = false;
@@ -2153,7 +2153,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onDoubleClick(event: MouseEvent) {
-    if (this.selectedTool !== 'move') return;
+    if (this.selectedTool !== 'edit') return;
     if (this.selectedRoomId == null) return;
     const point = this.getSvgPoint(event);
     const SNAP = 10 / this.zoom;
@@ -2239,7 +2239,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onElementClick(event: MouseEvent, element: MapElement) {
-    if (this.selectedTool === 'move') {
+    if (this.selectedTool === 'edit') {
       event.stopPropagation();
       this.selectedSegment = null;
       this.selectedElementId = element.id;
@@ -2250,7 +2250,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onSegmentClick(event: MouseEvent, el: MapElement, segIndex: number) {
-    if (this.selectedTool === 'move') {
+    if (this.selectedTool === 'edit') {
       event.stopPropagation();
       this.selectedElementId = null;
       this.selectedSegment = { elementId: el.id, segIndex };
@@ -2272,7 +2272,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     if (event.key === 'Delete' || event.key === 'Backspace') {
       // Delete hovered vertex in move mode
-      if (this.selectedTool === 'move' && this.hoveredVertex) {
+      if (this.selectedTool === 'edit' && this.hoveredVertex) {
         const el = this.elements.find(
           (e) => e.id === this.hoveredVertex!.elementId,
         );
@@ -2291,7 +2291,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         return;
       }
       // Delete selected segment in move mode
-      if (this.selectedTool === 'move' && this.selectedSegment) {
+      if (this.selectedTool === 'edit' && this.selectedSegment) {
         const { elementId, segIndex } = this.selectedSegment;
         const el = this.elements.find((e) => e.id === elementId);
         if (el && el.points) {
@@ -2331,9 +2331,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       // Delete whole element (walls / racks only in move mode; doors in any mode)
       if (this.selectedElementId) {
         const el = this.elements.find((e) => e.id === this.selectedElementId);
-        if (el?.type === 'wall' && this.selectedTool !== 'move') return;
-        if (el?.type === 'rack' && this.selectedTool !== 'move') return;
-        if (el?.type === 'door' && this.selectedTool !== 'move') return;
+        if (el?.type === 'wall' && this.selectedTool !== 'edit') return;
+        if (el?.type === 'rack' && this.selectedTool !== 'edit') return;
+        if (el?.type === 'door' && this.selectedTool !== 'edit') return;
         if (el?.type === 'rack') {
           const rackName = el.rackName ?? el.id;
           const confirmed = await this.confirmDialog.confirm(
@@ -2399,7 +2399,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         !event.ctrlKey &&
         !event.metaKey &&
         this.selectedElementId &&
-        this.selectedTool === 'move'
+        this.selectedTool === 'edit'
       ) {
         const el = this.elements.find(
           (e) => e.id === this.selectedElementId && e.type === 'rack',
@@ -2413,7 +2413,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onRackDblClick(event: MouseEvent, el: MapElement): void {
-    if (this.selectedTool !== 'move' && this.selectedTool !== 'select') return;
+    if (this.selectedTool !== 'select') return;
     event.stopPropagation();
     if (el.rackName) {
       this.tabService.openRack(el.rackName);

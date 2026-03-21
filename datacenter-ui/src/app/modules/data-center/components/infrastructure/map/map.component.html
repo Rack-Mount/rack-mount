@@ -41,7 +41,7 @@
       #svgContainer
       class="drawing-area"
       [class.tool-select]="selectedTool === 'select'"
-      [class.tool-move]="selectedTool === 'move'"
+      [class.tool-edit]="selectedTool === 'edit'"
       [style.cursor]="
         !selectedRoomId
           ? 'not-allowed'
@@ -81,7 +81,7 @@
             @if (el.type === "wall" && el.points) {
               <ng-container>
                 <!-- Per-segment transparent hit zones in move mode -->
-                @if (selectedTool === "move") {
+                @if (selectedTool === "edit") {
                   @for (
                     _ of el.points.slice(0, el.points.length - 1);
                     track $index;
@@ -215,7 +215,7 @@
             <!-- Varco (door) -->
             @if (el.type === "door") {
               <g
-                [style.cursor]="selectedTool === 'move' ? 'pointer' : 'default'"
+                [style.cursor]="selectedTool === 'edit' ? 'pointer' : 'default'"
                 (click)="onElementClick($event, el)"
               >
                 <!-- White gap to visually cut-through the wall -->
@@ -265,7 +265,7 @@
                   {{ getDoorLength(el) }} cm
                 </text>
                 <!-- Endpoint handles (visible only when selected in move mode) -->
-                @if (selectedElementId === el.id && selectedTool === "move") {
+                @if (selectedElementId === el.id && selectedTool === "edit") {
                   <circle
                     [attr.cx]="el.x"
                     [attr.cy]="el.y"
@@ -349,7 +349,7 @@
                   [attr.stroke-width]="0.5 / zoom"
                 />
                 <!-- Rotation handle (drag to rotate freely; Shift snaps to 15°) -->
-                @if (selectedElementId === el.id && selectedTool === "move") {
+                @if (selectedElementId === el.id && selectedTool === "edit") {
                   <line
                     [attr.x1]="el.x + (el.width || 0) / 2"
                     [attr.y1]="el.y"
@@ -384,10 +384,10 @@
                       font-weight="bold"
                       style="user-select: none"
                       [attr.pointer-events]="
-                        selectedTool === 'move' ? 'all' : 'none'
+                        selectedTool === 'edit' ? 'all' : 'none'
                       "
                       [style.cursor]="
-                        selectedTool === 'move' ? 'text' : 'default'
+                        selectedTool === 'edit' ? 'text' : 'default'
                       "
                       (click)="startEditRack(el, $event)"
                     >
@@ -446,7 +446,7 @@
                 (click)="onElementClick($event, el)"
                 (dblclick)="startEditText(el, $event)"
                 [style.cursor]="
-                  selectedTool === 'move'
+                  selectedTool === 'edit'
                     ? 'move'
                     : selectedTool === 'text'
                       ? 'text'
@@ -527,7 +527,7 @@
 
         <!-- Room area labels (planar face detection) -->
         @for (room of rooms; track $index) {
-          <g [style.cursor]="selectedTool === 'move' ? 'pointer' : 'default'">
+          <g [style.cursor]="selectedTool === 'edit' ? 'pointer' : 'default'">
             <!-- Engraved area (always visible): white highlight + main text -->
             <text
               [attr.x]="room.cx + 0.8 / zoom"
@@ -563,7 +563,7 @@
         }
 
         <!-- Move Tool Indicators: Show all vertices as manipulatable dots when tool is active -->
-        @if (selectedTool === "move") {
+        @if (selectedTool === "edit") {
           <ng-container>
             @for (el of elements; track el.id) {
               <ng-container>
