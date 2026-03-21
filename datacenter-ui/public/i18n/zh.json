@@ -9,6 +9,7 @@
     "deleting": "删除中…",
     "edit": "编辑",
     "close": "关闭",
+    "close_tab": "关闭标签",
     "error": "错误",
     "confirm_delete": "确认删除",
     "error_retry": "错误 — 重试",
@@ -273,7 +274,7 @@
     "bulk_delete_ok": "删除",
     "bulk_delete_cancel": "取消",
     "bulk_delete_saving": "删除中…",
-    "bulk_delete_error": "删除时出错"
+    "bulk_delete_error": "删除时出错",
     "import_csv_btn": "导入 CSV",
     "import_csv_template_title": "下载 CSV 模板",
     "import_csv_ok": "已导入 {{count}} 台设备",

@@ -9,6 +9,7 @@
     "deleting": "Suppression…",
     "edit": "Modifier",
     "close": "Fermer",
+    "close_tab": "Fermer l'onglet",
     "error": "Erreur",
     "confirm_delete": "Confirmer la suppression",
     "error_retry": "Erreur — réessayer",
@@ -38,6 +39,8 @@
     "vendors_desc": "Gérer les fabricants d'équipements",
     "models_title": "Modèles d'équipements",
     "models_desc": "Catalogue des modèles d'équipements",
+    "racks_title": "Racks",
+    "racks_desc": "Gérer les racks du datacenter",
     "no_locations": "Aucun site trouvé.",
     "components_title": "Composants de baie",
     "components_desc": "Gérer les passe-câbles, les obturateurs de baie et les accessoires"

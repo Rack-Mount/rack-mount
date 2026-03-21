@@ -9,6 +9,7 @@
     "deleting": "Wird gelöscht…",
     "edit": "Bearbeiten",
     "close": "Schließen",
+    "close_tab": "Tab schließen",
     "error": "Fehler",
     "confirm_delete": "Löschen bestätigen",
     "error_retry": "Fehler — erneut versuchen",
@@ -38,6 +39,8 @@
     "vendors_desc": "Gerätehersteller verwalten",
     "models_title": "Gerätemodelle",
     "models_desc": "Katalog der Gerätemodelle",
+    "racks_title": "Racks",
+    "racks_desc": "Racks des Rechenzentrums verwalten",
     "no_locations": "Keine Standorte gefunden.",
     "components_title": "Rack-Komponenten",
     "components_desc": "Kabelmanager, Blindplatten und Zubehör verwalten"
