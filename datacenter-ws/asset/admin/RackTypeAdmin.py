@@ -4,7 +4,7 @@ from asset.models import RackType
 
 @admin.register(RackType)
 class RackTypeAdmin(admin.ModelAdmin):
-    list_display = ('model', 'width', 'height', 'capacity')
+    list_display = ('model', 'width', 'depth', 'capacity')
     list_filter = ('model',)
 
     save_on_top = True

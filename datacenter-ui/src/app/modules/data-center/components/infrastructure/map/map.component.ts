@@ -477,7 +477,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const baseY = 20;
     for (const rack of unplaced) {
       const w = Math.max(10, rack.model.width);
-      const h = Math.max(10, rack.model.height);
+      const h = Math.max(10, rack.model.depth);
       result.push({
         id: `rack-${rack.name}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
         type: 'rack',
@@ -508,14 +508,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Returns SVG dimensions (cm units) for the currently selected rack.
-   * RackType.width / height are in cm; 1 SVG unit = 1 cm, so values are used directly.
+   * RackType.width / depth are in cm; 1 SVG unit = 1 cm, so values are used directly.
    * Falls back to 60×100 if no rack is selected.
    */
   private getSelectedRackDimensions(): { w: number; h: number } {
     if (this.selectedRackType) {
       return {
         w: Math.max(10, this.selectedRackType.width),
-        h: Math.max(10, this.selectedRackType.height),
+        h: Math.max(10, this.selectedRackType.depth),
       };
     }
     return { w: 60, h: 100 };
