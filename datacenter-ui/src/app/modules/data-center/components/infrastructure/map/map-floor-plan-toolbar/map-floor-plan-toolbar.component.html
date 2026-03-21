@@ -90,8 +90,10 @@
       >
         @for (rackType of rackTypes(); track rackType.id) {
           <option [ngValue]="rackType">
-            {{ rackType.model }} ({{ rackType.width }}×{{ rackType.depth / 10 }} cm,
-            {{ rackType.capacity }}U)
+            {{ rackType.model }} ({{ rackType.width }}×{{
+              rackType.depth / 10
+            }}
+            cm, {{ rackType.capacity }}U)
           </option>
         }
       </select>
