@@ -32,7 +32,7 @@
       cursor: default;
 
       line:hover,
-      g.rack-group:hover rect {
+      g.rack-group:hover rect.rack-body {
         stroke: #007bff;
         stroke-width: 2;
         cursor: pointer;
@@ -44,13 +44,13 @@
       stroke: #007bff;
     }
 
-    g.rack-group.selected rect {
+    g.rack-group.selected rect.rack-body {
       stroke: #007bff;
       stroke-width: 3px !important;
     }
 
     /* Rack snap indicator while moving */
-    g.rack-group.moving-snap rect {
+    g.rack-group.moving-snap rect.rack-body {
       stroke: #00aacc;
       stroke-width: 2px !important;
     }

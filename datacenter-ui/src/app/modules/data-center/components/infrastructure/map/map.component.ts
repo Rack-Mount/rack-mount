@@ -1946,8 +1946,28 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // For other tools (drag to create)
     if (this.currentElement) {
       if (this.currentElement.type === 'rack') {
+        // Evaluate collision one last time (onMouseMove might not have run)
+        const creationObb: ObbRect = {
+          x: this.currentElement.x,
+          y: this.currentElement.y,
+          width: this.currentElement.width ?? 0,
+          height: this.currentElement.height ?? 0,
+          rotation: this.currentElement.rotation ?? 0,
+        };
+        const blocked =
+          isObbBlocked(creationObb, this.getRackObbs()) ||
+          !isRackPlacementValid(
+            this.currentElement.x,
+            this.currentElement.y,
+            this.currentElement.width ?? 0,
+            this.currentElement.height ?? 0,
+            this.currentElement.rotation ?? 0,
+            this.roomFaces,
+            this.elements,
+          );
+
         // Abort placement if overlapping another rack
-        if (this.rackCreationBlocked) {
+        if (this.rackCreationBlocked || blocked) {
           this.isDrawing = false;
           this.currentElement = null;
           this.startPoint = null;

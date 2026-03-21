@@ -63,8 +63,8 @@ function projectObb(
 
 /**
  * Returns true when two OBBs overlap (Separating Axis Theorem, 4 axes).
- * Racks that share an edge but have zero area intersection are NOT considered
- * overlapping (flush placement is valid).
+ * Racks that share an edge (touching boundaries) are considered overlapping.
+ * Strict usage of < instead of <= ensures they cannot occupy a common perimeter.
  */
 export function obbsOverlap(a: ObbRect, b: ObbRect): boolean {
   const ca = getObbCorners(a);
@@ -81,8 +81,8 @@ export function obbsOverlap(a: ObbRect, b: ObbRect): boolean {
   for (const [ax, ay] of axes) {
     const [aMin, aMax] = projectObb(ca, ax, ay);
     const [bMin, bMax] = projectObb(cb, ax, ay);
-    // Strict comparison: touching boundaries are allowed
-    if (aMax <= bMin || bMax <= aMin) return false; // separating axis found
+    // Strict comparison: touching boundaries IS overlap
+    if (aMax < bMin || bMax < aMin) return false; // separating axis found
   }
   return true; // no separating axis → overlap
 }
@@ -98,14 +98,14 @@ export function isObbBlocked(proposed: ObbRect, others: ObbRect[]): boolean {
 
 /**
  * Returns true when two AABBs overlap.
- * Touching edges are NOT considered overlapping.
+ * Touching edges ARE considered overlapping.
  */
 export function rectsOverlap(a: RackRect, b: RackRect): boolean {
   return (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
+    a.x <= b.x + b.width &&
+    a.x + a.width >= b.x &&
+    a.y <= b.y + b.height &&
+    a.y + a.height >= b.y
   );
 }
 

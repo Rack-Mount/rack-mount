@@ -24,12 +24,36 @@ export class MapSidebarComponent {
   readonly toolChange = output<string>();
 
   readonly tools = [
-    { id: 'select', label: 'map_sidebar.tool_select', icon: '✥' },
-    { id: 'move', label: 'map_sidebar.tool_move', icon: '📝' },
-    { id: 'wall', label: 'map_sidebar.tool_wall', icon: '🧱' },
-    { id: 'door', label: 'map_sidebar.tool_door', icon: '🚪' },
-    { id: 'text', label: 'map_sidebar.tool_text', icon: '🔤' },
-    { id: 'rack', label: 'map_sidebar.tool_rack', icon: '🖥️' },
+    {
+      id: 'select',
+      label: 'map_sidebar.tool_select',
+      iconId: 'icon-select',
+    },
+    {
+      id: 'move',
+      label: 'map_sidebar.tool_move',
+      iconId: 'icon-move',
+    },
+    {
+      id: 'wall',
+      label: 'map_sidebar.tool_wall',
+      iconId: 'icon-wall',
+    },
+    {
+      id: 'door',
+      label: 'map_sidebar.tool_door',
+      iconId: 'icon-door',
+    },
+    {
+      id: 'text',
+      label: 'map_sidebar.tool_text',
+      iconId: 'icon-text',
+    },
+    {
+      id: 'rack',
+      label: 'map_sidebar.tool_rack',
+      iconId: 'icon-rack',
+    },
   ];
 
   selectTool(toolId: string): void {
