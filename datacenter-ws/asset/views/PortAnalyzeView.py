@@ -379,8 +379,6 @@ def _preprocess_for_inference(img):
     return sharpened
 
 
-
-
 # ── OpenCV detection ───────────────────────────────────────────────────────────
 
 def _detect_with_opencv(image_path: str) -> list:
@@ -618,7 +616,7 @@ def _grid_dedup(detections: list) -> list:
     Keep the highest-confidence detection per (column, row) cell.
     """
     _Y_ROW_SPLIT = 8.0   # % of image height; must be > inner/outer Y offset
-                         # and < minimum row-to-row spacing on real hardware.
+    # and < minimum row-to-row spacing on real hardware.
 
     if len(detections) < 2:
         return list(detections)
@@ -652,7 +650,8 @@ def _grid_dedup(detections: list) -> list:
     for col in columns:
         by_y = sorted(col, key=lambda d: d['pos_y'])
         ys_col = [d['pos_y'] for d in by_y]
-        y_gaps_col = [ys_col[i + 1] - ys_col[i] for i in range(len(ys_col) - 1)]
+        y_gaps_col = [ys_col[i + 1] - ys_col[i]
+                      for i in range(len(ys_col) - 1)]
 
         y_groups: list = [[by_y[0]]]
         for j, det in enumerate(by_y[1:]):
