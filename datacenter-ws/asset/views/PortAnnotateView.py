@@ -4,7 +4,8 @@ import shutil
 
 import yaml
 from django.conf import settings
-from rest_framework import status
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -99,6 +100,34 @@ class PortAnnotateView(APIView):
     """
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=inline_serializer(
+            name='PortAnnotateRequest',
+            fields={
+                'image_path': serializers.CharField(),
+                'side': serializers.CharField(default='front'),
+                'annotations': inline_serializer(
+                    name='PortAnnotation',
+                    fields={
+                        'port_type': serializers.CharField(),
+                        'pos_x': serializers.FloatField(),
+                        'pos_y': serializers.FloatField(),
+                        'name': serializers.CharField(required=False, default=''),
+                    },
+                    many=True,
+                ),
+            },
+        ),
+        responses={
+            200: inline_serializer(
+                name='PortAnnotateResponse',
+                fields={
+                    'saved': serializers.IntegerField(),
+                    'total_images': serializers.IntegerField(),
+                },
+            )
+        },
+    )
     def post(self, request):
         image_path = request.data.get('image_path', '')
         side = request.data.get('side', 'front')

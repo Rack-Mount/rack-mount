@@ -72,6 +72,10 @@ export interface ModelForm {
   vendor_id: number | null;
   type_id: number | null;
   rack_units: number | null;
+  width_mm: number | null;
+  height_mm: number | null;
+  depth_mm: number | null;
+  weight_kg: string;
   note: string;
   front_image_file: File | null;
   rear_image_file: File | null;
@@ -89,6 +93,10 @@ function emptyForm(): ModelForm {
     vendor_id: null,
     type_id: null,
     rack_units: null,
+    width_mm: null,
+    height_mm: null,
+    depth_mm: null,
+    weight_kg: '',
     note: '',
     front_image_file: null,
     rear_image_file: null,
@@ -427,6 +435,10 @@ export class ModelsListComponent {
       vendor_id: m.vendor?.id ?? null,
       type_id: m.type?.id ?? null,
       rack_units: m.rack_units ?? null,
+      width_mm: m.width_mm ?? null,
+      height_mm: m.height_mm ?? null,
+      depth_mm: m.depth_mm ?? null,
+      weight_kg: m.weight_kg ?? '',
       note: m.note ?? '',
       front_image_file: null,
       rear_image_file: null,
@@ -455,6 +467,10 @@ export class ModelsListComponent {
       vendor_id: m.vendor?.id ?? null,
       type_id: m.type?.id ?? null,
       rack_units: m.rack_units ?? null,
+      width_mm: m.width_mm ?? null,
+      height_mm: m.height_mm ?? null,
+      depth_mm: m.depth_mm ?? null,
+      weight_kg: m.weight_kg ?? '',
       note: m.note ?? '',
       front_image_file: null,
       rear_image_file: null,
@@ -636,6 +652,10 @@ export class ModelsListComponent {
     fd.append('vendor_id', String(f.vendor_id));
     fd.append('type_id', String(f.type_id));
     if (f.rack_units != null) fd.append('rack_units', String(f.rack_units));
+    if (f.width_mm != null) fd.append('width_mm', String(f.width_mm));
+    if (f.height_mm != null) fd.append('height_mm', String(f.height_mm));
+    if (f.depth_mm != null) fd.append('depth_mm', String(f.depth_mm));
+    if (f.weight_kg) fd.append('weight_kg', f.weight_kg);
     fd.append('note', f.note ?? '');
     if (f.front_image_file) {
       fd.append('front_image', f.front_image_file);

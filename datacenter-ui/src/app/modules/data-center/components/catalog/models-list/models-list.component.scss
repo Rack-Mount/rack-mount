@@ -690,6 +690,28 @@ $text-muted: mx.$text-muted;
   width: 100px;
 }
 
+.field--dimensions {
+  .dimensions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .dimensions-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .dimensions-label {
+    font-size: 11px;
+    color: $text-muted;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
 .field-textarea {
   resize: vertical;
   min-height: 72px;

@@ -42,6 +42,14 @@ import { PatchedRack } from '../model/models';
 import { PatchedRackType } from '../model/models';
 import { PatchedRackUnit } from '../model/models';
 import { PatchedVendor } from '../model/models';
+import { PortAnalyzeRequest } from '../model/models';
+import { PortAnalyzeResult } from '../model/models';
+import { PortAnnotateRequest } from '../model/models';
+import { PortAnnotateResponse } from '../model/models';
+import { PortClickAnalyzeRequest } from '../model/models';
+import { PortClickAnalyzeResponse } from '../model/models';
+import { PortCorrectionRequest } from '../model/models';
+import { PortCorrectionResponse } from '../model/models';
 import { Rack } from '../model/models';
 import { RackType } from '../model/models';
 import { RackUnit } from '../model/models';
@@ -301,6 +309,22 @@ export interface AssetGenericComponentRetrieveRequestParams {
 export interface AssetGenericComponentUpdateRequestParams {
     id: number;
     genericComponent: GenericComponent;
+}
+
+export interface AssetPortAnalyzeCreateRequestParams {
+    portAnalyzeRequest: PortAnalyzeRequest;
+}
+
+export interface AssetPortAnnotateCreateRequestParams {
+    portAnnotateRequest: PortAnnotateRequest;
+}
+
+export interface AssetPortClickAnalyzeCreateRequestParams {
+    portClickAnalyzeRequest: PortClickAnalyzeRequest;
+}
+
+export interface AssetPortCorrectionCreateRequestParams {
+    portCorrectionRequest: PortCorrectionRequest;
 }
 
 export interface AssetRackCreateRequestParams {
@@ -852,6 +876,38 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetGenericComponentUpdate(requestParameters: AssetGenericComponentUpdateRequestParams, extraHttpRequestParams?: any): Observable<GenericComponent>;
+
+    /**
+     * 
+     * POST /asset/port-analyze  Body: { \&quot;image_path\&quot;: \&quot;components/switch.jpg\&quot;, \&quot;side\&quot;: \&quot;front\&quot; }  Returns a list of detected ports: [{ \&quot;port_type\&quot;: \&quot;RJ45\&quot;, \&quot;pos_x\&quot;: 12.5, \&quot;pos_y\&quot;: 45.0,    \&quot;name\&quot;: \&quot;GigabitEthernet0/0\&quot;, \&quot;confidence\&quot;: 0.82 }, ...]
+     * @endpoint post /asset/port-analyze
+* @param requestParameters
+     */
+    assetPortAnalyzeCreate(requestParameters: AssetPortAnalyzeCreateRequestParams, extraHttpRequestParams?: any): Observable<Array<PortAnalyzeResult>>;
+
+    /**
+     * 
+     * POST /asset/port-annotate  Body: {     \&quot;image_path\&quot;: \&quot;components/switch.jpg\&quot;,     \&quot;side\&quot;: \&quot;front\&quot;,     \&quot;annotations\&quot;: [         { \&quot;port_type\&quot;: \&quot;RJ45\&quot;, \&quot;pos_x\&quot;: 12.5, \&quot;pos_y\&quot;: 45.0, \&quot;name\&quot;: \&quot;Gi0/0\&quot; }     ] }  Saves the annotations as YOLO training data. Il retraining è gestito esclusivamente da PortCorrectionView con logica smart.
+     * @endpoint post /asset/port-annotate
+* @param requestParameters
+     */
+    assetPortAnnotateCreate(requestParameters: AssetPortAnnotateCreateRequestParams, extraHttpRequestParams?: any): Observable<PortAnnotateResponse>;
+
+    /**
+     * 
+     * 
+     * @endpoint post /asset/port-click-analyze
+* @param requestParameters
+     */
+    assetPortClickAnalyzeCreate(requestParameters: AssetPortClickAnalyzeCreateRequestParams, extraHttpRequestParams?: any): Observable<PortClickAnalyzeResponse>;
+
+    /**
+     * 
+     * POST /asset/port-correction  Riceve una correzione manuale (predicted_type → actual_type) e: 1. Sovrascrive il sample di training con il tipo corretto. 2. Aggiorna il contatore di correzioni. 3. Lancia il retraining in background se le soglie sono raggiunte.
+     * @endpoint post /asset/port-correction
+* @param requestParameters
+     */
+    assetPortCorrectionCreate(requestParameters: AssetPortCorrectionCreateRequestParams, extraHttpRequestParams?: any): Observable<PortCorrectionResponse>;
 
     /**
      * 

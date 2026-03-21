@@ -24,6 +24,22 @@ export interface PatchedAssetModel {
     readonly type?: AssetType;
     type_id?: number;
     rack_units?: number;
+    /**
+     * Larghezza apparato in millimetri
+     */
+    width_mm?: number | null;
+    /**
+     * Altezza apparato in millimetri
+     */
+    height_mm?: number | null;
+    /**
+     * Profondità apparato in millimetri
+     */
+    depth_mm?: number | null;
+    /**
+     * Peso apparato in chilogrammi
+     */
+    weight_kg?: string | null;
     front_image?: string | null;
     front_image_transform?: string;
     rear_image?: string | null;

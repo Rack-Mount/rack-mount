@@ -14,7 +14,8 @@ import os
 import re
 
 from django.conf import settings
-from rest_framework import status
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -422,6 +423,28 @@ def _read_label_ocr(abs_path: str, click_x: float, click_y: float):
 class PortClickAnalyzeView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=inline_serializer(
+            name='PortClickAnalyzeRequest',
+            fields={
+                'image_path': serializers.CharField(),
+                'side': serializers.CharField(default='front'),
+                'click_x': serializers.FloatField(),
+                'click_y': serializers.FloatField(),
+            },
+        ),
+        responses={
+            200: inline_serializer(
+                name='PortClickAnalyzeResponse',
+                fields={
+                    'is_port': serializers.BooleanField(),
+                    'port_type': serializers.CharField(allow_null=True),
+                    'name': serializers.CharField(allow_null=True),
+                    'confidence': serializers.FloatField(),
+                },
+            )
+        },
+    )
     def post(self, request):
         image_path = (request.data.get('image_path') or '').strip()
         side = request.data.get('side', 'front')

@@ -1,7 +1,8 @@
 import os
 
 from django.conf import settings
-from rest_framework import status
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -786,6 +787,28 @@ class PortAnalyzeView(APIView):
     """
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=inline_serializer(
+            name='PortAnalyzeRequest',
+            fields={
+                'image_path': serializers.CharField(),
+                'side': serializers.CharField(default='front'),
+            },
+        ),
+        responses={
+            200: inline_serializer(
+                name='PortAnalyzeResult',
+                fields={
+                    'port_type': serializers.CharField(),
+                    'pos_x': serializers.FloatField(),
+                    'pos_y': serializers.FloatField(),
+                    'name': serializers.CharField(),
+                    'confidence': serializers.FloatField(),
+                },
+                many=True,
+            )
+        },
+    )
     def post(self, request):
         image_path = request.data.get('image_path', '')
         side = request.data.get('side', 'front')

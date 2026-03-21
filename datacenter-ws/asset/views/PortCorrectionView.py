@@ -34,7 +34,8 @@ import threading
 from datetime import datetime, timezone
 
 from django.conf import settings
-from rest_framework import status
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -208,6 +209,32 @@ class PortCorrectionView(APIView):
     """
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=inline_serializer(
+            name='PortCorrectionRequest',
+            fields={
+                'image_path': serializers.CharField(),
+                'side': serializers.CharField(default='front'),
+                'pos_x': serializers.FloatField(default=50.0),
+                'pos_y': serializers.FloatField(default=50.0),
+                'predicted_type': serializers.CharField(required=False, default=''),
+                'actual_type': serializers.CharField(),
+            },
+        ),
+        responses={
+            200: inline_serializer(
+                name='PortCorrectionResponse',
+                fields={
+                    'saved': serializers.BooleanField(),
+                    'predicted_type': serializers.CharField(),
+                    'actual_type': serializers.CharField(),
+                    'training_triggered': serializers.BooleanField(),
+                    'corrections_since_last_train': serializers.IntegerField(),
+                    'total_corrections': serializers.IntegerField(),
+                },
+            )
+        },
+    )
     def post(self, request):
         image_path = (request.data.get('image_path') or '').strip()
         side = request.data.get('side', 'front')

@@ -62,6 +62,15 @@ model/patchedRackUnit.ts
 model/patchedRoom.ts
 model/patchedUserUpdate.ts
 model/patchedVendor.ts
+model/portAnalyzeRequest.ts
+model/portAnalyzeResult.ts
+model/portAnnotateRequest.ts
+model/portAnnotateResponse.ts
+model/portAnnotation.ts
+model/portClickAnalyzeRequest.ts
+model/portClickAnalyzeResponse.ts
+model/portCorrectionRequest.ts
+model/portCorrectionResponse.ts
 model/portTypeEnum.ts
 model/rack.ts
 model/rackType.ts

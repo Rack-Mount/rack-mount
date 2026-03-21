@@ -41,6 +41,19 @@ class AssetModel(models.Model):
         AssetType, on_delete=models.CASCADE, related_name='asset_type')
     rack_units = models.PositiveIntegerField(
         default=1, null=False, name='rack_units')
+    width_mm = models.PositiveSmallIntegerField(
+        null=True, blank=True,
+        help_text='Larghezza apparato in millimetri')
+    height_mm = models.PositiveSmallIntegerField(
+        null=True, blank=True,
+        help_text='Altezza apparato in millimetri')
+    depth_mm = models.PositiveSmallIntegerField(
+        null=True, blank=True,
+        help_text='Profondità apparato in millimetri')
+    weight_kg = models.DecimalField(
+        max_digits=6, decimal_places=2,
+        null=True, blank=True,
+        help_text='Peso apparato in chilogrammi')
     front_image = models.ImageField(
         null=True, upload_to=asset_model_front_upload)
     rear_image = models.ImageField(

@@ -73,6 +73,45 @@ PORT_BH = {
 
 CLASS_NAMES = ['RJ45', 'SFP/SFP+', 'QSFP', 'USB', 'SERIAL', 'LC']
 
+# ── Physical port sizes in mm (approximate real-world dimensions) ─────────────
+# Used when the AssetModel has width_mm / height_mm set; otherwise the
+# fixed PORT_BW / PORT_BH fractions are used as fallback.
+PORT_W_MM = {
+    0: 14.0,   # RJ45
+    1:  9.0,   # SFP/SFP+/SFP28
+    2: 14.0,   # QSFP
+    3: 12.0,   # USB-A/C
+    4: 35.0,   # SERIAL (DB9)
+    5: 12.0,   # LC/SC/FC
+}
+PORT_H_MM = {
+    0: 14.0,   # RJ45
+    1: 13.0,   # SFP/SFP+
+    2: 14.0,   # QSFP
+    3:  5.0,   # USB
+    4: 14.0,   # SERIAL
+    5: 14.0,   # LC
+}
+
+
+def _bbox_fractions(cls_id: int,
+                    device_w_mm: float | None,
+                    device_h_mm: float | None) -> tuple[float, float]:
+    """Return (bw, bh) as normalised fractions of the image size.
+
+    If the AssetModel carries physical dimensions, derive the fractions from
+    real port measurements so the boxes scale correctly regardless of image
+    resolution.  Fall back to the fixed PORT_BW / PORT_BH table otherwise.
+    """
+    if device_w_mm and device_h_mm and device_w_mm > 0 and device_h_mm > 0:
+        bw = PORT_W_MM[cls_id] / device_w_mm
+        bh = PORT_H_MM[cls_id] / device_h_mm
+        # Clamp to sane range so a single port never exceeds half the image
+        bw = max(0.01, min(0.50, bw))
+        bh = max(0.01, min(0.50, bh))
+        return bw, bh
+    return PORT_BW[cls_id], PORT_BH[cls_id]
+
 
 # ── Device selection ──────────────────────────────────────────────────────────
 def _best_device() -> str:
@@ -297,12 +336,16 @@ class Command(BaseCommand):
             if not os.path.isfile(dest_img):
                 shutil.copy2(abs_img, dest_img)
 
+            # Dimensioni fisiche dell'apparato (se disponibili) per bbox accurate
+            am = valid[0][0].asset_model
+            device_w = float(am.width_mm) if am.width_mm else None
+            device_h = float(am.height_mm) if am.height_mm else None
+
             # Scrivi label YOLO (cx cy bw bh tutti in 0-1)
             label_lines = []
             with open(dest_lbl, 'w') as f:
                 for p, cls_id in valid:
-                    bw = PORT_BW[cls_id]
-                    bh = PORT_BH[cls_id]
+                    bw, bh = _bbox_fractions(cls_id, device_w, device_h)
                     cx = max(bw / 2, min(1 - bw / 2, p.pos_x / 100.0))
                     cy = max(bh / 2, min(1 - bh / 2, p.pos_y / 100.0))
                     line = f'{cls_id} {cx:.4f} {cy:.4f} {bw:.4f} {bh:.4f}\n'
