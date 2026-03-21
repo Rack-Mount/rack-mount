@@ -15,6 +15,7 @@ export interface RackType {
   readonly id: number;
   model: string;
   width: number;
+  height?: number;
   depth: number;
 
   capacity: number;

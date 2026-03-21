@@ -24,6 +24,8 @@ class RackType(models.Model):
     """
     model = models.CharField(max_length=255, null=False)
     width = models.PositiveIntegerField(null=False)
+    height = models.PositiveIntegerField(
+        null=True, blank=True, help_text=_('Height in cm'))
     depth = models.PositiveIntegerField(null=False,)
     capacity = models.PositiveIntegerField(null=False, default=48)
     created_at = models.DateTimeField(auto_now_add=True)
