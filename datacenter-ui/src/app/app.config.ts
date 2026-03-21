@@ -11,8 +11,15 @@ import {
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
-import { TranslateService, provideTranslateService } from '@ngx-translate/core';
-import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import {
+  TranslateLoader,
+  TranslateService,
+  provideTranslateService,
+} from '@ngx-translate/core';
+import {
+  TRANSLATE_HTTP_LOADER_CONFIG,
+  TranslateHttpLoader,
+} from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { Configuration, ConfigurationParameters } from './modules/core/api/v1';
@@ -23,7 +30,8 @@ const AVAILABLE_LANG_CODES = ['de', 'en', 'fr', 'it', 'zh'];
 
 function initTranslations() {
   const translate = inject(TranslateService);
-  let lang = 'en';
+  const defaultLang = 'en';
+  let lang = defaultLang;
   try {
     const saved = localStorage.getItem('app_language');
     if (saved && AVAILABLE_LANG_CODES.includes(saved)) lang = saved;
@@ -31,7 +39,7 @@ function initTranslations() {
     // ignore (SSR / private mode)
   }
   translate.addLangs(AVAILABLE_LANG_CODES);
-  translate.setFallbackLang('en');
+  translate.setDefaultLang(defaultLang);
   return translate.use(lang);
 }
 
@@ -57,10 +65,16 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([authInterceptor, notFoundInterceptor]),
     ),
+    {
+      provide: TRANSLATE_HTTP_LOADER_CONFIG,
+      useValue: { prefix: '/i18n/', suffix: '.json' },
+    },
     provideTranslateService({
-      fallbackLang: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useClass: TranslateHttpLoader,
+      },
     }),
-    provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
     provideAppInitializer(initTranslations),
   ],
 };
