@@ -17,12 +17,12 @@
       @defer (on idle) {
         <app-home />
       } @loading (minimum 150ms) {
-        <div class="loading-state">{{ 'common.loading' | translate }}</div>
+        <div class="loading-state">{{ "common.loading" | translate }}</div>
       } @placeholder {
-        <div class="loading-state">{{ 'common.loading' | translate }}</div>
+        <div class="loading-state">{{ "common.loading" | translate }}</div>
       } @error {
         <div class="loading-state loading-state--error">
-          {{ 'common.error_loading' | translate }}
+          {{ "common.error_loading" | translate }}
         </div>
       }
     </div>
@@ -41,12 +41,16 @@
           @defer (when activeTabId() === tab.id; prefetch on idle) {
             <app-map [roomId]="tab.roomId" />
           } @loading (minimum 150ms) {
-            <div class="loading-state">{{ 'common.loading_room' | translate }}</div>
+            <div class="loading-state">
+              {{ "common.loading_room" | translate }}
+            </div>
           } @placeholder {
-            <div class="loading-state">{{ 'common.loading_room' | translate }}</div>
+            <div class="loading-state">
+              {{ "common.loading_room" | translate }}
+            </div>
           } @error {
             <div class="loading-state loading-state--error">
-              {{ 'common.error_loading' | translate }}
+              {{ "common.error_loading" | translate }}
             </div>
           }
         </div>
@@ -63,12 +67,16 @@
               (rackNotFound)="onRackNotFound($event)"
             />
           } @loading (minimum 150ms) {
-            <div class="loading-state">{{ 'common.loading_rack' | translate }}</div>
+            <div class="loading-state">
+              {{ "common.loading_rack" | translate }}
+            </div>
           } @placeholder {
-            <div class="loading-state">{{ 'common.loading_rack' | translate }}</div>
+            <div class="loading-state">
+              {{ "common.loading_rack" | translate }}
+            </div>
           } @error {
             <div class="loading-state loading-state--error">
-              {{ 'common.error_loading' | translate }}
+              {{ "common.error_loading" | translate }}
             </div>
           }
         </div>
@@ -82,12 +90,16 @@
           @defer (when activeTabId() === tab.id; prefetch on idle) {
             <app-asset-device-view [assetId]="tab.assetId!" />
           } @loading (minimum 150ms) {
-            <div class="loading-state">{{ 'common.loading_device' | translate }}</div>
+            <div class="loading-state">
+              {{ "common.loading_device" | translate }}
+            </div>
           } @placeholder {
-            <div class="loading-state">{{ 'common.loading_device' | translate }}</div>
+            <div class="loading-state">
+              {{ "common.loading_device" | translate }}
+            </div>
           } @error {
             <div class="loading-state loading-state--error">
-              {{ 'common.error_loading' | translate }}
+              {{ "common.error_loading" | translate }}
             </div>
           }
         </div>
