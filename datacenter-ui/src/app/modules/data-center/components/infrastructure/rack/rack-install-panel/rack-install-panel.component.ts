@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   Subject,
@@ -26,6 +27,7 @@ import {
   AssetService,
   GenericComponent,
 } from '../../../../../core/api/v1';
+import { BackendErrorService } from '../../../../../core/services/backend-error.service';
 
 type InstallAssetsState =
   | { status: 'idle' }
@@ -70,6 +72,7 @@ export class RackInstallPanelComponent implements OnInit {
   readonly closed = output<void>();
 
   private readonly translate = inject(TranslateService);
+  private readonly backendErrorSvc = inject(BackendErrorService);
   /** Emitted after a successful install; parent should refresh the rack. */
   readonly installed = output<void>();
 
@@ -229,11 +232,9 @@ export class RackInstallPanelComponent implements OnInit {
           this._saving.set(false);
           this.installed.emit();
         },
-        error: () => {
+        error: (err: HttpErrorResponse) => {
           this._saving.set(false);
-          this._error.set(
-            this.translate.instant('install_panel.install_error'),
-          );
+          this._error.set(this.backendErrorSvc.parse(err));
         },
       });
   }
@@ -257,11 +258,9 @@ export class RackInstallPanelComponent implements OnInit {
           this._saving.set(false);
           this.installed.emit();
         },
-        error: () => {
+        error: (err: HttpErrorResponse) => {
           this._saving.set(false);
-          this._error.set(
-            this.translate.instant('install_panel.install_error'),
-          );
+          this._error.set(this.backendErrorSvc.parse(err));
         },
       });
   }
