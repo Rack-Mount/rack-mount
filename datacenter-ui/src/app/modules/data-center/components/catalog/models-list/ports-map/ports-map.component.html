@@ -26,54 +26,6 @@
         </span>
       }
 
-      @if (!isPlacingMode() && analyzeEnabled()) {
-        @if (suggestions().length > 0 && !analyzing()) {
-          <span class="pm-sugg-count">
-            {{ suggestions().length }}
-            {{ "models.ports_map_sugg_found" | translate }}
-          </span>
-          <button
-            class="pm-btn-confirm-all"
-            type="button"
-            (click)="confirmAllSuggestions()"
-          >
-            {{ "models.ports_map_confirm_all" | translate }}
-          </button>
-        }
-        @if (analyzeError()) {
-          <span class="pm-analyze-error">{{
-            "models.ports_analyze_error" | translate
-          }}</span>
-        }
-        <button
-          class="pm-btn-analyze"
-          type="button"
-          [disabled]="analyzing()"
-          (click)="runAnalyze()"
-        >
-          @if (analyzing()) {
-            <span class="pm-spinner"></span>
-            {{ "models.ports_map_analyzing" | translate }}
-          } @else {
-            <svg viewBox="0 0 16 16" fill="none">
-              <circle
-                cx="6.5"
-                cy="6.5"
-                r="4"
-                stroke="currentColor"
-                stroke-width="1.6"
-              />
-              <path
-                d="M9.5 9.5L13 13"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-              />
-            </svg>
-            {{ "models.ports_map_identify" | translate }}
-          }
-        </button>
-      }
 
       <button class="pm-close" (click)="closed.emit()">&#215;</button>
     </div>
@@ -145,29 +97,6 @@
         </div>
       }
 
-      <!-- Suggestion markers (TF.js) -->
-      @for (s of suggestions(); track s.id) {
-        <div
-          class="pm-marker pm-marker--suggestion"
-          [style.left.%]="s.pos_x"
-          [style.top.%]="s.pos_y"
-          (click)="onSuggestionClick(s, $event)"
-        >
-          <span class="pm-marker-dot"></span>
-          <div class="pm-marker-tooltip pm-marker-tooltip--suggestion">
-            <strong>{{ s.name }}</strong>
-            <span>{{ portTypeLabel(s.port_type) }}</span>
-            <span class="pm-conf"
-              >{{ "models.ports_analyze_confidence" | translate }}:
-              {{ confPct(s.confidence) }}</span
-            >
-            <span class="pm-action-hint">{{
-              "models.ports_map_sugg_hint" | translate
-            }}</span>
-          </div>
-        </div>
-      }
-
       <!-- Pending quick-add position indicator -->
       @if (quickAdd()) {
         <div
@@ -181,7 +110,7 @@
     </div>
 
     <!-- Port legend -->
-    @if (ports().length > 0 || suggestions().length > 0) {
+    @if (ports().length > 0) {
       <div class="pm-legend">
         @for (port of ports(); track port.id) {
           <div
@@ -201,19 +130,6 @@
             }
           </div>
         }
-        @if (suggestions().length > 0) {
-          <div class="pm-legend-sep"></div>
-          @for (s of suggestions(); track s.id) {
-            <div class="pm-legend-item pm-legend-item--suggestion">
-              <span class="pm-legend-dot pm-legend-dot--suggestion"></span>
-              <span class="pm-legend-name">{{ s.name }}</span>
-              <span class="pm-legend-type">{{
-                portTypeLabel(s.port_type)
-              }}</span>
-              <span class="pm-legend-conf">{{ confPct(s.confidence) }}</span>
-            </div>
-          }
-        }
       </div>
     }
   </div>
@@ -227,45 +143,52 @@
     [style.top.px]="quickTop()"
     (click)="$event.stopPropagation()"
   >
-    <span class="pm-quick-title">{{
-      "models.ports_map_add_port" | translate
-    }}</span>
-    <input
-      #quickInput
-      class="pm-quick-input"
-      type="text"
-      [value]="quickAdd()!.name"
-      [placeholder]="'models.ports_col_name' | translate"
-      (input)="setQuickField('name', $any($event.target).value)"
-      (keydown.enter)="submitQuickAdd()"
-      (keydown.escape)="cancelQuickAdd()"
-    />
-    <select
-      class="pm-quick-select"
-      [value]="quickAdd()!.port_type"
-      (change)="setQuickField('port_type', $any($event.target).value)"
-    >
-      @for (t of portTypes; track t.value) {
-        <option
-          [value]="t.value"
-          [selected]="quickAdd()!.port_type === t.value"
-        >
-          {{ t.label }}
-        </option>
-      }
-    </select>
-    <div class="pm-quick-actions">
-      <button class="pm-quick-cancel" type="button" (click)="cancelQuickAdd()">
-        &#215;
-      </button>
-      <button
-        class="pm-quick-confirm"
-        type="button"
-        [disabled]="!quickAdd()!.name.trim()"
-        (click)="submitQuickAdd()"
+    @if (quickAdd()!.loading) {
+      <div class="pm-quick-loading">
+        <span class="pm-spinner"></span>
+        {{ "models.ports_map_analyzing" | translate }}
+      </div>
+    } @else {
+      <span class="pm-quick-title">{{
+        "models.ports_map_add_port" | translate
+      }}</span>
+      <input
+        #quickInput
+        class="pm-quick-input"
+        type="text"
+        [value]="quickAdd()!.name"
+        [placeholder]="'models.ports_col_name' | translate"
+        (input)="setQuickField('name', $any($event.target).value)"
+        (keydown.enter)="submitQuickAdd()"
+        (keydown.escape)="cancelQuickAdd()"
+      />
+      <select
+        class="pm-quick-select"
+        [value]="quickAdd()!.port_type"
+        (change)="setQuickField('port_type', $any($event.target).value)"
       >
-        {{ "models.ports_map_add_confirm" | translate }}
-      </button>
-    </div>
+        @for (t of portTypes; track t.value) {
+          <option
+            [value]="t.value"
+            [selected]="quickAdd()!.port_type === t.value"
+          >
+            {{ t.label }}
+          </option>
+        }
+      </select>
+      <div class="pm-quick-actions">
+        <button class="pm-quick-cancel" type="button" (click)="cancelQuickAdd()">
+          &#215;
+        </button>
+        <button
+          class="pm-quick-confirm"
+          type="button"
+          [disabled]="!quickAdd()!.name.trim()"
+          (click)="submitQuickAdd()"
+        >
+          {{ "models.ports_map_add_confirm" | translate }}
+        </button>
+      </div>
+    }
   </div>
 }

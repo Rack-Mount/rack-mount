@@ -20,7 +20,6 @@ import {
 } from '../../../../../core/api/v1/model/assetModelPort';
 import { PortTypeEnum } from '../../../../../core/api/v1/model/portTypeEnum';
 import { PortAnalyzerService } from '../port-analyzer/port-analyzer.service';
-import { PortSuggestion } from '../port-analyzer/port-suggestion.model';
 
 export interface PortPickEvent {
   portId: number;
@@ -50,6 +49,14 @@ interface QuickAdd {
   port_type: PortTypeEnum;
   /** Set when editing an existing port (double-click). */
   editingPortId?: number;
+  /** True while the backend is analyzing the click area. */
+  loading?: boolean;
+  /**
+   * Il tipo rilevato automaticamente (YOLO o OpenCV) o quello salvato in DB
+   * al momento dell'apertura del form. Usato per rilevare se l'utente ha
+   * corretto il tipo e inviare la correzione al backend.
+   */
+  predictedPortType?: PortTypeEnum;
 }
 
 @Component({
@@ -88,9 +95,6 @@ export class PortsMapComponent {
   protected readonly hoveredPortId = signal<number | null>(null);
   protected readonly portTypes = ASSET_MODEL_PORT_TYPES;
 
-  protected readonly analyzing = signal(false);
-  protected readonly analyzeError = signal(false);
-  protected readonly suggestions = signal<PortSuggestion[]>([]);
   protected readonly quickAdd = signal<QuickAdd | null>(null);
 
   /** Remembers the last port type used so the quick-add popup pre-selects it. */
@@ -199,63 +203,6 @@ export class PortsMapComponent {
     return `Port ${names.length + 1}`;
   }
 
-  // ── Analysis ────────────────────────────────────────────────────────────
-
-  protected runAnalyze(): void {
-    this.analyzeError.set(false);
-    this.suggestions.set([]);
-    this.quickAdd.set(null);
-    this.analyzing.set(true);
-    this.portAnalyzer
-      .analyzeImage(this.imageUrl(), this.currentSide())
-      .then((s) => {
-        // Remove suggestions that overlap with ports already saved in the DB
-        // (e.g. localStorage items from previous sessions that were already confirmed).
-        const existing = this.positionedPorts();
-        const fresh = s.filter(
-          (sugg) =>
-            !existing.some(
-              (p) =>
-                Math.abs((p.pos_x ?? 0) - sugg.pos_x) < 4 &&
-                Math.abs((p.pos_y ?? 0) - sugg.pos_y) < 4,
-            ),
-        );
-        this.suggestions.set(fresh);
-        this.analyzing.set(false);
-      })
-      .catch(() => {
-        this.analyzeError.set(true);
-        this.analyzing.set(false);
-      });
-  }
-
-  protected confirmAllSuggestions(): void {
-    const toAdd = this.suggestions();
-    if (!toAdd.length) return;
-    for (const s of toAdd) {
-      this.portAdded.emit({
-        name: s.name,
-        port_type: s.port_type,
-        pos_x: s.pos_x,
-        pos_y: s.pos_y,
-      });
-      this.portAnalyzer.learnFromAnnotation(
-        this.imageUrl(),
-        this.currentSide(),
-        {
-          name: s.name,
-          port_type: s.port_type,
-          pos_x: s.pos_x,
-          pos_y: s.pos_y,
-        },
-      );
-    }
-    // Once confirmed, annotations are in the DB – clear the localStorage cache
-    // so they don't re-appear as suggestions on subsequent analyze runs.
-    this.portAnalyzer.clearLearned(this.imageUrl(), this.currentSide());
-    this.suggestions.set([]);
-  }
-
   // ── Click handlers ───────────────────────────────────────────────────────
 
   protected onOverlayClick(): void {
@@ -288,14 +235,40 @@ export class PortsMapComponent {
     if (!this.analyzeEnabled()) return;
     if (event.altKey) return;
 
+    // Mostra subito il segnaposto di caricamento al punto di click
     this.quickAdd.set({
       pos_x: x,
       pos_y: y,
       clientX: event.clientX,
       clientY: event.clientY,
-      name: this.nextPortName(),
+      name: '',
       port_type: this.lastPortType(),
+      loading: true,
     });
+
+    // Analizza l'area con YOLO + OCR sul backend
+    this.portAnalyzer
+      .analyzeClick(this.imageUrl(), this.currentSide(), x, y)
+      .then((result) => {
+        const name = result.name ?? this.nextPortName();
+        const portType = result.port_type ?? this.lastPortType();
+        this.quickAdd.update((q) =>
+          q
+            ? {
+                ...q,
+                name,
+                port_type: portType,
+                predictedPortType: portType,
+                loading: false,
+              }
+            : null,
+        );
+      })
+      .catch(() => {
+        this.quickAdd.update((q) =>
+          q ? { ...q, name: this.nextPortName(), loading: false } : null,
+        );
+      });
   }
 
   protected onMarkerClick(portId: number, event: MouseEvent): void {
@@ -328,13 +301,15 @@ export class PortsMapComponent {
     event.stopPropagation();
     const port = this.ports().find((p) => p.id === portId);
     if (!port) return;
+    const existingType = (port.port_type as PortTypeEnum) ?? ('RJ45' as PortTypeEnum);
     this.quickAdd.set({
       pos_x: port.pos_x ?? 0,
       pos_y: port.pos_y ?? 0,
       clientX: event.clientX,
       clientY: event.clientY,
       name: port.name ?? '',
-      port_type: (port.port_type as PortTypeEnum) ?? ('RJ45' as PortTypeEnum),
+      port_type: existingType,
+      predictedPortType: existingType,
       editingPortId: portId,
     });
   }
@@ -388,28 +363,6 @@ export class PortsMapComponent {
     // wasDrag is reset inside onMarkerClick which fires after pointerup
   }
 
-  protected onSuggestionClick(s: PortSuggestion, event: MouseEvent): void {
-    event.stopPropagation();
-    // Dismiss any open quick-add first.
-    if (this.quickAdd()) {
-      this.quickAdd.set(null);
-      return;
-    }
-    if (event.altKey) {
-      this.suggestions.update((list) => list.filter((x) => x.id !== s.id));
-      return;
-    }
-    // Open the quick-add form pre-filled with the suggestion.
-    this.quickAdd.set({
-      pos_x: s.pos_x,
-      pos_y: s.pos_y,
-      clientX: event.clientX,
-      clientY: event.clientY,
-      name: s.name,
-      port_type: s.port_type,
-    });
-  }
-
   // ── Quick-add form ───────────────────────────────────────────────────────
 
   protected setQuickField(key: 'name' | 'port_type', value: string): void {
@@ -425,8 +378,6 @@ export class PortsMapComponent {
     if (!q || !q.name.trim()) return;
 
     if (q.editingPortId != null) {
-      // Edit existing port – update the learned annotation so future analyses
-      // reflect the corrected name / type and the port isn't treated as unknown.
       const orig = this.ports().find((p) => p.id === q.editingPortId);
       if (orig?.pos_x != null && orig?.pos_y != null) {
         this.portAnalyzer.learnFromAnnotation(
@@ -439,6 +390,17 @@ export class PortsMapComponent {
             pos_y: orig.pos_y,
           },
         );
+        // Segnala la correzione al backend se il tipo è cambiato
+        if (q.predictedPortType && q.predictedPortType !== q.port_type) {
+          this.portAnalyzer.reportCorrection(
+            this.imageUrl(),
+            this.currentSide(),
+            orig.pos_x,
+            orig.pos_y,
+            q.predictedPortType,
+            q.port_type,
+          );
+        }
       }
       this.portEdited.emit({
         portId: q.editingPortId,
@@ -457,20 +419,24 @@ export class PortsMapComponent {
       pos_x: q.pos_x,
       pos_y: q.pos_y,
     });
-    // Teach the analyzer so future analyses of this image recall the port.
+    // Insegna al backend per futuri rilevamenti
     this.portAnalyzer.learnFromAnnotation(this.imageUrl(), this.currentSide(), {
       name: q.name.trim(),
       port_type: q.port_type,
       pos_x: q.pos_x,
       pos_y: q.pos_y,
     });
-    // Remove matching suggestion by proximity.
-    this.suggestions.update((list) =>
-      list.filter(
-        (s) =>
-          !(Math.abs(s.pos_x - q.pos_x) < 1 && Math.abs(s.pos_y - q.pos_y) < 1),
-      ),
-    );
+    // Se l'utente ha cambiato il tipo rispetto a quello predetto, invia la correzione
+    if (q.predictedPortType && q.predictedPortType !== q.port_type) {
+      this.portAnalyzer.reportCorrection(
+        this.imageUrl(),
+        this.currentSide(),
+        q.pos_x,
+        q.pos_y,
+        q.predictedPortType,
+        q.port_type,
+      );
+    }
     this.quickAdd.set(null);
   }
 

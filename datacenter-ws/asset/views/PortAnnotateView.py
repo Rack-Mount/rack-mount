@@ -1,7 +1,6 @@
 import hashlib
 import os
 import shutil
-import threading
 
 import yaml
 from django.conf import settings
@@ -11,48 +10,37 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # ── Constants ──────────────────────────────────────────────────────────────────
-_CLASS_NAMES = ['RJ45', 'SFP', 'SFP+', 'USB-A', 'SERIAL', 'LC']
+# Must stay in sync with CLASS_NAMES / PORT_CLASS_ID in train_port_detector.py.
+# class 0=RJ45, 1=SFP/SFP+/SFP28, 2=QSFP+/28/DD, 3=USB, 4=SERIAL, 5=LC
+_CLASS_NAMES = ['RJ45', 'SFP/SFP+', 'QSFP', 'USB', 'SERIAL', 'LC']
 
 _PORT_CLASS_ID = {
-    'RJ45': 0, 'SFP': 1, 'SFP+': 2,
-    'USB-A': 3, 'SERIAL': 4, 'LC': 5,
-    # Aliases
-    'MGMT': 0,
+    'RJ45': 0, 'MGMT': 0,
+    'SFP': 1, 'SFP+': 1, 'SFP28': 1,   # same cage
+    'QSFP+': 2, 'QSFP28': 2, 'QSFP-DD': 2,
+    'USB-A': 3, 'USB-C': 3,
+    'SERIAL': 4,
+    'LC': 5, 'SC': 5, 'FC': 5,
 }
 
-# Estimated bounding-box dimensions as a fraction of image size (0–1)
+# Estimated bounding-box dimensions as a fraction of image size (0–1).
+# Values match PORT_BW / PORT_BH in train_port_detector.py.
 _PORT_BW = {
-    'RJ45': 0.045, 'SFP': 0.030, 'SFP+': 0.030,
-    'USB-A': 0.040, 'SERIAL': 0.060, 'LC': 0.035, 'MGMT': 0.045,
+    'RJ45': 0.055, 'MGMT': 0.055,
+    'SFP': 0.030, 'SFP+': 0.030, 'SFP28': 0.030,
+    'QSFP+': 0.045, 'QSFP28': 0.045, 'QSFP-DD': 0.045,
+    'USB-A': 0.040, 'USB-C': 0.040,
+    'SERIAL': 0.060,
+    'LC': 0.035, 'SC': 0.035, 'FC': 0.035,
 }
 _PORT_BH = {
-    'RJ45': 0.055, 'SFP': 0.050, 'SFP+': 0.050,
-    'USB-A': 0.045, 'SERIAL': 0.040, 'LC': 0.060, 'MGMT': 0.055,
+    'RJ45': 0.060, 'MGMT': 0.060,
+    'SFP': 0.048, 'SFP+': 0.048, 'SFP28': 0.048,
+    'QSFP+': 0.052, 'QSFP28': 0.052, 'QSFP-DD': 0.052,
+    'USB-A': 0.045, 'USB-C': 0.045,
+    'SERIAL': 0.040,
+    'LC': 0.060, 'SC': 0.060, 'FC': 0.060,
 }
-
-MIN_TRAINING_IMAGES = 20
-
-_training_state = {'is_training': False}
-_training_lock = threading.Lock()
-
-
-def _best_device() -> str:
-    """
-    Return the fastest available compute device:
-      CUDA  → 'cuda'  (NVIDIA GPU)
-      MPS   → 'mps'   (Apple Silicon)
-      else  → 'cpu'
-    """
-    try:
-        import torch
-        if torch.cuda.is_available():
-            return 'cuda'
-        if getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
-            return 'mps'
-    except Exception:
-        pass
-    return 'cpu'
-
 
 # ── Security helpers ───────────────────────────────────────────────────────────
 
@@ -90,33 +78,6 @@ def _write_data_yaml(training_dir: str) -> str:
     return data_yaml
 
 
-def _background_train(data_yaml: str, models_dir: str) -> None:
-    try:
-        from ultralytics import YOLO
-        device = _best_device()
-        model = YOLO('yolov8n.pt')
-        model.train(
-            data=data_yaml,
-            epochs=100,      # more headroom; early stopping handles over-training
-            patience=20,     # stop if val loss doesn't improve for 20 epochs
-            imgsz=640,
-            optimizer='AdamW',
-            device=device,
-            project=models_dir,
-            name='port-yolo',
-            exist_ok=True,
-        )
-        # Promote best weights so PortAnalyzeView can find them immediately
-        best = os.path.join(models_dir, 'port-yolo', 'weights', 'best.pt')
-        dest = os.path.join(models_dir, 'port-yolo.pt')
-        if os.path.isfile(best):
-            shutil.copy2(best, dest)
-    except Exception:
-        pass
-    finally:
-        _training_state['is_training'] = False
-
-
 # ── View ───────────────────────────────────────────────────────────────────────
 
 class PortAnnotateView(APIView):
@@ -132,8 +93,8 @@ class PortAnnotateView(APIView):
         ]
     }
 
-    Saves the annotations as YOLO training data and triggers background
-    retraining once MIN_TRAINING_IMAGES labelled images have been collected.
+    Saves the annotations as YOLO training data.
+    Il retraining è gestito esclusivamente da PortCorrectionView con logica smart.
     """
     permission_classes = [IsAuthenticated]
 
@@ -198,26 +159,14 @@ class PortAnnotateView(APIView):
                 cy = max(bh / 2, min(1.0 - bh / 2, cy))
                 f.write(f'{cls_id} {cx:.4f} {cy:.4f} {bw:.4f} {bh:.4f}\n')
 
-        data_yaml = _write_data_yaml(training_dir)
+        _write_data_yaml(training_dir)
 
-        # Count labelled images across both train and val subdirs
         label_count = 0
         for sub in ('train', 'val'):
             sub_dir = os.path.join(labels_dir, sub)
             if os.path.isdir(sub_dir):
                 label_count += sum(1 for fn in os.listdir(sub_dir)
                                    if fn.endswith('.txt'))
-        models_dir = os.path.join(media_root, 'models')
-        os.makedirs(models_dir, exist_ok=True)
-
-        with _training_lock:
-            if label_count >= MIN_TRAINING_IMAGES and not _training_state['is_training']:
-                _training_state['is_training'] = True
-                threading.Thread(
-                    target=_background_train,
-                    args=(data_yaml, models_dir),
-                    daemon=True,
-                ).start()
 
         return Response(
             {'saved': len(annotations), 'total_images': label_count},

@@ -68,6 +68,37 @@ export class PortAnalyzerService {
   }
 
   /**
+   * Analyze a single click position: crops the image around the click,
+   * runs YOLO + OCR on the backend and returns the detected port info.
+   */
+  async analyzeClick(
+    imageUrl: string,
+    side: 'front' | 'rear',
+    posX: number,
+    posY: number,
+  ): Promise<{
+    is_port: boolean;
+    port_type: PortTypeEnum;
+    name: string | null;
+    confidence: number;
+  }> {
+    const imagePath = this.extractImagePath(imageUrl);
+    return firstValueFrom(
+      this.http.post<{
+        is_port: boolean;
+        port_type: PortTypeEnum;
+        name: string | null;
+        confidence: number;
+      }>(`${this.basePath}/asset/port-click-analyze`, {
+        image_path: imagePath,
+        side,
+        click_x: posX,
+        click_y: posY,
+      }),
+    );
+  }
+
+  /**
    * Persist a confirmed port annotation in localStorage and send it to
    * the backend (fire-and-forget) so that YOLO can learn from it.
    */
@@ -102,6 +133,32 @@ export class PortAnalyzerService {
 
     // Fire-and-forget: send all annotations for this image to the backend
     this.sendAnnotations(imageUrl, side).catch(() => {});
+  }
+
+  /**
+   * Reports a manual correction (predicted_type → actual_type) to the backend
+   * so it can update the training data and eventually retrain the model.
+   * Fire-and-forget: errors are silently ignored.
+   */
+  reportCorrection(
+    imageUrl: string,
+    side: 'front' | 'rear',
+    posX: number,
+    posY: number,
+    predictedType: PortTypeEnum,
+    actualType: PortTypeEnum,
+  ): void {
+    const imagePath = this.extractImagePath(imageUrl);
+    this.http
+      .post(`${this.basePath}/asset/port-correction`, {
+        image_path: imagePath,
+        side,
+        pos_x: posX,
+        pos_y: posY,
+        predicted_type: predictedType,
+        actual_type: actualType,
+      })
+      .subscribe({ error: () => {} });
   }
 
   /**

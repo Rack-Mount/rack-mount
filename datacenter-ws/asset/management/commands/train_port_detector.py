@@ -20,15 +20,27 @@ from django.core.management.base import BaseCommand
 
 
 # ── Mapping port_type → YOLO class_id ─────────────────────────────────────────
-# Tipi non rilevabili otticamente (fiber, mgmt, ecc.) vengono mappati al tipo
-# più vicino; tipi sconosciuti vengono saltati.
+# Principio: una classe per ogni forma-fattore *otticamente distinguibile*.
+#
+#  0 – RJ45   : porta rame con tab di scatto, contatti visibili, apertura rettangolare
+#  1 – SFP    : cage SFP/SFP+/SFP28 (1G/10G/25G) — forma identica, cage piccola
+#  2 – QSFP   : cage QSFP+/QSFP28/QSFP-DD — visivamente più larga di SFP
+#  3 – USB    : porta USB-A / USB-C
+#  4 – SERIAL : porta seriale (DB9/RJ45-console)
+#  5 – LC     : connettore fibra ottica LC/SC/FC
+#
+# NOTA: SFP e SFP+ erano classi separate (1 e 2) ma hanno cage otticamente
+# identica; tenerle separate iniettava rumore ambiguo nel training e causava
+# lo scivolamento delle previsioni verso la classe SFP — incluse le RJ45.
+# QSFP+ era erroneamente raggruppato con SFP+ (classe 2): ora ha classe propria
+# perché la cage è fisicamente più larga e riconoscibile.
 PORT_CLASS_ID = {
     'RJ45':    0,
-    'MGMT':    0,  # visivamente simile a RJ45
+    'MGMT':    0,  # porta di gestione visivamente identica a RJ45
     'SFP':     1,
-    'SFP28':   1,  # stessa cage SFP
-    'SFP+':    2,
-    'QSFP+':   2,
+    'SFP28':   1,  # stessa cage SFP (25G)
+    'SFP+':    1,  # stessa cage SFP (10G) — era classe 2, unita a 1
+    'QSFP+':   2,  # cage più larga — separata da SFP
     'QSFP28':  2,
     'QSFP-DD': 2,
     'USB-A':   3,
@@ -39,25 +51,27 @@ PORT_CLASS_ID = {
     'FC':      5,
 }
 
-# Dimensioni stimate del bounding box (frazione dell'immagine)
+# Dimensioni stimate del bounding box (frazione dell'immagine).
+# RJ45 ha apertura più larga e più alta rispetto alla cage SFP;
+# la differenza di proporzione aiuta il modello a discriminare per forma.
 PORT_BW = {
-    0: 0.045,   # RJ45
-    1: 0.030,   # SFP
-    2: 0.030,   # SFP+
+    0: 0.055,   # RJ45   — più larga della cage SFP (era 0.045)
+    1: 0.030,   # SFP/SFP+/SFP28
+    2: 0.045,   # QSFP   — cage più larga di SFP ma più stretta di RJ45
     3: 0.040,   # USB
     4: 0.060,   # SERIAL
     5: 0.035,   # LC
 }
 PORT_BH = {
-    0: 0.055,
-    1: 0.050,
-    2: 0.050,
-    3: 0.045,
-    4: 0.040,
-    5: 0.060,
+    0: 0.060,   # RJ45   — più alta della cage SFP (era 0.055)
+    1: 0.048,   # SFP/SFP+
+    2: 0.052,   # QSFP
+    3: 0.045,   # USB
+    4: 0.040,   # SERIAL
+    5: 0.060,   # LC
 }
 
-CLASS_NAMES = ['RJ45', 'SFP', 'SFP+', 'USB-A', 'SERIAL', 'LC']
+CLASS_NAMES = ['RJ45', 'SFP/SFP+', 'QSFP', 'USB', 'SERIAL', 'LC']
 
 
 # ── Device selection ──────────────────────────────────────────────────────────
@@ -373,6 +387,20 @@ class Command(BaseCommand):
             optimizer='AdamW',
             flipud=0.5,        # 50 % chance of vertical flip → 180°-rotated images
             degrees=10,        # ±10° random rotation → tilted/angled photos
+            # ── Classification-loss tuning ─────────────────────────────────
+            # cls=2.0 triplica il peso della classification loss (default 0.5):
+            # forza il modello a imparare feature discriminanti tra RJ45/SFP
+            # invece di ottimizzare solo la localizzazione del bounding box.
+            cls=2.0,
+            # label_smoothing riduce l'overconfidence su patch ambigue (bordi
+            # di immagine, porte parzialmente visibili) senza degrado su casi
+            # chiari.
+            label_smoothing=0.1,
+            # mosaic=0.5: riduce la probabilità del mosaic augmentation
+            # (default 1.0). Il mosaic mescola patch di dispositivi diversi
+            # nello stesso sample; a bassa densità di dati può creare contesti
+            # visivamente incoerenti che confondono il classificatore.
+            mosaic=0.5,
             device=device,
             project=models_dir,
             name='port-yolo',

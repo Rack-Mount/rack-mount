@@ -29,9 +29,24 @@ _PORT_NAME_TEMPLATES = {
     'RJ45':   'GigabitEthernet0/{}',
     'SFP':    'TenGigabitEthernet0/{}',
     'SFP+':   'TwentyFiveGigE0/{}',
+    'QSFP+':  'FortyGigabitEthernet0/{}',
     'USB-A':  'USB{}',
     'SERIAL': 'Serial0/{}',
     'LC':     'LC{}',
+}
+
+# Explicit YOLO class-ID → port-type mapping.
+# MUST stay in sync with PORT_CLASS_ID in train_port_detector.py:
+#   0=RJ45, 1=SFP/SFP+/SFP28 (same cage), 2=QSFP+/28/DD, 3=USB, 4=SERIAL, 5=LC
+# Do NOT rebuild this from _PORT_CONFIG: that dict uses AR-based class IDs
+# intended for the OpenCV path, not for the YOLO model.
+_YOLO_ID_TO_TYPE = {
+    0: 'RJ45',
+    1: 'SFP',    # covers SFP / SFP+ / SFP28 (visually identical cage)
+    2: 'QSFP+',  # covers QSFP+ / QSFP28 / QSFP-DD
+    3: 'USB-A',
+    4: 'SERIAL',
+    5: 'LC',
 }
 
 
@@ -187,7 +202,16 @@ def _bbox_nms(candidates: list, iou_thresh: float = 0.30,
                 continue
             inter = (ix2 - ix1) * (iy2 - iy1)
             union = bw * bh + fbw * fbh - inter
-            if union > 0 and inter / union > iou_thresh:
+            iou = inter / union if union > 0 else 0.0
+            # IoMin (containment ratio): intersection / area of the SMALLER box.
+            # When YOLO fires twice for the same port opening (once on the outer
+            # cage bbox, once on the inner socket void), the two boxes share the
+            # same centre but differ in size → IoU is low (~0.25) and both
+            # survive pure IoU NMS.  IoMin = intersection / min_area ≈ 1.0 for
+            # a fully-contained inner box, reliably suppressing the duplicate.
+            min_area = min(bw * bh, fbw * fbh)
+            iomin = inter / min_area if min_area > 0 else 0.0
+            if iou > iou_thresh or iomin > 0.60:
                 overlaps = True
                 break
 
@@ -324,6 +348,39 @@ def _reclassify_by_cluster(detections: list) -> list:
     return detections
 
 
+# ── Image preprocessing & inference helpers ────────────────────────────────────
+
+def _preprocess_for_inference(img):
+    """
+    Enhance an equipment panel photo for YOLO inference:
+
+    1. CLAHE on the L channel (LAB colour space) – boosts local contrast on
+       dark server bezels and overexposed rack backgrounds, without shifting
+       hue.  clipLimit=2.0 is conservative: enough to lift dark port cavities
+       but not so aggressive it introduces false edges on smooth panels.
+    2. Unsharp mask (amount=0.4, sigma=1.5) – recovers edge sharpness lost to
+       camera optics, motion blur, or JPEG compression, making the rectangular
+       port-opening silhouettes crisper for the CNN decoder.
+
+    Returns the enhanced BGR image (same shape / dtype).
+    """
+    import cv2
+    import numpy as np
+
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    l, a, b = cv2.split(lab)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    l_eq = clahe.apply(l)
+    enhanced = cv2.cvtColor(cv2.merge([l_eq, a, b]), cv2.COLOR_LAB2BGR)
+
+    # Unsharp mask: sharpened = original + 0.4 × (original − blurred)
+    blur = cv2.GaussianBlur(enhanced, (0, 0), sigmaX=1.5)
+    sharpened = cv2.addWeighted(enhanced, 1.4, blur, -0.4, 0)
+    return sharpened
+
+
+
+
 # ── OpenCV detection ───────────────────────────────────────────────────────────
 
 def _detect_with_opencv(image_path: str) -> list:
@@ -368,14 +425,23 @@ def _detect_with_opencv(image_path: str) -> list:
 
     gray = cv2.cvtColor(working, cv2.COLOR_BGR2GRAY)
 
+    # CLAHE: normalises local contrast so both under-exposed (dark 1U server)
+    # and over-exposed (bright flash) photos yield well-defined port silhouettes.
+    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+    gray = clahe.apply(gray)
+
     # Bilateral filter preserves edges much better than Gaussian; this reduces
     # false contours along textured bezels.
     blurred = cv2.bilateralFilter(gray, d=9, sigmaColor=75, sigmaSpace=75)
 
-    # Adaptive Canny + dilation
+    # Adaptive Canny + dilation + morphological close
     edges = _auto_canny(blurred)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     edges = cv2.dilate(edges, kernel, iterations=1)
+    # Morphological close: reconnects hair-line gaps in port-frame outlines
+    # caused by bezel reflections, worn surface coatings, or JPEG ringing.
+    # A single iteration is enough without bloating the contour shape.
+    edges = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel, iterations=1)
 
     # RETR_CCOMP returns both external contours and holes, so we catch port
     # openings that sit inside a larger bezel frame.
@@ -515,6 +581,92 @@ def _detect_with_opencv(image_path: str) -> list:
 
 # ── YOLO detection ─────────────────────────────────────────────────────────────
 
+def _grid_dedup(detections: list) -> list:
+    """
+    Eliminate duplicate detections by snapping raw YOLO outputs onto the
+    physical port grid — one detection per grid cell (column × row).
+
+    Root cause of duplicates
+    ────────────────────────
+    YOLO fires multiple times per physical port: once on the outer metal-cage
+    frame (larger bbox) and once on the inner socket void (smaller bbox,
+    identical X centre, 2–5 % lower Y centre).  Their IoU ≈ 0.15–0.25, well
+    below any practical NMS threshold, so both survive standard post-processing.
+
+    Why column-first works
+    ──────────────────────
+    The outer-cage and inner-void detections of the SAME port share an
+    identical X centre (manufacturing tolerance < 0.3 %).  Grouping by X
+    first therefore collapses ALL within-port duplicates in a single pass,
+    regardless of their Y offset.
+
+    Algorithm
+    ─────────
+    Pass 1 — X-column grouping:
+        Sort detections by X.  Estimate the column pitch as the median of
+        consecutive X gaps that exceed a 0.3 % noise floor.  Each new column
+        starts when the consecutive X gap ≥ col_pitch × 0.45 (i.e. less than
+        half the pitch away means the same slot).
+
+    Pass 2 — Y-row grouping within each column:
+        Sort column members by Y.  A new row starts when the Y gap exceeds
+        _Y_ROW_SPLIT (8 %).  This is deliberately set above the typical
+        outer/inner Y offset (2–5 %) and below any realistic row-to-row
+        spacing: panels with 4 rows have ≥ 10 % row spacing; 2-row panels
+        have ≥ 30 %.
+
+    Keep the highest-confidence detection per (column, row) cell.
+    """
+    _Y_ROW_SPLIT = 8.0   # % of image height; must be > inner/outer Y offset
+                         # and < minimum row-to-row spacing on real hardware.
+
+    if len(detections) < 2:
+        return list(detections)
+
+    # ── Pass 1: group by X into columns ────────────────────────────────────────
+    ordered_x = sorted(detections, key=lambda d: d['pos_x'])
+    xs = [d['pos_x'] for d in ordered_x]
+    x_gaps = [xs[i + 1] - xs[i] for i in range(len(xs) - 1)]
+
+    # Median of significant X gaps = column pitch.
+    # Near-zero gaps (same-port duplicates) are filtered by the 0.3 % floor
+    # so they don't drag the median downward.
+    sig_gaps = sorted(g for g in x_gaps if g > 0.3)
+    if sig_gaps:
+        col_pitch = sig_gaps[len(sig_gaps) // 2]
+    else:
+        col_pitch = 100.0   # single-column panel
+
+    eps_x = max(0.5, col_pitch * 0.45)
+
+    columns: list = [[ordered_x[0]]]
+    for i, det in enumerate(ordered_x[1:], start=1):
+        # x_gaps[i-1] is the gap between ordered_x[i-1] and ordered_x[i]
+        if x_gaps[i - 1] < eps_x:
+            columns[-1].append(det)
+        else:
+            columns.append([det])
+
+    # ── Pass 2: within each column group by Y into rows ─────────────────────
+    result: list = []
+    for col in columns:
+        by_y = sorted(col, key=lambda d: d['pos_y'])
+        ys_col = [d['pos_y'] for d in by_y]
+        y_gaps_col = [ys_col[i + 1] - ys_col[i] for i in range(len(ys_col) - 1)]
+
+        y_groups: list = [[by_y[0]]]
+        for j, det in enumerate(by_y[1:]):
+            if y_gaps_col[j] < _Y_ROW_SPLIT:
+                y_groups[-1].append(det)
+            else:
+                y_groups.append([det])
+
+        for grp in y_groups:
+            result.append(max(grp, key=lambda d: d['confidence']))
+
+    return result
+
+
 def _extract_yolo_detections(results, id_to_type: dict) -> list:
     """Convert ultralytics Results to the internal detection dict format."""
     out = []
@@ -538,82 +690,85 @@ def _extract_yolo_detections(results, id_to_type: dict) -> list:
 
 def _detect_with_yolo(image_path: str, model_path: str) -> list:
     """
-    Run YOLOv8 inference with panorama-aware imgsz and tighter thresholds.
+    Run YOLOv8 inference and return exactly one detection per physical port.
 
-    Test-Time Augmentation (TTA):
-      The model is trained mostly on normally-oriented panels, so RJ45 ports
-      in a 180°-rotated image are often missed.  To fix this WITHOUT requiring
-      a retrain we run a second inference pass on the 180°-rotated image, flip
-      the resulting coordinates back ( cx' = 100-cx, cy' = 100-cy ), and merge
-      both passes before NMS.  Ports detected by both passes converge to the
-      same position and are collapsed by IoU NMS; ports only visible in one
-      pass are kept.
+    Pipeline
+    ────────
+    1. CLAHE + unsharp-mask preprocessing  → sharper port features.
+    2. Single full-image pass at imgsz=1280, conf=0.25, iou=0.30.
+       Low confidence threshold catches all genuine ports; _grid_dedup
+       collapses the resulting duplicates.
+    3. _grid_dedup  → one detection per (column, row) grid cell.
+       Handles YOLO's outer-cage + inner-void double-fire by exploiting
+       the physical invariant that duplicate detections share an identical
+       X centre (same port slot).  See _grid_dedup docstring for details.
+    4. _bbox_nms    → IoU / IoMin safety net for any residual overlapping
+       detections that slipped past the grid algorithm.
+    5. _reclassify_by_cluster → row-majority-vote type correction.
     """
     import tempfile
     from ultralytics import YOLO
 
-    id_to_type = {cfg['class_id']: pt for pt, cfg in _PORT_CONFIG.items()}
     model = YOLO(model_path)
 
-    # ── Determine inference resolution from image aspect ratio ────────────────
-    imgsz = 640
+    # ── Load & preprocess ─────────────────────────────────────────────────────
     img_orig = None
-    rotated_tmp = None
+    preprocessed_path = None
+    infer_path = image_path
+
     try:
         import cv2
         img_orig = cv2.imread(image_path)
         if img_orig is not None:
-            H_i, W_i = img_orig.shape[:2]
-            if W_i / max(H_i, 1) > 3.5:
-                imgsz = (384, 1280)   # wide-panel mode
-            elif W_i > 900:
-                imgsz = 1280
+            enhanced = _preprocess_for_inference(img_orig)
+            tmp = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False)
+            tmp.close()
+            preprocessed_path = tmp.name
+            cv2.imwrite(preprocessed_path, enhanced,
+                        [cv2.IMWRITE_JPEG_QUALITY, 95])
+            infer_path = preprocessed_path
     except Exception:
         pass
 
-    predict_kwargs = dict(verbose=False, conf=0.20, iou=0.45, imgsz=imgsz)
-
-    # ── Pass 1: original image ─────────────────────────────────────────────────
-    detections = _extract_yolo_detections(
-        model.predict(image_path, **predict_kwargs), id_to_type
-    )
-
-    # ── Pass 2: 180°-rotated image (TTA) ──────────────────────────────────────
-    # A model trained on standard-orientation panels often fails on 180°-
-    # rotated panels because it has learned orientation-specific features
-    # (RJ45 clip position, LED placement, etc.).  Running inference on the
-    # rotated copy and flipping the coordinates back covers these cases.
+    # Use 1280 for any image larger than 640 px. Dense 48-port panels
+    # photographed at typical resolution have port widths of only 20–30 px
+    # at 640; 1280 doubles that to 40–60 px, well within model training range.
+    imgsz = 1280
     if img_orig is not None:
         try:
-            import cv2
-            img_r180 = cv2.rotate(img_orig, cv2.ROTATE_180)
-            tmp = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False)
-            tmp.close()
-            rotated_tmp = tmp.name
-            cv2.imwrite(rotated_tmp, img_r180, [cv2.IMWRITE_JPEG_QUALITY, 95])
-
-            r180_dets = _extract_yolo_detections(
-                model.predict(rotated_tmp, **predict_kwargs), id_to_type
-            )
-            # Transform coordinates back: 180° rotation → cx' = 100-cx, cy' = 100-cy
-            # bbox dimensions (bw, bh) are unchanged.
-            for d in r180_dets:
-                d['pos_x'] = round(100.0 - d['pos_x'], 1)
-                d['pos_y'] = round(100.0 - d['pos_y'], 1)
-            detections.extend(r180_dets)
+            h, w = img_orig.shape[:2]
+            if w <= 640 and h <= 640:
+                imgsz = 640
         except Exception:
             pass
-        finally:
-            if rotated_tmp:
-                try:
-                    os.remove(rotated_tmp)
-                except OSError:
-                    pass
 
-    # ── IoU NMS → grid deduplication → cluster reclassification ──────────────
+    try:
+        raw = _extract_yolo_detections(
+            model.predict(
+                infer_path,
+                verbose=False,
+                conf=0.25,           # permissive: _grid_dedup handles dupes
+                iou=0.30,            # tighter YOLO NMS to drop high-overlap anchors
+                agnostic_nms=True,   # collapse cross-class overlaps inside YOLO
+                imgsz=imgsz,
+                max_det=512,
+            ),
+            _YOLO_ID_TO_TYPE,
+        )
+    finally:
+        if preprocessed_path:
+            try:
+                os.remove(preprocessed_path)
+            except OSError:
+                pass
+
+    # Three-stage post-processing pipeline:
+    #   1. _grid_dedup           → one detection per (column × row) cell
+    #   2. _bbox_nms             → IoU / IoMin safety net
+    #   3. _reclassify_by_cluster → row-majority-vote type correction
     return _reclassify_by_cluster(
-        _deduplicate_by_grid(
-            _bbox_nms(detections)
+        _bbox_nms(
+            _grid_dedup(raw)
         )
     )
 
@@ -654,14 +809,16 @@ class PortAnalyzeView(APIView):
         try:
             if os.path.isfile(model_path):
                 ports = _detect_with_yolo(abs_image_path, model_path)
-                # If the YOLO model (possibly freshly trained with few samples)
-                # finds nothing, fall back to the OpenCV heuristic.
                 if not ports:
+                    # YOLO returned nothing (model not yet trained, fresh
+                    # install, or completely unrecognisable panel orientation):
+                    # fall back to the OpenCV heuristic.
                     ports = _detect_with_opencv(abs_image_path)
             else:
                 ports = _detect_with_opencv(abs_image_path)
         except Exception:
-            # Graceful fallback: if YOLO fails entirely, try OpenCV.
+            # If YOLO crashes (missing dependency, corrupt model, etc.),
+            # OpenCV still gives a usable result.
             try:
                 ports = _detect_with_opencv(abs_image_path)
             except Exception:
