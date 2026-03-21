@@ -40,6 +40,10 @@ export interface PatchedAssetModel {
      * Peso apparato in chilogrammi
      */
     weight_kg?: string | null;
+    /**
+     * Consumo energetico globale (W)
+     */
+    power_consumption_watt?: number;
     front_image?: string | null;
     front_image_transform?: string;
     rear_image?: string | null;

@@ -143,7 +143,11 @@ export class AssetCreateDrawerComponent implements OnInit {
   }
 
   protected selectModel(m: AssetModel): void {
-    this.createForm.update((f) => ({ ...f, model_id: m.id }));
+    this.createForm.update((f) => ({
+      ...f,
+      model_id: m.id,
+      power_cosumption_watt: m.power_consumption_watt ?? null,
+    }));
     this.modelSearch.set(`${m.name ?? ''} (${m.vendor.name})`.trim());
     this.modelDropdownOpen.set(false);
   }

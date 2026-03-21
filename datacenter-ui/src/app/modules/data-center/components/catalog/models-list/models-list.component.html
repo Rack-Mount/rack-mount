@@ -1000,6 +1000,25 @@
           </div>
         </div>
 
+        <!-- Power (W) -->
+        <label class="field">
+          <span class="field-label">{{ "models.field_power" | translate }}</span>
+          <input
+            class="field-input field-input--short"
+            type="number"
+            min="0"
+            style="max-width: 120px"
+            [placeholder]="'models.field_power_ph' | translate"
+            [value]="form().power_consumption_watt ?? ''"
+            (input)="
+              setField(
+                'power_consumption_watt',
+                $any($event.target).value ? +$any($event.target).value : null
+              )
+            "
+          />
+        </label>
+
         <label class="field">
           <span class="field-label">{{
             "models.field_notes" | translate

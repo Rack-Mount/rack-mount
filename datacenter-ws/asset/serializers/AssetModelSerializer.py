@@ -54,6 +54,7 @@ class AssetModelSerializer(serializers.ModelSerializer):
             'height_mm',
             'depth_mm',
             'weight_kg',
+            'power_consumption_watt',
             'front_image',
             'front_image_transform',
             'rear_image',

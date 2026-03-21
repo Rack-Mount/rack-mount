@@ -104,6 +104,8 @@
     "field_weight_kg": "Poids (kg)",
     "field_dim_ph": "mm",
     "field_weight_ph": "kg",
+    "field_power": "Puissance (W)",
+    "field_power_ph": "0",
     "field_notes": "Notes",
     "field_notes_ph": "Informations complémentaires…",
     "field_front_img": "Image face avant",

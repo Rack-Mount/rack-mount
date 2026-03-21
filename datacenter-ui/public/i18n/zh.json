@@ -104,6 +104,8 @@
     "field_weight_kg": "重量 (kg)",
     "field_dim_ph": "mm",
     "field_weight_ph": "kg",
+    "field_power": "功率 (W)",
+    "field_power_ph": "0",
     "field_notes": "备注",
     "field_notes_ph": "附加信息…",
     "field_front_img": "正面图片",

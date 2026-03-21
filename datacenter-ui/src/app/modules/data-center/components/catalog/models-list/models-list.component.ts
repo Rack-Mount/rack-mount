@@ -76,6 +76,7 @@ export interface ModelForm {
   height_mm: number | null;
   depth_mm: number | null;
   weight_kg: string;
+  power_consumption_watt: number | null;
   note: string;
   front_image_file: File | null;
   rear_image_file: File | null;
@@ -97,6 +98,7 @@ function emptyForm(): ModelForm {
     height_mm: null,
     depth_mm: null,
     weight_kg: '',
+    power_consumption_watt: null,
     note: '',
     front_image_file: null,
     rear_image_file: null,
@@ -439,6 +441,7 @@ export class ModelsListComponent {
       height_mm: m.height_mm ?? null,
       depth_mm: m.depth_mm ?? null,
       weight_kg: m.weight_kg ?? '',
+      power_consumption_watt: m.power_consumption_watt ?? null,
       note: m.note ?? '',
       front_image_file: null,
       rear_image_file: null,
@@ -471,6 +474,7 @@ export class ModelsListComponent {
       height_mm: m.height_mm ?? null,
       depth_mm: m.depth_mm ?? null,
       weight_kg: m.weight_kg ?? '',
+      power_consumption_watt: m.power_consumption_watt ?? null,
       note: m.note ?? '',
       front_image_file: null,
       rear_image_file: null,
@@ -656,6 +660,8 @@ export class ModelsListComponent {
     if (f.height_mm != null) fd.append('height_mm', String(f.height_mm));
     if (f.depth_mm != null) fd.append('depth_mm', String(f.depth_mm));
     if (f.weight_kg) fd.append('weight_kg', f.weight_kg);
+    if (f.power_consumption_watt != null)
+      fd.append('power_consumption_watt', String(f.power_consumption_watt));
     fd.append('note', f.note ?? '');
     if (f.front_image_file) {
       fd.append('front_image', f.front_image_file);

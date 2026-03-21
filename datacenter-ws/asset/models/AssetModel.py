@@ -54,6 +54,10 @@ class AssetModel(models.Model):
         max_digits=6, decimal_places=2,
         null=True, blank=True,
         help_text='Peso apparato in chilogrammi')
+    power_consumption_watt = models.PositiveIntegerField(
+        default=0,
+        null=False,
+        help_text='Consumo energetico globale (W)')
     front_image = models.ImageField(
         null=True, upload_to=asset_model_front_upload)
     rear_image = models.ImageField(
