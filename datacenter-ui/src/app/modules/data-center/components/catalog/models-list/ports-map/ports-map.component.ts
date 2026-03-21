@@ -301,7 +301,8 @@ export class PortsMapComponent {
     event.stopPropagation();
     const port = this.ports().find((p) => p.id === portId);
     if (!port) return;
-    const existingType = (port.port_type as PortTypeEnum) ?? ('RJ45' as PortTypeEnum);
+    const existingType =
+      (port.port_type as PortTypeEnum) ?? ('RJ45' as PortTypeEnum);
     this.quickAdd.set({
       pos_x: port.pos_x ?? 0,
       pos_y: port.pos_y ?? 0,
