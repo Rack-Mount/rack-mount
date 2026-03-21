@@ -224,10 +224,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   // Detected rooms (enclosed faces in the wall planar graph)
   rooms: Room[] = [];
 
-  // Room name persistence: key = "${roundedCx}_${roundedCy}"
-  editingRoomIndex: number | null = null;
-  editingRoomName = '';
-
   // Rack name inline editing
   editingRackId: string | null = null;
   editingRackName = '';
@@ -280,8 +276,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   @ViewChild('svgContainer') svgContainer!: ElementRef<SVGSVGElement>;
-  @ViewChild('activeRoomInput')
-  activeRoomInputRef?: ElementRef<HTMLInputElement>;
   @ViewChild('activeRackInput')
   activeRackInputRef?: ElementRef<HTMLInputElement>;
   @ViewChild('activeTextInput')
@@ -829,29 +823,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.roomFaces = computeRoomFaces(this.elements);
     this.rooms = restoreRoomNames(_computeRooms(this.elements), this.rooms);
     this.scheduleUpdateGrid();
-  }
-
-  confirmEditRoom(): void {
-    if (this.editingRoomIndex === null) return;
-    const room = this.rooms[this.editingRoomIndex];
-    const newName = this.editingRoomName.trim();
-    room.name = newName || undefined;
-    this.editingRoomIndex = null;
-  }
-
-  startEditRoom(index: number, event: MouseEvent): void {
-    event.stopPropagation();
-    event.preventDefault();
-    this.editingRoomIndex = index;
-    this.editingRoomName = this.rooms[index]?.name ?? '';
-    setTimeout(() => {
-      this.activeRoomInputRef?.nativeElement.focus();
-      this.activeRoomInputRef?.nativeElement.select();
-    }, 0);
-  }
-
-  cancelEditRoom(): void {
-    this.editingRoomIndex = null;
   }
 
   startEditRack(el: MapElement, event: MouseEvent): void {

@@ -520,21 +520,10 @@
         <!-- Room area labels (planar face detection) -->
         @for (room of rooms; track $index) {
           <g [style.cursor]="selectedTool === 'move' ? 'pointer' : 'default'">
-            <!-- Invisible hit target for double-click rename -->
-            <rect
-              [attr.x]="room.cx - 44 / zoom"
-              [attr.y]="room.cy - 18 / zoom"
-              [attr.width]="88 / zoom"
-              [attr.height]="36 / zoom"
-              fill="transparent"
-              stroke="none"
-              [attr.pointer-events]="selectedTool === 'move' ? 'all' : 'none'"
-              (dblclick)="startEditRoom($index, $event)"
-            />
             <!-- Engraved area (always visible): white highlight + main text -->
             <text
               [attr.x]="room.cx + 0.8 / zoom"
-              [attr.y]="room.cy - 6.2 / zoom"
+              [attr.y]="room.cy + 0.8 / zoom"
               text-anchor="middle"
               dominant-baseline="middle"
               fill="rgba(255,255,255,0.85)"
@@ -549,7 +538,7 @@
             </text>
             <text
               [attr.x]="room.cx"
-              [attr.y]="room.cy - 7 / zoom"
+              [attr.y]="room.cy"
               text-anchor="middle"
               dominant-baseline="middle"
               fill="#5a6472"
@@ -562,81 +551,6 @@
             >
               {{ room.area / 10000 | number: "1.0-2" }} m²
             </text>
-            @if (editingRoomIndex !== $index) {
-              <!-- Engraved name: white highlight offset + main text -->
-              <text
-                [attr.x]="room.cx + 0.8 / zoom"
-                [attr.y]="room.cy + 7.8 / zoom"
-                text-anchor="middle"
-                dominant-baseline="middle"
-                fill="rgba(255,255,255,0.75)"
-                [attr.font-size]="10 / zoom + 'px'"
-                font-family="sans-serif"
-                font-style="italic"
-                [attr.letter-spacing]="0.8 / zoom"
-                pointer-events="none"
-                style="user-select: none"
-              >
-                {{ room.name || "stanza" }}
-              </text>
-              <text
-                [attr.x]="room.cx"
-                [attr.y]="room.cy + 7 / zoom"
-                text-anchor="middle"
-                dominant-baseline="middle"
-                fill="#8896a5"
-                [attr.font-size]="10 / zoom + 'px'"
-                font-family="sans-serif"
-                font-style="italic"
-                [attr.letter-spacing]="0.8 / zoom"
-                pointer-events="none"
-                style="user-select: none"
-              >
-                {{ room.name || "stanza" }}
-              </text>
-            }
-            @if (editingRoomIndex === $index) {
-              <foreignObject
-                [attr.x]="room.cx - 38 / zoom"
-                [attr.y]="room.cy + 1 / zoom"
-                [attr.width]="76 / zoom"
-                [attr.height]="16 / zoom"
-              >
-                <div
-                  xmlns="http://www.w3.org/1999/xhtml"
-                  style="
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    align-items: center;
-                  "
-                >
-                  <input
-                    #activeRoomInput
-                    type="text"
-                    [value]="editingRoomName"
-                    (input)="editingRoomName = $any($event.target).value"
-                    (keydown.enter)="confirmEditRoom()"
-                    (keydown.escape)="cancelEditRoom()"
-                    (blur)="confirmEditRoom()"
-                    style="
-                      width: 100%;
-                      border: none;
-                      border-bottom: 1px solid #8896a5;
-                      outline: none;
-                      text-align: center;
-                      background: transparent;
-                      color: #5a6472;
-                      font-family: sans-serif;
-                      font-style: italic;
-                      font-size: 11px;
-                      letter-spacing: 0.8px;
-                      padding: 0;
-                    "
-                  />
-                </div>
-              </foreignObject>
-            }
           </g>
         }
 
