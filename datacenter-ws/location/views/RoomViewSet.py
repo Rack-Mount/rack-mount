@@ -7,7 +7,6 @@ from accounts.permissions import MapEditPermission
 
 
 class RoomViewSet(StandardFilterMixin, viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, MapEditPermission]
     """
     RoomViewSet is a viewset for handling CRUD operations on the Room model.
 
@@ -22,6 +21,7 @@ class RoomViewSet(StandardFilterMixin, viewsets.ModelViewSet):
         filterset_fields (list): Enables filtering by location.
         search_fields (list): The fields that can be searched.
     """
+    permission_classes = [IsAuthenticated, MapEditPermission]
     queryset = Room.objects.select_related('location').all()
     serializer_class = RoomSerializer
     parser_classes = [parsers.JSONParser,

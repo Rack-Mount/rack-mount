@@ -1,5 +1,5 @@
-import { AngleLabel, MapElement, Point, WallSegment } from './map.types';
 import { angleBetween, dist } from './map-geometry.utils';
+import { AngleLabel, Point, WallElement, WallSegment } from './map.types';
 
 // ─── Segment labels ───────────────────────────────────────────────────────────
 
@@ -134,16 +134,7 @@ export function computeWallAngles(
  * Re-compute all display data (segments, angles, area, centroid) for a wall
  * element in-place. Must be called after any change to `el.points`.
  */
-export function updateWallDerived(el: MapElement, zoom: number): void {
-  if (el.type !== 'wall' || !el.points) {
-    el.segments = [];
-    el.angles = [];
-    el.area = undefined;
-    el.centroidX = undefined;
-    el.centroidY = undefined;
-    return;
-  }
-
+export function updateWallDerived(el: WallElement, zoom: number): void {
   const pts = el.points;
 
   // ── Centroid (closed polygons only) ──

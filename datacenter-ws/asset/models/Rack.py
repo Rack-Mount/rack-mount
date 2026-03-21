@@ -29,7 +29,7 @@ class Rack(models.Model):
         db_table (str): The name of the database table to use for the model.
     """
     name = models.CharField(max_length=100)
-    model = models.ForeignKey(RackType, on_delete=models.CASCADE, null=False)
+    model = models.ForeignKey(RackType, on_delete=models.PROTECT, null=False)
     room = models.ForeignKey(
         Room, on_delete=models.SET_NULL, related_name='racks', null=True)
     description = models.TextField(blank=True)

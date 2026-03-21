@@ -182,36 +182,6 @@
                 }
               </ng-container>
             }
-            <!-- Legacy Wall (Line) backup -->
-            @if (el.type === "wall" && !el.points) {
-              <ng-container>
-                @if (selectedTool === "select") {
-                  <line
-                    [attr.x1]="el.x"
-                    [attr.y1]="el.y"
-                    [attr.x2]="el.x2"
-                    [attr.y2]="el.y2"
-                    stroke="transparent"
-                    [attr.stroke-width]="16 / zoom"
-                    style="cursor: pointer"
-                    (click)="onElementClick($event, el)"
-                  />
-                }
-                <line
-                  [attr.x1]="el.x"
-                  [attr.y1]="el.y"
-                  [attr.x2]="el.x2"
-                  [attr.y2]="el.y2"
-                  [attr.stroke]="
-                    selectedElementId === el.id ? '#007bff' : 'black'
-                  "
-                  [attr.stroke-width]="
-                    selectedElementId === el.id ? 6 / zoom : 4 / zoom
-                  "
-                  pointer-events="none"
-                />
-              </ng-container>
-            }
             <!-- Varco (door) -->
             @if (el.type === "door") {
               <g
@@ -459,7 +429,7 @@
                     [attr.x]="-4 / zoom"
                     [attr.y]="-(el.fontSize || 14) / zoom"
                     [attr.width]="
-                      ((el.text?.length || 1) * (el.fontSize || 14) * 0.6) /
+                      ((el.text.length || 1) * (el.fontSize || 14) * 0.6) /
                         zoom +
                       8 / zoom
                     "

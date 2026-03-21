@@ -124,7 +124,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint post /location/location
 * @param requestParameters
      */
@@ -132,7 +132,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint delete /location/location/{id}
 * @param requestParameters
      */
@@ -140,7 +140,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint get /location/location
 * @param requestParameters
      */
@@ -148,7 +148,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint patch /location/location/{id}
 * @param requestParameters
      */
@@ -156,7 +156,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint get /location/location/{id}
 * @param requestParameters
      */
@@ -164,7 +164,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * LocationViewSet is a viewset for handling CRUD operations on Location model.  Attributes:     queryset (QuerySet): A queryset containing all Location objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing Location objects.     pagination_class (Pagination): The pagination class used to paginate the results.     filter_backends (tuple): The filter backends used for ordering and filtering.     ordering_fields (str): The fields that can be used for ordering.     ordering (list): The default ordering.     filterset_fields (list): The fields that can be used for filtering.     search_fields (list): The fields that can be searched.
      * @endpoint put /location/location/{id}
 * @param requestParameters
      */
@@ -220,7 +220,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint post /location/room
 * @param requestParameters
      */
@@ -228,7 +228,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint delete /location/room/{id}
 * @param requestParameters
      */
@@ -236,7 +236,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint get /location/room
 * @param requestParameters
      */
@@ -244,7 +244,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint patch /location/room/{id}
 * @param requestParameters
      */
@@ -252,7 +252,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint get /location/room/{id}
 * @param requestParameters
      */
@@ -260,7 +260,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * RoomViewSet is a viewset for handling CRUD operations on the Room model.  Supports multipart/form-data uploads for the floor_plan field.  Attributes:     queryset (QuerySet): A queryset containing all Room objects, with location pre-fetched.     serializer_class (Serializer): The serializer class used for Room objects.     pagination_class (Pagination): The pagination class used to paginate the results.     parser_classes (list): Supports JSON, multipart form data, and URL-encoded form data.     filter_backends (tuple): The filter backends used for ordering and filtering.     filterset_fields (list): Enables filtering by location.     search_fields (list): The fields that can be searched.
      * @endpoint put /location/room/{id}
 * @param requestParameters
      */

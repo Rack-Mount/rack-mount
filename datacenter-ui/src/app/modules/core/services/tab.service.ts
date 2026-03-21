@@ -53,18 +53,23 @@ export class TabService {
   }
 
   private isTabAllowed(tab: PanelTab): boolean {
-    if (tab.id === 'assets') return this.role.canViewAssets();
-    if (tab.id === 'vendors' || tab.id === 'models' || tab.id === 'components')
-      return this.role.canViewCatalog();
-    if (
-      tab.id === 'racks' ||
-      tab.id.startsWith('rack-') ||
-      tab.id.startsWith('room-')
-    )
-      return this.role.canViewInfrastructure();
-    if (tab.id === 'admin') return this.role.canManageUsers();
-    if (tab.id.startsWith('asset-')) return this.role.canViewAssets();
-    return true;
+    switch (tab.type) {
+      case 'assets':
+      case 'asset':
+        return this.role.canViewAssets();
+      case 'vendors':
+      case 'models':
+      case 'components':
+        return this.role.canViewCatalog();
+      case 'racks':
+      case 'rack':
+      case 'room':
+        return this.role.canViewInfrastructure();
+      case 'admin':
+        return this.role.canManageUsers();
+      default:
+        return true;
+    }
   }
 
   private persistTabs(): void {

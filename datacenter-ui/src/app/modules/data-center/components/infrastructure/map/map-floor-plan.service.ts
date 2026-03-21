@@ -9,7 +9,7 @@ import { RackType } from '../../../../core/api/v1/model/rackType';
 import { Room as DjRoom } from '../../../../core/api/v1/model/room';
 import { SettingsService } from '../../../../core/services/settings.service';
 import { TabService } from '../../../../core/services/tab.service';
-import { MapElement, Room } from './map.types';
+import { MapElement, RackElement, Room } from './map.types';
 
 /** Shape of a single room-label persisted with the floor plan. */
 export interface SavedRoomLabel {
@@ -247,15 +247,16 @@ export class MapFloorPlanService implements OnDestroy {
     backendRacks: Rack[],
   ): MapElement[] {
     const backendNames = new Set(backendRacks.map((r) => r.name));
-    const filtered = elements.filter(
-      (el) =>
-        el.type !== 'rack' ||
-        (el.rackName != null && backendNames.has(el.rackName)),
-    );
+    const filtered = elements.filter((el) => {
+      if (el.type !== 'rack') return true;
+      return el.rackName != null && backendNames.has(el.rackName);
+    });
     const placedNames = new Set(
       filtered
-        .filter((el) => el.type === 'rack' && el.rackName)
-        .map((el) => el.rackName as string),
+        .filter(
+          (el): el is RackElement => el.type === 'rack' && el.rackName != null,
+        )
+        .map((el) => el.rackName!),
     );
     const unplaced = backendRacks.filter((r) => !placedNames.has(r.name));
     if (unplaced.length === 0) return filtered;
@@ -287,8 +288,10 @@ export class MapFloorPlanService implements OnDestroy {
     const prefix = this.selectedRackType()?.model ?? 'Rack';
     const existingNames = new Set(
       elements
-        .filter((el) => el.type === 'rack' && el.rackName)
-        .map((el) => el.rackName as string),
+        .filter(
+          (el): el is RackElement => el.type === 'rack' && el.rackName != null,
+        )
+        .map((el) => el.rackName!),
     );
     let n = 1;
     while (existingNames.has(`${prefix}-${n}`)) n++;

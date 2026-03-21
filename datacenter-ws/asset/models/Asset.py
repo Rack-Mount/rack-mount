@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from location.models import Location
 from asset.models import AssetModel, AssetState
 import reversion
-from django.utils.html import mark_safe
+from django.utils.html import format_html
 from django.conf import settings
 
 
@@ -50,7 +50,7 @@ class Asset(models.Model):
     order_id = models.CharField(blank=True, max_length=50)
     purchase_date = models.DateField(null=True, blank=True)
     state = models.ForeignKey(
-        AssetState, on_delete=models.CASCADE, related_name='assets')
+        AssetState, on_delete=models.PROTECT, related_name='assets')
     decommissioned_date = models.DateField(null=True, blank=True)
     warranty_expiration = models.DateField(null=True, blank=True)
     support_expiration = models.DateField(null=True, blank=True)
@@ -68,7 +68,9 @@ class Asset(models.Model):
             str: An HTML string containing an image tag with the front image URL if the front image exists,
                  otherwise an empty string.
         """
-        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.model.front_image)) if self.model.front_image else ''
+        if not self.model.front_image:
+            return ''
+        return format_html('<img src="{}{}" width="300" />', settings.MEDIA_URL, self.model.front_image)
 
     def rear_image_preview(self):
         """
@@ -78,7 +80,9 @@ class Asset(models.Model):
             str: An HTML string containing an image tag with the rear image if it exists,
                  otherwise an empty string.
         """
-        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.model.rear_image)) if self.model.rear_image else ''
+        if not self.model.rear_image:
+            return ''
+        return format_html('<img src="{}{}" width="300" />', settings.MEDIA_URL, self.model.rear_image)
 
     def __str__(self):
         vendor = self.model.vendor if self.model else None

@@ -7,7 +7,6 @@ from accounts.permissions import MapEditPermission
 
 
 class LocationViewSet(StandardFilterMixin, viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, MapEditPermission]
     """
     LocationViewSet is a viewset for handling CRUD operations on Location model.
 
@@ -21,6 +20,7 @@ class LocationViewSet(StandardFilterMixin, viewsets.ModelViewSet):
         filterset_fields (list): The fields that can be used for filtering.
         search_fields (list): The fields that can be searched.
     """
+    permission_classes = [IsAuthenticated, MapEditPermission]
     queryset = Location.objects.prefetch_related('rooms').all()
     serializer_class = LocationSerializer
     ordering_fields = '__all__'

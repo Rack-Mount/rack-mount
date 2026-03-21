@@ -31,7 +31,17 @@ import { MapFloorPlanToolbarComponent } from './map-floor-plan-toolbar/map-floor
 import { MapFloorPlanService } from './map-floor-plan.service';
 import { dist, distToSegment } from './map-geometry.utils';
 import { MapZoomControlsComponent } from './map-zoom-controls/map-zoom-controls.component';
-import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
+import {
+  AngleLabel,
+  DoorElement,
+  MapElement,
+  Point,
+  RackElement,
+  Room,
+  TextElement,
+  WallElement,
+  WallSegment,
+} from './map.types';
 import { isRackPlacementValid } from './rack-placement.utils';
 import {
   getRackSnapResult,
@@ -283,13 +293,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   currentTextItalic = false;
   currentTextUnderline = false;
 
-  get selectedTextElement(): MapElement | null {
+  get selectedTextElement(): TextElement | null {
     if (!this.selectedElementId) return null;
-    return (
-      this.elements.find(
-        (e) => e.id === this.selectedElementId && e.type === 'text',
-      ) || null
+    const el = this.elements.find(
+      (e): e is TextElement =>
+        e.id === this.selectedElementId && e.type === 'text',
     );
+    return el ?? null;
   }
 
   // Update logic to sync toolbar with selection
@@ -329,7 +339,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.applyTextStyleChange({ textDecoration: val ? 'underline' : 'none' });
   }
 
-  private applyTextStyleChange(changes: Partial<MapElement>) {
+  private applyTextStyleChange(changes: Partial<TextElement>) {
     const el = this.selectedTextElement;
     if (el) {
       Object.assign(el, changes);
@@ -470,15 +480,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   // Delegates to wall-display.utils; zoom is required by the util
-  private updateWallDerived(el: MapElement): void {
+  private updateWallDerived(el: WallElement): void {
     _deriveWall(el, this.zoom);
   }
 
   // Delegates to wall-graph.utils; mutates elA.points and returns filtered elements array
   private mergeWalls(
-    elA: MapElement,
+    elA: WallElement,
     idxA: number,
-    elB: MapElement,
+    elB: WallElement,
     idxB: number,
   ): void {
     this.elements = _mergeWalls(this.elements, elA, idxA, elB, idxB);
@@ -507,14 +517,20 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const xs: number[] = [];
     const ys: number[] = [];
     for (const el of this.elements) {
-      if (el.points && el.points.length > 0) {
+      if (el.type === 'wall') {
         for (const p of el.points) {
           xs.push(p.x);
           ys.push(p.y);
         }
+      } else if (el.type === 'rack') {
+        xs.push(el.x, el.x + el.width);
+        ys.push(el.y, el.y + el.height);
+      } else if (el.type === 'door') {
+        xs.push(el.x, el.x2);
+        ys.push(el.y, el.y2);
       } else {
-        xs.push(el.x, el.x + (el.width ?? 0), el.x2 ?? el.x);
-        ys.push(el.y, el.y + (el.height ?? 0), el.y2 ?? el.y);
+        xs.push(el.x);
+        ys.push(el.y);
       }
     }
     if (xs.length === 0) {
@@ -564,14 +580,20 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const xs: number[] = [];
     const ys: number[] = [];
     for (const el of this.elements) {
-      if (el.points && el.points.length > 0) {
+      if (el.type === 'wall') {
         for (const p of el.points) {
           xs.push(p.x);
           ys.push(p.y);
         }
+      } else if (el.type === 'rack') {
+        xs.push(el.x, el.x + el.width);
+        ys.push(el.y, el.y + el.height);
+      } else if (el.type === 'door') {
+        xs.push(el.x, el.x2);
+        ys.push(el.y, el.y2);
       } else {
-        xs.push(el.x, el.x + (el.width ?? 0), el.x2 ?? el.x);
-        ys.push(el.y, el.y + (el.height ?? 0), el.y2 ?? el.y);
+        xs.push(el.x);
+        ys.push(el.y);
       }
     }
     const minX = Math.min(...xs);
@@ -584,15 +606,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const dy = -minY;
 
     for (const el of this.elements) {
-      if (el.points) {
+      if (el.type === 'wall') {
         el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
-        if (el.type === 'wall') this.updateWallDerived(el);
+        this.updateWallDerived(el);
       } else {
-        el.x = (el.x ?? 0) + dx;
-        el.y = (el.y ?? 0) + dy;
+        el.x += dx;
+        el.y += dy;
         if (el.type === 'door') {
-          el.x2 = (el.x2 ?? el.x) + dx;
-          el.y2 = (el.y2 ?? el.y) + dy;
+          el.x2 += dx;
+          el.y2 += dy;
         }
       }
     }
@@ -631,7 +653,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.scheduleUpdateGrid();
   }
 
-  startEditRack(el: MapElement, event: MouseEvent): void {
+  startEditRack(el: RackElement, event: MouseEvent): void {
     event.stopPropagation();
     event.preventDefault();
     this.editingRackId = el.id;
@@ -644,7 +666,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   confirmEditRack(): void {
     if (!this.editingRackId) return;
-    const el = this.elements.find((e) => e.id === this.editingRackId);
+    const el = this.elements.find(
+      (e): e is RackElement => e.id === this.editingRackId && e.type === 'rack',
+    );
     const newName = this.editingRackName.trim();
     if (el && newName && newName !== el.rackName) {
       const oldName = el.rackName;
@@ -672,7 +696,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   // Text element editing
-  startEditText(el: MapElement, event: MouseEvent): void {
+  startEditText(el: TextElement, event: MouseEvent): void {
     if (!this.role.canEditMap()) return;
     if (this.selectedTool !== 'edit' && this.selectedTool !== 'text') return;
     event.stopPropagation();
@@ -687,7 +711,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   confirmEditText(): void {
     if (!this.editingTextId) return;
-    const textEl = this.elements.find((el) => el.id === this.editingTextId);
+    const textEl = this.elements.find(
+      (el): el is TextElement =>
+        el.id === this.editingTextId && el.type === 'text',
+    );
     if (textEl) {
       if (!this.editingTextValue.trim()) {
         // Remove empty text elements
@@ -705,7 +732,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   cancelEditText(): void {
     // If the text was empty (newly created), remove it on cancel
-    const textEl = this.elements.find((el) => el.id === this.editingTextId);
+    const textEl = this.elements.find(
+      (el): el is TextElement =>
+        el.id === this.editingTextId && el.type === 'text',
+    );
     if (textEl && !textEl.text?.trim()) {
       this.elements = this.elements.filter((e) => e.id !== this.editingTextId);
     }
@@ -803,8 +833,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     segIndex: number,
     pt: { x: number; y: number },
   ): void {
-    const el = this.elements.find((e) => e.id === elementId);
-    if (!el?.points) return;
+    const el = this.elements.find(
+      (e): e is WallElement => e.id === elementId && e.type === 'wall',
+    );
+    if (!el) return;
     const newPoints = [...el.points];
     newPoints.splice(segIndex + 1, 0, { x: pt.x, y: pt.y });
     el.points = newPoints;
@@ -820,10 +852,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
    */
   private getRackRects(excludeId?: string): RackRect[] {
     return this.elements
-      .filter((el) => el.type === 'rack' && el.id !== excludeId)
+      .filter(
+        (el): el is RackElement => el.type === 'rack' && el.id !== excludeId,
+      )
       .map((el) => {
-        const w = el.width ?? 0;
-        const h = el.height ?? 0;
+        const w = el.width;
+        const h = el.height;
         const rad = ((el.rotation ?? 0) * Math.PI) / 180;
         const cos = Math.abs(Math.cos(rad));
         const sin = Math.abs(Math.sin(rad));
@@ -836,20 +870,20 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   /** SVG rotate transform string for a rack element (empty string when rotation is 0). */
-  getRackTransform(el: MapElement): string {
+  getRackTransform(el: RackElement): string {
     return getRackTransform(el);
   }
 
   // ── Varco (door) display helpers ────────────────────────────────────────────
-  getDoorLength(el: MapElement): number {
+  getDoorLength(el: DoorElement): number {
     return getDoorLength(el);
   }
 
-  getDoorMidpoint(el: MapElement): { x: number; y: number } {
+  getDoorMidpoint(el: DoorElement): { x: number; y: number } {
     return getDoorMidpoint(el);
   }
 
-  getDoorPath(el: MapElement): string {
+  getDoorPath(el: DoorElement): string {
     return getDoorPath(el, this.zoom);
   }
 
@@ -906,12 +940,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
    * Rotation follows the cursor angle relative to the rack centre.
    * Hold Shift to snap to 15° increments.
    */
-  onRotateHandleMouseDown(event: MouseEvent, el: MapElement): void {
+  onRotateHandleMouseDown(event: MouseEvent, el: RackElement): void {
     event.stopPropagation();
     event.preventDefault();
     const point = this.getSvgPoint(event);
-    const cx = el.x + (el.width ?? 0) / 2;
-    const cy = el.y + (el.height ?? 0) / 2;
+    const cx = el.x + el.width / 2;
+    const cy = el.y + el.height / 2;
     this.rotatingElementId = el.id;
     this.rotateDragStartAngle = Math.atan2(point.y - cy, point.x - cx);
     this.rotateDragStartRot = el.rotation ?? 0;
@@ -920,13 +954,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   /** Rotate 90° CW (keyboard shortcut R). Only applies if the new footprint is clear. */
-  rotateRack(el: MapElement): void {
+  rotateRack(el: RackElement): void {
     const newRot = ((el.rotation ?? 0) + 90) % 360;
     const proposed: ObbRect = {
       x: el.x,
       y: el.y,
-      width: el.width ?? 0,
-      height: el.height ?? 0,
+      width: el.width,
+      height: el.height,
       rotation: newRot,
     };
     if (!isObbBlocked(proposed, this.getRackObbs(el.id))) {
@@ -941,12 +975,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   /** Returns the true OBB (oriented bounding box) of all racks, optionally excluding one by id. */
   private getRackObbs(excludeId?: string): ObbRect[] {
     return this.elements
-      .filter((el) => el.type === 'rack' && el.id !== excludeId)
+      .filter(
+        (el): el is RackElement => el.type === 'rack' && el.id !== excludeId,
+      )
       .map((el) => ({
         x: el.x,
         y: el.y,
-        width: el.width ?? 0,
-        height: el.height ?? 0,
+        width: el.width,
+        height: el.height,
         rotation: el.rotation ?? 0,
       }));
   }
@@ -1224,7 +1260,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         y: start.y,
         x2,
         y2,
-        width: this.fpService.doorWidth(),
       };
     } else if (this.selectedTool === 'rack') {
       const dims = this.fpService.getSelectedRackDimensions();
@@ -1274,7 +1309,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // Free rotation drag
     if (this.rotatingElementId && this.rotateDragCenter) {
-      const el = this.elements.find((e) => e.id === this.rotatingElementId);
+      const el = this.elements.find(
+        (e): e is RackElement =>
+          e.id === this.rotatingElementId && e.type === 'rack',
+      );
       if (el) {
         const currentAngle = Math.atan2(
           point.y - this.rotateDragCenter.y,
@@ -1292,8 +1330,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const rotProposed: ObbRect = {
           x: el.x,
           y: el.y,
-          width: el.width ?? 0,
-          height: el.height ?? 0,
+          width: el.width,
+          height: el.height,
           rotation: newRot,
         };
         if (!isObbBlocked(rotProposed, rotObbs)) {
@@ -1374,24 +1412,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         // Translate every element together
         for (const el of this.elements) {
-          if (el.points) {
+          if (el.type === 'wall') {
             el.points = el.points.map((p) => ({
               x: p.x + actualDx,
               y: p.y + actualDy,
             }));
-            if (el.type === 'wall') this.updateWallDerived(el);
+            this.updateWallDerived(el);
           } else {
-            el.x = (el.x ?? 0) + actualDx;
-            el.y = (el.y ?? 0) + actualDy;
+            el.x += actualDx;
+            el.y += actualDy;
             if (el.type === 'door') {
-              el.x2 = (el.x2 ?? el.x) + actualDx;
-              el.y2 = (el.y2 ?? el.y) + actualDy;
+              el.x2 += actualDx;
+              el.y2 += actualDy;
             }
           }
         }
       } else {
         const el = this.elements.find((e) => e.id === this.movingElementId);
-        if (el && el.points) {
+        if (el && el.type === 'wall') {
           el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
           this.updateWallDerived(el);
         } else if (el && el.type === 'door') {
@@ -1399,19 +1437,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           const wallSnap = this.getDoorWallSnap(point);
           if (wallSnap) {
             const { snapped, dir } = wallSnap;
-            const doorLen = Math.round(
-              Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y),
-            );
+            const doorLen = Math.round(Math.hypot(el.x2 - el.x, el.y2 - el.y));
             el.x = snapped.x - dir.dx * this.doorBodyDragOffset;
             el.y = snapped.y - dir.dy * this.doorBodyDragOffset;
             el.x2 = el.x + dir.dx * doorLen;
             el.y2 = el.y + dir.dy * doorLen;
-            el.width = doorLen;
           } else {
-            el.x = (el.x ?? 0) + dx;
-            el.y = (el.y ?? 0) + dy;
-            el.x2 = (el.x2 ?? el.x) + dx;
-            el.y2 = (el.y2 ?? el.y) + dy;
+            el.x += dx;
+            el.y += dy;
+            el.x2 += dx;
+            el.y2 += dy;
           }
         } else if (el && el.type === 'rack') {
           // Rack movement: apply magnetic snap (Shift), grid snap (Alt), and collision check
@@ -1429,8 +1464,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             {
               x: proposedX,
               y: proposedY,
-              width: el.width ?? 0,
-              height: el.height ?? 0,
+              width: el.width,
+              height: el.height,
             },
             others,
             snapRadius,
@@ -1440,8 +1475,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           const moveObb: ObbRect = {
             x: result.x,
             y: result.y,
-            width: el.width ?? 0,
-            height: el.height ?? 0,
+            width: el.width,
+            height: el.height,
             rotation: el.rotation ?? 0,
           };
           if (!isObbBlocked(moveObb, this.getRackObbs(el.id))) {
@@ -1462,9 +1497,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // Vertex Moving Logic
     if (this.selectedTool === 'edit' && this.isDrawing && this.selectedVertex) {
       const el = this.elements.find(
-        (e) => e.id === this.selectedVertex!.elementId,
+        (e): e is WallElement =>
+          e.id === this.selectedVertex!.elementId && e.type === 'wall',
       );
-      if (el && el.points) {
+      if (el) {
         // No extra snapping: getSvgPoint already handles grid snap on Alt
 
         // Orthogonal constraint (Shift key): H/V lock relative to the nearest neighbor
@@ -1513,7 +1549,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.snapTargetVertex = null;
         const SNAP_RADIUS = 15 / this.zoom;
         outer: for (const other of this.elements) {
-          if (other.id === el.id || !other.points) continue;
+          if (other.id === el.id || other.type !== 'wall') continue;
           // Skip junction peers — they move with us, not snap targets
           if (this.selectedVertexPeers.some((p) => p.elementId === other.id))
             continue;
@@ -1553,8 +1589,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         // Move all junction peers to the same final position
         for (const peer of this.selectedVertexPeers) {
-          const peerEl = this.elements.find((e) => e.id === peer.elementId);
-          if (!peerEl || !peerEl.points) continue;
+          const peerEl = this.elements.find(
+            (e): e is WallElement =>
+              e.id === peer.elementId && e.type === 'wall',
+          );
+          if (!peerEl) continue;
           // Check peer closure BEFORE modifying
           let peerWasClosed = false;
           if (peerEl.points.length > 2) {
@@ -1676,9 +1715,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           el.x2 = snapped.x;
           el.y2 = snapped.y;
         }
-        el.width = Math.round(
-          Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y),
-        );
         this.elements = [...this.elements];
       }
       return;
@@ -1699,14 +1735,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           this.currentElement.x + this.doorSnapDir.dx * t;
         this.currentElement.y2 =
           this.currentElement.y + this.doorSnapDir.dy * t;
-        this.currentElement.width = t;
       } else {
         this.currentElement.x2 = point.x;
         this.currentElement.y2 = point.y;
-        this.currentElement.width = Math.hypot(
-          point.x - this.currentElement.x,
-          point.y - this.currentElement.y,
-        );
       }
     } else if (this.currentElement.type === 'rack') {
       // Translate rack centered on cursor (dimensions are preset; no drag-resize)
@@ -1773,10 +1804,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       // Attempt merge if vertex was snapped onto another wall
       if (this.selectedVertex && this.snapTargetVertex) {
         const elA = this.elements.find(
-          (e) => e.id === this.selectedVertex!.elementId,
+          (e): e is WallElement =>
+            e.id === this.selectedVertex!.elementId && e.type === 'wall',
         );
         const elB = this.elements.find(
-          (e) => e.id === this.snapTargetVertex!.elementId,
+          (e): e is WallElement =>
+            e.id === this.snapTargetVertex!.elementId && e.type === 'wall',
         );
         if (elA && elB) {
           this.mergeWalls(
@@ -1791,15 +1824,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       // Validate final rack position: revert if dropped outside any room or on a wall
       if (this.movingElementId && this.movingElementId !== '__ALL__') {
         const movedRack = this.elements.find(
-          (e) => e.id === this.movingElementId && e.type === 'rack',
+          (e): e is RackElement =>
+            e.id === this.movingElementId && e.type === 'rack',
         );
         if (
           movedRack &&
           !isRackPlacementValid(
             movedRack.x,
             movedRack.y,
-            movedRack.width ?? 0,
-            movedRack.height ?? 0,
+            movedRack.width,
+            movedRack.height,
             movedRack.rotation ?? 0,
             this.roomFaces,
             this.elements,
@@ -1909,7 +1943,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   finishPolyline(points?: { x: number; y: number }[]) {
     const finalPoints = points || this.activePolylinePoints;
     if (finalPoints.length > 1) {
-      const newEl: MapElement = {
+      const newEl: WallElement = {
         id: Date.now().toString(),
         type: 'wall',
         x: 0,
@@ -2046,9 +2080,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       // Delete hovered vertex in move mode
       if (this.selectedTool === 'edit' && this.hoveredVertex) {
         const el = this.elements.find(
-          (e) => e.id === this.hoveredVertex!.elementId,
+          (e): e is WallElement =>
+            e.id === this.hoveredVertex!.elementId && e.type === 'wall',
         );
-        if (el && el.points && el.points.length > 2) {
+        if (el && el.points.length > 2) {
           // Keep at least 2 points
           const newPoints = el.points.filter(
             (_, i) => i !== this.hoveredVertex!.pointIndex,
@@ -2065,8 +2100,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       // Delete selected segment in move mode
       if (this.selectedTool === 'edit' && this.selectedSegment) {
         const { elementId, segIndex } = this.selectedSegment;
-        const el = this.elements.find((e) => e.id === elementId);
-        if (el && el.points) {
+        const el = this.elements.find(
+          (e): e is WallElement => e.id === elementId && e.type === 'wall',
+        );
+        if (el) {
           if (el.points.length <= 2) {
             // Single segment: remove whole element
             this.elements = this.elements.filter((e) => e.id !== elementId);
@@ -2084,7 +2121,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             const pointsB = el.points.slice(segIndex + 1);
             el.points = pointsA;
             this.updateWallDerived(el);
-            const newEl: MapElement = {
+            const newEl: WallElement = {
               id: `wall-${Date.now()}`,
               type: 'wall',
               x: 0,
@@ -2174,7 +2211,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.selectedTool === 'edit'
       ) {
         const el = this.elements.find(
-          (e) => e.id === this.selectedElementId && e.type === 'rack',
+          (e): e is RackElement =>
+            e.id === this.selectedElementId && e.type === 'rack',
         );
         if (el) {
           event.preventDefault();
@@ -2184,7 +2222,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  onRackDblClick(event: MouseEvent, el: MapElement): void {
+  onRackDblClick(event: MouseEvent, el: RackElement): void {
     if (this.selectedTool !== 'select') return;
     event.stopPropagation();
     if (el.rackName) {

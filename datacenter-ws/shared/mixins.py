@@ -69,7 +69,12 @@ class ImageTransformMixin:
                 existing = getattr(serializer.instance, image_key, None)
                 if existing and existing.name:
                     existing.open('rb')
-                    upload = existing
+                    try:
+                        upload = existing
+                        vd[image_key] = apply_transforms(upload, params)
+                    finally:
+                        existing.close()
+                    continue
             if upload:
                 vd[image_key] = apply_transforms(upload, params)
 

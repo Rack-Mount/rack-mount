@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from asset.models import Asset, Rack, GenericComponent
 import reversion
-from django.utils.html import mark_safe
+from django.utils.html import format_html
 
 
 @reversion.register()
@@ -33,7 +33,7 @@ class RackUnit(models.Model):
     position = models.PositiveIntegerField()
     front = models.BooleanField(default=True)
     device = models.OneToOneField(
-        Asset, on_delete=models.CASCADE, null=True, blank=True
+        Asset, on_delete=models.PROTECT, null=True, blank=True
     )
     generic_component = models.ForeignKey(
         GenericComponent,
@@ -58,7 +58,9 @@ class RackUnit(models.Model):
         return f"{self.rack.name} - {self.position} ({position})"
 
     def image_preview(self):
-        return mark_safe('<img src="%s%s" width="300" />' % (settings.MEDIA_URL, self.device.model.front_image)) if self.device and self.device.model.front_image else ''
+        if not (self.device and self.device.model.front_image):
+            return ''
+        return format_html('<img src="{}{}" width="300" />', settings.MEDIA_URL, self.device.model.front_image)
 
     class Meta:
         unique_together = ('rack', 'position', 'front')

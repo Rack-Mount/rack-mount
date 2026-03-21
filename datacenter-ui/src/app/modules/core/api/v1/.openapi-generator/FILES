@@ -23,13 +23,12 @@ model/assetModelPort.ts
 model/assetRack.ts
 model/assetState.ts
 model/assetType.ts
-model/authMeRetrieve200Response.ts
-model/authMeRetrieve200ResponseRole.ts
 model/changePassword.ts
 model/componentTypeEnum.ts
 model/genericComponent.ts
 model/location.ts
 model/locationCustomField.ts
+model/meResponse.ts
 model/models.ts
 model/nameEnum.ts
 model/paginatedAssetCustomFieldList.ts

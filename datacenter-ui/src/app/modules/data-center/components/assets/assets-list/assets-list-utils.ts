@@ -57,14 +57,14 @@ export function formatDate(iso: string | null | undefined): string {
   }).format(new Date(iso));
 }
 
-/** Express an ISO date as a human-readable relative string. */
+/** Express an ISO date as a human-readable relative string using the browser's Intl API. */
 export function relativeDate(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const days = Math.floor(diff / 86_400_000);
-  if (days === 0) return 'oggi';
-  if (days === 1) return 'ieri';
-  if (days < 30) return `${days}g fa`;
-  const months = Math.floor(days / 30);
-  if (months < 12) return `${months}m fa`;
-  return `${Math.floor(months / 12)}a fa`;
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const diffDays = Math.floor(diffMs / 86_400_000);
+  const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+  if (diffDays === 0) return rtf.format(0, 'day');
+  if (diffDays < 30) return rtf.format(-diffDays, 'day');
+  const months = Math.floor(diffDays / 30);
+  if (months < 12) return rtf.format(-months, 'month');
+  return rtf.format(-Math.floor(months / 12), 'year');
 }

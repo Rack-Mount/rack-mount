@@ -17,9 +17,9 @@ import { Observable }                                        from 'rxjs';
 import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
-import { AuthMeRetrieve200Response } from '../model/authMeRetrieve200Response';
-// @ts-ignore
 import { ChangePassword } from '../model/changePassword';
+// @ts-ignore
+import { MeResponse } from '../model/meResponse';
 // @ts-ignore
 import { PaginatedUserListList } from '../model/paginatedUserListList';
 // @ts-ignore
@@ -146,9 +146,9 @@ export class AuthService extends BaseService implements AuthServiceInterface {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public authMeRetrieve(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthMeRetrieve200Response>;
-    public authMeRetrieve(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthMeRetrieve200Response>>;
-    public authMeRetrieve(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthMeRetrieve200Response>>;
+    public authMeRetrieve(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MeResponse>;
+    public authMeRetrieve(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MeResponse>>;
+    public authMeRetrieve(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MeResponse>>;
     public authMeRetrieve(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -183,7 +183,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
         let localVarPath = `/auth/me/`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<AuthMeRetrieve200Response>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<MeResponse>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

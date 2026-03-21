@@ -11,8 +11,8 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { AuthMeRetrieve200Response } from '../model/models';
 import { ChangePassword } from '../model/models';
+import { MeResponse } from '../model/models';
 import { PaginatedUserListList } from '../model/models';
 import { PatchedUserUpdate } from '../model/models';
 import { Role } from '../model/models';
@@ -83,7 +83,7 @@ export interface AuthServiceInterface {
      * Returns basic info and role permissions for the currently authenticated user.
      * @endpoint get /auth/me/
 */
-    authMeRetrieve(extraHttpRequestParams?: any): Observable<AuthMeRetrieve200Response>;
+    authMeRetrieve(extraHttpRequestParams?: any): Observable<MeResponse>;
 
     /**
      * 

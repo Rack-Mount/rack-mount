@@ -1,4 +1,11 @@
-import { AngleLabel, MapElement, Point, Room } from './map.types';
+import {
+  AngleLabel,
+  MapElement,
+  Point,
+  RackElement,
+  Room,
+  WallElement,
+} from './map.types';
 
 // ─── Polylabel (pole of inaccessibility) ─────────────────────────────────────
 // Finds the interior point farthest from all polygon edges.
@@ -348,12 +355,12 @@ function nextHalfEdge(
 export function computeRooms(elements: MapElement[]): Room[] {
   // Extract rack geometries to use as label-placement obstacles
   const obstacles: RackObstacle[] = elements
-    .filter((e) => e.type === 'rack' && e.x != null)
+    .filter((e): e is RackElement => e.type === 'rack')
     .map((e) => ({
-      x: e.x!,
-      y: e.y!,
-      w: e.width ?? 0,
-      h: e.height ?? 0,
+      x: e.x,
+      y: e.y,
+      w: e.width,
+      h: e.height,
       rotation: e.rotation ?? 0,
     }));
 
@@ -464,13 +471,13 @@ export function computeRoomFaces(elements: MapElement[]): RoomFace[] {
  */
 export function mergeWalls(
   elements: MapElement[],
-  elA: MapElement,
+  elA: WallElement,
   idxA: number,
-  elB: MapElement,
+  elB: WallElement,
   idxB: number,
 ): MapElement[] {
-  const ptsA = elA.points!,
-    ptsB = elB.points!;
+  const ptsA = elA.points,
+    ptsB = elB.points;
   if (ptsA.length < 2 || ptsB.length < 2) return elements;
 
   const isClosed = (pts: Point[]) =>
@@ -510,11 +517,11 @@ export function computeJunctionAngles(
 ): void {
   const EPS = 3;
   const walls = elements.filter(
-    (e) => e.type === 'wall' && e.points && e.points.length >= 2,
+    (e): e is WallElement => e.type === 'wall' && e.points.length >= 2,
   );
 
   interface Arm {
-    wall: MapElement;
+    wall: WallElement;
     neighborPt: Point;
     azimuth: number;
   }
