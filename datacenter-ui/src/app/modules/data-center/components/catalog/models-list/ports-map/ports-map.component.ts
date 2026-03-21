@@ -17,7 +17,7 @@ import {
   ASSET_MODEL_PORT_TYPES,
   AssetModelPort,
   AssetModelPortType,
-} from '../../../../../core/api/v1/model/assetModelPort';
+} from '../../../../../core/api/v1/model/assetModelPortExtras';
 import { PortTypeEnum } from '../../../../../core/api/v1/model/portTypeEnum';
 import { PortAnalyzerService } from '../port-analyzer/port-analyzer.service';
 

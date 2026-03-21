@@ -33,7 +33,7 @@ import {
   AssetModelPort,
   AssetModelPortSide,
   AssetModelPortType,
-} from '../../../../core/api/v1/model/assetModelPort';
+} from '../../../../core/api/v1/model/assetModelPortExtras';
 import { PortTypeEnum } from '../../../../core/api/v1/model/portTypeEnum';
 import {
   DEFAULT_PAGE_SIZE,
