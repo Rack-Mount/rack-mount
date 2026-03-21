@@ -13,13 +13,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import {
-  ASSET_MODEL_PORT_TYPES,
-  AssetModelPort,
-  AssetModelPortType,
-} from '../../../../../core/api/v1/model/assetModelPortExtras';
+import { AssetModelPort } from '../../../../../core/api/v1/model/assetModelPort';
 import { PortTypeEnum } from '../../../../../core/api/v1/model/portTypeEnum';
 import { PortAnalyzerService } from '../port-analyzer/port-analyzer.service';
+import { ASSET_MODEL_PORT_TYPES, AssetModelPortType } from '../port-types';
 
 export interface PortPickEvent {
   portId: number;

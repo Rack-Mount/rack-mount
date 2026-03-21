@@ -28,12 +28,7 @@ import {
   AssetType,
   Vendor,
 } from '../../../../core/api/v1';
-import {
-  ASSET_MODEL_PORT_TYPES,
-  AssetModelPort,
-  AssetModelPortSide,
-  AssetModelPortType,
-} from '../../../../core/api/v1/model/assetModelPortExtras';
+import { AssetModelPort } from '../../../../core/api/v1/model/assetModelPort';
 import { PortTypeEnum } from '../../../../core/api/v1/model/portTypeEnum';
 import {
   DEFAULT_PAGE_SIZE,
@@ -54,6 +49,11 @@ import {
   ImageEditorComponent,
   ImageEditParams,
 } from './image-editor/image-editor.component';
+import {
+  ASSET_MODEL_PORT_TYPES,
+  AssetModelPortSide,
+  AssetModelPortType,
+} from './port-types';
 import {
   PortAddEvent,
   PortEditEvent,
