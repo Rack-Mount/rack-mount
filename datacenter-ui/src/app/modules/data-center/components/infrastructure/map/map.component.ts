@@ -12,8 +12,6 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
-import { getBoundingBox, gridSnap } from './map-layout.utils';
-import { MapViewportService } from './map-viewport.service';
 import { FormsModule } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
@@ -32,6 +30,8 @@ import {
 import { MapFloorPlanToolbarComponent } from './map-floor-plan-toolbar/map-floor-plan-toolbar.component';
 import { MapFloorPlanService } from './map-floor-plan.service';
 import { dist, distToSegment } from './map-geometry.utils';
+import { getBoundingBox, gridSnap } from './map-layout.utils';
+import { MapViewportService } from './map-viewport.service';
 import { MapZoomControlsComponent } from './map-zoom-controls/map-zoom-controls.component';
 import {
   AngleLabel,
@@ -208,8 +208,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   intersectionPoint: Point | null = null;
   vertexSnapPoint: Point | null = null;
 
-
-
   // Detected rooms (enclosed faces in the wall planar graph)
   rooms: Room[] = [];
 
@@ -217,7 +215,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   editingRackId: string | null = null;
   editingRackName = '';
 
-  private readonly resizeListener = (): void => this.viewport.scheduleUpdateGrid();
+  private readonly resizeListener = (): void =>
+    this.viewport.scheduleUpdateGrid();
 
   // Debounced grid update: at most once per animation frame
   @ViewChild('svgContainer') svgContainer!: ElementRef<SVGSVGElement>;
@@ -515,8 +514,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.viewport.scheduleUpdateGrid();
     this.scheduleAutosave();
   }
-
-
 
   private rederiveAllWalls(): void {
     for (const el of this.elements) {
@@ -1584,12 +1581,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const w = this.currentElement.width ?? 0;
       const h = this.currentElement.height ?? 0;
       // Alt: snap top-left corner to grid; otherwise centre on cursor
-      const rawX = event.altKey
-        ? gridSnap(point.x - w / 2)
-        : point.x - w / 2;
-      const rawY = event.altKey
-        ? gridSnap(point.y - h / 2)
-        : point.y - h / 2;
+      const rawX = event.altKey ? gridSnap(point.x - w / 2) : point.x - w / 2;
+      const rawY = event.altKey ? gridSnap(point.y - h / 2) : point.y - h / 2;
 
       // Apply magnetic snap (Shift) and collision check
       const others = this.getRackRects();

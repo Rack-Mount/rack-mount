@@ -212,20 +212,48 @@ export class ModelsListComponent {
   protected readonly editingImage = signal<'front' | 'rear' | null>(null);
 
   // ── Ports (delegated to ModelPortsService) ────────────────────────────────
-  protected get ports() { return this.portsSvc.ports; }
-  protected get portsLoading() { return this.portsSvc.portsLoading; }
-  protected get portTypes() { return this.portsSvc.portTypes; }
-  protected get frontPorts() { return this.portsSvc.frontPorts; }
-  protected get rearPorts() { return this.portsSvc.rearPorts; }
-  protected get portFormOpen() { return this.portsSvc.portFormOpen; }
-  protected get portFormMode() { return this.portsSvc.portFormMode; }
-  protected get portEditId() { return this.portsSvc.portEditId; }
-  protected get portForm() { return this.portsSvc.portForm; }
-  protected get portSaveState() { return this.portsSvc.portSaveState; }
-  protected get portDeleteId() { return this.portsSvc.portDeleteId; }
-  protected get portDeleteState() { return this.portsSvc.portDeleteState; }
-  protected get portsMapOpen() { return this.portsSvc.portsMapOpen; }
-  protected get placingPortId() { return this.portsSvc.placingPortId; }
+  protected get ports() {
+    return this.portsSvc.ports;
+  }
+  protected get portsLoading() {
+    return this.portsSvc.portsLoading;
+  }
+  protected get portTypes() {
+    return this.portsSvc.portTypes;
+  }
+  protected get frontPorts() {
+    return this.portsSvc.frontPorts;
+  }
+  protected get rearPorts() {
+    return this.portsSvc.rearPorts;
+  }
+  protected get portFormOpen() {
+    return this.portsSvc.portFormOpen;
+  }
+  protected get portFormMode() {
+    return this.portsSvc.portFormMode;
+  }
+  protected get portEditId() {
+    return this.portsSvc.portEditId;
+  }
+  protected get portForm() {
+    return this.portsSvc.portForm;
+  }
+  protected get portSaveState() {
+    return this.portsSvc.portSaveState;
+  }
+  protected get portDeleteId() {
+    return this.portsSvc.portDeleteId;
+  }
+  protected get portDeleteState() {
+    return this.portsSvc.portDeleteState;
+  }
+  protected get portsMapOpen() {
+    return this.portsSvc.portsMapOpen;
+  }
+  protected get placingPortId() {
+    return this.portsSvc.placingPortId;
+  }
 
   // ── Autocomplete inputs for vendor / type ─────────────────────────────────
   protected readonly vendorSearch = signal('');
@@ -888,35 +916,79 @@ export class ModelsListComponent {
 
   // ── Ports (delegates to ModelPortsService) ────────────────────────────────
 
-  protected loadPortsForModel(modelId: number): void { this.portsSvc.loadPortsForModel(modelId); }
-  protected openPortCreate(): void { this.portsSvc.openPortCreate(); }
-  protected openPortEdit(p: AssetModelPort): void { this.portsSvc.openPortEdit(p); }
-  protected setPortField<K extends keyof PortForm>(key: K, value: PortForm[K]): void { this.portsSvc.setPortField(key, value); }
-  protected submitPortForm(): void { this.portsSvc.submitPortForm(this.drawerEditId()); }
-  protected confirmDeletePort(id: number): void { this.portsSvc.confirmDeletePort(id); }
-  protected cancelDeletePort(): void { this.portsSvc.cancelDeletePort(); }
-  protected submitDeletePort(): void { this.portsSvc.submitDeletePort(); }
-  protected openPortsMap(side: string | undefined, imageUrl: string, readonly: boolean): void { this.portsSvc.openPortsMap(side, imageUrl, readonly); }
-  protected closePortsMap(): void { this.portsSvc.closePortsMap(); }
-  protected startPlacingPort(portId: number): void { this.portsSvc.startPlacingPort(portId); }
-  protected stopPlacingPort(): void { this.portsSvc.stopPlacingPort(); }
-  protected onPortPicked(event: PortPickEvent): void { this.portsSvc.onPortPicked(event); }
-  protected clearPortPosition(portId: number): void { this.portsSvc.clearPortPosition(portId); }
-  protected portTypeLabel(type: AssetModelPortType | undefined): string { return this.portsSvc.portTypeLabel(type); }
-  protected onPortAddedFromMap(event: PortAddEvent): void { this.portsSvc.onPortAddedFromMap(event, this.drawerEditId()); }
-  protected onPortRemovedFromMap(portId: number): void { this.portsSvc.onPortRemovedFromMap(portId); }
-  protected onPortEditedFromMap(event: PortEditEvent): void { this.portsSvc.onPortEditedFromMap(event); }
+  protected loadPortsForModel(modelId: number): void {
+    this.portsSvc.loadPortsForModel(modelId);
+  }
+  protected openPortCreate(): void {
+    this.portsSvc.openPortCreate();
+  }
+  protected openPortEdit(p: AssetModelPort): void {
+    this.portsSvc.openPortEdit(p);
+  }
+  protected setPortField<K extends keyof PortForm>(
+    key: K,
+    value: PortForm[K],
+  ): void {
+    this.portsSvc.setPortField(key, value);
+  }
+  protected submitPortForm(): void {
+    this.portsSvc.submitPortForm(this.drawerEditId());
+  }
+  protected confirmDeletePort(id: number): void {
+    this.portsSvc.confirmDeletePort(id);
+  }
+  protected cancelDeletePort(): void {
+    this.portsSvc.cancelDeletePort();
+  }
+  protected submitDeletePort(): void {
+    this.portsSvc.submitDeletePort();
+  }
+  protected openPortsMap(
+    side: string | undefined,
+    imageUrl: string,
+    readonly: boolean,
+  ): void {
+    this.portsSvc.openPortsMap(side, imageUrl, readonly);
+  }
+  protected closePortsMap(): void {
+    this.portsSvc.closePortsMap();
+  }
+  protected startPlacingPort(portId: number): void {
+    this.portsSvc.startPlacingPort(portId);
+  }
+  protected stopPlacingPort(): void {
+    this.portsSvc.stopPlacingPort();
+  }
+  protected onPortPicked(event: PortPickEvent): void {
+    this.portsSvc.onPortPicked(event);
+  }
+  protected clearPortPosition(portId: number): void {
+    this.portsSvc.clearPortPosition(portId);
+  }
+  protected portTypeLabel(type: AssetModelPortType | undefined): string {
+    return this.portsSvc.portTypeLabel(type);
+  }
+  protected onPortAddedFromMap(event: PortAddEvent): void {
+    this.portsSvc.onPortAddedFromMap(event, this.drawerEditId());
+  }
+  protected onPortRemovedFromMap(portId: number): void {
+    this.portsSvc.onPortRemovedFromMap(portId);
+  }
+  protected onPortEditedFromMap(event: PortEditEvent): void {
+    this.portsSvc.onPortEditedFromMap(event);
+  }
 
   /** Returns ports for the currently open map side. */
   protected readonly portsForMap = computed(() => {
     const map = this.portsSvc.portsMapOpen();
     if (!map) return [];
     if (!map.readonly) {
-      return this.portsSvc.ports().filter((p) => (p.side as string) === map.side);
+      return this.portsSvc
+        .ports()
+        .filter((p) => (p.side as string) === map.side);
     }
     return (this.previewModel()?.ports ?? []).filter(
       (p) => (p.side as string) === map.side,
     );
   });
 }
-
