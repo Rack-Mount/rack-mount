@@ -200,13 +200,34 @@ class RackUnitSerializer(serializers.ModelSerializer):
     )
 
     def validate(self, attrs):
-        device = attrs.get('device', getattr(self.instance, 'device', None))
-        generic_component = attrs.get('generic_component', getattr(
-            self.instance, 'generic_component', None))
+        instance = getattr(self, 'instance', None)
+
+        def get_val(key):
+            if key in attrs:
+                return attrs[key]
+            if instance:
+                return getattr(instance, key)
+            return None
+
+        device = get_val('device')
+        generic_component = get_val('generic_component')
+        rack = get_val('rack')
+
         if device is not None and generic_component is not None:
             raise serializers.ValidationError(
                 _('A rack unit cannot have both a device and a generic component.')
             )
+
+        if device and rack:
+            asset_depth = device.model.depth_mm
+            rack_depth = rack.model.depth
+
+            if asset_depth and rack_depth and asset_depth > rack_depth:
+                raise serializers.ValidationError(
+                    _("The device is too deep for this rack (Device: {}mm > Rack: {}mm).").format(
+                        asset_depth, rack_depth)
+                )
+
         return attrs
 
     class Meta:

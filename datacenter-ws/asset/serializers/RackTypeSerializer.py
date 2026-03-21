@@ -12,4 +12,4 @@ class RackTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RackType
-        fields = ['id', 'model', 'width', 'height', 'capacity']
+        fields = ['id', 'model', 'width', 'height', 'depth', 'capacity']

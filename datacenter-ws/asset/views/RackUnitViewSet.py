@@ -22,6 +22,7 @@ class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
 
     queryset = RackUnit.objects.select_related(
         'rack',
+        'rack__model',
         'rack__room',
         'rack__room__location',
         'device',

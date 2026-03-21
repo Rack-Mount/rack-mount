@@ -17,6 +17,10 @@ export interface PatchedRackType {
     model?: string;
     width?: number;
     height?: number;
+    /**
+     * Depth in mm
+     */
+    depth?: number;
     capacity?: number;
 }
 
