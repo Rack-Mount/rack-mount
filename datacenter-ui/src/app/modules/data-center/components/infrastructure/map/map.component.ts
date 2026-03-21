@@ -1484,6 +1484,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       // For text, we place and edit immediately, no drag creation step.
       this.isDrawing = false;
       this.currentElement = null;
+      this.selectedTool = 'move';
     }
   }
 
@@ -2119,6 +2120,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
       this.elements.push(this.currentElement);
+      this.selectedTool = 'move';
     }
 
     this.isDrawing = false;
