@@ -49,6 +49,16 @@ export class MapFloorPlanToolbarComponent {
   readonly selectedRackType = input<RackType | null>(null);
   readonly doorWidth = input<number>(100);
 
+  // Text inputs
+  readonly textFontSize = input<number>(14);
+  readonly textFill = input<string>('#333333');
+  readonly textBold = input<boolean>(false);
+  readonly textItalic = input<boolean>(false);
+  readonly textUnderline = input<boolean>(false);
+
+  /** Whether to show text formatting options (e.g. tool=text or text selected) */
+  readonly showTextOptions = input<boolean>(false);
+
   // ── Outputs ────────────────────────────────────────────────────────────────
 
   readonly locationChange = output<number | null>();
@@ -57,6 +67,13 @@ export class MapFloorPlanToolbarComponent {
   readonly autosaveChange = output<boolean>();
   readonly rackTypeChange = output<RackType | null>();
   readonly doorWidthChange = output<number>();
+
+  // Text outputs
+  readonly textFontSizeChange = output<number>();
+  readonly textFillChange = output<string>();
+  readonly textBoldChange = output<boolean>();
+  readonly textItalicChange = output<boolean>();
+  readonly textUnderlineChange = output<boolean>();
 
   // ── Derived display values ─────────────────────────────────────────────────
 

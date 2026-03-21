@@ -59,6 +59,11 @@ export interface MapElement {
   /** Polyline vertices (walls only) */
   points?: Point[];
   text?: string;
+  fontSize?: number;
+  fill?: string;
+  fontWeight?: 'normal' | 'bold';
+  fontStyle?: 'normal' | 'italic';
+  textDecoration?: 'none' | 'underline';
   /** Pre-computed display data — populated by updateWallDerived(), never set manually */
   area?: number;
   centroidX?: number;

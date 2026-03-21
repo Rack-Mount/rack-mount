@@ -284,6 +284,73 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   activeRoomInputRef?: ElementRef<HTMLInputElement>;
   @ViewChild('activeRackInput')
   activeRackInputRef?: ElementRef<HTMLInputElement>;
+  @ViewChild('activeTextInput')
+  activeTextInputRef?: ElementRef<HTMLInputElement>;
+
+  // Text element editing
+  editingTextId: string | null = null;
+  editingTextValue = '';
+  // Default / Current text styles
+  currentTextFontSize = 14;
+  currentTextFill = '#333333';
+  currentTextBold = false;
+  currentTextItalic = false;
+  currentTextUnderline = false;
+
+  get selectedTextElement(): MapElement | null {
+    if (!this.selectedElementId) return null;
+    return (
+      this.elements.find(
+        (e) => e.id === this.selectedElementId && e.type === 'text',
+      ) || null
+    );
+  }
+
+  // Update logic to sync toolbar with selection
+  updateToolbarFromSelection() {
+    const el = this.selectedTextElement;
+    if (el) {
+      this.currentTextFontSize = el.fontSize ?? 14;
+      this.currentTextFill = el.fill ?? '#333333';
+      this.currentTextBold = el.fontWeight === 'bold';
+      this.currentTextItalic = el.fontStyle === 'italic';
+      this.currentTextUnderline = el.textDecoration === 'underline';
+    }
+  }
+
+  onTextFontSizeChange(val: number) {
+    this.currentTextFontSize = val;
+    this.applyTextStyleChange({ fontSize: val });
+  }
+
+  onTextFillChange(val: string) {
+    this.currentTextFill = val;
+    this.applyTextStyleChange({ fill: val });
+  }
+
+  onTextBoldChange(val: boolean) {
+    this.currentTextBold = val;
+    this.applyTextStyleChange({ fontWeight: val ? 'bold' : 'normal' });
+  }
+
+  onTextItalicChange(val: boolean) {
+    this.currentTextItalic = val;
+    this.applyTextStyleChange({ fontStyle: val ? 'italic' : 'normal' });
+  }
+
+  onTextUnderlineChange(val: boolean) {
+    this.currentTextUnderline = val;
+    this.applyTextStyleChange({ textDecoration: val ? 'underline' : 'none' });
+  }
+
+  private applyTextStyleChange(changes: Partial<MapElement>) {
+    const el = this.selectedTextElement;
+    if (el) {
+      Object.assign(el, changes);
+      this.scheduleAutosave();
+      this.cdr.markForCheck();
+    }
+  }
 
   ngAfterViewInit(): void {
     // Must use passive:false to call preventDefault() on wheel
@@ -832,6 +899,45 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.editingRackName = '';
   }
 
+  // Text element editing
+  startEditText(el: MapElement, event: MouseEvent): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.editingTextId = el.id;
+    this.editingTextValue = el.text ?? '';
+    setTimeout(() => {
+      this.activeTextInputRef?.nativeElement.focus();
+      this.activeTextInputRef?.nativeElement.select();
+    }, 0);
+  }
+
+  confirmEditText(): void {
+    if (!this.editingTextId) return;
+    const textEl = this.elements.find((el) => el.id === this.editingTextId);
+    if (textEl) {
+      if (!this.editingTextValue.trim()) {
+        // Remove empty text elements
+        this.elements = this.elements.filter(
+          (e) => e.id !== this.editingTextId,
+        );
+      } else {
+        textEl.text = this.editingTextValue;
+      }
+      this.scheduleAutosave();
+      this.cdr.markForCheck();
+    }
+    this.editingTextId = null;
+  }
+
+  cancelEditText(): void {
+    // If the text was empty (newly created), remove it on cancel
+    const textEl = this.elements.find((el) => el.id === this.editingTextId);
+    if (textEl && !textEl.text?.trim()) {
+      this.elements = this.elements.filter((e) => e.id !== this.editingTextId);
+    }
+    this.editingTextId = null;
+  }
+
   onToolChange(toolId: string) {
     this.selectedTool = toolId;
     this.selectedElementId = null;
@@ -1193,6 +1299,27 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
 
+      // 2a. Check Text Body Click → move just that text
+      for (const el of this.elements) {
+        if (el.type === 'text') {
+          const fontSize = el.fontSize || 14;
+          // Approximate width (chars * ~0.6em + padding)
+          const w = (el.text?.length || 1) * fontSize * 0.6 + 10;
+          if (
+            point.x >= el.x &&
+            point.x <= el.x + w &&
+            point.y >= el.y - fontSize &&
+            point.y <= el.y + fontSize
+          ) {
+            this.movingElementId = el.id;
+            this.selectedElementId = el.id;
+            this.lastMousePosition = point;
+            this.isDrawing = true;
+            return;
+          }
+        }
+      }
+
       // 2. Check Rack Body Click → move just that rack
       for (const el of this.elements) {
         if (el.type === 'rack') {
@@ -1363,6 +1490,25 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         width: dims.w,
         height: dims.h,
       };
+    } else if (this.selectedTool === 'text') {
+      const newText: MapElement = {
+        id: Date.now().toString(),
+        type: 'text',
+        x: point.x,
+        y: point.y,
+        text: 'Text',
+        fontSize: this.currentTextFontSize,
+        fill: this.currentTextFill,
+        fontWeight: this.currentTextBold ? 'bold' : 'normal',
+        fontStyle: this.currentTextItalic ? 'italic' : 'normal',
+        textDecoration: this.currentTextUnderline ? 'underline' : 'none',
+      };
+      this.elements = [...this.elements, newText];
+      this.startEditText(newText, event);
+      // Determine if we need to set isDrawing to true?
+      // For text, we place and edit immediately, no drag creation step.
+      this.isDrawing = false;
+      this.currentElement = null;
     }
   }
 
@@ -1557,6 +1703,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             this.rackSnapActive = result.snapped;
           }
           // If blocked by another rack, keep current position (no-op)
+        } else if (el && el.type === 'text') {
+          el.x += dx;
+          el.y += dy;
         }
       }
       this.lastMousePosition = point;
@@ -2117,6 +2266,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       event.stopPropagation();
       this.selectedSegment = null;
       this.selectedElementId = element.id;
+      if (element.type === 'text') {
+        this.updateToolbarFromSelection();
+      }
     }
   }
 

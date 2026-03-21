@@ -19,12 +19,23 @@
       [rackTypes]="availableRackTypes"
       [selectedRackType]="selectedRackType"
       [doorWidth]="doorWidth"
+      [showTextOptions]="selectedTool === 'text' || !!selectedTextElement"
+      [textFontSize]="currentTextFontSize"
+      [textFill]="currentTextFill"
+      [textBold]="currentTextBold"
+      [textItalic]="currentTextItalic"
+      [textUnderline]="currentTextUnderline"
       (locationChange)="onLocationSelect($event)"
       (roomChange)="onRoomSelect($event)"
       (save)="saveFloorPlan()"
       (autosaveChange)="onAutosaveChange($event)"
       (rackTypeChange)="onRackTypeChange($event)"
       (doorWidthChange)="onDoorWidthChange($event)"
+      (textFontSizeChange)="onTextFontSizeChange($event)"
+      (textFillChange)="onTextFillChange($event)"
+      (textBoldChange)="onTextBoldChange($event)"
+      (textItalicChange)="onTextItalicChange($event)"
+      (textUnderlineChange)="onTextUnderlineChange($event)"
     />
     <svg
       #svgContainer
@@ -423,6 +434,83 @@
                       </div>
                     </foreignObject>
                   }
+                }
+              </g>
+            }
+
+            <!-- Text (Label) -->
+            @if (el.type === "text") {
+              <g
+                class="text-element"
+                [attr.transform]="'translate(' + el.x + ',' + el.y + ')'"
+                (click)="onElementClick($event, el)"
+                (dblclick)="startEditText(el, $event)"
+                [style.cursor]="selectedTool === 'move' ? 'move' : 'text'"
+              >
+                <!-- Selection highlightBox (approx) -->
+                @if (selectedElementId === el.id) {
+                  <rect
+                    [attr.x]="-4 / zoom"
+                    [attr.y]="-14 / zoom"
+                    [attr.width]="
+                      ((el.text?.length || 1) * 9) / zoom + 8 / zoom
+                    "
+                    [attr.height]="20 / zoom"
+                    fill="rgba(0, 123, 255, 0.1)"
+                    stroke="#007bff"
+                    [attr.stroke-width]="1 / zoom"
+                    pointer-events="none"
+                  />
+                }
+
+                @if (editingTextId !== el.id) {
+                  <text
+                    [attr.x]="0"
+                    [attr.y]="0"
+                    [attr.fill]="el.fill || '#333333'"
+                    [attr.font-size]="(el.fontSize || 14) / zoom"
+                    [attr.font-weight]="el.fontWeight || 'normal'"
+                    [attr.font-style]="el.fontStyle || 'normal'"
+                    [attr.text-decoration]="el.textDecoration || 'none'"
+                    font-family="Arial, sans-serif"
+                    style="user-select: none"
+                  >
+                    {{ el.text || "Text" }}
+                  </text>
+                } @else {
+                  <foreignObject
+                    [attr.x]="-4 / zoom"
+                    [attr.y]="-18 / zoom"
+                    [attr.width]="200 / zoom"
+                    [attr.height]="40 / zoom"
+                    overflow="visible"
+                  >
+                    <input
+                      #activeTextInput
+                      xmlns="http://www.w3.org/1999/xhtml"
+                      type="text"
+                      [value]="editingTextValue"
+                      (input)="editingTextValue = $any($event.target).value"
+                      (keydown.enter)="confirmEditText()"
+                      (keydown.escape)="cancelEditText()"
+                      (blur)="confirmEditText()"
+                      style="
+                        width: auto;
+                        min-width: 40px;
+                        background: rgba(255, 255, 255, 0.9);
+                        border: 1px solid #007bff;
+                        color: #333;
+                        padding: 0 4px;
+                        outline: none;
+                        font-family: Arial, sans-serif;
+                      "
+                      [style.fontSize]="(el.fontSize || 14) / zoom + 'px'"
+                      [style.color]="el.fill || '#333333'"
+                      [style.fontWeight]="el.fontWeight || 'normal'"
+                      [style.fontStyle]="el.fontStyle || 'normal'"
+                      [style.textDecoration]="el.textDecoration || 'none'"
+                    />
+                  </foreignObject>
                 }
               </g>
             }

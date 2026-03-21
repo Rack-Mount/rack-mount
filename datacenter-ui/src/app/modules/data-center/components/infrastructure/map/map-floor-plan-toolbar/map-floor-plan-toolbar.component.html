@@ -118,4 +118,63 @@
       "map_toolbar.door_unit" | translate
     }}</span>
   }
+  @if (showTextOptions()) {
+    <span class="tool-sep"></span>
+    <label class="tool-label">Text:</label>
+
+    <!-- Font Size -->
+    <input
+      type="number"
+      [ngModel]="textFontSize()"
+      (ngModelChange)="textFontSizeChange.emit($event)"
+      min="8"
+      max="72"
+      step="1"
+      class="toolbar-number-input"
+      title="Font Size (px)"
+    />
+    <span class="unit-label">px</span>
+
+    <!-- Color -->
+    <input
+      type="color"
+      [ngModel]="textFill()"
+      (ngModelChange)="textFillChange.emit($event)"
+      class="toolbar-color-input"
+      title="Text Color"
+    />
+
+    <!-- Bold -->
+    <button
+      type="button"
+      class="btn-icon-toggle"
+      [class.active]="textBold()"
+      (click)="textBoldChange.emit(!textBold())"
+      title="Bold"
+    >
+      B
+    </button>
+
+    <!-- Italic -->
+    <button
+      type="button"
+      class="btn-icon-toggle"
+      [class.active]="textItalic()"
+      (click)="textItalicChange.emit(!textItalic())"
+      title="Italic"
+    >
+      I
+    </button>
+
+    <!-- Underline -->
+    <button
+      type="button"
+      class="btn-icon-toggle"
+      [class.active]="textUnderline()"
+      (click)="textUnderlineChange.emit(!textUnderline())"
+      title="Underline"
+    >
+      U
+    </button>
+  }
 </div>
