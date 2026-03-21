@@ -24,6 +24,7 @@ import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { Configuration, ConfigurationParameters } from './modules/core/api/v1';
 import { authInterceptor } from './modules/core/interceptors/auth.interceptor';
+import { languageInterceptor } from './modules/core/interceptors/language.interceptor';
 import { notFoundInterceptor } from './modules/core/interceptors/not-found.interceptor';
 
 const AVAILABLE_LANG_CODES = ['de', 'en', 'fr', 'it', 'zh'];
@@ -63,7 +64,11 @@ export const appConfig: ApplicationConfig = {
     { provide: Configuration, useFactory: apiConfigFactory },
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor, notFoundInterceptor]),
+      withInterceptors([
+        languageInterceptor,
+        authInterceptor,
+        notFoundInterceptor,
+      ]),
     ),
     {
       provide: TRANSLATE_HTTP_LOADER_CONFIG,

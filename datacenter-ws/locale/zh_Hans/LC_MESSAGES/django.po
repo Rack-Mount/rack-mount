@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: datacenter 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-01 07:54+0000\n"
+"POT-Creation-Date: 2026-03-21 23:17+0000\n"
 "PO-Revision-Date: 2026-03-01 07:47+0000\n"
 "Language-Team: \n"
 "Language: zh-Hans\n"
@@ -14,93 +14,316 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgid "Asset"
-msgstr "资产"
+#: accounts/admin.py:14 accounts/admin.py:15
+msgid "Profile"
+msgstr "个人资料"
 
+#: accounts/admin.py:65 accounts/admin.py:103 asset/models/Asset.py:95
 msgid "Assets"
 msgstr "资产"
 
+#: accounts/admin.py:72 accounts/admin.py:115
+msgid "Catalog"
+msgstr "目录"
+
+#: accounts/admin.py:79 accounts/admin.py:125
+msgid "Infrastructure"
+msgstr "基础设施"
+
+#: accounts/admin.py:86
+msgid "Administration"
+msgstr "管理"
+
+#: accounts/admin.py:93 accounts/models.py:70 accounts/models.py:93
+msgid "Role"
+msgstr "角色"
+
+#: accounts/admin.py:135
+msgid "Users"
+msgstr "用户"
+
+#: accounts/models.py:13
+msgid "Admin"
+msgstr "管理员"
+
+#: accounts/models.py:14
+msgid "Editor"
+msgstr "编辑者"
+
+#: accounts/models.py:15
+msgid "Viewer"
+msgstr "查看者"
+
+#: accounts/models.py:16
+msgid "Guest"
+msgstr "访客"
+
+#: accounts/models.py:22
+msgid "Name"
+msgstr "名称"
+
+#: accounts/models.py:27
+msgid "Can view assets"
+msgstr "可以查看资产"
+
+#: accounts/models.py:29
+msgid "Can create assets"
+msgstr "可以创建资产"
+
+#: accounts/models.py:31
+msgid "Can edit assets"
+msgstr "可以编辑资产"
+
+#: accounts/models.py:33
+msgid "Can delete assets"
+msgstr "可以删除资产"
+
+#: accounts/models.py:35
+msgid "Can import assets"
+msgstr "可以导入资产"
+
+#: accounts/models.py:37
+msgid "Can export assets"
+msgstr "可以导出资产"
+
+#: accounts/models.py:39
+msgid "Can clone assets"
+msgstr "可以克隆资产"
+
+#: accounts/models.py:43
+msgid "Can view catalog"
+msgstr "可以查看目录"
+
+#: accounts/models.py:45
+msgid "Can create catalog entries"
+msgstr "可以创建目录条目"
+
+#: accounts/models.py:47
+msgid "Can edit catalog entries"
+msgstr "可以编辑目录条目"
+
+#: accounts/models.py:49
+msgid "Can delete catalog entries"
+msgstr "可以删除目录条目"
+
+#: accounts/models.py:51
+msgid "Can import catalog"
+msgstr "可以导入目录"
+
+#: accounts/models.py:55
+msgid "Can view infrastructure (racks, rooms, map)"
+msgstr "可以查看基础设施（机架、房间、地图）"
+
+#: accounts/models.py:57
+msgid "Can create racks"
+msgstr "可以创建机架"
+
+#: accounts/models.py:59
+msgid "Can edit racks and rack units"
+msgstr "可以编辑机架及机架单元"
+
+#: accounts/models.py:61
+msgid "Can delete racks"
+msgstr "可以删除机架"
+
+#: accounts/models.py:63
+msgid "Can edit floor plans"
+msgstr "可以编辑平面图"
+
+#: accounts/models.py:67
+msgid "Can manage users"
+msgstr "可以管理用户"
+
+#: accounts/models.py:71
+msgid "Roles"
+msgstr "角色列表"
+
+#: accounts/models.py:87
+msgid "User"
+msgstr "用户"
+
+#: accounts/models.py:97
+msgid "User Profile"
+msgstr "用户资料"
+
+#: accounts/models.py:98
+msgid "User Profiles"
+msgstr "用户资料列表"
+
+#: asset/models/Asset.py:94
+msgid "Asset"
+msgstr "资产"
+
+#: asset/models/Rack.py:44
 msgid "Rack"
 msgstr "机柜"
 
+#: asset/models/Rack.py:45
 msgid "Racks"
 msgstr "机柜"
 
+#: asset/models/RackType.py:28
+msgid "Height in cm"
+msgstr "高度（厘米）"
+
+#: asset/models/RackType.py:39
 msgid "Rack Type"
 msgstr "机柜类型"
 
+#: asset/models/RackType.py:40
 msgid "Rack Types"
 msgstr "机柜类型"
 
+#: asset/serializers/RackUnitSerializer.py:218
+msgid "A rack unit cannot have both a device and a generic component."
+msgstr "一个机架单元不能同时包含设备和通用组件。"
+
+#: asset/serializers/RackUnitSerializer.py:227
+#, python-brace-format
+msgid "The device is too deep for this rack (Device: {}mm > Rack: {}mm)."
+msgstr "设备深度超过机架限制（设备：{}mm > 机架：{}mm）。"
+
+#: asset/views/AssetModelImportView.py:43
 msgid "Not a valid Data URL."
 msgstr "不是有效的数据URL。"
 
+#: asset/views/AssetModelImportView.py:47
 msgid "Malformed Data URL."
 msgstr "数据URL格式错误。"
 
+#: asset/views/AssetModelImportView.py:54
+#, python-format
+msgid "Unsupported image type: %s"
+msgstr "不支持的图片类型：%s"
+
+#: asset/views/AssetModelImportView.py:59
 msgid "Invalid base64 data."
 msgstr "无效的base64数据。"
 
+#: asset/views/AssetModelImportView.py:64
+#, python-format
+msgid "Image exceeds maximum allowed size of %d MB."
+msgstr "图片超过最大允许大小 %d MB。"
+
+#: asset/views/AssetModelImportView.py:75
+#, python-format
+msgid "Uploaded file for %s is not a valid image."
+msgstr "上传的文件 %s 不是有效的图片。"
+
+#: asset/views/AssetModelImportView.py:157
+#: asset/views/AssetModelImportView.py:159
+#: asset/views/AssetModelImportView.py:161
 msgid "This field is required."
 msgstr "此字段为必填项。"
 
+#: asset/views/AssetModelImportView.py:173
 #, python-format
 msgid "A model named \"%(name)s\" already exists for %(vendor)s (%(type)s)."
 msgstr "%(vendor)s (%(type)s) 下已存在名为“%(name)s”的型号。"
 
+#: asset/views/AssetModelImportView.py:205
+msgid "Invalid front image data."
+msgstr "无效的正面图片数据。"
+
+#: asset/views/AssetModelImportView.py:214
+msgid "Invalid rear image data."
+msgstr "无效的背面图片数据。"
+
+#: asset/views/AssetModelViewSet.py:52
 #, python-format
 msgid "Cannot delete: this model is used by %(count)d asset(s)."
 msgstr "无法删除：此型号被 %(count)d 个资产使用。"
 
+#: asset/views/AssetModelViewSet.py:72 asset/views/AssetViewSet.py:199
+msgid "ids must be a list"
+msgstr "ids 必须是列表"
+
+#: asset/views/AssetViewSet.py:98
 msgid "state_id is required"
 msgstr "state_id 为必填项"
 
+#: asset/views/AssetViewSet.py:105 asset/views/AssetViewSet.py:110
+msgid "Invalid state_id"
+msgstr "无效的 state_id"
+
+#: asset/views/AssetViewSet.py:166
+msgid "ids must be a non-empty list"
+msgstr "ids 必须是非空列表"
+
+#: asset/views/CatalogImportView.py:95
+msgid "Expected a JSON object."
+msgstr "需要一个 JSON 对象。"
+
+#: asset/views/CatalogImportView.py:135
+msgid "name, vendor and type are required."
+msgstr "名称、供应商和类型为必填项。"
+
+#: asset/views/CatalogImportView.py:189
+msgid "name is required."
+msgstr "名称为必填项。"
+
+#: asset/views/RackViewSet.py:40
 msgid "Rack has associated units — remove them before deleting."
 msgstr "机柜有关联设备 — 请先移除再删除。"
 
+#: datacenter-app/settings.py:134
 msgid "English"
 msgstr "英语"
 
+#: datacenter-app/settings.py:135
 msgid "Italian"
 msgstr "意大利语"
 
+#: datacenter-app/settings.py:136
 msgid "German"
 msgstr "德语"
 
+#: datacenter-app/settings.py:137
 msgid "French"
 msgstr "法语"
 
+#: datacenter-app/settings.py:138
 msgid "Chinese (Simplified)"
 msgstr "中文（简体）"
 
+#: location/models/Location.py:39
 msgid "Location"
 msgstr "位置"
 
+#: location/models/Location.py:40
 msgid "Locations"
 msgstr "位置"
 
+#: location/models/Room.py:40
 msgid "Datacenter"
 msgstr "数据中心"
 
+#: location/models/Room.py:41
 msgid "Warehouse"
 msgstr "仓库"
 
+#: location/models/Room.py:42
 msgid "Laboratory"
 msgstr "实验室"
 
+#: location/models/Room.py:43
 msgid "Technical Office"
 msgstr "技术办公室"
 
+#: location/models/Room.py:49
 msgid "Room type"
 msgstr "房间类型"
 
+#: location/models/Room.py:74
 msgid ""
 "Interactive floor plan elements (walls, racks, doors) from the Angular "
 "editor."
 msgstr "Angular编辑器中的交互式平面图元素（墙壁、机柜、门）。"
 
+#: location/models/Room.py:84
 msgid "Room"
 msgstr "房间"
 
+#: location/models/Room.py:85
 msgid "Rooms"
 msgstr "房间"
