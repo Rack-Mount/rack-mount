@@ -42,7 +42,8 @@ from rest_framework.views import APIView
 
 # ── Soglie configurabili ────────────────────────────────────────────────────────
 MIN_CORRECTIONS = int(getattr(settings, 'PORT_CORRECTION_MIN_CORRECTIONS', 10))
-MIN_INTERVAL_MIN = int(getattr(settings, 'PORT_CORRECTION_MIN_INTERVAL_MIN', 60))
+MIN_INTERVAL_MIN = int(
+    getattr(settings, 'PORT_CORRECTION_MIN_INTERVAL_MIN', 60))
 
 # ── Mapping YOLO ────────────────────────────────────────────────────────────────
 _CLASS_NAMES = ['RJ45', 'SFP/SFP+', 'QSFP', 'USB', 'SERIAL', 'LC']
@@ -174,7 +175,8 @@ def _background_train(data_yaml: str, models_dir: str) -> None:
         with _state_lock:
             state = _load_state()
             state['is_training'] = False
-            state['last_training_iso'] = datetime.now(tz=timezone.utc).isoformat()
+            state['last_training_iso'] = datetime.now(
+                tz=timezone.utc).isoformat()
             state['corrections_since_last_train'] = 0
             _save_state(state)
 
@@ -338,7 +340,8 @@ class PortCorrectionView(APIView):
         should_train = False
         with _state_lock:
             state = _load_state()
-            state['corrections_since_last_train'] = state.get('corrections_since_last_train', 0) + 1
+            state['corrections_since_last_train'] = state.get(
+                'corrections_since_last_train', 0) + 1
             state['total_corrections'] = state.get('total_corrections', 0) + 1
 
             # ── 3. Valuta se avviare il retraining ────────────────────────────

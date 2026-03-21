@@ -763,7 +763,9 @@
               <dt>{{ "models.preview_dimensions" | translate }}</dt>
               <dd>
                 @if (m.width_mm || m.height_mm || m.depth_mm) {
-                  {{ m.width_mm ?? "?" }}&thinsp;×&thinsp;{{ m.height_mm ?? "?" }}&thinsp;×&thinsp;{{ m.depth_mm ?? "?" }}&thinsp;mm
+                  {{ m.width_mm ?? "?" }}&thinsp;×&thinsp;{{
+                    m.height_mm ?? "?"
+                  }}&thinsp;×&thinsp;{{ m.depth_mm ?? "?" }}&thinsp;mm
                 }
                 @if ((m.width_mm || m.height_mm || m.depth_mm) && m.weight_kg) {
                   &nbsp;·&nbsp;
@@ -922,7 +924,9 @@
           }}</span>
           <div class="dimensions-row">
             <label class="dimensions-cell">
-              <span class="dimensions-label">{{ "models.field_width_mm" | translate }}</span>
+              <span class="dimensions-label">{{
+                "models.field_width_mm" | translate
+              }}</span>
               <input
                 class="field-input field-input--short"
                 type="number"
@@ -932,13 +936,17 @@
                 (input)="
                   setField(
                     'width_mm',
-                    $any($event.target).value ? +$any($event.target).value : null
+                    $any($event.target).value
+                      ? +$any($event.target).value
+                      : null
                   )
                 "
               />
             </label>
             <label class="dimensions-cell">
-              <span class="dimensions-label">{{ "models.field_height_mm" | translate }}</span>
+              <span class="dimensions-label">{{
+                "models.field_height_mm" | translate
+              }}</span>
               <input
                 class="field-input field-input--short"
                 type="number"
@@ -948,13 +956,17 @@
                 (input)="
                   setField(
                     'height_mm',
-                    $any($event.target).value ? +$any($event.target).value : null
+                    $any($event.target).value
+                      ? +$any($event.target).value
+                      : null
                   )
                 "
               />
             </label>
             <label class="dimensions-cell">
-              <span class="dimensions-label">{{ "models.field_depth_mm" | translate }}</span>
+              <span class="dimensions-label">{{
+                "models.field_depth_mm" | translate
+              }}</span>
               <input
                 class="field-input field-input--short"
                 type="number"
@@ -964,13 +976,17 @@
                 (input)="
                   setField(
                     'depth_mm',
-                    $any($event.target).value ? +$any($event.target).value : null
+                    $any($event.target).value
+                      ? +$any($event.target).value
+                      : null
                   )
                 "
               />
             </label>
             <label class="dimensions-cell">
-              <span class="dimensions-label">{{ "models.field_weight_kg" | translate }}</span>
+              <span class="dimensions-label">{{
+                "models.field_weight_kg" | translate
+              }}</span>
               <input
                 class="field-input field-input--short"
                 type="number"

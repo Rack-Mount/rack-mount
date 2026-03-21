@@ -269,13 +269,16 @@ def _detect_with_opencv(img, click_x: float, click_y: float):
             sy0, sy1 = max(0, y - margin), min(H, y + ch + margin)
             sx0, sx1 = max(0, x - margin), min(W, x + cw + margin)
             surround = gray[sy0:sy1, sx0:sx1]
-            surround_mean = float(np.mean(surround)) if surround.size else roi_mean
-            darkness = max(0.0, (surround_mean - roi_mean) / (surround_mean + 1.0))
+            surround_mean = float(
+                np.mean(surround)) if surround.size else roi_mean
+            darkness = max(0.0, (surround_mean - roi_mean) /
+                           (surround_mean + 1.0))
             if darkness < 0.04:
                 continue
 
             # Confidenza composita
-            conf = min(1.0, mar_fill * 0.40 + rect_fill * 0.25 + min(darkness * 1.75, 0.35))
+            conf = min(1.0, mar_fill * 0.40 + rect_fill *
+                       0.25 + min(darkness * 1.75, 0.35))
             if conf < 0.35:
                 continue
 
@@ -288,7 +291,8 @@ def _detect_with_opencv(img, click_x: float, click_y: float):
 
             if score > best_score:
                 best_score = score
-                best = {'ar': ar, 'darkness': darkness, 'conf': conf, 'cw': cw, 'ch': ch}
+                best = {'ar': ar, 'darkness': darkness,
+                        'conf': conf, 'cw': cw, 'ch': ch}
 
         if best is None:
             return 'RJ45', 0.0
@@ -303,7 +307,8 @@ def _detect_with_opencv(img, click_x: float, click_y: float):
             elif dk_c < 0.18:
                 port_type = 'RJ45'
 
-        return port_type, round(min(0.65, best['conf']), 3)  # cap a 0.65: è fallback
+        # cap a 0.65: è fallback
+        return port_type, round(min(0.65, best['conf']), 3)
 
     except Exception:
         return 'RJ45', 0.0
