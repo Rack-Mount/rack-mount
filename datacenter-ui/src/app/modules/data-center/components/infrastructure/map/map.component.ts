@@ -13,21 +13,21 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin } from 'rxjs';
-import { AssetService } from '../../../../core/api/v1/api/asset.service';
-import { LocationService } from '../../../../core/api/v1/api/location.service';
-import { Location as DjLocation } from '../../../../core/api/v1/model/location';
-import { Rack } from '../../../../core/api/v1/model/rack';
-import { RackType } from '../../../../core/api/v1/model/rackType';
-import { Room as DjRoom } from '../../../../core/api/v1/model/room';
+import { Subject, takeUntil } from 'rxjs';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
 import { RoleService } from '../../../../core/services/role.service';
-import { SettingsService } from '../../../../core/services/settings.service';
 import { TabService } from '../../../../core/services/tab.service';
 import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
+import {
+  getDoorLength,
+  getDoorMidpoint,
+  getDoorPath,
+  getPointsString,
+  getRackTransform,
+} from './map-display.utils';
 import { MapFloorPlanToolbarComponent } from './map-floor-plan-toolbar/map-floor-plan-toolbar.component';
+import { MapFloorPlanService } from './map-floor-plan.service';
 import { dist, distToSegment } from './map-geometry.utils';
 import { MapZoomControlsComponent } from './map-zoom-controls/map-zoom-controls.component';
 import { AngleLabel, MapElement, Point, Room, WallSegment } from './map.types';
@@ -67,106 +67,97 @@ import {
     MapFloorPlanToolbarComponent,
     MapZoomControlsComponent,
   ],
+  providers: [MapFloorPlanService],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
+  // ── Injected services ─────────────────────────────────────────────────────
   readonly role = inject(RoleService);
+  protected readonly fpService = inject(MapFloorPlanService);
   private readonly tabService = inject(TabService);
-  readonly settingsService = inject(SettingsService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly translate = inject(TranslateService);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly locationService = inject(LocationService);
-  private readonly assetService = inject(AssetService);
-  private readonly router = inject(Router);
 
-  selectedTool: string = 'select';
-
+  // ── Component input ───────────────────────────────────────────────────────
   /** When provided, the map is pre-loaded to this room (tab mode). */
   readonly roomId = input<number>();
 
-  // Rack snap / collision feedback
-  rackCreationBlocked = false;
-  rackSnapActive = false;
-  /** SVG-unit radius within which magnetic snap activates (scaled by 1/zoom at use-site) */
-  private readonly RACK_SNAP_RADIUS = 20;
-  /** Last known valid (non-overlapping) position while moving a rack */
-  private lastValidRackPos: { x: number; y: number } = { x: 0, y: 0 };
-  /** Cached room face polygons — recomputed whenever walls change. */
-  private roomFaces: RoomFace[] = [];
-
-  // RackType models for the toolbar (loaded once from API)
-  availableRackTypes: RackType[] = [];
-  selectedRackType: RackType | null = null;
-
-  // Varco (door) settings
-  /** Default door aperture in cm */
-  doorWidth = 100;
-  /** Wall direction while drawing a varco — set on mousedown, cleared on mouseup */
-  private doorSnapDir: { dx: number; dy: number } | null = null;
-  /** Which endpoint of a door is being dragged in move mode: 'start' | 'end' | null */
-  doorDragEndpoint: 'start' | 'end' | null = null;
-  /** Offset (cm along door direction) from door-start to the initial click, used when dragging the full door body */
-  private doorBodyDragOffset = 0;
-
-  // Free-rotation drag state
-  rotatingElementId: string | null = null;
-  private rotateDragStartAngle = 0; // atan2 of cursor relative to rack centre at drag start
-  private rotateDragStartRot = 0; // el.rotation at drag start (degrees)
-  private rotateDragCenter: { x: number; y: number } | null = null;
-  /** Last OBB-collision-free rotation angle during a free-rotation drag. */
-  private lastValidRackRot = 0;
-
-  elements: MapElement[] = [];
-
-  // Floor plan persistence
-  availableLocations: DjLocation[] = [];
-  availableRooms: DjRoom[] = [];
-  filteredRooms: DjRoom[] = [];
-  selectedLocationId: number | null = null;
-  selectedRoomId: number | null = null;
-
-  get selectedLocationName(): string {
-    return (
-      this.availableLocations.find((l) => l.id === this.selectedLocationId)
-        ?.name ?? ''
-    );
+  // ── Getters delegating to fpService (keep template bindings unchanged) ───
+  get availableLocations() {
+    return this.fpService.availableLocations;
   }
-
-  get selectedRoomName(): string {
-    return (
-      this.filteredRooms.find((r) => r.id === this.selectedRoomId)?.name ?? ''
-    );
+  get filteredRooms() {
+    return this.fpService.filteredRooms;
   }
-  saveStatus: 'idle' | 'saving' | 'saved' | 'error' = 'idle';
-  private saveStatusTimer: ReturnType<typeof setTimeout> | null = null;
-  private autosaveTimer: ReturnType<typeof setTimeout> | null = null;
-
+  get selectedLocationId() {
+    return this.fpService.selectedLocationId;
+  }
+  get selectedRoomId() {
+    return this.fpService.selectedRoomId;
+  }
+  get availableRackTypes() {
+    return this.fpService.availableRackTypes;
+  }
+  get selectedRackType() {
+    return this.fpService.selectedRackType;
+  }
+  get saveStatus() {
+    return this.fpService.saveStatus;
+  }
+  get doorWidth() {
+    return this.fpService.doorWidth;
+  }
   get autosave(): boolean {
-    return this.settingsService.autosave();
+    return this.fpService.autosave;
   }
-
   set autosave(value: boolean) {
-    this.settingsService.setAutosave(value);
+    this.fpService.autosave = value;
   }
 
   // ── Toolbar event handlers ────────────────────────────────────────────────
 
   onAutosaveChange(value: boolean): void {
-    this.settingsService.setAutosave(value);
+    this.fpService.autosave = value;
   }
 
-  onRackTypeChange(rt: RackType | null): void {
-    this.selectedRackType = rt;
+  onRackTypeChange(rt: typeof this.fpService.selectedRackType): void {
+    this.fpService.selectedRackType = rt;
     this.cdr.markForCheck();
   }
 
   onDoorWidthChange(w: number): void {
-    this.doorWidth = Number(w);
+    this.fpService.doorWidth = Number(w);
     this.cdr.markForCheck();
   }
+
+  // ── Canvas drawing state ──────────────────────────────────────────────────
+  selectedTool: string = 'select';
+  elements: MapElement[] = [];
+
+  // Rack snap / collision feedback
+  rackCreationBlocked = false;
+  rackSnapActive = false;
+  private readonly RACK_SNAP_RADIUS = 20;
+  private lastValidRackPos: { x: number; y: number } = { x: 0, y: 0 };
+  private roomFaces: RoomFace[] = [];
+
+  /** Wall direction while drawing a varco — set on mousedown, cleared on mouseup */
+  private doorSnapDir: { dx: number; dy: number } | null = null;
+  doorDragEndpoint: 'start' | 'end' | null = null;
+  private doorBodyDragOffset = 0;
+
+  // Free-rotation drag state
+  rotatingElementId: string | null = null;
+  private rotateDragStartAngle = 0;
+  private rotateDragStartRot = 0;
+  private rotateDragCenter: { x: number; y: number } | null = null;
+  private lastValidRackRot = 0;
+
+  // ── Subscription cleanup ──────────────────────────────────────────────────
+  private readonly destroy$ = new Subject<void>();
 
   isDrawing = false;
   currentElement: MapElement | null = null;
@@ -375,118 +366,59 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // Update grid on window resize
     window.addEventListener('resize', this.resizeListener);
 
-    // Load available rooms for floor plan selector
-    this.loadLocations();
+    // Subscribe to service state-change notifications (triggers change detection)
+    this.fpService.stateChanged$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.cdr.markForCheck());
+
+    // After locations are loaded, auto-select and load the room from the route/input
+    this.fpService.locationsLoaded$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((roomId) => {
+        if (roomId != null) this.onRoomSelect(roomId);
+        this.cdr.markForCheck();
+      });
+
+    // Load available locations (triggers locationsLoaded$ when done)
+    this.fpService.loadLocations(this.roomId());
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     window.removeEventListener('resize', this.resizeListener);
-    if (this.saveStatusTimer) clearTimeout(this.saveStatusTimer);
-    if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
     if (this.gridRafId !== null) cancelAnimationFrame(this.gridRafId);
   }
 
-  loadLocations(): void {
-    // Use @Input roomId if provided, otherwise fall back to URL parsing
-    let roomIdFromRoute: string | null = null;
-    if (this.roomId() != null) {
-      roomIdFromRoute = String(this.roomId());
-    } else {
-      const tree = this.router.parseUrl(this.router.url);
-      const segments = tree.root.children['primary']?.segments ?? [];
-      roomIdFromRoute =
-        segments[0]?.path === 'map' && segments[1]?.path
-          ? segments[1].path
-          : null;
-    }
-    this.locationService.locationLocationList({}).subscribe({
-      next: (data) => {
-        this.availableLocations = data.results ?? [];
-        this.loadRackTypes();
-        if (roomIdFromRoute) {
-          const roomId = +roomIdFromRoute;
-          this.loadRoomFromRoute(roomId);
-        }
-        this.cdr.markForCheck();
-      },
-      error: (err) => console.error('Failed to load locations', err),
-    });
-  }
-
-  private loadRoomFromRoute(roomId: number): void {
-    // Find parent location to populate the dropdowns
-    for (const loc of this.availableLocations) {
-      const match = loc.rooms?.find((r) => r.id === roomId);
-      if (match) {
-        this.selectedLocationId = loc.id ?? null;
-        this.filteredRooms = loc.rooms ?? [];
-        // Update tab label with the real room name if opened as a tab
-        if (this.roomId() != null && match.name) {
-          this.tabService.updateTabLabel(`room-${roomId}`, match.name);
-        }
-        break;
-      }
-    }
-    this.onRoomSelect(roomId);
-  }
-
   onLocationSelect(id: number | null): void {
-    this.selectedLocationId = id || null;
-    this.selectedRoomId = null;
+    this.fpService.selectLocation(id ?? null);
     this.elements = [];
     this.rederiveAllWalls();
-    if (id) {
-      const loc = this.availableLocations.find((l) => l.id === id);
-      this.filteredRooms = loc?.rooms ?? [];
-    } else {
-      this.filteredRooms = [];
-    }
     this.cdr.markForCheck();
   }
 
   onRoomSelect(id: number | null): void {
     if (!id) {
-      this.selectedRoomId = null;
+      this.fpService.clearRoom();
       this.elements = [];
       this.rederiveAllWalls();
-      this.router.navigate(['/map']);
       return;
     }
-    this.selectedRoomId = id;
-    this.router.navigate(['/map', id]);
-    forkJoin({
-      room: this.locationService.locationRoomRetrieve({ id }),
-      racks: this.assetService.assetRackList({ room: id, pageSize: 200 }),
-    }).subscribe({
+    this.fpService.loadRoom(id).subscribe({
       next: ({ room, racks }) => {
-        const raw = room.floor_plan_data;
-        let existing: MapElement[];
-        let savedRoomLabels: { cx: number; cy: number; name: string }[] = [];
-        if (Array.isArray(raw)) {
-          // Legacy format: plain MapElement[]
-          existing = raw as MapElement[];
-        } else if (
-          raw &&
-          typeof raw === 'object' &&
-          'elements' in (raw as object)
-        ) {
-          const parsed = raw as {
-            elements: MapElement[];
-            roomLabels?: { cx: number; cy: number; name: string }[];
-          };
-          existing = parsed.elements ?? [];
-          savedRoomLabels = parsed.roomLabels ?? [];
-        } else {
-          existing = [];
-        }
-        // Seed this.rooms empty so rederiveAllWalls computes fresh geometry
+        const { elements, savedRoomLabels } = this.fpService.parseRoomData(
+          room.floor_plan_data,
+        );
         this.rooms = [];
-        this.elements = this.injectUnplacedRacks(existing, racks.results ?? []);
+        this.elements = this.fpService.injectUnplacedRacks(
+          elements,
+          racks.results ?? [],
+        );
         this.rederiveAllWalls();
-        // Apply saved room labels by nearest-centroid match (no threshold — geometry is identical)
+        // Restore named room labels by nearest-centroid match
         for (const saved of savedRoomLabels) {
           let bestDist = Infinity;
-          let bestRoom: (typeof this.rooms)[0] | null = null;
+          let bestRoom: Room | null = null;
           for (const r of this.rooms) {
             const d = Math.hypot(r.cx - saved.cx, r.cy - saved.cy);
             if (d < bestDist) {
@@ -497,149 +429,29 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           if (bestRoom) bestRoom.name = saved.name;
         }
         this.cdr.markForCheck();
-        // Centre the floor plan after the view has rendered
         setTimeout(() => this.fitToView());
       },
       error: (err) => {
         console.error('Failed to load floor plan', err);
         if (this.roomId() != null) {
-          this.tabService.reportRoomNotFound(id);
+          this.fpService.reportRoomNotFound(id);
         }
       },
     });
-  }
-
-  /**
-   * Returns the floor plan elements with any backend racks that are not yet
-   * placed on the map added at random positions.
-   */
-  private injectUnplacedRacks(
-    elements: MapElement[],
-    backendRacks: Rack[],
-  ): MapElement[] {
-    const backendNames = new Set(backendRacks.map((r) => r.name));
-
-    // Remove rack elements that no longer exist in the backend
-    const filtered = elements.filter(
-      (el) =>
-        el.type !== 'rack' ||
-        (el.rackName != null && backendNames.has(el.rackName)),
-    );
-
-    const placedNames = new Set(
-      filtered
-        .filter((el) => el.type === 'rack' && el.rackName)
-        .map((el) => el.rackName as string),
-    );
-    const unplaced = backendRacks.filter((r) => !placedNames.has(r.name));
-    if (unplaced.length === 0) return filtered;
-
-    // Spread unplaced racks in a row starting at (20, 20), spaced 10cm apart
-    const result = [...filtered];
-    let offsetX = 20;
-    const baseY = 20;
-    for (const rack of unplaced) {
-      const w = Math.max(10, rack.model.width);
-      const h = Math.max(10, rack.model.depth);
-      result.push({
-        id: `rack-${rack.name}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-        type: 'rack',
-        x: offsetX,
-        y: baseY,
-        width: w,
-        height: h,
-        rackName: rack.name,
-      });
-      offsetX += w + 10;
-    }
-    return result;
-  }
-
-  /** Loads all RackType models from the API for the toolbar picker. */
-  private loadRackTypes(): void {
-    this.assetService.assetRackTypeList({ pageSize: 100 }).subscribe({
-      next: (data) => {
-        this.availableRackTypes = data.results ?? [];
-        if (this.availableRackTypes.length > 0 && !this.selectedRackType) {
-          this.selectedRackType = this.availableRackTypes[0];
-        }
-        this.cdr.markForCheck();
-      },
-      error: (err) => console.error('Failed to load rack types', err),
-    });
-  }
-
-  /**
-   * Returns SVG dimensions (cm units) for the currently selected rack.
-   * RackType.width / depth are in cm; 1 SVG unit = 1 cm, so values are used directly.
-   * Falls back to 60×100 if no rack is selected.
-   */
-  private getSelectedRackDimensions(): { w: number; h: number } {
-    if (this.selectedRackType) {
-      return {
-        w: Math.max(10, this.selectedRackType.width),
-        h: Math.max(10, this.selectedRackType.depth),
-      };
-    }
-    return { w: 60, h: 100 };
-  }
-
-  /** Generates a unique rack name within the current room floor plan. */
-  private generateRackName(): string {
-    const prefix = this.selectedRackType?.model ?? 'Rack';
-    const existingNames = new Set(
-      this.elements
-        .filter((el) => el.type === 'rack' && el.rackName)
-        .map((el) => el.rackName as string),
-    );
-    let n = 1;
-    while (existingNames.has(`${prefix}-${n}`)) n++;
-    return `${prefix}-${n}`;
   }
 
   saveFloorPlan(): void {
-    if (this.selectedRoomId == null) return;
-    this.saveStatus = 'saving';
-    this.cdr.markForCheck();
-    const roomLabels = this.rooms
-      .filter((r) => r.name)
-      .map((r) => ({ cx: r.cx, cy: r.cy, name: r.name! }));
-    this.locationService
-      .locationRoomPartialUpdate({
-        id: this.selectedRoomId,
-        patchedRoom: {
-          floor_plan_data: { elements: this.elements, roomLabels } as any,
-        },
-      })
-      .subscribe({
-        next: () => {
-          this.saveStatus = 'saved';
-          this.cdr.markForCheck();
-          this.resetSaveStatusAfterDelay();
-        },
-        error: (err) => {
-          console.error('Failed to save floor plan', err);
-          this.saveStatus = 'error';
-          this.cdr.markForCheck();
-          this.resetSaveStatusAfterDelay();
-        },
-      });
-  }
-
-  private resetSaveStatusAfterDelay(): void {
-    if (this.saveStatusTimer) clearTimeout(this.saveStatusTimer);
-    this.saveStatusTimer = setTimeout(() => {
-      this.saveStatus = 'idle';
-      this.cdr.markForCheck();
-    }, 3000);
+    if (this.fpService.selectedRoomId == null) return;
+    this.fpService.saveFloorPlan(
+      this.fpService.selectedRoomId,
+      this.elements,
+      this.rooms,
+      () => this.cdr.markForCheck(),
+    );
   }
 
   private scheduleAutosave(): void {
-    if (!this.autosave || this.selectedRoomId == null) return;
-    if (this.autosaveTimer) clearTimeout(this.autosaveTimer);
-    this.autosaveTimer = setTimeout(() => {
-      this.saveFloorPlan();
-    }, 2000);
+    this.fpService.scheduleAutosave(() => this.saveFloorPlan());
   }
 
   get polylinePreviewPoints(): string {
@@ -679,10 +491,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.updateWallDerived(elA);
   }
 
-  // Format points array to SVG points string
-  getPointsString(points: { x: number; y: number }[] | undefined): string {
-    if (!points || points.length === 0) return '';
-    return points.map((p) => `${p.x},${p.y}`).join(' ');
+  getPointsString(points: Point[] | undefined): string {
+    return getPointsString(points);
   }
 
   zoomIn(): void {
@@ -846,19 +656,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const oldName = el.rackName;
       el.rackName = newName;
       if (oldName) {
-        this.assetService
-          .assetRackPartialUpdate({
-            name: oldName,
-            patchedRack: { name: newName },
-          })
-          .subscribe({
-            error: (err) => {
-              console.error('Failed to rename rack in backend', err);
-              // Revert on failure
-              if (el) el.rackName = oldName;
-              this.cdr.markForCheck();
-            },
-          });
+        this.fpService.renameRack(oldName, newName).subscribe({
+          error: (err) => {
+            console.error('Failed to rename rack in backend', err);
+            // Revert on failure
+            if (el) el.rackName = oldName;
+            this.cdr.markForCheck();
+          },
+        });
       }
       this.elements = [...this.elements];
       this.scheduleAutosave();
@@ -1038,48 +843,20 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   /** SVG rotate transform string for a rack element (empty string when rotation is 0). */
   getRackTransform(el: MapElement): string {
-    const rot = el.rotation ?? 0;
-    if (rot === 0) return '';
-    const cx = el.x + (el.width ?? 0) / 2;
-    const cy = el.y + (el.height ?? 0) / 2;
-    return `rotate(${rot},${cx},${cy})`;
+    return getRackTransform(el);
   }
 
   // ── Varco (door) display helpers ────────────────────────────────────────────
   getDoorLength(el: MapElement): number {
-    return Math.round(
-      Math.hypot((el.x2 ?? el.x) - el.x, (el.y2 ?? el.y) - el.y),
-    );
+    return getDoorLength(el);
   }
 
   getDoorMidpoint(el: MapElement): { x: number; y: number } {
-    return {
-      x: (el.x + (el.x2 ?? el.x)) / 2,
-      y: (el.y + (el.y2 ?? el.y)) / 2,
-    };
+    return getDoorMidpoint(el);
   }
 
-  /**
-   * Returns the SVG path data for a varco: the door line + perpendicular end-caps.
-   * All geometry is zoom-scaled so the caps stay a fixed screen size.
-   */
   getDoorPath(el: MapElement): string {
-    const x1 = el.x,
-      y1 = el.y;
-    const x2 = el.x2 ?? el.x,
-      y2 = el.y2 ?? el.y;
-    const dx = x2 - x1,
-      dy = y2 - y1;
-    const len = Math.hypot(dx, dy) || 1;
-    const capLen = 8 / this.zoom;
-    // Perpendicular unit vector
-    const nx = (-dy / len) * capLen;
-    const ny = (dx / len) * capLen;
-    return (
-      `M ${x1 + nx} ${y1 + ny} L ${x1 - nx} ${y1 - ny} ` +
-      `M ${x1} ${y1} L ${x2} ${y2} ` +
-      `M ${x2 + nx} ${y2 + ny} L ${x2 - nx} ${y2 - ny}`
-    );
+    return getDoorPath(el, this.zoom);
   }
 
   /**
@@ -1441,10 +1218,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const start = wallSnap ? wallSnap.snapped : point;
       this.doorSnapDir = wallSnap ? wallSnap.dir : null;
       const x2 = this.doorSnapDir
-        ? start.x + this.doorSnapDir.dx * this.doorWidth
+        ? start.x + this.doorSnapDir.dx * this.fpService.doorWidth
         : start.x;
       const y2 = this.doorSnapDir
-        ? start.y + this.doorSnapDir.dy * this.doorWidth
+        ? start.y + this.doorSnapDir.dy * this.fpService.doorWidth
         : start.y;
       this.currentElement = {
         id: Date.now().toString(),
@@ -1453,10 +1230,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         y: start.y,
         x2,
         y2,
-        width: this.doorWidth,
+        width: this.fpService.doorWidth,
       };
     } else if (this.selectedTool === 'rack') {
-      const dims = this.getSelectedRackDimensions();
+      const dims = this.fpService.getSelectedRackDimensions();
       this.currentElement = {
         id: Date.now().toString(),
         type: 'rack',
@@ -2101,17 +1878,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           return;
         }
         // Assign a unique name and create rack entry in backend
-        const rackName = this.generateRackName();
+        const rackName = this.fpService.generateRackName(this.elements);
         this.currentElement.rackName = rackName;
-        if (this.selectedRackType && this.selectedRoomId != null) {
-          this.assetService
-            .assetRackCreate({
-              rack: {
-                name: rackName,
-                model_id: this.selectedRackType.id,
-                room_id: this.selectedRoomId,
-              } as any,
-            })
+        if (
+          this.fpService.selectedRackType &&
+          this.fpService.selectedRoomId != null
+        ) {
+          this.fpService
+            .createRack(
+              rackName,
+              this.fpService.selectedRackType.id,
+              this.fpService.selectedRoomId,
+            )
             .subscribe({
               next: () => this.cdr.markForCheck(),
               error: (err) =>
@@ -2348,7 +2126,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           );
           if (!confirmed) return;
           const deletedId = this.selectedElementId;
-          this.assetService.assetRackDestroy({ name: rackName }).subscribe({
+          this.fpService.deleteRack(rackName).subscribe({
             next: () => {
               this.elements = this.elements.filter((e) => e.id !== deletedId);
               if (this.selectedElementId === deletedId) {
