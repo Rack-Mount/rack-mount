@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.permissions import ViewModelTrainingStatusPermission
 from accounts.throttles import PortAnalysisThrottle
 
 # ── Port type definitions ──────────────────────────────────────────────────────
@@ -805,7 +806,7 @@ class PortAnalyzeView(APIView):
 
     **Rate Limit**: 100 analyses per hour per user (prevents inference spam).
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ViewModelTrainingStatusPermission]
     throttle_classes = [PortAnalysisThrottle]
 
     @extend_schema(

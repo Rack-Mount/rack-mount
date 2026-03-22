@@ -20,6 +20,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.permissions import ViewModelTrainingStatusPermission
 from accounts.throttles import PortClickAnalysisThrottle
 
 # YOLO class-ID → port type
@@ -449,7 +450,7 @@ class PortClickAnalyzeView(APIView):
 
     **Rate Limit**: 200 clicks per hour per user (allows interactive exploration).
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ViewModelTrainingStatusPermission]
     throttle_classes = [PortClickAnalysisThrottle]
 
     @extend_schema(
