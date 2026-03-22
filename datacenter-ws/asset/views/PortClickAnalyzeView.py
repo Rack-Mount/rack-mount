@@ -20,6 +20,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.throttles import PortClickAnalysisThrottle
+
 # YOLO class-ID → port type
 _YOLO_ID_TO_TYPE = {
     0: 'RJ45',
@@ -426,7 +428,13 @@ def _read_label_ocr(abs_path: str, click_x: float, click_y: float):
 # ── View ───────────────────────────────────────────────────────────────────────
 
 class PortClickAnalyzeView(APIView):
+    """
+    Single-click port detection endpoint.
+
+    **Rate Limit**: 200 clicks per hour per user (allows interactive exploration).
+    """
     permission_classes = [IsAuthenticated]
+    throttle_classes = [PortClickAnalysisThrottle]
 
     @extend_schema(
         request=inline_serializer(

@@ -24,7 +24,7 @@ import accounts.urls as accounts_urls
 from django.contrib import admin
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from asset.views.ImageView import ImageView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from accounts.views import CookieTokenObtainView, CookieTokenRefreshView
 
 admin.site.site_header = "Rack-Mount Data Center Admin"
 admin.site.site_title = "Rack-Mount Data Center Admin Portal"
@@ -36,8 +36,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/me/', MeView.as_view(), name='auth-me'),
     path('auth/', include(accounts_urls.urlpatterns)),
-    path('auth/token/', TokenObtainPairView.as_view(), name='token-obtain'),
-    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    path('auth/token/', CookieTokenObtainView.as_view(), name='token-obtain'),
+    path('auth/token/refresh/',
+         CookieTokenRefreshView.as_view(), name='token-refresh'),
     path('openapi', SpectacularAPIView.as_view(), name='schema'),
     path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger'),
     path('', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),

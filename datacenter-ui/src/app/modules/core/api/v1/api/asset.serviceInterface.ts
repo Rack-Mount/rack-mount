@@ -879,7 +879,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/port-analyze  Body: { \&quot;image_path\&quot;: \&quot;components/switch.jpg\&quot;, \&quot;side\&quot;: \&quot;front\&quot; }  Returns a list of detected ports: [{ \&quot;port_type\&quot;: \&quot;RJ45\&quot;, \&quot;pos_x\&quot;: 12.5, \&quot;pos_y\&quot;: 45.0,    \&quot;name\&quot;: \&quot;GigabitEthernet0/0\&quot;, \&quot;confidence\&quot;: 0.82 }, ...]
+     * POST /asset/port-analyze  Body: { \&quot;image_path\&quot;: \&quot;components/switch.jpg\&quot;, \&quot;side\&quot;: \&quot;front\&quot; }  Returns a list of detected ports: [{ \&quot;port_type\&quot;: \&quot;RJ45\&quot;, \&quot;pos_x\&quot;: 12.5, \&quot;pos_y\&quot;: 45.0,    \&quot;name\&quot;: \&quot;GigabitEthernet0/0\&quot;, \&quot;confidence\&quot;: 0.82 }, ...]  **Rate Limit**: 100 analyses per hour per user (prevents inference spam).
      * @endpoint post /asset/port-analyze
 * @param requestParameters
      */
@@ -887,7 +887,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/port-annotate  Body: {     \&quot;image_path\&quot;: \&quot;components/switch.jpg\&quot;,     \&quot;side\&quot;: \&quot;front\&quot;,     \&quot;annotations\&quot;: [         { \&quot;port_type\&quot;: \&quot;RJ45\&quot;, \&quot;pos_x\&quot;: 12.5, \&quot;pos_y\&quot;: 45.0, \&quot;name\&quot;: \&quot;Gi0/0\&quot; }     ] }  Saves the annotations as YOLO training data. Il retraining è gestito esclusivamente da PortCorrectionView con logica smart.
+     * POST /asset/port-annotate  Body: {     \&quot;image_path\&quot;: \&quot;components/switch.jpg\&quot;,     \&quot;side\&quot;: \&quot;front\&quot;,     \&quot;annotations\&quot;: [         { \&quot;port_type\&quot;: \&quot;RJ45\&quot;, \&quot;pos_x\&quot;: 12.5, \&quot;pos_y\&quot;: 45.0, \&quot;name\&quot;: \&quot;Gi0/0\&quot; }     ] }  Saves the annotations as YOLO training data. Il retraining è gestito esclusivamente da PortCorrectionView con logica smart.  **Permission**: Requires &#x60;can_provide_port_training&#x60; role permission. **Audit**: All submissions logged to SecurityAuditLog. **Rate Limit**: 10 annotations per hour per user (prevents training data poisoning).
      * @endpoint post /asset/port-annotate
 * @param requestParameters
      */
@@ -895,7 +895,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * 
+     * Single-click port detection endpoint.  **Rate Limit**: 200 clicks per hour per user (allows interactive exploration).
      * @endpoint post /asset/port-click-analyze
 * @param requestParameters
      */
@@ -903,7 +903,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/port-correction  Riceve una correzione manuale (predicted_type → actual_type) e: 1. Sovrascrive il sample di training con il tipo corretto. 2. Aggiorna il contatore di correzioni. 3. Lancia il retraining in background se le soglie sono raggiunte.
+     * POST /asset/port-correction  Riceve una correzione manuale (predicted_type → actual_type) e: 1. Sovrascrive il sample di training con il tipo corretto. 2. Aggiorna il contatore di correzioni. 3. Lancia il retraining in background se le soglie sono raggiunte.  **Permission**: Requires &#x60;can_provide_port_corrections&#x60; role permission. **Audit**: All corrections logged to SecurityAuditLog. **Rate Limit**: 30 corrections per hour per user (prevents retraining floods).
      * @endpoint post /asset/port-correction
 * @param requestParameters
      */

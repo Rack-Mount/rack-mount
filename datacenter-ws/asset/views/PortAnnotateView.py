@@ -10,6 +10,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.permissions import PortTrainingPermission
+from accounts.throttles import PortTrainingThrottle
+from accounts.models import SecurityAuditLog
+
 # ── Constants ──────────────────────────────────────────────────────────────────
 # Must stay in sync with CLASS_NAMES / PORT_CLASS_ID in train_port_detector.py.
 # class 0=RJ45, 1=SFP/SFP+/SFP28, 2=QSFP+/28/DD, 3=USB, 4=SERIAL, 5=LC
@@ -97,8 +101,13 @@ class PortAnnotateView(APIView):
 
     Saves the annotations as YOLO training data.
     Il retraining è gestito esclusivamente da PortCorrectionView con logica smart.
+
+    **Permission**: Requires `can_provide_port_training` role permission.
+    **Audit**: All submissions logged to SecurityAuditLog.
+    **Rate Limit**: 10 annotations per hour per user (prevents training data poisoning).
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, PortTrainingPermission]
+    throttle_classes = [PortTrainingThrottle]
 
     @extend_schema(
         request=inline_serializer(
@@ -198,7 +207,31 @@ class PortAnnotateView(APIView):
                 label_count += sum(1 for fn in os.listdir(sub_dir)
                                    if fn.endswith('.txt'))
 
+        # Log audit trail
+        SecurityAuditLog.objects.create(
+            user=request.user,
+            action=SecurityAuditLog.Action.PORT_ANNOTATE,
+            resource_type='port_image',
+            resource_id=image_path,
+            delta_data={
+                'port_type': list({ann.get('port_type', 'RJ45') for ann in annotations}),
+                'annotation_count': len(annotations),
+                'side': side,
+            },
+            ip_address=self._get_client_ip(request),
+        )
+
         return Response(
             {'saved': len(annotations), 'total_images': label_count},
             status=status.HTTP_200_OK,
         )
+
+    @staticmethod
+    def _get_client_ip(request):
+        """Extract client IP from request, handling proxies."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0].strip()
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip

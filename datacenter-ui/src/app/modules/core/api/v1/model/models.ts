@@ -64,8 +64,6 @@ export * from './role';
 export * from './room';
 export * from './roomTypeEnum';
 export * from './sideEnum';
-export * from './tokenObtainPair';
-export * from './tokenRefresh';
 export * from './userCreate';
 export * from './userList';
 export * from './userPreferences';

@@ -8,7 +8,6 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { environment } from '../../../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
 import { LanguageService } from '../../services/language.service';
 import { ThemeService } from '../../services/theme.service';
@@ -40,17 +39,13 @@ export class LoginComponent {
     this.loading.set(true);
     this.errorKey.set(null);
 
-    this.http
-      .post<{
-        access: string;
-        refresh: string;
-      }>(`${environment.service_url}/auth/token/`, {
+    this.auth
+      .login(this.username, {
         username: this.username,
         password: this.password,
       })
       .subscribe({
-        next: (tokens) => {
-          this.auth.login(this.username, tokens);
+        next: () => {
           const returnUrl =
             this.route.snapshot.queryParamMap.get('returnUrl') ?? '/';
           this.auth.fetchAndLoadRole().subscribe({

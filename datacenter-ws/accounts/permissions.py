@@ -195,3 +195,29 @@ class MapEditPermission(_RolePermission):
         if request.method in permissions.SAFE_METHODS:
             return bool(role.can_view_infrastructure)
         return bool(role.can_edit_map)
+
+
+# ── Model Training Permissions ────────────────────────────────────────────────
+
+class PortTrainingPermission(_RoleFlagPermission):
+    """
+    Required for port annotation (training data submission).
+    Only users with `can_provide_port_training` can submit labeled port images.
+    """
+    flag = 'can_provide_port_training'
+
+
+class PortCorrectionPermission(_RoleFlagPermission):
+    """
+    Required for port corrections (feedback on misclassified ports).
+    Only users with `can_provide_port_corrections` can suggest corrections.
+    """
+    flag = 'can_provide_port_corrections'
+
+
+class ViewModelTrainingStatusPermission(_RoleFlagPermission):
+    """
+    Required for viewing YOLO model training status, progress, and validation metrics.
+    Only users with `can_view_model_training_status` can access training logs.
+    """
+    flag = 'can_view_model_training_status'

@@ -5,9 +5,12 @@ import pathlib
 from django.conf import settings
 from django.http import FileResponse, Http404, HttpResponse
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from PIL import Image
+
+from asset.utils.signed_url import verify_signed_url
 
 
 # Allowed resize widths to prevent abuse
@@ -20,9 +23,14 @@ CACHE_SUBDIR = 'cache'
 class ImageView(APIView):
     """
     Serve media images with optional on-the-fly resizing.
-    Public endpoint — no authentication required.
+
+    Public images: /files/public/* — no authentication required
+    Private images: /files/private/* — requires authentication + valid signature
+
+    Signature format: /files/private/<filename>?sign=<signature>&expire=<timestamp>
     """
 
+    # Allow public access; check per-file in get()
     permission_classes = [AllowAny]
     throttle_classes = []  # Static file serving — no rate limit
 
@@ -42,6 +50,37 @@ class ImageView(APIView):
 
         if not os.path.isfile(original_path):
             raise Http404
+
+        # ─── Private File Access Control ─────────────────────────────────────
+        # Check if file is in private subdirectory; if so, validate signature
+        private_subdir = getattr(settings, 'PRIVATE_MEDIA_SUBDIR', 'private')
+        if filename.startswith(private_subdir + '/'):
+            # Private file: require authentication + valid signature
+            if not request.user or not request.user.is_authenticated:
+                return Response(
+                    {'detail': 'Authentication required for private media'},
+                    status=401
+                )
+
+            # Verify signed URL
+            signature = request.GET.get('sign')
+            expire_ts_str = request.GET.get('expire')
+
+            if not signature or not expire_ts_str:
+                return Response(
+                    {'detail': 'Missing signature parameters'},
+                    status=403
+                )
+
+            is_valid, error_msg = verify_signed_url(
+                filename, signature, expire_ts_str)
+            if not is_valid:
+                return Response(
+                    {'detail': f'Invalid or expired signature: {error_msg}'},
+                    status=403
+                )
+            # ✓ Signature validated; proceed to serve file
+        # ───────────────────────────────────────────────────────────────────────
 
         width_param = request.GET.get('w')
         if width_param:

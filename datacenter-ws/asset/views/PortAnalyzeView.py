@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.throttles import PortAnalysisThrottle
+
 # ── Port type definitions ──────────────────────────────────────────────────────
 # Aspect-ratio ranges (width / height) for each port family.
 # AR ranges are calibrated on real equipment front-panel photographs.
@@ -784,8 +786,11 @@ class PortAnalyzeView(APIView):
     Returns a list of detected ports:
     [{ "port_type": "RJ45", "pos_x": 12.5, "pos_y": 45.0,
        "name": "GigabitEthernet0/0", "confidence": 0.82 }, ...]
+
+    **Rate Limit**: 100 analyses per hour per user (prevents inference spam).
     """
     permission_classes = [IsAuthenticated]
+    throttle_classes = [PortAnalysisThrottle]
 
     @extend_schema(
         request=inline_serializer(

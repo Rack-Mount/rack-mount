@@ -5,23 +5,26 @@ import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
 
-/** URL fragments that must never receive an Authorization header. */
-const AUTH_BYPASS = ['/auth/token/'];
-
+/**
+ * HTTP Interceptor for cookie-based JWT authentication.
+ *
+ * - Automatically includes HttpOnly cookies in all requests (via withCredentials=true)
+ * - Handles 401 Unauthorized by attempting silent token refresh
+ * - Handles 403 Forbidden by showing permission denied toast
+ *
+ * No manual Authorization header needed; cookies are sent automatically by browser.
+ */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const toast = inject(ToastService);
   const translate = inject(TranslateService);
 
-  const isBypass = AUTH_BYPASS.some((fragment) => req.url.includes(fragment));
-  if (isBypass || !auth.isAuthenticated()) {
-    return next(req);
-  }
+  // Ensure credentials (cookies) are included in all requests
+  const reqWithCredentials = req.clone({
+    withCredentials: true,
+  });
 
-  const withBearer = (token: string) =>
-    req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
-
-  return next(withBearer(auth.accessToken())).pipe(
+  return next(reqWithCredentials).pipe(
     catchError((error) => {
       if (error.status === HttpStatusCode.Forbidden) {
         toast.error(translate.instant('backend_errors.permission_denied'));
@@ -30,9 +33,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status !== HttpStatusCode.Unauthorized) {
         return throwError(() => error);
       }
-      // Access token expired — try a silent refresh then retry once.
+      // Access token expired (or invalid) — try a silent refresh then retry once.
       return auth.refresh().pipe(
-        switchMap((newToken) => next(withBearer(newToken))),
+        switchMap(() => next(reqWithCredentials)),
         catchError(() => throwError(() => error)),
       );
     }),

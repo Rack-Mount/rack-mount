@@ -17,8 +17,6 @@ import { PaginatedUserListList } from '../model/models';
 import { PatchedUserPreferences } from '../model/models';
 import { PatchedUserUpdate } from '../model/models';
 import { Role } from '../model/models';
-import { TokenObtainPair } from '../model/models';
-import { TokenRefresh } from '../model/models';
 import { UserCreate } from '../model/models';
 import { UserList } from '../model/models';
 import { UserPreferences } from '../model/models';
@@ -34,14 +32,6 @@ export interface AuthChangePasswordCreateRequestParams {
 
 export interface AuthPreferencesPartialUpdateRequestParams {
     patchedUserPreferences?: PatchedUserPreferences;
-}
-
-export interface AuthTokenCreateRequestParams {
-    tokenObtainPair: TokenObtainPair;
-}
-
-export interface AuthTokenRefreshCreateRequestParams {
-    tokenRefresh: TokenRefresh;
 }
 
 export interface AuthUsersCreateRequestParams {
@@ -86,6 +76,13 @@ export interface AuthServiceInterface {
 
     /**
      * 
+     * POST /auth/logout/  Invalidate the current refresh token (add to blacklist). Subsequent refresh attempts will fail, forcing re-authentication.
+     * @endpoint post /auth/logout/
+*/
+    authLogoutCreate(extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
      * Returns basic info, role permissions, and user preferences for the currently authenticated user.
      * @endpoint get /auth/me/
 */
@@ -115,19 +112,17 @@ export interface AuthServiceInterface {
 
     /**
      * 
-     * Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
+     * POST /auth/token/  Accept username + password credentials. Return access + refresh tokens via HttpOnly, Secure, SameSite&#x3D;Strict cookies. Minimal JSON response for frontend confirmation.
      * @endpoint post /auth/token/
-* @param requestParameters
-     */
-    authTokenCreate(requestParameters: AuthTokenCreateRequestParams, extraHttpRequestParams?: any): Observable<TokenObtainPair>;
+*/
+    authTokenCreate(extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
-     * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
+     * POST /auth/token/refresh/  Accept refresh token from HttpOnly cookie. Return new access token via HttpOnly cookie. Requires no request body (cookie handled automatically).
      * @endpoint post /auth/token/refresh/
-* @param requestParameters
-     */
-    authTokenRefreshCreate(requestParameters: AuthTokenRefreshCreateRequestParams, extraHttpRequestParams?: any): Observable<TokenRefresh>;
+*/
+    authTokenRefreshCreate(extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 

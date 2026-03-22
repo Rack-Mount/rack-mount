@@ -3,8 +3,8 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
+  effect,
   inject,
-  OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocationService } from '../../api/v1/api/location.service';
@@ -26,7 +26,7 @@ import { HomeStatsComponent } from './home-stats/home-stats.component';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   private readonly tabService = inject(TabService);
   protected readonly role = inject(RoleService);
   private readonly locationService = inject(LocationService);
@@ -37,12 +37,23 @@ export class HomeComponent implements OnInit {
   totalRooms = 0;
   loading = true;
 
-  ngOnInit(): void {
-    if (!this.role.canViewInfrastructure()) {
-      this.loading = false;
-      return;
-    }
+  constructor() {
+    // Re-run when auth role is loaded after login so Home updates without refresh.
+    effect(() => {
+      if (!this.role.canViewInfrastructure()) {
+        this.locations = [];
+        this.totalRooms = 0;
+        this.loading = false;
+        this.cdr.markForCheck();
+        return;
+      }
 
+      this.loadLocations();
+    });
+  }
+
+  private loadLocations(): void {
+    this.loading = true;
     this.locationService
       .locationLocationList({})
       .pipe(takeUntilDestroyed(this.destroyRef))

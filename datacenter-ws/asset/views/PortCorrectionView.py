@@ -40,6 +40,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.permissions import PortCorrectionPermission
+from accounts.throttles import PortCorrectionThrottle
+from accounts.models import SecurityAuditLog
+
 # ── Soglie configurabili ────────────────────────────────────────────────────────
 MIN_CORRECTIONS = int(getattr(settings, 'PORT_CORRECTION_MIN_CORRECTIONS', 10))
 MIN_INTERVAL_MIN = int(
@@ -208,8 +212,13 @@ class PortCorrectionView(APIView):
     1. Sovrascrive il sample di training con il tipo corretto.
     2. Aggiorna il contatore di correzioni.
     3. Lancia il retraining in background se le soglie sono raggiunte.
+
+    **Permission**: Requires `can_provide_port_corrections` role permission.
+    **Audit**: All corrections logged to SecurityAuditLog.
+    **Rate Limit**: 30 corrections per hour per user (prevents retraining floods).
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, PortCorrectionPermission]
+    throttle_classes = [PortCorrectionThrottle]
 
     @extend_schema(
         request=inline_serializer(
@@ -365,6 +374,22 @@ class PortCorrectionView(APIView):
         with _state_lock:
             state = _load_state()
 
+        # Log audit trail
+        SecurityAuditLog.objects.create(
+            user=request.user,
+            action=SecurityAuditLog.Action.PORT_CORRECTION,
+            resource_type='port_image',
+            resource_id=image_path,
+            delta_data={
+                'predicted_type': predicted_type,
+                'actual_type': actual_type,
+                'position': {'x': pos_x, 'y': pos_y},
+                'side': side,
+                'training_triggered': should_train,
+            },
+            ip_address=self._get_client_ip(request),
+        )
+
         return Response(
             {
                 'saved': True,
@@ -376,3 +401,13 @@ class PortCorrectionView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+    @staticmethod
+    def _get_client_ip(request):
+        """Extract client IP from request, handling proxies."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0].strip()
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip

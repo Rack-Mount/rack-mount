@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.html import format_html, mark_safe
 from django.utils.translation import gettext_lazy as _
-from .models import Role, UserProfile
+from .models import Role, UserProfile, SecurityAuditLog
 
 
 # ── Inline: embed UserProfile inside the User add/change form ─────────────────
@@ -82,6 +82,14 @@ class RoleAdmin(admin.ModelAdmin):
                 ('can_create_racks', 'can_edit_racks', 'can_delete_racks'),
                 'can_edit_map',
             ),
+        }),
+        (_('Model Training (YOLO)'), {
+            'fields': (
+                'can_provide_port_training',
+                'can_provide_port_corrections',
+                'can_view_model_training_status',
+            ),
+            'description': _('Permissions for YOLO port detection model training and feedback'),
         }),
         (_('Administration'), {
             'fields': ('can_manage_users',),
@@ -165,3 +173,43 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_filter = ('role',)
     search_fields = ('user__username', 'user__email')
     autocomplete_fields = ('user', 'role')
+
+
+# ── Security Audit Log admin (read-only for auditing) ────────────────────────
+
+@admin.register(SecurityAuditLog)
+class SecurityAuditLogAdmin(admin.ModelAdmin):
+    list_display = ('timestamp', 'user', 'get_action_color',
+                    'resource_type', 'ip_address')
+    list_filter = ('action', 'timestamp', 'user')
+    search_fields = ('user__username', 'resource_id', 'ip_address')
+    list_select_related = ('user',)
+    readonly_fields = ('user', 'action', 'resource_type',
+                       'resource_id', 'delta_data', 'ip_address', 'timestamp')
+    date_hierarchy = 'timestamp'
+
+    def has_add_permission(self, request):
+        return False  # Audit logs are created automatically, not manually
+
+    def has_change_permission(self, request, obj=None):
+        return False  # Audit logs cannot be modified
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser  # Only superusers can delete audit logs
+
+    @admin.display(description=_('Action'))
+    def get_action_color(self, obj):
+        color_map = {
+            'port_annotate': '#2ecc71',
+            'port_correction': '#f39c12',
+            'model_retrain': '#e74c3c',
+            'model_update': '#9b59b6',
+            'logout': '#3498db',
+            'login_failed': '#c0392b',
+        }
+        bg = color_map.get(obj.action, '#95a5a6')
+        return format_html(
+            '<span style="background:{bg};color:#fff;padding:3px 8px;'
+            'border-radius:3px;font-weight:500;font-size:.9em">{label}</span>',
+            bg=bg, label=obj.get_action_display(),
+        )

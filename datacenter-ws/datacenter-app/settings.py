@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from import_export.formats.base_formats import CSV, XLSX
 from datetime import timedelta
 from pathlib import Path
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'asset',
     'drf_spectacular',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -169,6 +171,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'accounts.authentication.CookieJWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
@@ -181,14 +184,22 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '60/hour',
         'user': '1000/hour',
+        # ─── YOLO-specific throttle scopes ────────────────────────────────────
+        'port_training': '10/hour',              # Annotation submissions
+        'port_correction': '30/hour',            # Correction submissions
+        'port_analysis': '100/hour',             # Full-image analyses
+        'port_click_analysis': '200/hour',       # Click-based analyses
+        'model_training_status': '1000/hour',    # Status polling
+        'anon_port_training': '0/hour',          # Block anonymous
+        'anon_port_correction': '0/hour',        # Block anonymous
     },
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),
     'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': False,
+    'BLACKLIST_AFTER_ROTATION': True,  # ✓ Revoke old refresh tokens after rotation
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }
@@ -214,7 +225,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 # Never allow all origins — always use explicit CORS_ALLOWED_ORIGINS whitelist
 CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = [
     'accept',
@@ -250,8 +261,24 @@ USE_X_FORWARDED_HOST = True
 SCRIPT_NAME = "/api"
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# ── Media Storage (separated public/private) ───────────────────────────────────
 MEDIA_ROOT = 'files'
 MEDIA_URL = '/files/'
+
+# Public media directory: images, logos, static assets (no permission checks)
+PUBLIC_MEDIA_SUBDIR = 'public'
+
+# Private media directory: training data, sensitive images (permission checks required)
+PRIVATE_MEDIA_SUBDIR = 'private'
+
+# Signed URL expiry (3 days by default)
+SIGNED_URL_EXPIRY_SECONDS = 3 * 24 * 60 * 60  # 3 days
+
+# Signed URL secret key (auto-generated if not set; should be in env for production)
+SIGNED_URL_SECRET = os.environ.get(
+    'SIGNED_URL_SECRET',
+    'default-dev-key-change-in-production'  # ALWAYS override in production
+)
 
 
 X_FRAME_OPTIONS = 'DENY'

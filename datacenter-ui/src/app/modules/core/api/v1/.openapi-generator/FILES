@@ -80,8 +80,6 @@ model/role.ts
 model/room.ts
 model/roomTypeEnum.ts
 model/sideEnum.ts
-model/tokenObtainPair.ts
-model/tokenRefresh.ts
 model/userCreate.ts
 model/userList.ts
 model/userPreferences.ts

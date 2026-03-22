@@ -66,6 +66,26 @@ class Role(models.Model):
     can_manage_users = models.BooleanField(
         default=False, verbose_name=_('Can manage users'))
 
+    # ── Model training permissions (YOLO port detection) ──────────────────
+    can_provide_port_training = models.BooleanField(
+        default=False,
+        verbose_name=_('Can provide port training data (annotations)'),
+        help_text=_(
+            'Allows users to submit labeled port images for YOLO model training')
+    )
+    can_provide_port_corrections = models.BooleanField(
+        default=False,
+        verbose_name=_('Can provide port corrections'),
+        help_text=_(
+            'Allows users to suggest corrections for misclassified ports (triggering retraining)')
+    )
+    can_view_model_training_status = models.BooleanField(
+        default=False,
+        verbose_name=_('Can view model training status'),
+        help_text=_(
+            'Allows users to monitor YOLO training progress and validation metrics')
+    )
+
     class Meta:
         verbose_name = _('Role')
         verbose_name_plural = _('Roles')
@@ -111,3 +131,70 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} ({self.role})'
+
+
+class SecurityAuditLog(models.Model):
+    """
+    Tracks all security-sensitive operations: port training, corrections, model updates.
+    Used for compliance, debugging, and detecting suspicious activity patterns.
+    """
+
+    class Action(models.TextChoices):
+        PORT_ANNOTATE = 'port_annotate', _('Port annotation submitted')
+        PORT_CORRECTION = 'port_correction', _('Port correction submitted')
+        MODEL_RETRAIN = 'model_retrain', _('Model retraining triggered')
+        MODEL_UPDATE = 'model_update', _('Model weights updated')
+        LOGOUT = 'logout', _('User logged out')
+        LOGIN_FAILED = 'login_failed', _('Failed login attempt')
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='security_audit_logs',
+        verbose_name=_('User'),
+    )
+    action = models.CharField(
+        max_length=20,
+        choices=Action.choices,
+        verbose_name=_('Action'),
+        db_index=True,
+    )
+    resource_type = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name=_('Resource Type (e.g. port, model)'),
+    )
+    resource_id = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_('Resource ID (e.g. image filename)'),
+    )
+    delta_data = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_('Change data (JSON)'),
+        help_text=_('For corrections: {old_label, new_label, position}'),
+    )
+    ip_address = models.GenericIPAddressField(
+        null=True,
+        blank=True,
+        verbose_name=_('Client IP'),
+    )
+    timestamp = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Timestamp'),
+        db_index=True,
+    )
+
+    class Meta:
+        verbose_name = _('Security Audit Log')
+        verbose_name_plural = _('Security Audit Logs')
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['user', 'timestamp']),
+            models.Index(fields=['action', 'timestamp']),
+        ]
+
+    def __str__(self):
+        return f'{self.get_action_display()} by {self.user} at {self.timestamp}'
