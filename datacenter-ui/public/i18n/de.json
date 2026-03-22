@@ -552,7 +552,8 @@
     "logout": "Abmelden",
     "logged_in_as": "Angemeldet als",
     "manage_users": "Benutzerverwaltung",
-    "change_password": "Passwort ändern"
+    "change_password": "Passwort ändern",
+    "options": "Benutzeroptionen"
   },
   "roles": {
     "admin": "Administrator",

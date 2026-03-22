@@ -552,7 +552,8 @@
     "logout": "Esci",
     "logged_in_as": "Connesso come",
     "manage_users": "Gestione Utenti",
-    "change_password": "Cambia Password"
+    "change_password": "Cambia Password",
+    "options": "Opzioni Utente"
   },
   "roles": {
     "admin": "Amministratore",

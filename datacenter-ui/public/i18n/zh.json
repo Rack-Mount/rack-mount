@@ -552,7 +552,8 @@
     "logout": "退出",
     "logged_in_as": "当前用户",
     "manage_users": "用户管理",
-    "change_password": "修改密码"
+    "change_password": "修改密码",
+    "options": "用户选项"
   },
   "roles": {
     "admin": "管理员",

@@ -552,7 +552,8 @@
     "logout": "Sign out",
     "logged_in_as": "Signed in as",
     "manage_users": "Manage Users",
-    "change_password": "Change Password"
+    "change_password": "Change Password",
+    "options": "User Options"
   },
   "roles": {
     "admin": "Admin",

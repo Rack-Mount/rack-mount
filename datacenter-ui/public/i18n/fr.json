@@ -552,7 +552,8 @@
     "logout": "Déconnexion",
     "logged_in_as": "Connecté en tant que",
     "manage_users": "Gérer les utilisateurs",
-    "change_password": "Changer le mot de passe"
+    "change_password": "Changer le mot de passe",
+    "options": "Options Utilisateur"
   },
   "roles": {
     "admin": "Administrateur",
