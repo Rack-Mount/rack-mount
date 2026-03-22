@@ -10,6 +10,11 @@ class CookieJWTAuthentication(JWTAuthentication):
     """
 
     def authenticate(self, request):
+        if self._is_auth_token_endpoint(request.path):
+            # Token obtain/refresh endpoints manage credentials directly and should
+            # not be blocked by an existing stale access_token cookie.
+            return None
+
         header = self.get_header(request)
 
         if header is not None:
@@ -30,6 +35,10 @@ class CookieJWTAuthentication(JWTAuthentication):
                     return None
 
         return None
+
+    @staticmethod
+    def _is_auth_token_endpoint(path):
+        return path in ('/auth/token/', '/auth/token/refresh/')
 
     @staticmethod
     def _enforce_csrf(request):

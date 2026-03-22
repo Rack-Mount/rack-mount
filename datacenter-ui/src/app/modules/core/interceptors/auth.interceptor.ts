@@ -20,14 +20,33 @@ import { ToastService } from '../services/toast.service';
  */
 const RETRY_ALREADY_PERFORMED = new HttpContextToken<boolean>(() => false);
 
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
+
+function getCookie(name: string): string | null {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = document.cookie.match(
+    new RegExp(`(?:^|; )${escaped}=([^;]*)`),
+  );
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const toast = inject(ToastService);
   const translate = inject(TranslateService);
 
-  // Ensure credentials (cookies) are included in all requests
+  // Ensure credentials (cookies) are included in all requests and add CSRF header
+  // for unsafe methods when csrftoken cookie is available.
+  const csrfToken = !SAFE_METHODS.has(req.method)
+    ? getCookie('csrftoken')
+    : null;
+
   const reqWithCredentials = req.clone({
     withCredentials: true,
+    setHeaders:
+      csrfToken && !req.headers.has('X-CSRFToken')
+        ? { 'X-CSRFToken': csrfToken }
+        : {},
   });
 
   return next(reqWithCredentials).pipe(
