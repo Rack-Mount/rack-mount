@@ -33,12 +33,15 @@ import {
   DEFAULT_PAGE_SIZE,
   SEARCH_DEBOUNCE_MS,
 } from '../../../../core/constants';
+import { MeasurementPipe } from '../../../../core/pipes/measurement.pipe';
 import { BackendErrorService } from '../../../../core/services/backend-error.service';
+import { LanguageService } from '../../../../core/services/language.service';
 import {
   CatalogImportResult,
   MultipartUploadService,
 } from '../../../../core/services/multipart-upload.service';
 import { RoleService } from '../../../../core/services/role.service';
+import { SettingsService } from '../../../../core/services/settings.service';
 import {
   DestroyableState,
   PaginatedListState,
@@ -110,7 +113,13 @@ function emptyForm(): ModelForm {
 @Component({
   selector: 'app-models-list',
   standalone: true,
-  imports: [SlicePipe, TranslatePipe, ImageEditorComponent, PortsMapComponent],
+  imports: [
+    SlicePipe,
+    TranslatePipe,
+    ImageEditorComponent,
+    PortsMapComponent,
+    MeasurementPipe,
+  ],
   templateUrl: './models-list.component.html',
   styleUrl: './models-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -120,6 +129,49 @@ export class ModelsListComponent {
   private readonly portsSvc = inject(ModelPortsService);
   private readonly svc = inject(AssetService);
   protected readonly role = inject(RoleService);
+  private readonly settings = inject(SettingsService);
+  private readonly lang = inject(LanguageService);
+
+  protected readonly isImperial = computed(() => {
+    const s = this.settings.measurementSystemSetting();
+    if (s !== 'auto') return s === 'imperial';
+    return this.lang.currentLang() === 'en';
+  });
+
+  /** Display a mm value in the current unit (for form field [value]). */
+  protected toDimDisplay(mm: number | null): string {
+    if (mm == null) return '';
+    if (this.isImperial()) return (mm * 0.0393701).toFixed(3);
+    return String(mm);
+  }
+
+  /** Convert a dimension input value back to mm for storage. */
+  protected fromDimInput(value: string): number | null {
+    if (!value) return null;
+    const n = parseFloat(value);
+    if (isNaN(n)) return null;
+    if (this.isImperial()) return Math.round(n / 0.0393701);
+    return n;
+  }
+
+  /** Display a kg value in the current unit (for form field [value]). */
+  protected toWeightDisplay(kg: string): string {
+    if (!kg) return '';
+    const n = Number(kg);
+    if (isNaN(n)) return kg;
+    if (this.isImperial()) return (n * 2.20462).toFixed(3);
+    return kg;
+  }
+
+  /** Convert a weight input value back to kg string for storage. */
+  protected fromWeightInput(value: string): string {
+    if (!value) return '';
+    const n = parseFloat(value);
+    if (isNaN(n)) return value;
+    if (this.isImperial()) return (n / 2.20462).toFixed(4);
+    return value;
+  }
+
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
   private readonly uploadSvc = inject(MultipartUploadService);

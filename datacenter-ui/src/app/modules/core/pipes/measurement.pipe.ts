@@ -5,7 +5,12 @@ import {
   SettingsService,
 } from '../services/settings.service';
 
-export type MeasurementType = 'distance' | 'area' | 'angle';
+export type MeasurementType =
+  | 'distance'
+  | 'area'
+  | 'angle'
+  | 'dimension'
+  | 'weight';
 
 /** Languages whose default measurement system is imperial (US English). */
 const IMPERIAL_LANGS = new Set(['en']);
@@ -38,24 +43,37 @@ export class MeasurementPipe implements PipeTransform {
   }
 
   transform(
-    value: number | null | undefined,
+    value: number | string | null | undefined,
     type: MeasurementType = 'distance',
   ): string {
-    if (value == null || Number.isNaN(value)) return '';
+    const num = value == null ? null : Number(value);
+    if (num == null || Number.isNaN(num)) return '';
 
     if (type === 'angle') {
-      return `${Math.round(value)}°`;
+      return `${Math.round(num)}°`;
+    }
+
+    if (type === 'dimension') {
+      if (this.effectiveSystem === 'imperial')
+        return `${(num * 0.0393701).toFixed(2)}"`;
+      return `${num} mm`;
+    }
+
+    if (type === 'weight') {
+      if (this.effectiveSystem === 'imperial')
+        return `${(num * 2.20462).toFixed(2)} lb`;
+      return `${num} kg`;
     }
 
     if (this.effectiveSystem === 'imperial') {
       if (type === 'distance') {
-        return `${(value * 3.28084).toFixed(2)} ft`;
+        return `${(num * 3.28084).toFixed(2)} ft`;
       }
-      return `${(value * 10.7639).toFixed(2)} ft²`;
+      return `${(num * 10.7639).toFixed(2)} ft²`;
     }
 
     // metric
-    if (type === 'distance') return `${value.toFixed(2)} m`;
-    return `${value.toFixed(2)} m²`;
+    if (type === 'distance') return `${num.toFixed(2)} m`;
+    return `${num.toFixed(2)} m²`;
   }
 }

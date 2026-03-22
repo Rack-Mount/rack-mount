@@ -763,15 +763,35 @@
               <dt>{{ "models.preview_dimensions" | translate }}</dt>
               <dd>
                 @if (m.width_mm || m.height_mm || m.depth_mm) {
-                  {{ m.width_mm ?? "?" }}&thinsp;×&thinsp;{{
-                    m.height_mm ?? "?"
-                  }}&thinsp;×&thinsp;{{ m.depth_mm ?? "?" }}&thinsp;mm
+                  @if (isImperial()) {
+                    {{
+                      m.width_mm != null
+                        ? (m.width_mm | unitFmt: "dimension")
+                        : "?"
+                    }}&thinsp;×&thinsp;{{
+                      m.height_mm != null
+                        ? (m.height_mm | unitFmt: "dimension")
+                        : "?"
+                    }}&thinsp;×&thinsp;{{
+                      m.depth_mm != null
+                        ? (m.depth_mm | unitFmt: "dimension")
+                        : "?"
+                    }}
+                  } @else {
+                    {{ m.width_mm ?? "?" }}&thinsp;×&thinsp;{{
+                      m.height_mm ?? "?"
+                    }}&thinsp;×&thinsp;{{ m.depth_mm ?? "?" }}&thinsp;mm
+                  }
                 }
                 @if ((m.width_mm || m.height_mm || m.depth_mm) && m.weight_kg) {
                   &nbsp;·&nbsp;
                 }
                 @if (m.weight_kg) {
-                  {{ m.weight_kg }}&thinsp;kg
+                  @if (isImperial()) {
+                    {{ m.weight_kg | unitFmt: "weight" }}
+                  } @else {
+                    {{ m.weight_kg }}&thinsp;kg
+                  }
                 }
               </dd>
             </div>
@@ -920,81 +940,109 @@
 
         <div class="field field--dimensions">
           <span class="field-label">{{
-            "models.field_dimensions" | translate
+            (isImperial()
+              ? "models.field_dimensions_in"
+              : "models.field_dimensions"
+            ) | translate
           }}</span>
           <div class="dimensions-row">
             <label class="dimensions-cell">
               <span class="dimensions-label">{{
-                "models.field_width_mm" | translate
+                (isImperial()
+                  ? "models.field_width_in"
+                  : "models.field_width_mm"
+                ) | translate
               }}</span>
               <input
                 class="field-input field-input--short"
                 type="number"
-                min="1"
-                [placeholder]="'models.field_dim_ph' | translate"
-                [value]="form().width_mm ?? ''"
+                min="0"
+                [step]="isImperial() ? 0.001 : 1"
+                [placeholder]="
+                  (isImperial()
+                    ? 'models.field_dim_ph_in'
+                    : 'models.field_dim_ph'
+                  ) | translate
+                "
+                [value]="toDimDisplay(form().width_mm)"
                 (input)="
-                  setField(
-                    'width_mm',
-                    $any($event.target).value
-                      ? +$any($event.target).value
-                      : null
-                  )
+                  setField('width_mm', fromDimInput($any($event.target).value))
                 "
               />
             </label>
             <label class="dimensions-cell">
               <span class="dimensions-label">{{
-                "models.field_height_mm" | translate
+                (isImperial()
+                  ? "models.field_height_in"
+                  : "models.field_height_mm"
+                ) | translate
               }}</span>
               <input
                 class="field-input field-input--short"
                 type="number"
-                min="1"
-                [placeholder]="'models.field_dim_ph' | translate"
-                [value]="form().height_mm ?? ''"
+                min="0"
+                [step]="isImperial() ? 0.001 : 1"
+                [placeholder]="
+                  (isImperial()
+                    ? 'models.field_dim_ph_in'
+                    : 'models.field_dim_ph'
+                  ) | translate
+                "
+                [value]="toDimDisplay(form().height_mm)"
                 (input)="
-                  setField(
-                    'height_mm',
-                    $any($event.target).value
-                      ? +$any($event.target).value
-                      : null
-                  )
+                  setField('height_mm', fromDimInput($any($event.target).value))
                 "
               />
             </label>
             <label class="dimensions-cell">
               <span class="dimensions-label">{{
-                "models.field_depth_mm" | translate
+                (isImperial()
+                  ? "models.field_depth_in"
+                  : "models.field_depth_mm"
+                ) | translate
               }}</span>
               <input
                 class="field-input field-input--short"
                 type="number"
-                min="1"
-                [placeholder]="'models.field_dim_ph' | translate"
-                [value]="form().depth_mm ?? ''"
+                min="0"
+                [step]="isImperial() ? 0.001 : 1"
+                [placeholder]="
+                  (isImperial()
+                    ? 'models.field_dim_ph_in'
+                    : 'models.field_dim_ph'
+                  ) | translate
+                "
+                [value]="toDimDisplay(form().depth_mm)"
                 (input)="
-                  setField(
-                    'depth_mm',
-                    $any($event.target).value
-                      ? +$any($event.target).value
-                      : null
-                  )
+                  setField('depth_mm', fromDimInput($any($event.target).value))
                 "
               />
             </label>
             <label class="dimensions-cell">
               <span class="dimensions-label">{{
-                "models.field_weight_kg" | translate
+                (isImperial()
+                  ? "models.field_weight_lb"
+                  : "models.field_weight_kg"
+                ) | translate
               }}</span>
               <input
                 class="field-input field-input--short"
                 type="number"
                 min="0"
                 step="0.01"
-                [placeholder]="'models.field_weight_ph' | translate"
-                [value]="form().weight_kg"
-                (input)="setField('weight_kg', $any($event.target).value)"
+                [placeholder]="
+                  (isImperial()
+                    ? 'models.field_weight_ph_lb'
+                    : 'models.field_weight_ph'
+                  ) | translate
+                "
+                [value]="toWeightDisplay(form().weight_kg)"
+                (input)="
+                  setField(
+                    'weight_kg',
+                    fromWeightInput($any($event.target).value)
+                  )
+                "
               />
             </label>
           </div>
