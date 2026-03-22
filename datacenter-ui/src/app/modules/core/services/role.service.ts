@@ -24,6 +24,10 @@ export interface RoleData {
   can_edit_map: boolean;
   // Admin
   can_manage_users: boolean;
+  // Model training (YOLO port detection)
+  can_provide_port_training: boolean;
+  can_provide_port_corrections: boolean;
+  can_view_model_training_status: boolean;
 }
 
 const STORAGE_KEY = 'auth_role';
@@ -92,6 +96,17 @@ export class RoleService {
   // Admin
   readonly canManageUsers = computed(
     () => this._p()?.can_manage_users ?? false,
+  );
+
+  // Model training
+  readonly canProvidePortTraining = computed(
+    () => this._p()?.can_provide_port_training ?? false,
+  );
+  readonly canProvidePortCorrections = computed(
+    () => this._p()?.can_provide_port_corrections ?? false,
+  );
+  readonly canViewModelTrainingStatus = computed(
+    () => this._p()?.can_view_model_training_status ?? false,
   );
 
   /** Imperative helper for TypeScript code: `role.can('can_delete_catalog')` */

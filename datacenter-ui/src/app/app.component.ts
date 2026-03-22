@@ -35,6 +35,9 @@ const STATIC_TAB_PATHS: Record<string, string[]> = {
   racks: ['/racks'],
   admin: ['/admin'],
   options: ['/options'],
+  'rack-models': ['/rack-models'],
+  locations: ['/locations'],
+  'asset-settings': ['/asset-settings'],
 };
 
 /**
@@ -49,6 +52,9 @@ const STATIC_TABS = new Set([
   'racks',
   'admin',
   'options',
+  'rack-models',
+  'locations',
+  'asset-settings',
   'not-found',
 ]);
 
@@ -234,6 +240,30 @@ export class AppComponent implements OnInit {
       },
       'not-found': () => {
         this.activeTabId.set('not-found');
+      },
+      'rack-models': () => {
+        if (!this.role.canViewInfrastructure()) {
+          this.activeTabId.set('home');
+          return;
+        }
+        this.tabService.ensureRackModelsTab();
+        this.activeTabId.set('rack-models');
+      },
+      locations: () => {
+        if (!this.role.canViewInfrastructure()) {
+          this.activeTabId.set('home');
+          return;
+        }
+        this.tabService.ensureLocationsTab();
+        this.activeTabId.set('locations');
+      },
+      'asset-settings': () => {
+        if (!this.role.isAdmin()) {
+          this.activeTabId.set('home');
+          return;
+        }
+        this.tabService.ensureAssetSettingsTab();
+        this.activeTabId.set('asset-settings');
       },
     };
 

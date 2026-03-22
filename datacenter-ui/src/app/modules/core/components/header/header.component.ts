@@ -31,6 +31,18 @@ export class HeaderComponent {
     this.tabService.openOptions();
   }
 
+  protected openRackModels(): void {
+    this.tabService.openRackModels();
+  }
+
+  protected openLocations(): void {
+    this.tabService.openLocations();
+  }
+
+  protected openAssetSettings(): void {
+    this.tabService.openAssetSettings();
+  }
+
   protected logout(): void {
     this.auth.logout().subscribe({
       next: () => {},

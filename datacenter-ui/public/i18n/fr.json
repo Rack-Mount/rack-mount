@@ -47,7 +47,13 @@
     "racks_desc": "Gérer les racks du datacenter",
     "no_locations": "Aucun site trouvé.",
     "components_title": "Composants de baie",
-    "components_desc": "Gérer les passe-câbles, les obturateurs de baie et les accessoires"
+    "components_desc": "Gérer les passe-câbles, les obturateurs de baie et les accessoires",
+    "rack_models_title": "Modèles de baie",
+    "rack_models_desc": "Configurer les tailles et dimensions des racks",
+    "locations_title": "Sites & Salles",
+    "locations_desc": "Gérer les sites physiques et les salles",
+    "asset_settings_title": "Paramètres assets",
+    "asset_settings_desc": "Configurer les états et types d'assets"
   },
   "vendors": {
     "search_placeholder": "Rechercher un fournisseur…",
@@ -275,6 +281,7 @@
   "rack_models": {
     "btn_new": "Nouveau modèle de baie",
     "drawer_create_title": "Nouveau modèle de baie",
+    "drawer_edit_title": "Modifier le modèle de baie",
     "field_model": "Nom du modèle",
     "field_capacity": "Capacité",
     "field_width": "Largeur",
@@ -283,7 +290,18 @@
     "field_height_placeholder": "Facultatif",
     "field_required": "Veuillez remplir tous les champs obligatoires.",
     "save_error": "Erreur lors de l'enregistrement. Veuillez réessayer.",
-    "saving": "Enregistrement…"
+    "saving": "Enregistrement…",
+    "search_placeholder": "Rechercher des modèles…",
+    "count_badge": "{{count}} modèles",
+    "col_model": "Modèle",
+    "col_capacity": "Capacité (U)",
+    "col_width": "Largeur (mm)",
+    "col_depth": "Profondeur (mm)",
+    "col_height": "Hauteur (cm)",
+    "no_match": "Aucun modèle trouvé.",
+    "no_data": "Aucun modèle pour l'instant.",
+    "confirm_delete": "Supprimer ce modèle ?",
+    "in_use": "Ce modèle de baie est utilisé et ne peut pas être supprimé."
   },
   "assets": {
     "search_placeholder": "Rechercher hostname, numéro de série, SAP…",
@@ -528,7 +546,10 @@
     "racks": "Baies",
     "admin": "Utilisateurs",
     "change_password": "Mot de passe",
-    "options": "Options Utilisateur"
+    "options": "Options Utilisateur",
+    "rack_models": "Modèles baie",
+    "locations": "Sites",
+    "asset_settings": "Param. assets"
   },
   "asset_row": {
     "section_device": "Équipement",
@@ -578,7 +599,10 @@
     "logged_in_as": "Connecté en tant que",
     "manage_users": "Gérer les utilisateurs",
     "change_password": "Changer le mot de passe",
-    "options": "Options Utilisateur"
+    "options": "Options Utilisateur",
+    "rack_models": "Modèles baie",
+    "locations": "Sites",
+    "asset_settings": "Param. assets"
   },
   "roles": {
     "admin": "Administrateur",
@@ -629,5 +653,59 @@
     "units_auto_desc": "Automatique — suit la langue sélectionnée",
     "units_metric": "Métrique",
     "units_imperial": "Impérial"
+  },
+  "locations": {
+    "tab_locations": "Sites",
+    "tab_rooms": "Salles",
+    "search_placeholder": "Rechercher des sites…",
+    "new_btn": "Nouveau site",
+    "count_badge": "{{count}} sites",
+    "col_name": "Nom",
+    "col_short_name": "Abréviation",
+    "col_address": "Adresse",
+    "col_rooms": "Salles",
+    "no_match": "Aucun site trouvé.",
+    "no_data": "Aucun site pour l'instant.",
+    "confirm_delete": "Supprimer ce site ?",
+    "in_use": "Ce site a des salles associées et ne peut pas être supprimé.",
+    "field_name": "Nom du site",
+    "field_short_name": "Abréviation",
+    "field_address": "Adresse"
+  },
+  "rooms": {
+    "search_placeholder": "Rechercher des salles…",
+    "new_btn": "Nouvelle salle",
+    "count_badge": "{{count}} salles",
+    "col_name": "Nom",
+    "col_location": "Site",
+    "col_floor": "Étage",
+    "col_type": "Type",
+    "col_capacity": "Capacité",
+    "no_match": "Aucune salle trouvée.",
+    "no_data": "Aucune salle pour l'instant.",
+    "confirm_delete": "Supprimer cette salle ?",
+    "in_use": "Cette salle est utilisée et ne peut pas être supprimée.",
+    "field_name": "Nom de la salle",
+    "field_location_placeholder": "Sélectionner un site",
+    "type_datacenter": "Centre de données",
+    "type_warehouse": "Entrepôt",
+    "type_laboratory": "Laboratoire",
+    "type_technical_office": "Bureau technique"
+  },
+  "asset_settings": {
+    "tab_states": "États des assets",
+    "tab_types": "Types d'assets",
+    "search_placeholder": "Rechercher…",
+    "new_state_btn": "Nouvel état",
+    "new_type_btn": "Nouveau type",
+    "count_badge": "{{count}} entrées",
+    "col_name": "Nom",
+    "no_match": "Aucune entrée trouvée.",
+    "no_data": "Aucune entrée pour l'instant.",
+    "confirm_delete": "Supprimer cette entrée ?",
+    "in_use_state": "Cet état est assigné à des assets et ne peut pas être supprimé.",
+    "in_use_type": "Ce type est assigné à des assets et ne peut pas être supprimé.",
+    "field_name": "Nom",
+    "save_error": "Erreur lors de l'enregistrement. Veuillez réessayer."
   }
 }

@@ -47,7 +47,13 @@
     "racks_desc": "Manage server racks",
     "no_locations": "No locations found.",
     "components_title": "Rack components",
-    "components_desc": "Manage cable managers, blanking panels and accessories"
+    "components_desc": "Manage cable managers, blanking panels and accessories",
+    "rack_models_title": "Rack models",
+    "rack_models_desc": "Configure rack sizes and dimensions",
+    "locations_title": "Locations & Rooms",
+    "locations_desc": "Manage physical sites and rooms",
+    "asset_settings_title": "Asset settings",
+    "asset_settings_desc": "Configure asset states and types"
   },
   "vendors": {
     "search_placeholder": "Search vendor…",
@@ -275,6 +281,7 @@
   "rack_models": {
     "btn_new": "New Rack Model",
     "drawer_create_title": "New Rack Model",
+    "drawer_edit_title": "Edit Rack Model",
     "field_model": "Model name",
     "field_capacity": "Capacity",
     "field_width": "Width",
@@ -283,7 +290,18 @@
     "field_height_placeholder": "Optional",
     "field_required": "Please fill in all required fields.",
     "save_error": "Error while saving. Please try again.",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "search_placeholder": "Search rack models…",
+    "count_badge": "{{count}} rack models",
+    "col_model": "Model",
+    "col_capacity": "Capacity (U)",
+    "col_width": "Width (mm)",
+    "col_depth": "Depth (mm)",
+    "col_height": "Height (cm)",
+    "no_match": "No rack models match your search.",
+    "no_data": "No rack models yet.",
+    "confirm_delete": "Delete this model?",
+    "in_use": "This rack model is in use and cannot be deleted."
   },
   "assets": {
     "search_placeholder": "Search hostname, serial, SAP…",
@@ -528,7 +546,10 @@
     "racks": "Racks",
     "admin": "Users",
     "change_password": "Password",
-    "options": "User Options"
+    "options": "User Options",
+    "rack_models": "Rack Models",
+    "locations": "Locations",
+    "asset_settings": "Asset Settings"
   },
   "asset_row": {
     "section_device": "Device",
@@ -578,7 +599,10 @@
     "logged_in_as": "Signed in as",
     "manage_users": "Manage Users",
     "change_password": "Change Password",
-    "options": "User Options"
+    "options": "User Options",
+    "rack_models": "Rack Models",
+    "locations": "Locations",
+    "asset_settings": "Asset Settings"
   },
   "roles": {
     "admin": "Admin",
@@ -629,5 +653,59 @@
     "units_auto_desc": "Automatic — follows the selected language",
     "units_metric": "Metric",
     "units_imperial": "Imperial"
+  },
+  "locations": {
+    "tab_locations": "Locations",
+    "tab_rooms": "Rooms",
+    "search_placeholder": "Search locations…",
+    "new_btn": "New Location",
+    "count_badge": "{{count}} locations",
+    "col_name": "Name",
+    "col_short_name": "Short Name",
+    "col_address": "Address",
+    "col_rooms": "Rooms",
+    "no_match": "No locations match your search.",
+    "no_data": "No locations yet.",
+    "confirm_delete": "Delete this location?",
+    "in_use": "This location has rooms and cannot be deleted.",
+    "field_name": "Location name",
+    "field_short_name": "Short name",
+    "field_address": "Address"
+  },
+  "rooms": {
+    "search_placeholder": "Search rooms…",
+    "new_btn": "New Room",
+    "count_badge": "{{count}} rooms",
+    "col_name": "Name",
+    "col_location": "Location",
+    "col_floor": "Floor",
+    "col_type": "Type",
+    "col_capacity": "Capacity",
+    "no_match": "No rooms match your search.",
+    "no_data": "No rooms yet.",
+    "confirm_delete": "Delete this room?",
+    "in_use": "This room is in use and cannot be deleted.",
+    "field_name": "Room name",
+    "field_location_placeholder": "Select a location",
+    "type_datacenter": "Datacenter",
+    "type_warehouse": "Warehouse",
+    "type_laboratory": "Laboratory",
+    "type_technical_office": "Technical Office"
+  },
+  "asset_settings": {
+    "tab_states": "Asset States",
+    "tab_types": "Asset Types",
+    "search_placeholder": "Search…",
+    "new_state_btn": "New State",
+    "new_type_btn": "New Type",
+    "count_badge": "{{count}} items",
+    "col_name": "Name",
+    "no_match": "No items match your search.",
+    "no_data": "No items yet.",
+    "confirm_delete": "Delete this item?",
+    "in_use_state": "This state is assigned to assets and cannot be deleted.",
+    "in_use_type": "This type is assigned to assets and cannot be deleted.",
+    "field_name": "Name",
+    "save_error": "Error while saving. Please try again."
   }
 }

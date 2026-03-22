@@ -47,7 +47,13 @@
     "racks_desc": "管理数据中心机柜",
     "no_locations": "未找到任何地点。",
     "components_title": "机柜组件",
-    "components_desc": "管理理线架、盲板及配件"
+    "components_desc": "管理理线架、盲板及配件",
+    "rack_models_title": "机架型号",
+    "rack_models_desc": "配置机架尺寸和规格",
+    "locations_title": "地点与机房",
+    "locations_desc": "管理物理地点和机房",
+    "asset_settings_title": "资产设置",
+    "asset_settings_desc": "配置资产状态和类型"
   },
   "vendors": {
     "search_placeholder": "搜索厂商…",
@@ -275,6 +281,7 @@
   "rack_models": {
     "btn_new": "新建机柜型号",
     "drawer_create_title": "新建机柜型号",
+    "drawer_edit_title": "编辑机柜型号",
     "field_model": "型号名称",
     "field_capacity": "容量",
     "field_width": "宽度",
@@ -283,7 +290,18 @@
     "field_height_placeholder": "可选",
     "field_required": "请填写所有必填字段。",
     "save_error": "保存时出错，请重试。",
-    "saving": "保存中…"
+    "saving": "保存中…",
+    "search_placeholder": "搜索机柜型号…",
+    "count_badge": "{{count}} 个型号",
+    "col_model": "型号",
+    "col_capacity": "容量 (U)",
+    "col_width": "宽度 (mm)",
+    "col_depth": "深度 (mm)",
+    "col_height": "高度 (cm)",
+    "no_match": "未找到匹配的机柜型号。",
+    "no_data": "暂无机柜型号。",
+    "confirm_delete": "删除此型号？",
+    "in_use": "该机柜型号正在使用中，无法删除。"
   },
   "assets": {
     "search_placeholder": "搜索主机名、序列号、SAP…",
@@ -528,7 +546,10 @@
     "racks": "机柜",
     "admin": "用户",
     "change_password": "密码",
-    "options": "用户选项"
+    "options": "用户选项",
+    "rack_models": "机架型号",
+    "locations": "地点",
+    "asset_settings": "资产设置"
   },
   "asset_row": {
     "section_device": "设备",
@@ -578,7 +599,10 @@
     "logged_in_as": "当前用户",
     "manage_users": "用户管理",
     "change_password": "修改密码",
-    "options": "用户选项"
+    "options": "用户选项",
+    "rack_models": "机架型号",
+    "locations": "地点",
+    "asset_settings": "资产设置"
   },
   "roles": {
     "admin": "管理员",
@@ -629,5 +653,59 @@
     "units_auto_desc": "自动 — 跟随所选语言",
     "units_metric": "公制",
     "units_imperial": "英制"
+  },
+  "locations": {
+    "tab_locations": "地点",
+    "tab_rooms": "机房",
+    "search_placeholder": "搜索地点…",
+    "new_btn": "新建地点",
+    "count_badge": "{{count}} 个地点",
+    "col_name": "名称",
+    "col_short_name": "简称",
+    "col_address": "地址",
+    "col_rooms": "机房",
+    "no_match": "未找到匹配的地点。",
+    "no_data": "暂无地点。",
+    "confirm_delete": "删除此地点？",
+    "in_use": "该地点下有机房，无法删除。",
+    "field_name": "地点名称",
+    "field_short_name": "简称",
+    "field_address": "地址"
+  },
+  "rooms": {
+    "search_placeholder": "搜索机房…",
+    "new_btn": "新建机房",
+    "count_badge": "{{count}} 个机房",
+    "col_name": "名称",
+    "col_location": "地点",
+    "col_floor": "楼层",
+    "col_type": "类型",
+    "col_capacity": "容量",
+    "no_match": "未找到匹配的机房。",
+    "no_data": "暂无机房。",
+    "confirm_delete": "删除此机房？",
+    "in_use": "该机房正在使用中，无法删除。",
+    "field_name": "机房名称",
+    "field_location_placeholder": "选择地点",
+    "type_datacenter": "数据中心",
+    "type_warehouse": "仓库",
+    "type_laboratory": "实验室",
+    "type_technical_office": "技术办公室"
+  },
+  "asset_settings": {
+    "tab_states": "资产状态",
+    "tab_types": "资产类型",
+    "search_placeholder": "搜索…",
+    "new_state_btn": "新建状态",
+    "new_type_btn": "新建类型",
+    "count_badge": "{{count}} 条记录",
+    "col_name": "名称",
+    "no_match": "未找到匹配记录。",
+    "no_data": "暂无记录。",
+    "confirm_delete": "删除此记录？",
+    "in_use_state": "该状态已分配给资产，无法删除。",
+    "in_use_type": "该类型已分配给资产，无法删除。",
+    "field_name": "名称",
+    "save_error": "保存时出错，请重试。"
   }
 }

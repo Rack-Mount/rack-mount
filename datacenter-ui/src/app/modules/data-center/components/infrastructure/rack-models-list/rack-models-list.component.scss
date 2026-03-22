@@ -1,0 +1,284 @@
+@use "styles/mixins" as mx;
+
+:host {
+  @include mx.page-host();
+}
+
+.rack-models-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 0 1.5rem 1.5rem;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  flex-shrink: 0;
+
+  &-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  &-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.search-box {
+  @include mx.search-box();
+}
+
+.count-badge {
+  @include mx.count-badge();
+}
+
+.btn-new {
+  @include mx.btn-primary(sm);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+/* ── Table ───────────────────────────────────────────────── */
+.table-wrap {
+  @include mx.table-wrap();
+  flex: 1;
+  overflow: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead th {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  tbody td {
+    padding: 0.55rem 0.75rem;
+    vertical-align: middle;
+  }
+
+  tr.row-data:hover td {
+    background-color: var(--row-hover, rgba(0 0 0 / 3%));
+  }
+
+  tr.row-data--deleting td {
+    background-color: var(--row-danger, rgba(220 38 38 / 6%));
+  }
+}
+
+.col-model {
+  min-width: 200px;
+}
+.col-capacity,
+.col-dim {
+  width: 110px;
+  text-align: right;
+}
+.col-actions {
+  width: 90px;
+  text-align: right;
+}
+
+.cell-num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.cell-name {
+  font-weight: 500;
+}
+
+/* Sortable headers */
+.th-sortable {
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.sort-arrow {
+  margin-left: 0.25rem;
+  opacity: 0.5;
+  font-size: 0.7rem;
+}
+
+/* Actions cell */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  color: var(--text-secondary, #6b7280);
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  &:hover {
+    background-color: var(--btn-hover-bg, rgba(0 0 0 / 6%));
+    color: var(--text-primary, #111);
+  }
+
+  &--delete:hover {
+    color: var(--danger, #dc2626);
+  }
+}
+
+.delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+
+.delete-label {
+  font-size: 0.8rem;
+  color: var(--danger, #dc2626);
+}
+
+.delete-error {
+  font-size: 0.8rem;
+  color: var(--danger, #dc2626);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-action {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--border, #d1d5db);
+  background: var(--bg-surface, #fff);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--bg-hover, #f3f4f6);
+  }
+
+  &--danger {
+    color: var(--danger, #dc2626);
+    border-color: var(--danger, #dc2626);
+
+    &:hover {
+      background: rgba(220 38 38 / 8%);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* Full-page states */
+.state-full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem;
+  color: var(--text-secondary, #6b7280);
+
+  &--error {
+    color: var(--danger, #dc2626);
+  }
+}
+
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--border, #d1d5db);
+  border-top-color: var(--primary, #3b82f6);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.empty-row {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.9rem;
+}
+
+/* ── Pagination ──────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.75rem 0 0.25rem;
+  flex-shrink: 0;
+}
+
+.page-btn {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  border: 1px solid var(--border, #d1d5db);
+  border-radius: 0.25rem;
+  background: var(--bg-surface, #fff);
+  cursor: pointer;
+  font-size: 0.85rem;
+
+  &:hover:not(:disabled):not(.page-btn--active) {
+    background: var(--bg-hover, #f3f4f6);
+  }
+
+  &--active {
+    background: var(--primary, #3b82f6);
+    color: #fff;
+    border-color: var(--primary, #3b82f6);
+    pointer-events: none;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}

@@ -21,6 +21,9 @@ const TAB_ICONS: Record<string, string> = {
   admin: '👥',
   options: '⚙️',
   home: '🏠',
+  'rack-models': '📐',
+  locations: '📍',
+  'asset-settings': '🔧',
 };
 
 @Component({

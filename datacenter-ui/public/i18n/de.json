@@ -47,7 +47,13 @@
     "racks_desc": "Racks des Rechenzentrums verwalten",
     "no_locations": "Keine Standorte gefunden.",
     "components_title": "Rack-Komponenten",
-    "components_desc": "Kabelmanager, Blindplatten und Zubehör verwalten"
+    "components_desc": "Kabelmanager, Blindplatten und Zubehör verwalten",
+    "rack_models_title": "Rack-Modelle",
+    "rack_models_desc": "Rack-Größen und -Abmessungen konfigurieren",
+    "locations_title": "Standorte & Räume",
+    "locations_desc": "Physische Standorte und Räume verwalten",
+    "asset_settings_title": "Asset-Einstellungen",
+    "asset_settings_desc": "Asset-Zustände und -Typen konfigurieren"
   },
   "vendors": {
     "search_placeholder": "Hersteller suchen…",
@@ -509,6 +515,7 @@
   "rack_models": {
     "btn_new": "Neues Rack-Modell",
     "drawer_create_title": "Neues Rack-Modell",
+    "drawer_edit_title": "Rack-Modell bearbeiten",
     "field_model": "Modellname",
     "field_capacity": "Kapazität",
     "field_width": "Breite",
@@ -517,7 +524,18 @@
     "field_height_placeholder": "Optional",
     "field_required": "Bitte alle Pflichtfelder ausfüllen.",
     "save_error": "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
-    "saving": "Wird gespeichert…"
+    "saving": "Wird gespeichert…",
+    "search_placeholder": "Rack-Modelle suchen…",
+    "count_badge": "{{count}} Rack-Modelle",
+    "col_model": "Modell",
+    "col_capacity": "Kapazität (U)",
+    "col_width": "Breite (mm)",
+    "col_depth": "Tiefe (mm)",
+    "col_height": "Höhe (cm)",
+    "no_match": "Keine Rack-Modelle gefunden.",
+    "no_data": "Noch keine Rack-Modelle.",
+    "confirm_delete": "Dieses Modell löschen?",
+    "in_use": "Dieses Rack-Modell wird verwendet und kann nicht gelöscht werden."
   },
   "tabs": {
     "home": "Start",
@@ -528,7 +546,10 @@
     "racks": "Racks",
     "admin": "Benutzer",
     "change_password": "Passwort",
-    "options": "Benutzeroptionen"
+    "options": "Benutzeroptionen",
+    "rack_models": "Rack-Modelle",
+    "locations": "Standorte",
+    "asset_settings": "Asset-Einst."
   },
   "asset_row": {
     "section_device": "Gerät",
@@ -578,7 +599,10 @@
     "logged_in_as": "Angemeldet als",
     "manage_users": "Benutzerverwaltung",
     "change_password": "Passwort ändern",
-    "options": "Benutzeroptionen"
+    "options": "Benutzeroptionen",
+    "rack_models": "Rack-Modelle",
+    "locations": "Standorte",
+    "asset_settings": "Asset-Einst."
   },
   "roles": {
     "admin": "Administrator",
@@ -629,5 +653,59 @@
     "units_auto_desc": "Automatisch — folgt der gewählten Sprache",
     "units_metric": "Metrisch",
     "units_imperial": "Imperial"
+  },
+  "locations": {
+    "tab_locations": "Standorte",
+    "tab_rooms": "Räume",
+    "search_placeholder": "Standorte suchen…",
+    "new_btn": "Neuer Standort",
+    "count_badge": "{{count}} Standorte",
+    "col_name": "Name",
+    "col_short_name": "Kurzname",
+    "col_address": "Adresse",
+    "col_rooms": "Räume",
+    "no_match": "Keine Standorte gefunden.",
+    "no_data": "Noch keine Standorte.",
+    "confirm_delete": "Diesen Standort löschen?",
+    "in_use": "Diesem Standort sind Räume zugeordnet und kann nicht gelöscht werden.",
+    "field_name": "Standortname",
+    "field_short_name": "Kurzname",
+    "field_address": "Adresse"
+  },
+  "rooms": {
+    "search_placeholder": "Räume suchen…",
+    "new_btn": "Neuer Raum",
+    "count_badge": "{{count}} Räume",
+    "col_name": "Name",
+    "col_location": "Standort",
+    "col_floor": "Etage",
+    "col_type": "Typ",
+    "col_capacity": "Kapazität",
+    "no_match": "Keine Räume gefunden.",
+    "no_data": "Noch keine Räume.",
+    "confirm_delete": "Diesen Raum löschen?",
+    "in_use": "Dieser Raum wird verwendet und kann nicht gelöscht werden.",
+    "field_name": "Raumname",
+    "field_location_placeholder": "Standort auswählen",
+    "type_datacenter": "Rechenzentrum",
+    "type_warehouse": "Lager",
+    "type_laboratory": "Labor",
+    "type_technical_office": "Technisches Büro"
+  },
+  "asset_settings": {
+    "tab_states": "Asset-Zustände",
+    "tab_types": "Asset-Typen",
+    "search_placeholder": "Suchen…",
+    "new_state_btn": "Neuer Zustand",
+    "new_type_btn": "Neuer Typ",
+    "count_badge": "{{count}} Einträge",
+    "col_name": "Name",
+    "no_match": "Keine Einträge gefunden.",
+    "no_data": "Noch keine Einträge.",
+    "confirm_delete": "Diesen Eintrag löschen?",
+    "in_use_state": "Dieser Zustand ist Assets zugewiesen und kann nicht gelöscht werden.",
+    "in_use_type": "Dieser Typ ist Assets zugewiesen und kann nicht gelöscht werden.",
+    "field_name": "Name",
+    "save_error": "Fehler beim Speichern. Bitte erneut versuchen."
   }
 }

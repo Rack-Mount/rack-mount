@@ -13,6 +13,7 @@
   <app-rack-create-drawer
     [mode]="store.drawerMode()!"
     [rack]="store.editingRack()"
+    [latestRackType]="store.latestRackType()"
     (saved)="store.onDrawerSaved($event)"
     (cancelled)="store.onDrawerClose()"
   />

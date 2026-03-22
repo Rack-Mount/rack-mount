@@ -4,6 +4,7 @@ import {
   Component,
   DestroyRef,
   inject,
+  input,
   OnInit,
   output,
   signal,
@@ -25,6 +26,10 @@ export class RackModelCreateDrawerComponent implements OnInit {
   private readonly assetService = inject(AssetService);
   private readonly destroyRef = inject(DestroyRef);
 
+  // ── Inputs ─────────────────────────────────────────────────────────────────
+  readonly mode = input<'create' | 'edit'>('create');
+  readonly rackType = input<RackType | null>(null);
+
   // ── Outputs ────────────────────────────────────────────────────────────────
   readonly saved = output<RackType>();
   readonly cancelled = output<void>();
@@ -42,7 +47,18 @@ export class RackModelCreateDrawerComponent implements OnInit {
   protected readonly saveMsg = signal('');
 
   // ── Lifecycle ──────────────────────────────────────────────────────────────
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const existing = this.rackType();
+    if (existing && this.mode() === 'edit') {
+      this.form.set({
+        model: existing.model,
+        width: existing.width,
+        height: existing.height ?? null,
+        depth: existing.depth,
+        capacity: existing.capacity,
+      });
+    }
+  }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
   protected onFieldChange<K extends keyof ReturnType<typeof this.form>>(
@@ -76,23 +92,30 @@ export class RackModelCreateDrawerComponent implements OnInit {
       capacity: f.capacity,
     };
 
-    this.assetService
-      .assetRackTypeCreate({ rackType: payload as RackType })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          this.saveState.set('idle');
-          this.saved.emit(result);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.saveState.set('error');
-          const detail =
-            err.error?.model?.[0] ??
-            err.error?.detail ??
-            err.error?.non_field_errors?.[0] ??
-            'rack_models.save_error';
-          this.saveMsg.set(detail);
-        },
-      });
+    const op$ =
+      this.mode() === 'edit'
+        ? this.assetService.assetRackTypePartialUpdate({
+            id: this.rackType()!.id,
+            patchedRackType: payload as any,
+          })
+        : this.assetService.assetRackTypeCreate({
+            rackType: payload as RackType,
+          });
+
+    op$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (result) => {
+        this.saveState.set('idle');
+        this.saved.emit(result);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.saveState.set('error');
+        const detail =
+          err.error?.model?.[0] ??
+          err.error?.detail ??
+          err.error?.non_field_errors?.[0] ??
+          'rack_models.save_error';
+        this.saveMsg.set(detail);
+      },
+    });
   }
 }

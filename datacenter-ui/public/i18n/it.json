@@ -47,7 +47,13 @@
     "racks_desc": "Gestisci i rack del datacenter",
     "no_locations": "Nessuna location trovata.",
     "components_title": "Componenti rack",
-    "components_desc": "Gestisci passacavi, pannelli ciechi e accessori"
+    "components_desc": "Gestisci passacavi, pannelli ciechi e accessori",
+    "rack_models_title": "Modelli rack",
+    "rack_models_desc": "Configura le dimensioni e le taglie dei rack",
+    "locations_title": "Sedi e Sale",
+    "locations_desc": "Gestisci le sedi fisiche e le sale",
+    "asset_settings_title": "Impostazioni asset",
+    "asset_settings_desc": "Configura stati e tipi degli asset"
   },
   "vendors": {
     "search_placeholder": "Cerca Fornitore…",
@@ -275,6 +281,7 @@
   "rack_models": {
     "btn_new": "Nuovo Modello Rack",
     "drawer_create_title": "Nuovo Modello Rack",
+    "drawer_edit_title": "Modifica Modello Rack",
     "field_model": "Nome modello",
     "field_capacity": "Capacità",
     "field_width": "Larghezza",
@@ -283,7 +290,18 @@
     "field_height_placeholder": "Facoltativo",
     "field_required": "Compila tutti i campi obbligatori.",
     "save_error": "Errore durante il salvataggio. Riprova.",
-    "saving": "Salvataggio…"
+    "saving": "Salvataggio…",
+    "search_placeholder": "Cerca modelli rack…",
+    "count_badge": "{{count}} modelli rack",
+    "col_model": "Modello",
+    "col_capacity": "Capacità (U)",
+    "col_width": "Larghezza (mm)",
+    "col_depth": "Profondità (mm)",
+    "col_height": "Altezza (cm)",
+    "no_match": "Nessun modello rack corrisponde alla ricerca.",
+    "no_data": "Nessun modello rack presente.",
+    "confirm_delete": "Eliminare questo modello?",
+    "in_use": "Questo modello rack è in uso e non può essere eliminato."
   },
   "assets": {
     "search_placeholder": "Cerca hostname, seriale, SAP…",
@@ -528,7 +546,10 @@
     "racks": "Rack",
     "admin": "Utenti",
     "change_password": "Password",
-    "options": "Opzioni Utente"
+    "options": "Opzioni Utente",
+    "rack_models": "Modelli Rack",
+    "locations": "Sedi",
+    "asset_settings": "Impost. Asset"
   },
   "asset_row": {
     "section_device": "Apparato",
@@ -578,7 +599,10 @@
     "logged_in_as": "Connesso come",
     "manage_users": "Gestione Utenti",
     "change_password": "Cambia Password",
-    "options": "Opzioni Utente"
+    "options": "Opzioni Utente",
+    "rack_models": "Modelli Rack",
+    "locations": "Sedi",
+    "asset_settings": "Impost. Asset"
   },
   "roles": {
     "admin": "Amministratore",
@@ -629,5 +653,59 @@
     "units_auto_desc": "Automatico — segue la lingua selezionata",
     "units_metric": "Metrico",
     "units_imperial": "Imperiale"
+  },
+  "locations": {
+    "tab_locations": "Sedi",
+    "tab_rooms": "Sale",
+    "search_placeholder": "Cerca sedi…",
+    "new_btn": "Nuova Sede",
+    "count_badge": "{{count}} sedi",
+    "col_name": "Nome",
+    "col_short_name": "Nome Breve",
+    "col_address": "Indirizzo",
+    "col_rooms": "Sale",
+    "no_match": "Nessuna sede corrisponde alla ricerca.",
+    "no_data": "Nessuna sede presente.",
+    "confirm_delete": "Eliminare questa sede?",
+    "in_use": "Questa sede ha sale associate e non può essere eliminata.",
+    "field_name": "Nome sede",
+    "field_short_name": "Nome breve",
+    "field_address": "Indirizzo"
+  },
+  "rooms": {
+    "search_placeholder": "Cerca sale…",
+    "new_btn": "Nuova Sala",
+    "count_badge": "{{count}} sale",
+    "col_name": "Nome",
+    "col_location": "Sede",
+    "col_floor": "Piano",
+    "col_type": "Tipo",
+    "col_capacity": "Capacità",
+    "no_match": "Nessuna sala corrisponde alla ricerca.",
+    "no_data": "Nessuna sala presente.",
+    "confirm_delete": "Eliminare questa sala?",
+    "in_use": "Questa sala è in uso e non può essere eliminata.",
+    "field_name": "Nome sala",
+    "field_location_placeholder": "Seleziona una sede",
+    "type_datacenter": "Data Center",
+    "type_warehouse": "Magazzino",
+    "type_laboratory": "Laboratorio",
+    "type_technical_office": "Ufficio Tecnico"
+  },
+  "asset_settings": {
+    "tab_states": "Stati Asset",
+    "tab_types": "Tipi Asset",
+    "search_placeholder": "Cerca…",
+    "new_state_btn": "Nuovo Stato",
+    "new_type_btn": "Nuovo Tipo",
+    "count_badge": "{{count}} elementi",
+    "col_name": "Nome",
+    "no_match": "Nessun elemento corrisponde alla ricerca.",
+    "no_data": "Nessun elemento presente.",
+    "confirm_delete": "Eliminare questo elemento?",
+    "in_use_state": "Questo stato è assegnato ad asset e non può essere eliminato.",
+    "in_use_type": "Questo tipo è assegnato ad asset e non può essere eliminato.",
+    "field_name": "Nome",
+    "save_error": "Errore durante il salvataggio. Riprova."
   }
 }

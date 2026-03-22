@@ -1,0 +1,864 @@
+<div class="locations-page">
+  <!-- ── Tabs ──────────────────────────────────────────────────── -->
+  <div class="tab-bar">
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'locations'"
+      (click)="activeTab.set('locations')"
+    >
+      {{ "locations.tab_locations" | translate }}
+      @if (locListState().status === "loaded") {
+        <span class="tab-count">{{ locTotalCount() }}</span>
+      }
+    </button>
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'rooms'"
+      (click)="activeTab.set('rooms')"
+    >
+      {{ "locations.tab_rooms" | translate }}
+      @if (roomListState().status === "loaded") {
+        <span class="tab-count">{{ roomTotalCount() }}</span>
+      }
+    </button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- LOCATIONS tab                                               -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === "locations") {
+    <div class="section">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+              <circle
+                cx="8.5"
+                cy="8.5"
+                r="5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M12.5 12.5L16 16"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            <input
+              class="search-input"
+              type="text"
+              [placeholder]="'locations.search_placeholder' | translate"
+              [value]="locSearch()"
+              (input)="onLocSearchInput($any($event.target).value)"
+            />
+            @if (locSearch()) {
+              <button
+                class="search-clear"
+                (click)="resetLocSearch()"
+                [title]="'common.search_clear' | translate"
+              >
+                ×
+              </button>
+            }
+          </div>
+        </div>
+        <div class="toolbar-right">
+          @if (locListState().status === "loaded") {
+            <span class="count-badge">{{
+              "locations.count_badge" | translate: { count: locTotalCount() }
+            }}</span>
+          }
+          @if (role.canCreateRacks()) {
+            <button class="btn-new" (click)="openLocCreate()">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M8 3v10M3 8h10"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+              </svg>
+              {{ "locations.new_btn" | translate }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        @if (locListState().status === "loading") {
+          <div class="state-full">
+            <div class="spinner"></div>
+            <span>{{ "common.loading" | translate }}</span>
+          </div>
+        } @else if (locListState().status === "error") {
+          <div class="state-full state-full--error">
+            {{ "common.error_loading" | translate }}
+          </div>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th
+                  class="col-name th-sortable"
+                  [class.th-sortable--asc]="
+                    locSortField() === 'name' && locSortDir() === 'asc'
+                  "
+                  [class.th-sortable--desc]="
+                    locSortField() === 'name' && locSortDir() === 'desc'
+                  "
+                  (click)="locSort('name')"
+                >
+                  {{ "locations.col_name" | translate }}
+                  <span class="sort-arrow">{{
+                    locSortField() === "name"
+                      ? locSortDir() === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↕"
+                  }}</span>
+                </th>
+                <th class="col-short">
+                  {{ "locations.col_short_name" | translate }}
+                </th>
+                <th class="col-addr">
+                  {{ "locations.col_address" | translate }}
+                </th>
+                <th class="col-rooms">
+                  {{ "locations.col_rooms" | translate }}
+                </th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Create row -->
+              @if (locCreateOpen()) {
+                <tr class="row-edit">
+                  <td>
+                    <input
+                      class="inline-input"
+                      type="text"
+                      [placeholder]="'locations.field_name' | translate"
+                      [value]="locCreateName()"
+                      (input)="locCreateName.set($any($event.target).value)"
+                      (keydown.enter)="submitLocCreate()"
+                      (keydown.escape)="cancelLocCreate()"
+                      autofocus
+                    />
+                    @if (locCreateSave() === "error") {
+                      <span class="inline-error">{{ locCreateSaveMsg() }}</span>
+                    }
+                  </td>
+                  <td>
+                    <input
+                      class="inline-input"
+                      type="text"
+                      [placeholder]="'locations.field_short_name' | translate"
+                      [value]="locCreateShortName()"
+                      (input)="
+                        locCreateShortName.set($any($event.target).value)
+                      "
+                      (keydown.enter)="submitLocCreate()"
+                      (keydown.escape)="cancelLocCreate()"
+                    />
+                  </td>
+                  <td colspan="2">
+                    <input
+                      class="inline-input"
+                      type="text"
+                      [placeholder]="'locations.field_address' | translate"
+                      [value]="locCreateAddress()"
+                      (input)="locCreateAddress.set($any($event.target).value)"
+                      (keydown.enter)="submitLocCreate()"
+                      (keydown.escape)="cancelLocCreate()"
+                    />
+                  </td>
+                  <td class="actions">
+                    <button
+                      class="btn-action btn-action--save"
+                      [disabled]="
+                        locCreateSave() === 'saving' || !locCreateName().trim()
+                      "
+                      (click)="submitLocCreate()"
+                    >
+                      @if (locCreateSave() === "saving") {
+                        …
+                      } @else {
+                        {{ "common.save" | translate }}
+                      }
+                    </button>
+                    <button class="btn-action" (click)="cancelLocCreate()">
+                      {{ "common.cancel" | translate }}
+                    </button>
+                  </td>
+                </tr>
+              }
+
+              <!-- Data rows -->
+              @for (loc of locations(); track loc.id) {
+                @if (locEditId() === loc.id) {
+                  <tr class="row-edit">
+                    <td>
+                      <input
+                        class="inline-input"
+                        type="text"
+                        [value]="locEditName()"
+                        (input)="locEditName.set($any($event.target).value)"
+                        (keydown.enter)="submitLocEdit()"
+                        (keydown.escape)="cancelLocEdit()"
+                        autofocus
+                      />
+                      @if (locEditSave() === "error") {
+                        <span class="inline-error">{{ locEditSaveMsg() }}</span>
+                      }
+                    </td>
+                    <td>
+                      <input
+                        class="inline-input"
+                        type="text"
+                        [value]="locEditShortName()"
+                        (input)="
+                          locEditShortName.set($any($event.target).value)
+                        "
+                        (keydown.enter)="submitLocEdit()"
+                        (keydown.escape)="cancelLocEdit()"
+                      />
+                    </td>
+                    <td colspan="2">
+                      <input
+                        class="inline-input"
+                        type="text"
+                        [value]="locEditAddress()"
+                        (input)="locEditAddress.set($any($event.target).value)"
+                        (keydown.enter)="submitLocEdit()"
+                        (keydown.escape)="cancelLocEdit()"
+                      />
+                    </td>
+                    <td class="actions">
+                      <button
+                        class="btn-action btn-action--save"
+                        [disabled]="
+                          locEditSave() === 'saving' || !locEditName().trim()
+                        "
+                        (click)="submitLocEdit()"
+                      >
+                        @if (locEditSave() === "saving") {
+                          …
+                        } @else {
+                          {{ "common.save" | translate }}
+                        }
+                      </button>
+                      <button class="btn-action" (click)="cancelLocEdit()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    </td>
+                  </tr>
+                } @else {
+                  <tr
+                    class="row-data"
+                    [class.row-data--deleting]="locDeleteId() === loc.id"
+                  >
+                    <td class="cell-name">{{ loc.name }}</td>
+                    <td>{{ loc.short_name }}</td>
+                    <td class="cell-addr">{{ loc.location }}</td>
+                    <td class="cell-num">{{ loc.rooms.length }}</td>
+                    <td class="actions">
+                      @if (locDeleteId() === loc.id) {
+                        <span class="delete-confirm">
+                          @if (locDeleteSave() === "error") {
+                            <span class="delete-error">{{
+                              locDeleteErrorMsg()
+                            }}</span>
+                            <button
+                              class="btn-action"
+                              (click)="cancelLocDelete()"
+                            >
+                              {{ "common.cancel" | translate }}
+                            </button>
+                          } @else {
+                            <span class="delete-label">{{
+                              "locations.confirm_delete" | translate
+                            }}</span>
+                            <button
+                              class="btn-action btn-action--danger"
+                              [disabled]="locDeleteSave() === 'saving'"
+                              (click)="submitLocDelete()"
+                            >
+                              @if (locDeleteSave() === "saving") {
+                                …
+                              } @else {
+                                {{ "common.delete" | translate }}
+                              }
+                            </button>
+                            <button
+                              class="btn-action"
+                              (click)="cancelLocDelete()"
+                            >
+                              {{ "common.cancel" | translate }}
+                            </button>
+                          }
+                        </span>
+                      } @else {
+                        @if (role.canEditRacks()) {
+                          <button
+                            class="btn-icon btn-icon--edit"
+                            [title]="'common.edit' | translate"
+                            (click)="startLocEdit(loc)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        }
+                        @if (role.canDeleteRacks()) {
+                          <button
+                            class="btn-icon btn-icon--delete"
+                            [title]="'common.delete' | translate"
+                            (click)="confirmLocDelete(loc.id)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        }
+                      }
+                    </td>
+                  </tr>
+                }
+              }
+
+              @if (
+                locations().length === 0 && locListState().status === "loaded"
+              ) {
+                <tr>
+                  <td colspan="5" class="empty-row">
+                    @if (locSearch()) {
+                      {{ "locations.no_match" | translate }}
+                    } @else {
+                      {{ "locations.no_data" | translate }}
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (locTotalPages() > 1) {
+        <div class="pagination">
+          <button
+            class="page-btn"
+            [disabled]="locPage() === 1"
+            (click)="locGoPage(locPage() - 1)"
+          >
+            ‹
+          </button>
+          @for (n of locPageNumbers(); track n) {
+            <button
+              class="page-btn"
+              [class.page-btn--active]="n === locPage()"
+              (click)="locGoPage(n)"
+            >
+              {{ n }}
+            </button>
+          }
+          <button
+            class="page-btn"
+            [disabled]="locPage() === locTotalPages()"
+            (click)="locGoPage(locPage() + 1)"
+          >
+            ›
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- ROOMS tab                                                   -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === "rooms") {
+    <div class="section">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+              <circle
+                cx="8.5"
+                cy="8.5"
+                r="5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M12.5 12.5L16 16"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            <input
+              class="search-input"
+              type="text"
+              [placeholder]="'rooms.search_placeholder' | translate"
+              [value]="roomSearch()"
+              (input)="onRoomSearchInput($any($event.target).value)"
+            />
+            @if (roomSearch()) {
+              <button
+                class="search-clear"
+                (click)="resetRoomSearch()"
+                [title]="'common.search_clear' | translate"
+              >
+                ×
+              </button>
+            }
+          </div>
+        </div>
+        <div class="toolbar-right">
+          @if (roomListState().status === "loaded") {
+            <span class="count-badge">{{
+              "rooms.count_badge" | translate: { count: roomTotalCount() }
+            }}</span>
+          }
+          @if (role.canCreateRacks()) {
+            <button class="btn-new" (click)="openRoomCreate()">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M8 3v10M3 8h10"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+              </svg>
+              {{ "rooms.new_btn" | translate }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        @if (roomListState().status === "loading") {
+          <div class="state-full">
+            <div class="spinner"></div>
+            <span>{{ "common.loading" | translate }}</span>
+          </div>
+        } @else if (roomListState().status === "error") {
+          <div class="state-full state-full--error">
+            {{ "common.error_loading" | translate }}
+          </div>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th
+                  class="col-name th-sortable"
+                  [class.th-sortable--asc]="
+                    roomSortField() === 'name' && roomSortDir() === 'asc'
+                  "
+                  [class.th-sortable--desc]="
+                    roomSortField() === 'name' && roomSortDir() === 'desc'
+                  "
+                  (click)="roomSort('name')"
+                >
+                  {{ "rooms.col_name" | translate }}
+                  <span class="sort-arrow">{{
+                    roomSortField() === "name"
+                      ? roomSortDir() === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↕"
+                  }}</span>
+                </th>
+                <th class="col-location">
+                  {{ "rooms.col_location" | translate }}
+                </th>
+                <th class="col-sm">{{ "rooms.col_floor" | translate }}</th>
+                <th class="col-type">{{ "rooms.col_type" | translate }}</th>
+                <th class="col-sm">{{ "rooms.col_capacity" | translate }}</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Create row -->
+              @if (roomCreateOpen()) {
+                <tr class="row-edit row-edit--multi">
+                  <td>
+                    <input
+                      class="inline-input"
+                      type="text"
+                      [placeholder]="'rooms.field_name' | translate"
+                      [value]="roomCreateName()"
+                      (input)="roomCreateName.set($any($event.target).value)"
+                      (keydown.enter)="submitRoomCreate()"
+                      (keydown.escape)="cancelRoomCreate()"
+                      autofocus
+                    />
+                    @if (roomCreateSave() === "error") {
+                      <span class="inline-error">{{
+                        roomCreateSaveMsg()
+                      }}</span>
+                    }
+                  </td>
+                  <td>
+                    <select
+                      class="inline-select"
+                      [value]="roomCreateLocUrl()"
+                      (change)="roomCreateLocUrl.set($any($event.target).value)"
+                    >
+                      <option value="">
+                        {{ "rooms.field_location_placeholder" | translate }}
+                      </option>
+                      @for (opt of locationOptions(); track opt.id) {
+                        <option [value]="opt.url">{{ opt.name }}</option>
+                      }
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      class="inline-input inline-input--sm"
+                      type="number"
+                      min="0"
+                      [value]="roomCreateFloor() ?? ''"
+                      (input)="
+                        roomCreateFloor.set(
+                          $any($event.target).value
+                            ? +$any($event.target).value
+                            : null
+                        )
+                      "
+                      (keydown.enter)="submitRoomCreate()"
+                      (keydown.escape)="cancelRoomCreate()"
+                    />
+                  </td>
+                  <td>
+                    <select
+                      class="inline-select"
+                      [value]="roomCreateType()"
+                      (change)="roomCreateType.set($any($event.target).value)"
+                    >
+                      <option value="">—</option>
+                      <option value="datacenter">
+                        {{ "rooms.type_datacenter" | translate }}
+                      </option>
+                      <option value="warehouse">
+                        {{ "rooms.type_warehouse" | translate }}
+                      </option>
+                      <option value="laboratory">
+                        {{ "rooms.type_laboratory" | translate }}
+                      </option>
+                      <option value="technical_office">
+                        {{ "rooms.type_technical_office" | translate }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      class="inline-input inline-input--sm"
+                      type="number"
+                      min="0"
+                      [value]="roomCreateCapacity() ?? ''"
+                      (input)="
+                        roomCreateCapacity.set(
+                          $any($event.target).value
+                            ? +$any($event.target).value
+                            : null
+                        )
+                      "
+                      (keydown.enter)="submitRoomCreate()"
+                      (keydown.escape)="cancelRoomCreate()"
+                    />
+                  </td>
+                  <td class="actions">
+                    <button
+                      class="btn-action btn-action--save"
+                      [disabled]="
+                        roomCreateSave() === 'saving' ||
+                        !roomCreateName().trim() ||
+                        !roomCreateLocUrl()
+                      "
+                      (click)="submitRoomCreate()"
+                    >
+                      @if (roomCreateSave() === "saving") {
+                        …
+                      } @else {
+                        {{ "common.save" | translate }}
+                      }
+                    </button>
+                    <button class="btn-action" (click)="cancelRoomCreate()">
+                      {{ "common.cancel" | translate }}
+                    </button>
+                  </td>
+                </tr>
+              }
+
+              <!-- Data rows -->
+              @for (room of rooms(); track room.id) {
+                @if (roomEditId() === room.id) {
+                  <tr class="row-edit row-edit--multi">
+                    <td>
+                      <input
+                        class="inline-input"
+                        type="text"
+                        [value]="roomEditName()"
+                        (input)="roomEditName.set($any($event.target).value)"
+                        (keydown.enter)="submitRoomEdit()"
+                        (keydown.escape)="cancelRoomEdit()"
+                        autofocus
+                      />
+                      @if (roomEditSave() === "error") {
+                        <span class="inline-error">{{
+                          roomEditSaveMsg()
+                        }}</span>
+                      }
+                    </td>
+                    <td>
+                      <select
+                        class="inline-select"
+                        [value]="roomEditLocUrl()"
+                        (change)="roomEditLocUrl.set($any($event.target).value)"
+                      >
+                        @for (opt of locationOptions(); track opt.id) {
+                          <option [value]="opt.url">{{ opt.name }}</option>
+                        }
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        class="inline-input inline-input--sm"
+                        type="number"
+                        min="0"
+                        [value]="roomEditFloor() ?? ''"
+                        (input)="
+                          roomEditFloor.set(
+                            $any($event.target).value
+                              ? +$any($event.target).value
+                              : null
+                          )
+                        "
+                        (keydown.enter)="submitRoomEdit()"
+                        (keydown.escape)="cancelRoomEdit()"
+                      />
+                    </td>
+                    <td>
+                      <select
+                        class="inline-select"
+                        [value]="roomEditType()"
+                        (change)="roomEditType.set($any($event.target).value)"
+                      >
+                        <option value="">—</option>
+                        <option value="datacenter">
+                          {{ "rooms.type_datacenter" | translate }}
+                        </option>
+                        <option value="warehouse">
+                          {{ "rooms.type_warehouse" | translate }}
+                        </option>
+                        <option value="laboratory">
+                          {{ "rooms.type_laboratory" | translate }}
+                        </option>
+                        <option value="technical_office">
+                          {{ "rooms.type_technical_office" | translate }}
+                        </option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        class="inline-input inline-input--sm"
+                        type="number"
+                        min="0"
+                        [value]="roomEditCapacity() ?? ''"
+                        (input)="
+                          roomEditCapacity.set(
+                            $any($event.target).value
+                              ? +$any($event.target).value
+                              : null
+                          )
+                        "
+                        (keydown.enter)="submitRoomEdit()"
+                        (keydown.escape)="cancelRoomEdit()"
+                      />
+                    </td>
+                    <td class="actions">
+                      <button
+                        class="btn-action btn-action--save"
+                        [disabled]="
+                          roomEditSave() === 'saving' ||
+                          !roomEditName().trim() ||
+                          !roomEditLocUrl()
+                        "
+                        (click)="submitRoomEdit()"
+                      >
+                        @if (roomEditSave() === "saving") {
+                          …
+                        } @else {
+                          {{ "common.save" | translate }}
+                        }
+                      </button>
+                      <button class="btn-action" (click)="cancelRoomEdit()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    </td>
+                  </tr>
+                } @else {
+                  <tr
+                    class="row-data"
+                    [class.row-data--deleting]="roomDeleteId() === room.id"
+                  >
+                    <td class="cell-name">{{ room.name }}</td>
+                    <td>{{ locationName(room.location) }}</td>
+                    <td class="cell-num">{{ room.floor ?? "—" }}</td>
+                    <td>
+                      @if (room.room_type) {
+                        <span
+                          class="type-badge type-badge--{{ room.room_type }}"
+                        >
+                          {{ "rooms.type_" + room.room_type | translate }}
+                        </span>
+                      } @else {
+                        —
+                      }
+                    </td>
+                    <td class="cell-num">{{ room.capacity ?? "—" }}</td>
+                    <td class="actions">
+                      @if (roomDeleteId() === room.id) {
+                        <span class="delete-confirm">
+                          @if (roomDeleteSave() === "error") {
+                            <span class="delete-error">{{
+                              roomDeleteErrorMsg()
+                            }}</span>
+                            <button
+                              class="btn-action"
+                              (click)="cancelRoomDelete()"
+                            >
+                              {{ "common.cancel" | translate }}
+                            </button>
+                          } @else {
+                            <span class="delete-label">{{
+                              "rooms.confirm_delete" | translate
+                            }}</span>
+                            <button
+                              class="btn-action btn-action--danger"
+                              [disabled]="roomDeleteSave() === 'saving'"
+                              (click)="submitRoomDelete()"
+                            >
+                              @if (roomDeleteSave() === "saving") {
+                                …
+                              } @else {
+                                {{ "common.delete" | translate }}
+                              }
+                            </button>
+                            <button
+                              class="btn-action"
+                              (click)="cancelRoomDelete()"
+                            >
+                              {{ "common.cancel" | translate }}
+                            </button>
+                          }
+                        </span>
+                      } @else {
+                        @if (role.canEditRacks()) {
+                          <button
+                            class="btn-icon btn-icon--edit"
+                            [title]="'common.edit' | translate"
+                            (click)="startRoomEdit(room)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        }
+                        @if (role.canDeleteRacks()) {
+                          <button
+                            class="btn-icon btn-icon--delete"
+                            [title]="'common.delete' | translate"
+                            (click)="confirmRoomDelete(room.id)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        }
+                      }
+                    </td>
+                  </tr>
+                }
+              }
+
+              @if (
+                rooms().length === 0 && roomListState().status === "loaded"
+              ) {
+                <tr>
+                  <td colspan="6" class="empty-row">
+                    @if (roomSearch()) {
+                      {{ "rooms.no_match" | translate }}
+                    } @else {
+                      {{ "rooms.no_data" | translate }}
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (roomTotalPages() > 1) {
+        <div class="pagination">
+          <button
+            class="page-btn"
+            [disabled]="roomPage() === 1"
+            (click)="roomGoPage(roomPage() - 1)"
+          >
+            ‹
+          </button>
+          @for (n of roomPageNumbers(); track n) {
+            <button
+              class="page-btn"
+              [class.page-btn--active]="n === roomPage()"
+              (click)="roomGoPage(n)"
+            >
+              {{ n }}
+            </button>
+          }
+          <button
+            class="page-btn"
+            [disabled]="roomPage() === roomTotalPages()"
+            (click)="roomGoPage(roomPage() + 1)"
+          >
+            ›
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

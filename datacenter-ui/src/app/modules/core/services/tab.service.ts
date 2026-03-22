@@ -34,6 +34,9 @@ export class TabService {
       components: 'tabs.components',
       racks: 'tabs.racks',
       options: 'tabs.options',
+      'rack-models': 'tabs.rack_models',
+      locations: 'tabs.locations',
+      'asset-settings': 'tabs.asset_settings',
     };
     try {
       const raw = localStorage.getItem(LS_TABS_KEY);
@@ -77,7 +80,11 @@ export class TabService {
       case 'racks':
       case 'rack':
       case 'room':
+      case 'rack-models':
+      case 'locations':
         return this.role.canViewInfrastructure();
+      case 'asset-settings':
+        return this.role.isAdmin();
       case 'admin':
         return this.role.canManageUsers();
       default:
@@ -279,6 +286,75 @@ export class TabService {
       label: 'Componenti',
       labelKey: 'tabs.components',
       type: 'components',
+      pinned: false,
+    });
+  }
+
+  openRackModels(): void {
+    this.openTab(
+      {
+        id: 'rack-models',
+        label: 'Rack Models',
+        labelKey: 'tabs.rack_models',
+        type: 'rack-models',
+        pinned: false,
+      },
+      this.role.canViewInfrastructure(),
+    );
+  }
+
+  ensureRackModelsTab(): void {
+    this.ensureTab({
+      id: 'rack-models',
+      label: 'Rack Models',
+      labelKey: 'tabs.rack_models',
+      type: 'rack-models',
+      pinned: false,
+    });
+  }
+
+  openLocations(): void {
+    this.openTab(
+      {
+        id: 'locations',
+        label: 'Locations',
+        labelKey: 'tabs.locations',
+        type: 'locations',
+        pinned: false,
+      },
+      this.role.canViewInfrastructure(),
+    );
+  }
+
+  ensureLocationsTab(): void {
+    this.ensureTab({
+      id: 'locations',
+      label: 'Locations',
+      labelKey: 'tabs.locations',
+      type: 'locations',
+      pinned: false,
+    });
+  }
+
+  openAssetSettings(): void {
+    this.openTab(
+      {
+        id: 'asset-settings',
+        label: 'Asset Settings',
+        labelKey: 'tabs.asset_settings',
+        type: 'asset-settings',
+        pinned: false,
+      },
+      this.role.isAdmin(),
+    );
+  }
+
+  ensureAssetSettingsTab(): void {
+    this.ensureTab({
+      id: 'asset-settings',
+      label: 'Asset Settings',
+      labelKey: 'tabs.asset_settings',
+      type: 'asset-settings',
       pinned: false,
     });
   }

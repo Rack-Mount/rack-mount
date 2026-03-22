@@ -1,0 +1,623 @@
+<div class="asset-settings-page">
+  <!-- ── Tabs ──────────────────────────────────────────────────── -->
+  <div class="tab-bar">
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'states'"
+      (click)="activeTab.set('states')"
+    >
+      {{ "asset_settings.tab_states" | translate }}
+      @if (stListState().status === "loaded") {
+        <span class="tab-count">{{ stTotalCount() }}</span>
+      }
+    </button>
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'types'"
+      (click)="activeTab.set('types')"
+    >
+      {{ "asset_settings.tab_types" | translate }}
+      @if (tyListState().status === "loaded") {
+        <span class="tab-count">{{ tyTotalCount() }}</span>
+      }
+    </button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- ASSET STATES tab                                            -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === "states") {
+    <div class="section">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+              <circle
+                cx="8.5"
+                cy="8.5"
+                r="5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M12.5 12.5L16 16"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            <input
+              class="search-input"
+              type="text"
+              [placeholder]="'asset_settings.search_placeholder' | translate"
+              [value]="stSearch()"
+              (input)="onStSearchInput($any($event.target).value)"
+            />
+            @if (stSearch()) {
+              <button
+                class="search-clear"
+                (click)="resetStSearch()"
+                [title]="'common.search_clear' | translate"
+              >
+                ×
+              </button>
+            }
+          </div>
+        </div>
+        <div class="toolbar-right">
+          @if (stListState().status === "loaded") {
+            <span class="count-badge">{{
+              "asset_settings.count_badge"
+                | translate: { count: stTotalCount() }
+            }}</span>
+          }
+          @if (role.isAdmin()) {
+            <button class="btn-new" (click)="openStCreate()">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M8 3v10M3 8h10"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+              </svg>
+              {{ "asset_settings.new_state_btn" | translate }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        @if (stListState().status === "loading") {
+          <div class="state-full">
+            <div class="spinner"></div>
+            <span>{{ "common.loading" | translate }}</span>
+          </div>
+        } @else if (stListState().status === "error") {
+          <div class="state-full state-full--error">
+            {{ "common.error_loading" | translate }}
+          </div>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th
+                  class="col-name th-sortable"
+                  [class.th-sortable--asc]="
+                    stSortField() === 'name' && stSortDir() === 'asc'
+                  "
+                  [class.th-sortable--desc]="
+                    stSortField() === 'name' && stSortDir() === 'desc'
+                  "
+                  (click)="stSort('name')"
+                >
+                  {{ "asset_settings.col_name" | translate }}
+                  <span class="sort-arrow">{{
+                    stSortField() === "name"
+                      ? stSortDir() === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↕"
+                  }}</span>
+                </th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (stCreateOpen()) {
+                <tr class="row-edit">
+                  <td>
+                    <input
+                      class="inline-input"
+                      type="text"
+                      [placeholder]="'asset_settings.field_name' | translate"
+                      [value]="stCreateName()"
+                      (input)="stCreateName.set($any($event.target).value)"
+                      (keydown.enter)="submitStCreate()"
+                      (keydown.escape)="cancelStCreate()"
+                      autofocus
+                    />
+                    @if (stCreateSave() === "error") {
+                      <span class="inline-error">{{ stCreateSaveMsg() }}</span>
+                    }
+                  </td>
+                  <td class="actions">
+                    <button
+                      class="btn-action btn-action--save"
+                      [disabled]="
+                        stCreateSave() === 'saving' || !stCreateName().trim()
+                      "
+                      (click)="submitStCreate()"
+                    >
+                      @if (stCreateSave() === "saving") {
+                        …
+                      } @else {
+                        {{ "common.save" | translate }}
+                      }
+                    </button>
+                    <button class="btn-action" (click)="cancelStCreate()">
+                      {{ "common.cancel" | translate }}
+                    </button>
+                  </td>
+                </tr>
+              }
+              @for (st of states(); track st.id) {
+                @if (stEditId() === st.id) {
+                  <tr class="row-edit">
+                    <td>
+                      <input
+                        class="inline-input"
+                        type="text"
+                        [value]="stEditName()"
+                        (input)="stEditName.set($any($event.target).value)"
+                        (keydown.enter)="submitStEdit()"
+                        (keydown.escape)="cancelStEdit()"
+                        autofocus
+                      />
+                      @if (stEditSave() === "error") {
+                        <span class="inline-error">{{ stEditSaveMsg() }}</span>
+                      }
+                    </td>
+                    <td class="actions">
+                      <button
+                        class="btn-action btn-action--save"
+                        [disabled]="
+                          stEditSave() === 'saving' || !stEditName().trim()
+                        "
+                        (click)="submitStEdit()"
+                      >
+                        @if (stEditSave() === "saving") {
+                          …
+                        } @else {
+                          {{ "common.save" | translate }}
+                        }
+                      </button>
+                      <button class="btn-action" (click)="cancelStEdit()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    </td>
+                  </tr>
+                } @else {
+                  <tr
+                    class="row-data"
+                    [class.row-data--deleting]="stDeleteId() === st.id"
+                  >
+                    <td class="cell-name">{{ st.name }}</td>
+                    <td class="actions">
+                      @if (stDeleteId() === st.id) {
+                        <span class="delete-confirm">
+                          @if (stDeleteSave() === "error") {
+                            <span class="delete-error">{{
+                              stDeleteErrorMsg()
+                            }}</span>
+                            <button
+                              class="btn-action"
+                              (click)="cancelStDelete()"
+                            >
+                              {{ "common.cancel" | translate }}
+                            </button>
+                          } @else {
+                            <span class="delete-label">{{
+                              "asset_settings.confirm_delete" | translate
+                            }}</span>
+                            <button
+                              class="btn-action btn-action--danger"
+                              [disabled]="stDeleteSave() === 'saving'"
+                              (click)="submitStDelete()"
+                            >
+                              @if (stDeleteSave() === "saving") {
+                                …
+                              } @else {
+                                {{ "common.delete" | translate }}
+                              }
+                            </button>
+                            <button
+                              class="btn-action"
+                              (click)="cancelStDelete()"
+                            >
+                              {{ "common.cancel" | translate }}
+                            </button>
+                          }
+                        </span>
+                      } @else {
+                        @if (role.isAdmin()) {
+                          <button
+                            class="btn-icon btn-icon--edit"
+                            [title]="'common.edit' | translate"
+                            (click)="startStEdit(st)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            class="btn-icon btn-icon--delete"
+                            [title]="'common.delete' | translate"
+                            (click)="confirmStDelete(st.id)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        }
+                      }
+                    </td>
+                  </tr>
+                }
+              }
+              @if (states().length === 0 && stListState().status === "loaded") {
+                <tr>
+                  <td colspan="2" class="empty-row">
+                    @if (stSearch()) {
+                      {{ "asset_settings.no_match" | translate }}
+                    } @else {
+                      {{ "asset_settings.no_data" | translate }}
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+      @if (stTotalPages() > 1) {
+        <div class="pagination">
+          <button
+            class="page-btn"
+            [disabled]="stPage() === 1"
+            (click)="stGoPage(stPage() - 1)"
+          >
+            ‹
+          </button>
+          @for (n of stPageNumbers(); track n) {
+            <button
+              class="page-btn"
+              [class.page-btn--active]="n === stPage()"
+              (click)="stGoPage(n)"
+            >
+              {{ n }}
+            </button>
+          }
+          <button
+            class="page-btn"
+            [disabled]="stPage() === stTotalPages()"
+            (click)="stGoPage(stPage() + 1)"
+          >
+            ›
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- ASSET TYPES tab                                             -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === "types") {
+    <div class="section">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+              <circle
+                cx="8.5"
+                cy="8.5"
+                r="5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M12.5 12.5L16 16"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            <input
+              class="search-input"
+              type="text"
+              [placeholder]="'asset_settings.search_placeholder' | translate"
+              [value]="tySearch()"
+              (input)="onTySearchInput($any($event.target).value)"
+            />
+            @if (tySearch()) {
+              <button
+                class="search-clear"
+                (click)="resetTySearch()"
+                [title]="'common.search_clear' | translate"
+              >
+                ×
+              </button>
+            }
+          </div>
+        </div>
+        <div class="toolbar-right">
+          @if (tyListState().status === "loaded") {
+            <span class="count-badge">{{
+              "asset_settings.count_badge"
+                | translate: { count: tyTotalCount() }
+            }}</span>
+          }
+          @if (role.isAdmin()) {
+            <button class="btn-new" (click)="openTyCreate()">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M8 3v10M3 8h10"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+              </svg>
+              {{ "asset_settings.new_type_btn" | translate }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        @if (tyListState().status === "loading") {
+          <div class="state-full">
+            <div class="spinner"></div>
+            <span>{{ "common.loading" | translate }}</span>
+          </div>
+        } @else if (tyListState().status === "error") {
+          <div class="state-full state-full--error">
+            {{ "common.error_loading" | translate }}
+          </div>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th
+                  class="col-name th-sortable"
+                  [class.th-sortable--asc]="
+                    tySortField() === 'name' && tySortDir() === 'asc'
+                  "
+                  [class.th-sortable--desc]="
+                    tySortField() === 'name' && tySortDir() === 'desc'
+                  "
+                  (click)="tySort('name')"
+                >
+                  {{ "asset_settings.col_name" | translate }}
+                  <span class="sort-arrow">{{
+                    tySortField() === "name"
+                      ? tySortDir() === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↕"
+                  }}</span>
+                </th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (tyCreateOpen()) {
+                <tr class="row-edit">
+                  <td>
+                    <input
+                      class="inline-input"
+                      type="text"
+                      [placeholder]="'asset_settings.field_name' | translate"
+                      [value]="tyCreateName()"
+                      (input)="tyCreateName.set($any($event.target).value)"
+                      (keydown.enter)="submitTyCreate()"
+                      (keydown.escape)="cancelTyCreate()"
+                      autofocus
+                    />
+                    @if (tyCreateSave() === "error") {
+                      <span class="inline-error">{{ tyCreateSaveMsg() }}</span>
+                    }
+                  </td>
+                  <td class="actions">
+                    <button
+                      class="btn-action btn-action--save"
+                      [disabled]="
+                        tyCreateSave() === 'saving' || !tyCreateName().trim()
+                      "
+                      (click)="submitTyCreate()"
+                    >
+                      @if (tyCreateSave() === "saving") {
+                        …
+                      } @else {
+                        {{ "common.save" | translate }}
+                      }
+                    </button>
+                    <button class="btn-action" (click)="cancelTyCreate()">
+                      {{ "common.cancel" | translate }}
+                    </button>
+                  </td>
+                </tr>
+              }
+              @for (ty of types(); track ty.id) {
+                @if (tyEditId() === ty.id) {
+                  <tr class="row-edit">
+                    <td>
+                      <input
+                        class="inline-input"
+                        type="text"
+                        [value]="tyEditName()"
+                        (input)="tyEditName.set($any($event.target).value)"
+                        (keydown.enter)="submitTyEdit()"
+                        (keydown.escape)="cancelTyEdit()"
+                        autofocus
+                      />
+                      @if (tyEditSave() === "error") {
+                        <span class="inline-error">{{ tyEditSaveMsg() }}</span>
+                      }
+                    </td>
+                    <td class="actions">
+                      <button
+                        class="btn-action btn-action--save"
+                        [disabled]="
+                          tyEditSave() === 'saving' || !tyEditName().trim()
+                        "
+                        (click)="submitTyEdit()"
+                      >
+                        @if (tyEditSave() === "saving") {
+                          …
+                        } @else {
+                          {{ "common.save" | translate }}
+                        }
+                      </button>
+                      <button class="btn-action" (click)="cancelTyEdit()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    </td>
+                  </tr>
+                } @else {
+                  <tr
+                    class="row-data"
+                    [class.row-data--deleting]="tyDeleteId() === ty.id"
+                  >
+                    <td class="cell-name">{{ ty.name }}</td>
+                    <td class="actions">
+                      @if (tyDeleteId() === ty.id) {
+                        <span class="delete-confirm">
+                          @if (tyDeleteSave() === "error") {
+                            <span class="delete-error">{{
+                              tyDeleteErrorMsg()
+                            }}</span>
+                            <button
+                              class="btn-action"
+                              (click)="cancelTyDelete()"
+                            >
+                              {{ "common.cancel" | translate }}
+                            </button>
+                          } @else {
+                            <span class="delete-label">{{
+                              "asset_settings.confirm_delete" | translate
+                            }}</span>
+                            <button
+                              class="btn-action btn-action--danger"
+                              [disabled]="tyDeleteSave() === 'saving'"
+                              (click)="submitTyDelete()"
+                            >
+                              @if (tyDeleteSave() === "saving") {
+                                …
+                              } @else {
+                                {{ "common.delete" | translate }}
+                              }
+                            </button>
+                            <button
+                              class="btn-action"
+                              (click)="cancelTyDelete()"
+                            >
+                              {{ "common.cancel" | translate }}
+                            </button>
+                          }
+                        </span>
+                      } @else {
+                        @if (role.isAdmin()) {
+                          <button
+                            class="btn-icon btn-icon--edit"
+                            [title]="'common.edit' | translate"
+                            (click)="startTyEdit(ty)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            class="btn-icon btn-icon--delete"
+                            [title]="'common.delete' | translate"
+                            (click)="confirmTyDelete(ty.id)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        }
+                      }
+                    </td>
+                  </tr>
+                }
+              }
+              @if (types().length === 0 && tyListState().status === "loaded") {
+                <tr>
+                  <td colspan="2" class="empty-row">
+                    @if (tySearch()) {
+                      {{ "asset_settings.no_match" | translate }}
+                    } @else {
+                      {{ "asset_settings.no_data" | translate }}
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+      @if (tyTotalPages() > 1) {
+        <div class="pagination">
+          <button
+            class="page-btn"
+            [disabled]="tyPage() === 1"
+            (click)="tyGoPage(tyPage() - 1)"
+          >
+            ‹
+          </button>
+          @for (n of tyPageNumbers(); track n) {
+            <button
+              class="page-btn"
+              [class.page-btn--active]="n === tyPage()"
+              (click)="tyGoPage(n)"
+            >
+              {{ n }}
+            </button>
+          }
+          <button
+            class="page-btn"
+            [disabled]="tyPage() === tyTotalPages()"
+            (click)="tyGoPage(tyPage() + 1)"
+          >
+            ›
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

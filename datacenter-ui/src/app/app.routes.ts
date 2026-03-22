@@ -65,6 +65,30 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'rack-models',
+    canActivate: [authGuard, canViewInfrastructureGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/infrastructure/rack-models-list/rack-models-list.component').then(
+        (m) => m.RackModelsListComponent,
+      ),
+  },
+  {
+    path: 'locations',
+    canActivate: [authGuard, canViewInfrastructureGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/infrastructure/locations-list/locations-list.component').then(
+        (m) => m.LocationsListComponent,
+      ),
+  },
+  {
+    path: 'asset-settings',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/catalog/asset-settings/asset-settings.component').then(
+        (m) => m.AssetSettingsComponent,
+      ),
+  },
+  {
     path: 'map/:id',
     canActivate: [authGuard, canViewInfrastructureGuard],
     children: [],

@@ -3,7 +3,13 @@
 <div class="create-drawer">
   <!-- Header -->
   <div class="drawer-header">
-    <h3>{{ "rack_models.drawer_create_title" | translate }}</h3>
+    <h3>
+      @if (mode() === "edit") {
+        {{ "rack_models.drawer_edit_title" | translate }}
+      } @else {
+        {{ "rack_models.drawer_create_title" | translate }}
+      }
+    </h3>
     <button
       class="drawer-close"
       type="button"

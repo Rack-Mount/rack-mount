@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  effect,
   inject,
   input,
   OnInit,
@@ -37,6 +38,8 @@ export class RackCreateDrawerComponent implements OnInit {
   // ── Inputs ─────────────────────────────────────────────────────────────────
   readonly mode = input.required<'create' | 'edit'>();
   readonly rack = input<Rack | null>(null);
+  /** When a new RackType is created while this drawer is open, inject it here. */
+  readonly latestRackType = input<RackType | null>(null);
 
   // ── Outputs ────────────────────────────────────────────────────────────────
   readonly saved = output<Rack>();
@@ -56,6 +59,17 @@ export class RackCreateDrawerComponent implements OnInit {
   protected readonly rackTypes = signal<RackType[]>([]);
   protected readonly rooms = signal<Room[]>([]);
   protected readonly refLoading = signal(true);
+
+  constructor() {
+    // Whenever a new RackType arrives from the parent, prepend it to the list
+    effect(() => {
+      const rt = this.latestRackType();
+      if (rt == null) return;
+      this.rackTypes.update((list) =>
+        list.some((r) => r.id === rt.id) ? list : [rt, ...list],
+      );
+    });
+  }
 
   // ── Lifecycle ──────────────────────────────────────────────────────────────
   ngOnInit(): void {
@@ -78,7 +92,6 @@ export class RackCreateDrawerComponent implements OnInit {
       .subscribe({
         next: ({ types, rooms }) => {
           this.rackTypes.set(types.results ?? (types as unknown as RackType[]));
-          // Handle both paginated and array responses
           const roomResults = (rooms as any).results ?? rooms;
           this.rooms.set(roomResults);
           this.refLoading.set(false);

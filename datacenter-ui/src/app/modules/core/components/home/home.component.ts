@@ -97,4 +97,16 @@ export class HomeComponent {
   protected onComponentsOpen(): void {
     this.tabService.openComponents();
   }
+
+  protected onRackModelsOpen(): void {
+    this.tabService.openRackModels();
+  }
+
+  protected onLocationsOpen(): void {
+    this.tabService.openLocations();
+  }
+
+  protected onAssetSettingsOpen(): void {
+    this.tabService.openAssetSettings();
+  }
 }

@@ -1,0 +1,289 @@
+<div class="rack-models-page">
+  <!-- ── Toolbar ─────────────────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+          <circle
+            cx="8.5"
+            cy="8.5"
+            r="5"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+          <path
+            d="M12.5 12.5L16 16"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <input
+          class="search-input"
+          type="text"
+          [placeholder]="'rack_models.search_placeholder' | translate"
+          [value]="search()"
+          (input)="onSearchInput($any($event.target).value)"
+        />
+        @if (search()) {
+          <button
+            class="search-clear"
+            (click)="resetSearch()"
+            [title]="'common.search_clear' | translate"
+          >
+            ×
+          </button>
+        }
+      </div>
+    </div>
+    <div class="toolbar-right">
+      @if (listState().status === "loaded") {
+        <span class="count-badge">{{
+          "rack_models.count_badge" | translate: { count: totalCount() }
+        }}</span>
+      }
+      @if (role.canCreateRacks()) {
+        <button class="btn-new" (click)="openCreate()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 3v10M3 8h10"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{ "rack_models.btn_new" | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ── Table ────────────────────────────────────────────────── -->
+  <div class="table-wrap">
+    @if (listState().status === "loading") {
+      <div class="state-full">
+        <div class="spinner"></div>
+        <span>{{ "common.loading" | translate }}</span>
+      </div>
+    } @else if (listState().status === "error") {
+      <div class="state-full state-full--error">
+        {{ "common.error_loading" | translate }}
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th
+              class="col-model th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'model' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'model' && sortDir() === 'desc'
+              "
+              (click)="sort('model')"
+            >
+              {{ "rack_models.col_model" | translate }}
+              <span class="sort-arrow">{{
+                sortField() === "model"
+                  ? sortDir() === "asc"
+                    ? "↑"
+                    : "↓"
+                  : "↕"
+              }}</span>
+            </th>
+            <th
+              class="col-capacity th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'capacity' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'capacity' && sortDir() === 'desc'
+              "
+              (click)="sort('capacity')"
+            >
+              {{ "rack_models.col_capacity" | translate }}
+              <span class="sort-arrow">{{
+                sortField() === "capacity"
+                  ? sortDir() === "asc"
+                    ? "↑"
+                    : "↓"
+                  : "↕"
+              }}</span>
+            </th>
+            <th
+              class="col-dim th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'width' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'width' && sortDir() === 'desc'
+              "
+              (click)="sort('width')"
+            >
+              {{ "rack_models.col_width" | translate }}
+              <span class="sort-arrow">{{
+                sortField() === "width"
+                  ? sortDir() === "asc"
+                    ? "↑"
+                    : "↓"
+                  : "↕"
+              }}</span>
+            </th>
+            <th
+              class="col-dim th-sortable"
+              [class.th-sortable--asc]="
+                sortField() === 'depth' && sortDir() === 'asc'
+              "
+              [class.th-sortable--desc]="
+                sortField() === 'depth' && sortDir() === 'desc'
+              "
+              (click)="sort('depth')"
+            >
+              {{ "rack_models.col_depth" | translate }}
+              <span class="sort-arrow">{{
+                sortField() === "depth"
+                  ? sortDir() === "asc"
+                    ? "↑"
+                    : "↓"
+                  : "↕"
+              }}</span>
+            </th>
+            <th class="col-dim">{{ "rack_models.col_height" | translate }}</th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (rt of rackModels(); track rt.id) {
+            <tr
+              class="row-data"
+              [class.row-data--deleting]="deleteId() === rt.id"
+            >
+              <td class="cell-name">{{ rt.model }}</td>
+              <td class="cell-num">{{ rt.capacity }}&thinsp;U</td>
+              <td class="cell-num">{{ rt.width }}&thinsp;mm</td>
+              <td class="cell-num">{{ rt.depth }}&thinsp;mm</td>
+              <td class="cell-num">
+                {{ rt.height != null ? rt.height + " cm" : "—" }}
+              </td>
+              <td class="actions">
+                @if (deleteId() === rt.id) {
+                  <span class="delete-confirm">
+                    @if (deleteSave() === "error") {
+                      <span class="delete-error">{{ deleteErrorMsg() }}</span>
+                      <button class="btn-action" (click)="cancelDelete()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    } @else {
+                      <span class="delete-label">{{
+                        "rack_models.confirm_delete" | translate
+                      }}</span>
+                      <button
+                        class="btn-action btn-action--danger"
+                        [disabled]="deleteSave() === 'saving'"
+                        (click)="submitDelete()"
+                      >
+                        @if (deleteSave() === "saving") {
+                          …
+                        } @else {
+                          {{ "common.delete" | translate }}
+                        }
+                      </button>
+                      <button class="btn-action" (click)="cancelDelete()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    }
+                  </span>
+                } @else {
+                  @if (role.canEditRacks()) {
+                    <button
+                      class="btn-icon btn-icon--edit"
+                      [title]="'common.edit' | translate"
+                      (click)="openEdit(rt)"
+                    >
+                      <svg viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  }
+                  @if (role.canDeleteRacks()) {
+                    <button
+                      class="btn-icon btn-icon--delete"
+                      [title]="'common.delete' | translate"
+                      (click)="confirmDelete(rt.id)"
+                    >
+                      <svg viewBox="0 0 16 16" fill="none">
+                        <path
+                          d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  }
+                }
+              </td>
+            </tr>
+          }
+          @if (rackModels().length === 0 && listState().status === "loaded") {
+            <tr>
+              <td colspan="6" class="empty-row">
+                @if (search()) {
+                  {{ "rack_models.no_match" | translate }}
+                } @else {
+                  {{ "rack_models.no_data" | translate }}
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  <!-- ── Pagination ────────────────────────────────────────────── -->
+  @if (totalPages() > 1) {
+    <div class="pagination">
+      <button
+        class="page-btn"
+        [disabled]="page() === 1"
+        (click)="goPage(page() - 1)"
+      >
+        ‹
+      </button>
+      @for (n of pageNumbers(); track n) {
+        <button
+          class="page-btn"
+          [class.page-btn--active]="n === page()"
+          (click)="goPage(n)"
+        >
+          {{ n }}
+        </button>
+      }
+      <button
+        class="page-btn"
+        [disabled]="page() === totalPages()"
+        (click)="goPage(page() + 1)"
+      >
+        ›
+      </button>
+    </div>
+  }
+</div>
+
+<!-- ── Drawer ──────────────────────────────────────────────────── -->
+@if (drawerMode() !== null) {
+  <app-rack-model-create-drawer
+    [mode]="drawerMode()!"
+    [rackType]="editingType()"
+    (saved)="onDrawerSaved($event)"
+    (cancelled)="closeDrawer()"
+  />
+}

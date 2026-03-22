@@ -67,6 +67,7 @@ export class RacksListStore {
   readonly editingRack = signal<Rack | null>(null);
   readonly deleteState = signal<DeleteState>({ id: 'none' });
   readonly rackModelDrawerOpen = signal(false);
+  readonly latestRackType = signal<RackType | null>(null);
 
   private readonly _searchInput = new Subject<string>();
 
@@ -190,7 +191,8 @@ export class RacksListStore {
     this.rackModelDrawerOpen.set(false);
   }
 
-  onModelDrawerSaved(_model: RackType): void {
+  onModelDrawerSaved(model: RackType): void {
+    this.latestRackType.set(model);
     this.rackModelDrawerOpen.set(false);
   }
 
