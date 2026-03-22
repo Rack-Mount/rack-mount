@@ -68,6 +68,22 @@ def _is_safe_relpath(relpath: str) -> bool:
     return abs_path.startswith(trusted + os.sep)
 
 
+def _is_private_media_path(relpath: str) -> bool:
+    private_subdir = getattr(settings, 'PRIVATE_MEDIA_SUBDIR', 'private')
+    return relpath.startswith(private_subdir + '/')
+
+
+def _can_access_private_media(user) -> bool:
+    if not user or not user.is_authenticated:
+        return False
+    try:
+        role = user.profile.role
+    except Exception:
+        return False
+    # Reuse the same role capability used to issue signed private URLs.
+    return bool(getattr(role, 'can_view_model_training_status', False))
+
+
 def _classify_port_type(ar: float) -> str:
     for pt, cfg in _PORT_CONFIG.items():
         if cfg['ar_min'] <= ar < cfg['ar_max']:
@@ -822,6 +838,12 @@ class PortAnalyzeView(APIView):
             return Response(
                 {'error': 'Invalid image path.'},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if _is_private_media_path(image_path) and not _can_access_private_media(request.user):
+            return Response(
+                {'error': 'Not authorized to analyze private media.'},
+                status=status.HTTP_403_FORBIDDEN,
             )
 
         abs_image_path = os.path.join(_get_media_root(), image_path)

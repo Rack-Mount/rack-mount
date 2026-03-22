@@ -70,6 +70,22 @@ def _is_safe_relpath(relpath: str) -> bool:
     return target.startswith(media_root + os.sep) or target == media_root
 
 
+def _is_private_media_path(relpath: str) -> bool:
+    private_subdir = getattr(settings, 'PRIVATE_MEDIA_SUBDIR', 'private')
+    return relpath.startswith(private_subdir + '/')
+
+
+def _can_access_private_media(user) -> bool:
+    if not user or not user.is_authenticated:
+        return False
+    try:
+        role = user.profile.role
+    except Exception:
+        return False
+    # Reuse the same role capability used to issue signed private URLs.
+    return bool(getattr(role, 'can_view_model_training_status', False))
+
+
 def _get_yolo_model():
     """Carica il modello YOLO una volta sola e lo restituisce dal cache."""
     global _yolo_model, _yolo_model_path
@@ -482,6 +498,12 @@ class PortClickAnalyzeView(APIView):
             return Response(
                 {'error': 'Percorso immagine non valido'},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if _is_private_media_path(image_path) and not _can_access_private_media(request.user):
+            return Response(
+                {'error': 'Non autorizzato ad analizzare media privati'},
+                status=status.HTTP_403_FORBIDDEN,
             )
 
         abs_path = os.path.join(_get_media_root(), image_path)

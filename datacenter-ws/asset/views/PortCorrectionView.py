@@ -404,10 +404,12 @@ class PortCorrectionView(APIView):
 
     @staticmethod
     def _get_client_ip(request):
-        """Extract client IP from request, handling proxies."""
+        """Extract client IP while trusting X-Forwarded-For only from known proxies."""
+        remote_addr = request.META.get('REMOTE_ADDR', '')
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0].strip()
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-        return ip
+        trusted_proxies = set(
+            getattr(settings, 'TRUSTED_PROXY_IPS', ['127.0.0.1', '::1'])
+        )
+        if x_forwarded_for and remote_addr in trusted_proxies:
+            return x_forwarded_for.split(',')[0].strip()
+        return remote_addr

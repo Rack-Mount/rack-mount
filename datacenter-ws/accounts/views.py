@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.models import User
 from rest_framework import generics, viewsets, mixins, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -22,6 +24,9 @@ from accounts.serializers import (
     CookieTokenObtainRequestSerializer,
     CookieTokenObtainResponseSerializer,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class UserManagementViewSet(
@@ -137,9 +142,10 @@ class LogoutView(APIView):
                 {'detail': 'Logout successful. Token blacklisted.'},
                 status=status.HTTP_200_OK,
             )
-        except Exception as e:
+        except Exception:
+            logger.exception('Logout failed while blacklisting refresh token')
             return Response(
-                {'detail': str(e)},
+                {'detail': 'Unable to logout with the provided refresh token.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -306,9 +312,10 @@ class CookieTokenBlacklistView(APIView):
                     {'detail': 'Logout successful. Token blacklisted.'},
                     status=status.HTTP_200_OK,
                 )
-            except Exception as e:
+            except Exception:
+                logger.exception('Cookie token blacklist failed')
                 return Response(
-                    {'detail': str(e)},
+                    {'detail': 'Unable to blacklist refresh token.'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
