@@ -1,6 +1,7 @@
 from accounts.serializers import RoleSerializer
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -23,6 +24,8 @@ from rest_framework.views import APIView
 )
 class MeView(APIView):
     """GET /auth/me/ — available to any authenticated user."""
+
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user

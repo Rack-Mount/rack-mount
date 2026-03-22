@@ -2,6 +2,8 @@ import logging
 
 from django.contrib.auth.models import User
 from rest_framework import generics, viewsets, mixins, status
+from rest_framework import exceptions
+from rest_framework.authentication import CSRFCheck
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,6 +29,15 @@ from accounts.serializers import (
 
 
 logger = logging.getLogger(__name__)
+
+
+def _enforce_csrf(request):
+    """Require a valid CSRF token for cookie-authenticated state-changing auth endpoints."""
+    check = CSRFCheck(lambda req: None)
+    check.process_request(request)
+    reason = check.process_view(request, None, (), {})
+    if reason:
+        raise exceptions.PermissionDenied(f'CSRF Failed: {reason}')
 
 
 class UserManagementViewSet(
@@ -130,13 +141,23 @@ class LogoutView(APIView):
     )
     def post(self, request):
         try:
-            refresh_token = request.data.get('refresh')
+            refresh_token = request.COOKIES.get('refresh_token')
             if not refresh_token:
                 return Response(
-                    {'detail': 'Refresh token required.'},
+                    {'detail': 'Refresh token not found in cookies.'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             token = RefreshToken(refresh_token)
+            token_user_id = token.get('user_id')
+            if token_user_id is None or str(token_user_id) != str(request.user.id):
+                logger.warning(
+                    'Logout blocked due to refresh-token/user mismatch',
+                    extra={'request_user_id': request.user.id, 'token_user_id': token_user_id},
+                )
+                return Response(
+                    {'detail': 'Refresh token does not belong to the authenticated user.'},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
             token.blacklist()
             return Response(
                 {'detail': 'Logout successful. Token blacklisted.'},
@@ -242,6 +263,7 @@ class CookieTokenRefreshView(APIView):
         },
     )
     def post(self, request):
+        _enforce_csrf(request)
         refresh_token = request.COOKIES.get('refresh_token')
 
         if not refresh_token:
@@ -307,6 +329,16 @@ class CookieTokenBlacklistView(APIView):
         else:
             try:
                 token = RefreshToken(refresh_token)
+                token_user_id = token.get('user_id')
+                if token_user_id is None or str(token_user_id) != str(request.user.id):
+                    logger.warning(
+                        'Cookie token blacklist blocked due to refresh-token/user mismatch',
+                        extra={'request_user_id': request.user.id, 'token_user_id': token_user_id},
+                    )
+                    return Response(
+                        {'detail': 'Refresh token does not belong to the authenticated user.'},
+                        status=status.HTTP_403_FORBIDDEN,
+                    )
                 token.blacklist()
                 response = Response(
                     {'detail': 'Logout successful. Token blacklisted.'},
