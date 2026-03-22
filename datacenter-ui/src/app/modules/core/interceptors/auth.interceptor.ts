@@ -6,6 +6,7 @@ import {
 import { inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
 
@@ -28,6 +29,19 @@ function getCookie(name: string): string | null {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
+function isApiRequest(url: string): boolean {
+  try {
+    const target = new URL(url, window.location.origin);
+    const apiBase = new URL(environment.service_url, window.location.origin);
+    return (
+      target.origin === apiBase.origin &&
+      target.pathname.startsWith(apiBase.pathname)
+    );
+  } catch {
+    return false;
+  }
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const toast = inject(ToastService);
@@ -35,9 +49,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   // Ensure credentials (cookies) are included in all requests and add CSRF header
   // for unsafe methods when csrftoken cookie is available.
-  const csrfToken = !SAFE_METHODS.has(req.method)
-    ? getCookie('csrftoken')
-    : null;
+  const csrfToken =
+    !SAFE_METHODS.has(req.method) && isApiRequest(req.url)
+      ? getCookie('csrftoken')
+      : null;
 
   const reqWithCredentials = req.clone({
     withCredentials: true,

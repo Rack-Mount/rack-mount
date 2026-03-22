@@ -5,6 +5,7 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
+import { catchError, map, of } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { RoleService } from '../services/role.service';
 
@@ -15,11 +16,27 @@ export const authGuard: CanActivateFn = (
 ) => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  return auth.isAuthenticated()
-    ? true
-    : router.createUrlTree(['/login'], {
-        queryParams: { returnUrl: state.url },
+
+  const loginTree = router.createUrlTree(['/login'], {
+    queryParams: { returnUrl: state.url },
+  });
+
+  if (!auth.isAuthenticated()) {
+    return loginTree;
+  }
+
+  // Validate local auth state against the server session to avoid stale
+  // localStorage-based authenticated routes after cookie expiry/revocation.
+  return auth.fetchAndLoadRole().pipe(
+    map(() => true),
+    catchError(() => {
+      auth.logout().subscribe({
+        next: () => {},
+        error: () => {},
       });
+      return of(loginTree);
+    }),
+  );
 };
 
 /** Prevents authenticated users from accessing the login page. Redirects to / when already authenticated. */

@@ -32,7 +32,10 @@ export class HeaderComponent {
   }
 
   protected logout(): void {
-    this.auth.logout();
-    this.router.navigate(['/login']);
+    this.auth.logout().subscribe({
+      next: () => {},
+      error: () => this.router.navigate(['/login']),
+      complete: () => this.router.navigate(['/login']),
+    });
   }
 }
