@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from PIL import Image
 
+from accounts.throttles import MediaFileThrottle
 from asset.utils.signed_url import verify_signed_url
 
 
@@ -32,7 +33,7 @@ class ImageView(APIView):
 
     # Allow public access; check per-file in get()
     permission_classes = [AllowAny]
-    throttle_classes = []  # Static file serving — no rate limit
+    throttle_classes = [MediaFileThrottle]
 
     def get(self, request, filename):
         # Security: reject tainted input before it reaches any path expression

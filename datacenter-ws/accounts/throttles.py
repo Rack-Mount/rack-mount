@@ -6,7 +6,7 @@ Prevents model poisoning and inference spam via:
 - Stricter per-IP throttles for inference-heavy endpoints
 - Allows legitimate users while blocking abusive patterns
 """
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, SimpleRateThrottle
 
 
 class PortTrainingThrottle(UserRateThrottle):
@@ -95,6 +95,26 @@ class ModelTrainingStatusThrottle(UserRateThrottle):
     """
     scope = 'model_training_status'
     rate = '1000/h'
+
+
+class MediaFileThrottle(SimpleRateThrottle):
+    """
+    Rate limit for media/image serving endpoints.
+
+    Applies to both authenticated and anonymous clients to reduce abuse of
+    dynamic resize/cache paths.
+    """
+    scope = 'media_file'
+
+    def get_cache_key(self, request, view):
+        if request.user and request.user.is_authenticated:
+            ident = f'user:{request.user.pk}'
+        else:
+            ident = f'ip:{self.get_ident(request)}'
+        return self.cache_format % {
+            'scope': self.scope,
+            'ident': ident,
+        }
 
 
 # ── Anonymous user blockers ────────────────────────────────────────────────────

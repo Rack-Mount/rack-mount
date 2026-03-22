@@ -184,6 +184,7 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '60/hour',
         'user': '1000/hour',
+        'media_file': '600/hour',          # Image/file serving requests
         # ─── YOLO-specific throttle scopes ────────────────────────────────────
         'port_training': '10/hour',              # Annotation submissions
         'port_correction': '30/hour',            # Correction submissions
