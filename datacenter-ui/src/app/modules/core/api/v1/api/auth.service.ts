@@ -23,6 +23,8 @@ import { MeResponse } from '../model/meResponse';
 // @ts-ignore
 import { PaginatedUserListList } from '../model/paginatedUserListList';
 // @ts-ignore
+import { PatchedUserPreferences } from '../model/patchedUserPreferences';
+// @ts-ignore
 import { PatchedUserUpdate } from '../model/patchedUserUpdate';
 // @ts-ignore
 import { Role } from '../model/role';
@@ -35,6 +37,8 @@ import { UserCreate } from '../model/userCreate';
 // @ts-ignore
 import { UserList } from '../model/userList';
 // @ts-ignore
+import { UserPreferences } from '../model/userPreferences';
+// @ts-ignore
 import { UserUpdate } from '../model/userUpdate';
 
 // @ts-ignore
@@ -44,6 +48,7 @@ import { BaseService } from '../api.base.service';
 import {
     AuthServiceInterface,
     AuthChangePasswordCreateRequestParams,
+    AuthPreferencesPartialUpdateRequestParams,
     AuthTokenCreateRequestParams,
     AuthTokenRefreshCreateRequestParams,
     AuthUsersCreateRequestParams,
@@ -140,7 +145,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     }
 
     /**
-     * Returns basic info and role permissions for the currently authenticated user.
+     * Returns basic info, role permissions, and user preferences for the currently authenticated user.
      * @endpoint get /auth/me/
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -184,6 +189,134 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         let localVarPath = `/auth/me/`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<MeResponse>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * GET/PATCH /auth/preferences/ — read or update the authenticated user\&#39;s preferences.
+     * @endpoint patch /auth/preferences/
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public authPreferencesPartialUpdate(requestParameters?: AuthPreferencesPartialUpdateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferences>;
+    public authPreferencesPartialUpdate(requestParameters?: AuthPreferencesPartialUpdateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferences>>;
+    public authPreferencesPartialUpdate(requestParameters?: AuthPreferencesPartialUpdateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferences>>;
+    public authPreferencesPartialUpdate(requestParameters?: AuthPreferencesPartialUpdateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const patchedUserPreferences = requestParameters?.patchedUserPreferences;
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (cookieAuth) required
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/auth/preferences/`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<UserPreferences>('patch', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: patchedUserPreferences,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * GET/PATCH /auth/preferences/ — read or update the authenticated user\&#39;s preferences.
+     * @endpoint get /auth/preferences/
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public authPreferencesRetrieve(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserPreferences>;
+    public authPreferencesRetrieve(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserPreferences>>;
+    public authPreferencesRetrieve(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserPreferences>>;
+    public authPreferencesRetrieve(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (cookieAuth) required
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/auth/preferences/`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<UserPreferences>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

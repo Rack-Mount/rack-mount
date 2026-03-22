@@ -7,14 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Role } from './role';
+import { MeasurementSystemEnum } from './measurementSystemEnum';
 
 
-export interface MeResponse { 
-    id: number;
-    username: string;
-    email: string;
-    role: Role | null;
-    measurement_system: string;
+export interface PatchedUserPreferences { 
+    measurement_system?: MeasurementSystemEnum;
 }
+export namespace PatchedUserPreferences {
+}
+
 

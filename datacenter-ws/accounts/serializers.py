@@ -4,6 +4,18 @@ from rest_framework import serializers
 from .models import Role, UserProfile
 
 
+class UserPreferencesSerializer(serializers.Serializer):
+    measurement_system = serializers.ChoiceField(
+        choices=UserProfile.MeasurementSystem.choices,
+    )
+
+    def update(self, instance, validated_data):
+        profile = instance.profile
+        profile.measurement_system = validated_data['measurement_system']
+        profile.save(update_fields=['measurement_system'])
+        return instance
+
+
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role

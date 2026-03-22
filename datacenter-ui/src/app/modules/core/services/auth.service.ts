@@ -12,6 +12,7 @@ import {
 } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { RoleData, RoleService } from './role.service';
+import { MeasurementSystemSetting, SettingsService } from './settings.service';
 
 interface TokenPair {
   access: string;
@@ -28,6 +29,7 @@ const STORAGE_KEYS = {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly roleService = inject(RoleService);
+  private readonly settingsService = inject(SettingsService);
 
   private readonly _accessToken = signal<string>(
     localStorage.getItem(STORAGE_KEYS.access) ?? '',
@@ -68,13 +70,21 @@ export class AuthService {
     this.roleService.clear();
   }
 
-  /** Fetches /auth/me/ and stores the returned role in RoleService. */
+  /** Fetches /auth/me/ and stores the returned role and preferences in their services. */
   fetchAndLoadRole(): Observable<void> {
     return this.http
-      .get<{ role: RoleData }>(`${environment.service_url}/auth/me/`)
+      .get<{
+        role: RoleData;
+        measurement_system?: string;
+      }>(`${environment.service_url}/auth/me/`)
       .pipe(
-        map(({ role }) => {
+        map(({ role, measurement_system }) => {
           if (role) this.roleService.load(role);
+          if (measurement_system) {
+            this.settingsService.loadFromServer(
+              measurement_system as MeasurementSystemSetting,
+            );
+          }
         }),
       );
   }

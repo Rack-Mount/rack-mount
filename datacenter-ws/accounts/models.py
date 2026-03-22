@@ -77,9 +77,15 @@ class Role(models.Model):
 
 class UserProfile(models.Model):
     """
-    Extends the built-in Django User with a role. Created automatically
-    via a post_save signal on User; defaults to the Viewer role.
+    Extends the built-in Django User with a role and user preferences.
+    Created automatically via a post_save signal on User; defaults to the Viewer role.
     """
+
+    class MeasurementSystem(models.TextChoices):
+        AUTO = 'auto', _('Auto')
+        METRIC = 'metric', _('Metric')
+        IMPERIAL = 'imperial', _('Imperial')
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -91,6 +97,12 @@ class UserProfile(models.Model):
         on_delete=models.PROTECT,
         related_name='user_profiles',
         verbose_name=_('Role'),
+    )
+    measurement_system = models.CharField(
+        max_length=10,
+        choices=MeasurementSystem.choices,
+        default=MeasurementSystem.AUTO,
+        verbose_name=_('Measurement System'),
     )
 
     class Meta:

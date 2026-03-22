@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from accounts.models import Role
 from accounts.permissions import IsAdminRole
-from accounts.serializers import RoleSerializer, UserListSerializer, UserCreateSerializer, UserUpdateSerializer, ChangePasswordSerializer
+from accounts.serializers import RoleSerializer, UserListSerializer, UserCreateSerializer, UserUpdateSerializer, ChangePasswordSerializer, UserPreferencesSerializer
 
 
 class UserManagementViewSet(
@@ -68,3 +68,23 @@ class ChangePasswordView(generics.GenericAPIView):
         user.set_password(serializer.validated_data['new_password'])
         user.save()
         return Response({'detail': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+
+
+class UserPreferencesView(generics.GenericAPIView):
+    """GET/PATCH /auth/preferences/ — read or update the authenticated user's preferences."""
+    serializer_class = UserPreferencesSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        data = {
+            'measurement_system': request.user.profile.measurement_system,
+        }
+        serializer = UserPreferencesSerializer(data=data)
+        serializer.is_valid()
+        return Response(serializer.data)
+
+    def patch(self, request):
+        serializer = UserPreferencesSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.update(request.user, serializer.validated_data)
+        return Response(serializer.data)

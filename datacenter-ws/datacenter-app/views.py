@@ -15,10 +15,11 @@ from rest_framework.views import APIView
                 'username': serializers.CharField(),
                 'email': serializers.EmailField(),
                 'role': RoleSerializer(allow_null=True),
+                'measurement_system': serializers.CharField(),
             },
         )
     },
-    description='Returns basic info and role permissions for the currently authenticated user.',
+    description='Returns basic info, role permissions, and user preferences for the currently authenticated user.',
 )
 class MeView(APIView):
     """GET /auth/me/ — available to any authenticated user."""
@@ -26,8 +27,10 @@ class MeView(APIView):
     def get(self, request):
         user = request.user
         role_data = None
+        measurement_system = 'auto'
         try:
             role_data = RoleSerializer(user.profile.role).data
+            measurement_system = user.profile.measurement_system
         except Exception:  # noqa: BLE001 — catches RelatedObjectDoesNotExist and any profile misconfiguration
             pass
 
@@ -36,4 +39,5 @@ class MeView(APIView):
             'username': user.username,
             'email': user.email,
             'role': role_data,
+            'measurement_system': measurement_system,
         })

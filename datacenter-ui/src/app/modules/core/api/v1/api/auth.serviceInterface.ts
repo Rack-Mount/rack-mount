@@ -14,12 +14,14 @@ import { Observable }                                        from 'rxjs';
 import { ChangePassword } from '../model/models';
 import { MeResponse } from '../model/models';
 import { PaginatedUserListList } from '../model/models';
+import { PatchedUserPreferences } from '../model/models';
 import { PatchedUserUpdate } from '../model/models';
 import { Role } from '../model/models';
 import { TokenObtainPair } from '../model/models';
 import { TokenRefresh } from '../model/models';
 import { UserCreate } from '../model/models';
 import { UserList } from '../model/models';
+import { UserPreferences } from '../model/models';
 import { UserUpdate } from '../model/models';
 
 
@@ -28,6 +30,10 @@ import { Configuration }                                     from '../configurat
 
 export interface AuthChangePasswordCreateRequestParams {
     changePassword: ChangePassword;
+}
+
+export interface AuthPreferencesPartialUpdateRequestParams {
+    patchedUserPreferences?: PatchedUserPreferences;
 }
 
 export interface AuthTokenCreateRequestParams {
@@ -80,10 +86,25 @@ export interface AuthServiceInterface {
 
     /**
      * 
-     * Returns basic info and role permissions for the currently authenticated user.
+     * Returns basic info, role permissions, and user preferences for the currently authenticated user.
      * @endpoint get /auth/me/
 */
     authMeRetrieve(extraHttpRequestParams?: any): Observable<MeResponse>;
+
+    /**
+     * 
+     * GET/PATCH /auth/preferences/ — read or update the authenticated user\&#39;s preferences.
+     * @endpoint patch /auth/preferences/
+* @param requestParameters
+     */
+    authPreferencesPartialUpdate(requestParameters: AuthPreferencesPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<UserPreferences>;
+
+    /**
+     * 
+     * GET/PATCH /auth/preferences/ — read or update the authenticated user\&#39;s preferences.
+     * @endpoint get /auth/preferences/
+*/
+    authPreferencesRetrieve(extraHttpRequestParams?: any): Observable<UserPreferences>;
 
     /**
      * 
