@@ -1,6 +1,9 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MeasurementSystem, SettingsService } from '../services/settings.service';
+import {
+  MeasurementSystem,
+  SettingsService,
+} from '../services/settings.service';
 
 export type MeasurementType = 'distance' | 'area' | 'angle';
 
@@ -29,10 +32,15 @@ export class MeasurementPipe implements PipeTransform {
   private get effectiveSystem(): MeasurementSystem {
     const setting = this.settings.measurementSystemSetting();
     if (setting !== 'auto') return setting;
-    return IMPERIAL_LANGS.has(this.translate.currentLang) ? 'imperial' : 'metric';
+    return IMPERIAL_LANGS.has(this.translate.currentLang)
+      ? 'imperial'
+      : 'metric';
   }
 
-  transform(value: number | null | undefined, type: MeasurementType = 'distance'): string {
+  transform(
+    value: number | null | undefined,
+    type: MeasurementType = 'distance',
+  ): string {
     if (value == null || Number.isNaN(value)) return '';
 
     if (type === 'angle') {
