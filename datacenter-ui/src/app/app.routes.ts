@@ -88,11 +88,11 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'change-password',
+    path: 'options',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./modules/core/components/change-password/change-password.component').then(
-        (m) => m.ChangePasswordComponent,
+      import('./modules/core/components/options/options.component').then(
+        (m) => m.OptionsComponent,
       ),
   },
   {

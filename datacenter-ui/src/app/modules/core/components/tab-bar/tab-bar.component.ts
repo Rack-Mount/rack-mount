@@ -19,7 +19,7 @@ const TAB_ICONS: Record<string, string> = {
   components: '🔌',
   racks: '🗄️',
   admin: '👥',
-  'change-password': '🔑',
+  options: '⚙️',
   home: '🏠',
 };
 

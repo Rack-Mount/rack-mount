@@ -13,7 +13,7 @@ export interface PanelTab {
     | 'room'
     | 'rack'
     | 'admin'
-    | 'change-password'
+    | 'options'
     | 'asset';
   roomId?: number;
   rackName?: string;

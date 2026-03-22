@@ -33,6 +33,7 @@ export class TabService {
       models: 'tabs.models',
       components: 'tabs.components',
       racks: 'tabs.racks',
+      options: 'tabs.options',
     };
     try {
       const raw = localStorage.getItem(LS_TABS_KEY);
@@ -40,9 +41,21 @@ export class TabService {
       return raw
         ? (JSON.parse(raw) as PanelTab[])
             .filter((t) => !RESERVED.has(t.id))
+            // Migrate old change-password tab to options
+            .map((t) =>
+              t.id === 'change-password'
+                ? {
+                    ...t,
+                    id: 'options',
+                    label: 'Options',
+                    labelKey: 'tabs.options',
+                    type: 'options' as const,
+                  }
+                : t,
+            )
             .filter((t) => this.isTabAllowed(t))
             .map((t) =>
-              STATIC_LABEL_KEYS[t.id] && !t.labelKey
+              STATIC_LABEL_KEYS[t.id]
                 ? { ...t, labelKey: STATIC_LABEL_KEYS[t.id] }
                 : t,
             )
@@ -290,22 +303,22 @@ export class TabService {
     });
   }
 
-  openChangePassword(): void {
+  openOptions(): void {
     this.openTab({
-      id: 'change-password',
-      label: 'Password',
-      labelKey: 'tabs.change_password',
-      type: 'change-password',
+      id: 'options',
+      label: 'Options',
+      labelKey: 'tabs.options',
+      type: 'options',
       pinned: false,
     });
   }
 
-  ensureChangePasswordTab(): void {
+  ensureOptionsTab(): void {
     this.ensureTab({
-      id: 'change-password',
-      label: 'Password',
-      labelKey: 'tabs.change_password',
-      type: 'change-password',
+      id: 'options',
+      label: 'Options',
+      labelKey: 'tabs.options',
+      type: 'options',
       pinned: false,
     });
   }

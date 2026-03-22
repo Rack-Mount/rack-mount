@@ -502,7 +502,8 @@
     "components": "组件",
     "racks": "机柜",
     "admin": "用户",
-    "change_password": "密码"
+    "change_password": "密码",
+    "options": "用户选项"
   },
   "asset_row": {
     "section_device": "设备",

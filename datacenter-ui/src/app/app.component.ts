@@ -34,7 +34,7 @@ const STATIC_TAB_PATHS: Record<string, string[]> = {
   components: ['/components'],
   racks: ['/racks'],
   admin: ['/admin'],
-  'change-password': ['/change-password'],
+  options: ['/options'],
 };
 
 /**
@@ -48,7 +48,7 @@ const STATIC_TABS = new Set([
   'components',
   'racks',
   'admin',
-  'change-password',
+  'options',
   'not-found',
 ]);
 
@@ -228,9 +228,9 @@ export class AppComponent implements OnInit {
         this.tabService.ensureAdminTab();
         this.activeTabId.set('admin');
       },
-      'change-password': () => {
-        this.tabService.ensureChangePasswordTab();
-        this.activeTabId.set('change-password');
+      options: () => {
+        this.tabService.ensureOptionsTab();
+        this.activeTabId.set('options');
       },
       'not-found': () => {
         this.activeTabId.set('not-found');

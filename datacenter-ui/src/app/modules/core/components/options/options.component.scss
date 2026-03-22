@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+}
+
+.options-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}

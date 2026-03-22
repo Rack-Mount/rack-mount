@@ -27,8 +27,8 @@ export class HeaderComponent {
     this.tabService.openAdmin();
   }
 
-  protected openChangePassword(): void {
-    this.tabService.openChangePassword();
+  protected openOptions(): void {
+    this.tabService.openOptions();
   }
 
   protected logout(): void {

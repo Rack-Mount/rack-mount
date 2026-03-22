@@ -502,7 +502,8 @@
     "components": "Components",
     "racks": "Racks",
     "admin": "Users",
-    "change_password": "Password"
+    "change_password": "Password",
+    "options": "User Options"
   },
   "asset_row": {
     "section_device": "Device",

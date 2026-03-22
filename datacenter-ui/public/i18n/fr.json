@@ -502,7 +502,8 @@
     "components": "Composants",
     "racks": "Baies",
     "admin": "Utilisateurs",
-    "change_password": "Mot de passe"
+    "change_password": "Mot de passe",
+    "options": "Options Utilisateur"
   },
   "asset_row": {
     "section_device": "Équipement",
