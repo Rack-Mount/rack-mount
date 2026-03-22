@@ -274,11 +274,15 @@ PRIVATE_MEDIA_SUBDIR = 'private'
 # Signed URL expiry (3 days by default)
 SIGNED_URL_EXPIRY_SECONDS = 3 * 24 * 60 * 60  # 3 days
 
-# Signed URL secret key (auto-generated if not set; should be in env for production)
-SIGNED_URL_SECRET = os.environ.get(
-    'SIGNED_URL_SECRET',
-    'default-dev-key-change-in-production'  # ALWAYS override in production
-)
+# Signed URL secret key.
+# In production this must be explicitly configured via environment.
+SIGNED_URL_SECRET = os.environ.get('SIGNED_URL_SECRET', '').strip()
+if not SIGNED_URL_SECRET:
+    if DEBUG:
+        # Dev-only fallback to avoid hardcoded test secrets.
+        SIGNED_URL_SECRET = SECRET_KEY
+    else:
+        raise RuntimeError('SIGNED_URL_SECRET must be set when DEBUG=False')
 
 
 X_FRAME_OPTIONS = 'DENY'

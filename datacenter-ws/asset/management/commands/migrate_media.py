@@ -7,7 +7,7 @@ import os
 import shutil
 from pathlib import Path
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.conf import settings
 
 
@@ -67,12 +67,10 @@ class Command(BaseCommand):
                 )
 
                 if is_training:
-                    dest_subdir = private_dir
                     dest_rel = Path(private_subdir) / rel_path
                     action_str = "→ private"
                     migrated_private += 1
                 else:
-                    dest_subdir = public_dir
                     dest_rel = Path(public_subdir) / rel_path
                     action_str = "→ public"
                     migrated_public += 1
@@ -93,7 +91,10 @@ class Command(BaseCommand):
                             self.style.ERROR(f'  ERROR: {e}')
                         )
                         skipped += 1
-                        migrated_private -= 1 if is_training else migrated_public -= 1
+                        if is_training:
+                            migrated_private -= 1
+                        else:
+                            migrated_public -= 1
 
         # Summary
         summary = (

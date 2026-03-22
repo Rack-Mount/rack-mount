@@ -133,3 +133,20 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True, min_length=8)
+
+
+class LogoutRequestSerializer(serializers.Serializer):
+    refresh = serializers.CharField(required=True)
+
+
+class AuthDetailSerializer(serializers.Serializer):
+    detail = serializers.CharField()
+
+
+class CookieTokenObtainRequestSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
+
+
+class CookieTokenObtainResponseSerializer(AuthDetailSerializer):
+    username = serializers.CharField()

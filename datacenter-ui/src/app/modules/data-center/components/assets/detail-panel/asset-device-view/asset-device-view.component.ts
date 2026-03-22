@@ -10,6 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
 import { environment } from '../../../../../../../environments/environment';
 import { Asset, AssetService } from '../../../../../core/api/v1';
+import { MediaUrlService } from '../../../../../core/services/media-url.service';
 import { formatDate, stateColor } from '../../assets-list/assets-list-utils';
 
 type LoadState =
@@ -29,6 +30,7 @@ export class AssetDeviceViewComponent {
   readonly assetId = input.required<number>();
 
   private readonly assetService = inject(AssetService);
+  private readonly mediaUrlService = inject(MediaUrlService);
 
   protected readonly serviceUrl = environment.service_url;
   protected readonly stateColor = stateColor;
@@ -53,27 +55,39 @@ export class AssetDeviceViewComponent {
     return s.status === 'loaded' ? s.asset : null;
   });
 
-  protected readonly frontImage = computed(() => {
+  private readonly frontImagePath = computed(() => {
     const a = this.asset();
     if (!a) return null;
     const img = a.model.front_image;
     if (!img) return null;
-    const base = img.startsWith('http')
-      ? img
-      : `${this.serviceUrl}/files/${img}`;
-    return `${base}?w=960`;
+    return img;
   });
 
-  protected readonly rearImage = computed(() => {
+  private readonly rearImagePath = computed(() => {
     const a = this.asset();
     if (!a) return null;
     const img = a.model.rear_image;
     if (!img) return null;
-    const base = img.startsWith('http')
-      ? img
-      : `${this.serviceUrl}/files/${img}`;
-    return `${base}?w=960`;
+    return img;
   });
+
+  protected readonly frontImage = toSignal(
+    toObservable(this.frontImagePath).pipe(
+      switchMap((img) =>
+        img ? this.mediaUrlService.resolveImageUrl(img, 960) : of(null),
+      ),
+    ),
+    { initialValue: null },
+  );
+
+  protected readonly rearImage = toSignal(
+    toObservable(this.rearImagePath).pipe(
+      switchMap((img) =>
+        img ? this.mediaUrlService.resolveImageUrl(img, 960) : of(null),
+      ),
+    ),
+    { initialValue: null },
+  );
 
   protected readonly typeIcon = computed(() => {
     const a = this.asset();

@@ -12,3 +12,4 @@ from .AssetCustomFieldViewSet import AssetCustomFieldViewSet
 from .GenericComponentViewSet import GenericComponentViewSet
 from .PortAnalyzeView import PortAnalyzeView
 from .PortAnnotateView import PortAnnotateView
+from .PrivateMediaSignedUrlView import PrivateMediaSignedUrlView

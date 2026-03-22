@@ -11,7 +11,11 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { AuthDetail } from '../model/models';
 import { ChangePassword } from '../model/models';
+import { CookieTokenObtainRequest } from '../model/models';
+import { CookieTokenObtainResponse } from '../model/models';
+import { LogoutRequest } from '../model/models';
 import { MeResponse } from '../model/models';
 import { PaginatedUserListList } from '../model/models';
 import { PatchedUserPreferences } from '../model/models';
@@ -30,8 +34,16 @@ export interface AuthChangePasswordCreateRequestParams {
     changePassword: ChangePassword;
 }
 
+export interface AuthLogoutCreateRequestParams {
+    logoutRequest: LogoutRequest;
+}
+
 export interface AuthPreferencesPartialUpdateRequestParams {
     patchedUserPreferences?: PatchedUserPreferences;
+}
+
+export interface AuthTokenCreateRequestParams {
+    cookieTokenObtainRequest: CookieTokenObtainRequest;
 }
 
 export interface AuthUsersCreateRequestParams {
@@ -78,8 +90,9 @@ export interface AuthServiceInterface {
      * 
      * POST /auth/logout/  Invalidate the current refresh token (add to blacklist). Subsequent refresh attempts will fail, forcing re-authentication.
      * @endpoint post /auth/logout/
-*/
-    authLogoutCreate(extraHttpRequestParams?: any): Observable<{}>;
+* @param requestParameters
+     */
+    authLogoutCreate(requestParameters: AuthLogoutCreateRequestParams, extraHttpRequestParams?: any): Observable<AuthDetail>;
 
     /**
      * 
@@ -112,17 +125,25 @@ export interface AuthServiceInterface {
 
     /**
      * 
+     * POST /auth/token/blacklist/  Invalidate refresh token from cookie and add to blacklist. Clear cookies on frontend.
+     * @endpoint post /auth/token/blacklist/
+*/
+    authTokenBlacklistCreate(extraHttpRequestParams?: any): Observable<AuthDetail>;
+
+    /**
+     * 
      * POST /auth/token/  Accept username + password credentials. Return access + refresh tokens via HttpOnly, Secure, SameSite&#x3D;Strict cookies. Minimal JSON response for frontend confirmation.
      * @endpoint post /auth/token/
-*/
-    authTokenCreate(extraHttpRequestParams?: any): Observable<{}>;
+* @param requestParameters
+     */
+    authTokenCreate(requestParameters: AuthTokenCreateRequestParams, extraHttpRequestParams?: any): Observable<CookieTokenObtainResponse>;
 
     /**
      * 
      * POST /auth/token/refresh/  Accept refresh token from HttpOnly cookie. Return new access token via HttpOnly cookie. Requires no request body (cookie handled automatically).
      * @endpoint post /auth/token/refresh/
 */
-    authTokenRefreshCreate(extraHttpRequestParams?: any): Observable<{}>;
+    authTokenRefreshCreate(extraHttpRequestParams?: any): Observable<AuthDetail>;
 
     /**
      * 

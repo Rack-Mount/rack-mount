@@ -17,7 +17,15 @@ import { Observable }                                        from 'rxjs';
 import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
+import { AuthDetail } from '../model/authDetail';
+// @ts-ignore
 import { ChangePassword } from '../model/changePassword';
+// @ts-ignore
+import { CookieTokenObtainRequest } from '../model/cookieTokenObtainRequest';
+// @ts-ignore
+import { CookieTokenObtainResponse } from '../model/cookieTokenObtainResponse';
+// @ts-ignore
+import { LogoutRequest } from '../model/logoutRequest';
 // @ts-ignore
 import { MeResponse } from '../model/meResponse';
 // @ts-ignore
@@ -44,7 +52,9 @@ import { BaseService } from '../api.base.service';
 import {
     AuthServiceInterface,
     AuthChangePasswordCreateRequestParams,
+    AuthLogoutCreateRequestParams,
     AuthPreferencesPartialUpdateRequestParams,
+    AuthTokenCreateRequestParams,
     AuthUsersCreateRequestParams,
     AuthUsersDestroyRequestParams,
     AuthUsersListRequestParams,
@@ -82,6 +92,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -141,16 +153,23 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     /**
      * POST /auth/logout/  Invalidate the current refresh token (add to blacklist). Subsequent refresh attempts will fail, forcing re-authentication.
      * @endpoint post /auth/logout/
+     * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public authLogoutCreate(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public authLogoutCreate(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public authLogoutCreate(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public authLogoutCreate(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public authLogoutCreate(requestParameters: AuthLogoutCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthDetail>;
+    public authLogoutCreate(requestParameters: AuthLogoutCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthDetail>>;
+    public authLogoutCreate(requestParameters: AuthLogoutCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthDetail>>;
+    public authLogoutCreate(requestParameters: AuthLogoutCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const logoutRequest = requestParameters?.logoutRequest;
+        if (logoutRequest === null || logoutRequest === undefined) {
+            throw new Error('Required parameter logoutRequest was null or undefined when calling authLogoutCreate.');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -158,6 +177,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -167,6 +187,17 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
         const localVarTransferCache: boolean = options?.transferCache ?? true;
 
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
         if (localVarHttpHeaderAcceptSelected) {
@@ -181,9 +212,10 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
         let localVarPath = `/auth/logout/`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<AuthDetail>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                body: logoutRequest,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -207,6 +239,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     public authMeRetrieve(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -266,6 +300,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         const patchedUserPreferences = requestParameters?.patchedUserPreferences;
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -336,6 +372,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -393,6 +431,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -437,18 +477,20 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     }
 
     /**
-     * POST /auth/token/  Accept username + password credentials. Return access + refresh tokens via HttpOnly, Secure, SameSite&#x3D;Strict cookies. Minimal JSON response for frontend confirmation.
-     * @endpoint post /auth/token/
+     * POST /auth/token/blacklist/  Invalidate refresh token from cookie and add to blacklist. Clear cookies on frontend.
+     * @endpoint post /auth/token/blacklist/
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public authTokenCreate(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public authTokenCreate(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public authTokenCreate(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public authTokenCreate(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public authTokenBlacklistCreate(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthDetail>;
+    public authTokenBlacklistCreate(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthDetail>>;
+    public authTokenBlacklistCreate(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthDetail>>;
+    public authTokenBlacklistCreate(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -456,6 +498,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -477,11 +520,87 @@ export class AuthService extends BaseService implements AuthServiceInterface {
             }
         }
 
-        let localVarPath = `/auth/token/`;
+        let localVarPath = `/auth/token/blacklist/`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<AuthDetail>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * POST /auth/token/  Accept username + password credentials. Return access + refresh tokens via HttpOnly, Secure, SameSite&#x3D;Strict cookies. Minimal JSON response for frontend confirmation.
+     * @endpoint post /auth/token/
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public authTokenCreate(requestParameters: AuthTokenCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CookieTokenObtainResponse>;
+    public authTokenCreate(requestParameters: AuthTokenCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CookieTokenObtainResponse>>;
+    public authTokenCreate(requestParameters: AuthTokenCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CookieTokenObtainResponse>>;
+    public authTokenCreate(requestParameters: AuthTokenCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const cookieTokenObtainRequest = requestParameters?.cookieTokenObtainRequest;
+        if (cookieTokenObtainRequest === null || cookieTokenObtainRequest === undefined) {
+            throw new Error('Required parameter cookieTokenObtainRequest was null or undefined when calling authTokenCreate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
+
+        // authentication (cookieAuth) required
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/auth/token/`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<CookieTokenObtainResponse>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: cookieTokenObtainRequest,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -499,12 +618,14 @@ export class AuthService extends BaseService implements AuthServiceInterface {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public authTokenRefreshCreate(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public authTokenRefreshCreate(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public authTokenRefreshCreate(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public authTokenRefreshCreate(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public authTokenRefreshCreate(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AuthDetail>;
+    public authTokenRefreshCreate(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AuthDetail>>;
+    public authTokenRefreshCreate(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AuthDetail>>;
+    public authTokenRefreshCreate(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -512,6 +633,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -535,7 +657,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
         let localVarPath = `/auth/token/refresh/`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<AuthDetail>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -566,6 +688,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -640,6 +764,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -720,6 +846,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -783,6 +911,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         const patchedUserUpdate = requestParameters?.patchedUserUpdate;
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -858,6 +988,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -920,6 +1052,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         const userUpdate = requestParameters?.userUpdate;
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 

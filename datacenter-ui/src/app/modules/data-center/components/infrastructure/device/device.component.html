@@ -11,12 +11,12 @@
     <!-- Coloured accent bar on the left edge (always visible) -->
     <div class="device__type-bar" aria-hidden="true"></div>
 
-    @if (activeImage(); as img) {
+    @if (activeImageUrl(); as img) {
       <!-- ── Front/rear-panel image mode: full-bleed photo ── -->
       <div class="device__panel">
         <img
           class="device__panel-img"
-          [src]="serviceUrl + '/files/' + img + '?w=320'"
+          [src]="img"
           [alt]="dev.device_hostname"
           loading="lazy"
         />

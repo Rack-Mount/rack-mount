@@ -23,11 +23,15 @@ model/assetModelPort.ts
 model/assetRack.ts
 model/assetState.ts
 model/assetType.ts
+model/authDetail.ts
 model/changePassword.ts
 model/componentTypeEnum.ts
+model/cookieTokenObtainRequest.ts
+model/cookieTokenObtainResponse.ts
 model/genericComponent.ts
 model/location.ts
 model/locationCustomField.ts
+model/logoutRequest.ts
 model/meResponse.ts
 model/measurementSystemEnum.ts
 model/models.ts
@@ -73,6 +77,8 @@ model/portClickAnalyzeResponse.ts
 model/portCorrectionRequest.ts
 model/portCorrectionResponse.ts
 model/portTypeEnum.ts
+model/privateMediaSignedUrlRequest.ts
+model/privateMediaSignedUrlResponse.ts
 model/rack.ts
 model/rackType.ts
 model/rackUnit.ts

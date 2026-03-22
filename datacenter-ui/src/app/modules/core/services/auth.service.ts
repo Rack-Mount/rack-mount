@@ -142,7 +142,10 @@ export class AuthService {
         map(() => undefined),
         catchError((err) => {
           this._isRefreshing = false;
-          this.logout();
+          this.logout().subscribe({
+            next: () => {},
+            error: () => {},
+          });
           return throwError(() => err);
         }),
       );

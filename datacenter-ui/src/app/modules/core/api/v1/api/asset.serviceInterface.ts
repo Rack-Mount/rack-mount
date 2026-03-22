@@ -50,6 +50,8 @@ import { PortClickAnalyzeRequest } from '../model/models';
 import { PortClickAnalyzeResponse } from '../model/models';
 import { PortCorrectionRequest } from '../model/models';
 import { PortCorrectionResponse } from '../model/models';
+import { PrivateMediaSignedUrlRequest } from '../model/models';
+import { PrivateMediaSignedUrlResponse } from '../model/models';
 import { Rack } from '../model/models';
 import { RackType } from '../model/models';
 import { RackUnit } from '../model/models';
@@ -325,6 +327,10 @@ export interface AssetPortClickAnalyzeCreateRequestParams {
 
 export interface AssetPortCorrectionCreateRequestParams {
     portCorrectionRequest: PortCorrectionRequest;
+}
+
+export interface AssetPrivateMediaUrlCreateRequestParams {
+    privateMediaSignedUrlRequest: PrivateMediaSignedUrlRequest;
 }
 
 export interface AssetRackCreateRequestParams {
@@ -908,6 +914,14 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetPortCorrectionCreate(requestParameters: AssetPortCorrectionCreateRequestParams, extraHttpRequestParams?: any): Observable<PortCorrectionResponse>;
+
+    /**
+     * 
+     * POST /asset/private-media-url  Returns a short-lived signed URL for files under PRIVATE_MEDIA_SUBDIR.
+     * @endpoint post /asset/private-media-url
+* @param requestParameters
+     */
+    assetPrivateMediaUrlCreate(requestParameters: AssetPrivateMediaUrlCreateRequestParams, extraHttpRequestParams?: any): Observable<PrivateMediaSignedUrlResponse>;
 
     /**
      * 

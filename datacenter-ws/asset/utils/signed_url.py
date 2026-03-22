@@ -9,11 +9,18 @@ Signature: HMAC-SHA256(secret, filename + expire)
 import hashlib
 import hmac
 import time
-from datetime import datetime, timedelta, timezone
-from urllib.parse import urlencode, parse_qs
+from datetime import datetime, timezone
+from urllib.parse import urlencode
 from typing import Optional, Tuple
 
 from django.conf import settings
+
+
+def _get_signing_secret() -> str:
+    secret = getattr(settings, 'SIGNED_URL_SECRET', '')
+    if not secret:
+        raise RuntimeError('SIGNED_URL_SECRET is not configured')
+    return secret
 
 
 def generate_signed_url(
@@ -43,7 +50,7 @@ def generate_signed_url(
     expire_ts = int(time.time()) + expiry_seconds
 
     # Generate signature: HMAC-SHA256(secret, filename + expire)
-    secret = getattr(settings, 'SIGNED_URL_SECRET', 'default-dev-key')
+    secret = _get_signing_secret()
     message = f'{filename}:{expire_ts}'.encode()
     signature = hmac.new(
         secret.encode(),
@@ -97,7 +104,10 @@ def verify_signed_url(
         return False, f"URL signature expired at {datetime.fromtimestamp(expire_ts, tz=timezone.utc).isoformat()}"
 
     # Verify signature
-    secret = getattr(settings, 'SIGNED_URL_SECRET', 'default-dev-key')
+    try:
+        secret = _get_signing_secret()
+    except RuntimeError:
+        return False, 'Signing secret is not configured'
     message = f'{filename}:{expire_ts}'.encode()
     expected_signature = hmac.new(
         secret.encode(),

@@ -7,8 +7,11 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { of, switchMap } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 import { RackUnit } from '../../../../core/api/v1';
+import { MediaUrlService } from '../../../../core/services/media-url.service';
 
 /**
  * Maps device_type names (case-insensitive) to a CSS modifier class
@@ -62,6 +65,7 @@ export class DeviceComponent {
 
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly mediaUrlService = inject(MediaUrlService);
 
   /** CSS modifier class derived from device_type (e.g. 'server', 'switch'). */
   protected readonly typeClass = computed(() => {
@@ -78,6 +82,15 @@ export class DeviceComponent {
     }
     return dev.device_image || dev.device_rear_image || null;
   });
+
+  protected readonly activeImageUrl = toSignal(
+    toObservable(this.activeImage).pipe(
+      switchMap((img) =>
+        img ? this.mediaUrlService.resolveImageUrl(img, 320) : of(null),
+      ),
+    ),
+    { initialValue: null },
+  );
 
   /** Fallback icon when the device has no front image. */
   protected readonly typeIcon = computed(() => {

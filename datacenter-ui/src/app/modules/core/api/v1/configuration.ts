@@ -92,6 +92,17 @@ constructor({ accessToken, apiKeys, basePath, credentials, encodeParam, encoder,
         this.encodeParam = encodeParam ?? (param => this.defaultEncodeParam(param));
         this.credentials = credentials ?? {};
 
+        // init default CookieJWTAuth credential
+        if (!this.credentials['CookieJWTAuth']) {
+            this.credentials['CookieJWTAuth'] = () => {
+                if (this.apiKeys === null || this.apiKeys === undefined) {
+                    return undefined;
+                } else {
+                    return this.apiKeys['CookieJWTAuth'] || this.apiKeys['access_token'];
+                }
+            };
+        }
+
         // init default cookieAuth credential
         if (!this.credentials['cookieAuth']) {
             this.credentials['cookieAuth'] = () => {

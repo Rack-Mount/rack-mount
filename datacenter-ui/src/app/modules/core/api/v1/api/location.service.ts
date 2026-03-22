@@ -91,6 +91,8 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -164,6 +166,8 @@ export class LocationService extends BaseService implements LocationServiceInter
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -284,6 +288,8 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -347,6 +353,8 @@ export class LocationService extends BaseService implements LocationServiceInter
         const patchedLocation = requestParameters?.patchedLocation;
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -422,6 +430,8 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -487,6 +497,8 @@ export class LocationService extends BaseService implements LocationServiceInter
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -562,6 +574,8 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -635,6 +649,8 @@ export class LocationService extends BaseService implements LocationServiceInter
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -745,6 +761,8 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -808,6 +826,8 @@ export class LocationService extends BaseService implements LocationServiceInter
         const patchedLocationCustomField = requestParameters?.patchedLocationCustomField;
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -883,6 +903,8 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -948,6 +970,8 @@ export class LocationService extends BaseService implements LocationServiceInter
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -1023,6 +1047,8 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -1096,6 +1122,8 @@ export class LocationService extends BaseService implements LocationServiceInter
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -1216,6 +1244,8 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -1279,6 +1309,8 @@ export class LocationService extends BaseService implements LocationServiceInter
         const patchedRoom = requestParameters?.patchedRoom;
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 
@@ -1354,6 +1386,8 @@ export class LocationService extends BaseService implements LocationServiceInter
 
         let localVarHeaders = this.defaultHeaders;
 
+        // authentication (CookieJWTAuth) required
+
         // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
@@ -1419,6 +1453,8 @@ export class LocationService extends BaseService implements LocationServiceInter
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
 
         // authentication (cookieAuth) required
 

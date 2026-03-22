@@ -3,13 +3,25 @@ from rest_framework import generics, viewsets, mixins, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from accounts.models import Role
 from accounts.permissions import IsAdminRole
-from accounts.serializers import RoleSerializer, UserListSerializer, UserCreateSerializer, UserUpdateSerializer, ChangePasswordSerializer, UserPreferencesSerializer
+from accounts.serializers import (
+    RoleSerializer,
+    UserListSerializer,
+    UserCreateSerializer,
+    UserUpdateSerializer,
+    ChangePasswordSerializer,
+    UserPreferencesSerializer,
+    LogoutRequestSerializer,
+    AuthDetailSerializer,
+    CookieTokenObtainRequestSerializer,
+    CookieTokenObtainResponseSerializer,
+)
 
 
 class UserManagementViewSet(
@@ -103,6 +115,14 @@ class LogoutView(APIView):
     """
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['auth'],
+        request=LogoutRequestSerializer,
+        responses={
+            200: AuthDetailSerializer,
+            400: AuthDetailSerializer,
+        },
+    )
     def post(self, request):
         try:
             refresh_token = request.data.get('refresh')
@@ -134,6 +154,15 @@ class CookieTokenObtainView(APIView):
     """
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=['auth'],
+        request=CookieTokenObtainRequestSerializer,
+        responses={
+            200: CookieTokenObtainResponseSerializer,
+            400: AuthDetailSerializer,
+            401: AuthDetailSerializer,
+        },
+    )
     def post(self, request):
         from django.contrib.auth import authenticate
         username = request.data.get('username')
@@ -198,6 +227,14 @@ class CookieTokenRefreshView(APIView):
     """
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=['auth'],
+        request=None,
+        responses={
+            200: AuthDetailSerializer,
+            401: AuthDetailSerializer,
+        },
+    )
     def post(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
 
@@ -244,6 +281,14 @@ class CookieTokenBlacklistView(APIView):
     """
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['auth'],
+        request=None,
+        responses={
+            200: AuthDetailSerializer,
+            400: AuthDetailSerializer,
+        },
+    )
     def post(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
 

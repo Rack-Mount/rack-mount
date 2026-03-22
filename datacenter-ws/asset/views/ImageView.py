@@ -3,9 +3,9 @@ import os
 import pathlib
 
 from django.conf import settings
-from django.http import FileResponse, Http404, HttpResponse
+from django.http import FileResponse, Http404
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from PIL import Image
@@ -54,7 +54,8 @@ class ImageView(APIView):
         # ─── Private File Access Control ─────────────────────────────────────
         # Check if file is in private subdirectory; if so, validate signature
         private_subdir = getattr(settings, 'PRIVATE_MEDIA_SUBDIR', 'private')
-        if filename.startswith(private_subdir + '/'):
+        is_private = filename.startswith(private_subdir + '/')
+        if is_private:
             # Private file: require authentication + valid signature
             if not request.user or not request.user.is_authenticated:
                 return Response(
@@ -72,8 +73,10 @@ class ImageView(APIView):
                     status=403
                 )
 
+            relative_private_path = filename[len(private_subdir) + 1:]
+
             is_valid, error_msg = verify_signed_url(
-                filename, signature, expire_ts_str)
+                relative_private_path, signature, expire_ts_str)
             if not is_valid:
                 return Response(
                     {'detail': f'Invalid or expired signature: {error_msg}'},
@@ -97,20 +100,23 @@ class ImageView(APIView):
                 (w for w in ALLOWED_WIDTHS if w <= requested_w),
                 default=min(ALLOWED_WIDTHS),
             )
-            return self._serve_resized(original_path, media_root, filename, width)
+            return self._serve_resized(original_path, media_root, filename, width, is_private)
 
-        return self._serve_file(original_path)
+        return self._serve_file(original_path, is_private)
 
     # ── Helpers ───────────────────────────────────────────────────────────────
 
-    def _serve_file(self, path):
+    def _serve_file(self, path, is_private=False):
         f = open(path, 'rb')
         content_type = self._content_type(path)
         response = FileResponse(f, content_type=content_type)
-        response['Cache-Control'] = 'public, max-age=31536000, immutable'
+        if is_private:
+            response['Cache-Control'] = 'private, no-store'
+        else:
+            response['Cache-Control'] = 'public, max-age=31536000, immutable'
         return response
 
-    def _serve_resized(self, original_path, media_root, filename, width):
+    def _serve_resized(self, original_path, media_root, filename, width, is_private=False):
         # Build a dedicated cache root under MEDIA_ROOT and normalise
         cache_root = os.path.realpath(os.path.join(media_root, CACHE_SUBDIR))
         cache_rel = os.path.join(f'w{width}', filename)
@@ -127,7 +133,7 @@ class ImageView(APIView):
                     orig_w, orig_h = img.size
                     if orig_w <= width:
                         # Already smaller — serve original, no point caching
-                        return self._serve_file(original_path)
+                        return self._serve_file(original_path, is_private)
                     ratio = width / orig_w
                     new_h = max(1, int(orig_h * ratio))
                     resized = img.resize(
@@ -154,9 +160,9 @@ class ImageView(APIView):
                     resized.save(cache_path, format=fmt, **save_kwargs)
             except Exception:
                 # If anything goes wrong fall back to original
-                return self._serve_file(original_path)
+                return self._serve_file(original_path, is_private)
 
-        return self._serve_file(cache_path)
+        return self._serve_file(cache_path, is_private)
 
     @staticmethod
     def _is_safe_relpath(relpath: str) -> bool:

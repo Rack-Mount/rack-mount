@@ -5,12 +5,12 @@
 >
   <div class="gslot__type-bar" aria-hidden="true"></div>
 
-  @if (activeImage(); as img) {
+  @if (activeImageUrl(); as img) {
     <!-- Front/rear-panel image mode: full-bleed photo -->
     <div class="gslot__panel">
       <img
         class="gslot__panel-img"
-        [src]="serviceUrl + '/files/' + img + '?w=320'"
+        [src]="img"
         [alt]="rackUnit().generic_component_name"
         loading="lazy"
       />

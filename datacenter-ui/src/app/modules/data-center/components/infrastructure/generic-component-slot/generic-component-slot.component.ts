@@ -6,8 +6,11 @@ import {
   input,
   output,
 } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { of, switchMap } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 import { RackUnit } from '../../../../core/api/v1';
+import { MediaUrlService } from '../../../../core/services/media-url.service';
 import { RoleService } from '../../../../core/services/role.service';
 
 const TYPE_CLASS_MAP: Record<string, string> = {
@@ -51,6 +54,7 @@ export class GenericComponentSlotComponent {
 
   protected readonly role = inject(RoleService);
   protected readonly serviceUrl = environment.service_url;
+  private readonly mediaUrlService = inject(MediaUrlService);
 
   protected readonly typeClass = computed(() => {
     const t = this.rackUnit().generic_component_type ?? '';
@@ -78,6 +82,15 @@ export class GenericComponentSlotComponent {
       null
     );
   });
+
+  protected readonly activeImageUrl = toSignal(
+    toObservable(this.activeImage).pipe(
+      switchMap((img) =>
+        img ? this.mediaUrlService.resolveImageUrl(img, 320) : of(null),
+      ),
+    ),
+    { initialValue: null },
+  );
 
   protected onRemove(event: MouseEvent): void {
     event.stopPropagation();
