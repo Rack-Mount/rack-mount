@@ -1,4 +1,3 @@
-import { DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   AfterViewInit,
@@ -16,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 import { RackType } from '../../../../core/api/v1/model/rackType';
+import { MeasurementPipe } from '../../../../core/pipes/measurement.pipe';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
 import { RoleService } from '../../../../core/services/role.service';
 import { TabService } from '../../../../core/services/tab.service';
@@ -74,7 +74,7 @@ import {
   selector: 'app-map',
   standalone: true,
   imports: [
-    DecimalPipe,
+    MeasurementPipe,
     FormsModule,
     MapSidebarComponent,
     MapFloorPlanToolbarComponent,
