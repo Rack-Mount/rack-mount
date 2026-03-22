@@ -593,5 +593,14 @@
     "success": "Password aggiornata con successo.",
     "change_again": "Cambia di nuovo",
     "error_mismatch": "Le password non coincidono."
+  },
+  "settings": {
+    "preferences_title": "Preferenze",
+    "units_label": "Sistema di misura",
+    "units_auto": "Auto",
+    "units_auto_hint": "Il sistema viene derivato dalla lingua selezionata",
+    "units_auto_desc": "Automatico — segue la lingua selezionata",
+    "units_metric": "Metrico",
+    "units_imperial": "Imperiale"
   }
 }

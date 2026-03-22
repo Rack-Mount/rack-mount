@@ -593,5 +593,14 @@
     "success": "密码已成功更新。",
     "change_again": "再次修改",
     "error_mismatch": "两次输入的密码不一致。"
+  },
+  "settings": {
+    "preferences_title": "偏好设置",
+    "units_label": "计量制度",
+    "units_auto": "自动",
+    "units_auto_hint": "系统根据所选语言自动确定",
+    "units_auto_desc": "自动 — 跟随所选语言",
+    "units_metric": "公制",
+    "units_imperial": "英制"
   }
 }

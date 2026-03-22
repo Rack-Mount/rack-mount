@@ -10,6 +10,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { BackendErrorService } from '../../services/backend-error.service';
+import {
+  MeasurementSystemSetting,
+  SettingsService,
+} from '../../services/settings.service';
 
 type SaveState = 'idle' | 'saving' | 'success' | 'error';
 
@@ -24,6 +28,13 @@ type SaveState = 'idle' | 'saving' | 'success' | 'error';
 export class ChangePasswordComponent {
   private readonly http = inject(HttpClient);
   private readonly backendErr = inject(BackendErrorService);
+  private readonly settings = inject(SettingsService);
+
+  protected readonly unitsSetting = this.settings.measurementSystemSetting;
+
+  protected setUnits(value: MeasurementSystemSetting): void {
+    this.settings.setMeasurementSystem(value);
+  }
 
   protected readonly currentPassword = signal('');
   protected readonly newPassword = signal('');

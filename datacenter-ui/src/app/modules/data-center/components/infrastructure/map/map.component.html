@@ -145,7 +145,7 @@
                       pointer-events="none"
                       style="user-select: none"
                     >
-                      {{ seg.length / 100 | number: "1.0-2" }} m
+                      {{ seg.length / 100 | unitFmt: 'distance' }}
                     </text>
                   </g>
                 }
@@ -164,7 +164,7 @@
                       pointer-events="none"
                       style="user-select: none"
                     >
-                      {{ angleData.angle | number: "1.0-0" }}°
+                      {{ angleData.angle | unitFmt: 'angle' }}
                     </text>
                     <!-- Small Arc for Angle -->
                     <circle
@@ -512,7 +512,7 @@
               pointer-events="none"
               style="user-select: none"
             >
-              {{ room.area / 10000 | number: "1.0-2" }} m²
+              {{ room.area / 10000 | unitFmt: 'area' }}
             </text>
             <text
               [attr.x]="room.cx"
@@ -527,7 +527,7 @@
               pointer-events="none"
               style="user-select: none"
             >
-              {{ room.area / 10000 | number: "1.0-2" }} m²
+              {{ room.area / 10000 | unitFmt: 'area' }}
             </text>
           </g>
         }
@@ -675,7 +675,7 @@
                           fill="#333"
                           [attr.font-size]="12 / zoom + 'px'"
                         >
-                          {{ segment.length / 100 | number: "1.0-2" }} m
+                          {{ segment.length / 100 | unitFmt: 'distance' }}
                         </text>
                       </g>
                     }
@@ -735,7 +735,7 @@
                       [attr.font-size]="12 / zoom + 'px'"
                       font-weight="bold"
                     >
-                      {{ currentSegmentLength / 100 | number: "1.0-2" }} m
+                      {{ currentSegmentLength / 100 | unitFmt: 'distance' }}
                     </text>
                     <!-- Angle Text at Vertices -->
                     @for (angleData of previewAngles; track $index) {
@@ -749,7 +749,7 @@
                           [attr.font-size]="11 / zoom + 'px'"
                           font-weight="bold"
                         >
-                          {{ angleData.angle | number: "1.0-0" }}°
+                          {{ angleData.angle | unitFmt: 'angle' }}
                         </text>
                         <!-- Short Arc Helper (Optional) -->
                         <circle

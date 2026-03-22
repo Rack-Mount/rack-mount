@@ -593,5 +593,14 @@
     "success": "Mot de passe mis à jour avec succès.",
     "change_again": "Modifier à nouveau",
     "error_mismatch": "Les mots de passe ne correspondent pas."
+  },
+  "settings": {
+    "preferences_title": "Préférences",
+    "units_label": "Système de mesure",
+    "units_auto": "Auto",
+    "units_auto_hint": "Le système est dérivé de la langue sélectionnée",
+    "units_auto_desc": "Automatique — suit la langue sélectionnée",
+    "units_metric": "Métrique",
+    "units_imperial": "Impérial"
   }
 }
