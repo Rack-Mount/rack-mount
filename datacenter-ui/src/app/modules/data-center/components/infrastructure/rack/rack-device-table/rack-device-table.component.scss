@@ -184,6 +184,26 @@ $_type-colors: (
   }
 }
 
+.device-table__face-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+
+  &--front {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+  }
+
+  &--rear {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+  }
+}
+
 .device-table__remove-btn {
   display: inline-flex;
   align-items: center;

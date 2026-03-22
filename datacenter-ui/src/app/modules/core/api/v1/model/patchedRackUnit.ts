@@ -30,7 +30,7 @@ export interface PatchedRackUnit {
     readonly device_image?: string;
     readonly device_rear_image?: string;
     readonly device_power_watt?: number;
-    readonly rack_installation_front?: boolean;
+    rack_installation_front?: boolean;
     readonly device_rack_units?: number;
     position?: number;
     rack?: number;

@@ -328,12 +328,19 @@ export class RackComponent {
     ),
   );
 
-  /** Rows that have an installed device OR a generic component. */
-  readonly deviceRows = computed(() =>
-    this.rackRender().filter(
-      (row) => !!row.device?.device_id || !!row.device?.generic_component_id,
-    ),
-  );
+  /** All rows with an installed device OR a generic component (both faces). */
+  readonly deviceRows = computed((): RackRender[] => {
+    const state = this._unitsState();
+    if (!state || state.status !== 'loaded') return [];
+    return state.results
+      .filter((u) => !!u.device_id || !!u.generic_component_id)
+      .map((u) => ({
+        device: u,
+        rackUnit: effectiveRackUnits(u),
+        position: u.position,
+        visible: true,
+      }));
+  });
 
   /** Handle remove request emitted from a generic-component slot. */
   protected onGenericSlotRemoveRequest(e: {

@@ -66,6 +66,7 @@
       </th>
       <th class="device-table__th">{{ "rack_table.col_sap" | translate }}</th>
       <th class="device-table__th">{{ "rack_table.col_state" | translate }}</th>
+      <th class="device-table__th">{{ "rack_table.col_face" | translate }}</th>
       <th class="device-table__th device-table__th--num">Size</th>
       <th class="device-table__th device-table__th--action"></th>
     </tr>
@@ -158,6 +159,12 @@
           } @else {
             <span>—</span>
           }
+        </td>
+        <!-- Face -->
+        <td class="device-table__td">
+          <span class="device-table__face-badge device-table__face-badge--{{ (row.device?.rack_installation_front ?? true) ? 'front' : 'rear' }}">
+            {{ ((row.device?.rack_installation_front ?? true) ? 'rack_table.face_front' : 'rack_table.face_rear') | translate }}
+          </span>
         </td>
         <!-- Size -->
         <td class="device-table__td device-table__td--num">

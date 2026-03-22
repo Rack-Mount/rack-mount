@@ -67,6 +67,8 @@ export class RackInstallPanelComponent implements OnInit {
   readonly rackId = input.required<number>();
   /** Number of consecutive free U-slots at the target position (0 = unknown). */
   readonly availableU = input<number>(0);
+  /** Which face is currently shown in the rack view (true = front, false = rear). */
+  readonly face = input<boolean>(true);
 
   /** Emitted when the user closes the panel without installing. */
   readonly closed = output<void>();
@@ -89,6 +91,9 @@ export class RackInstallPanelComponent implements OnInit {
 
   /** Active tab: 'asset' or 'component'. */
   readonly _tab = signal<'asset' | 'component'>('asset');
+
+  /** True = install on front face; false = rear face. Initialised from [face] input in ngOnInit. */
+  readonly _front = signal(true);
 
   readonly _componentsState = signal<InstallComponentsState>({
     status: 'idle',
@@ -176,6 +181,8 @@ export class RackInstallPanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Initialise face from parent (which face the rack is currently showing)
+    this._front.set(this.face());
     // Panel just became visible – load all assets with no filter
     this._immediateSearch$.next('');
   }
@@ -225,6 +232,7 @@ export class RackInstallPanelComponent implements OnInit {
           rack: this.rackId(),
           device: assetId,
           position: this.position(),
+          rack_installation_front: this._front(),
         } as any,
       })
       .subscribe({
@@ -251,6 +259,7 @@ export class RackInstallPanelComponent implements OnInit {
           rack: this.rackId(),
           generic_component: componentId,
           position: this.position(),
+          rack_installation_front: this._front(),
         } as any,
       })
       .subscribe({

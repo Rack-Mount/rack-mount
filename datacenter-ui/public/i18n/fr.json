@@ -361,7 +361,9 @@
     "installing": "Installation en cours…",
     "cancel": "Annuler",
     "too_large": "Espace insuffisant ({{u}}U disponibles)",
-    "install_error": "Échec de l'installation : vérifiez que la position est libre et que l'équipement n'est pas déjà installé."
+    "install_error": "Échec de l'installation : vérifiez que la position est libre et que l'équipement n'est pas déjà installé.",
+    "face_front": "Avant",
+    "face_rear": "Arrière"
   },
   "remove_confirm": {
     "single_msg": "Retirer l'équipement de la baie ?",
@@ -448,6 +450,9 @@
     "col_serial": "Numéro de série",
     "col_sap": "SAP ID",
     "col_state": "État",
+    "col_face": "Face",
+    "face_front": "Avant",
+    "face_rear": "Arrière",
     "remove_single": "Retirer de la baie"
   },
   "rack_state": {

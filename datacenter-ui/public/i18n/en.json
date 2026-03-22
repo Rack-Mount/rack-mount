@@ -361,7 +361,9 @@
     "installing": "Installing…",
     "cancel": "Cancel",
     "too_large": "Insufficient space ({{u}}U free)",
-    "install_error": "Installation failed: verify the position is free and the device is not already installed."
+    "install_error": "Installation failed: verify the position is free and the device is not already installed.",
+    "face_front": "Front",
+    "face_rear": "Rear"
   },
   "remove_confirm": {
     "single_msg": "Remove device from rack?",
@@ -448,6 +450,9 @@
     "col_serial": "Serial",
     "col_sap": "SAP ID",
     "col_state": "State",
+    "col_face": "Face",
+    "face_front": "Front",
+    "face_rear": "Rear",
     "remove_single": "Remove from rack"
   },
   "rack_state": {

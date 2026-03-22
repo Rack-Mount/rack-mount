@@ -361,7 +361,9 @@
     "installing": "Installazione in corso…",
     "cancel": "Annulla",
     "too_large": "Spazio insufficiente ({{u}}U libere)",
-    "install_error": "Installazione non riuscita: verificare che la posizione sia libera e l'apparato non sia già installato."
+    "install_error": "Installazione non riuscita: verificare che la posizione sia libera e l'apparato non sia già installato.",
+    "face_front": "Fronte",
+    "face_rear": "Retro"
   },
   "remove_confirm": {
     "single_msg": "Rimuovere l'apparato dal rack?",
@@ -448,6 +450,9 @@
     "col_serial": "Seriale",
     "col_sap": "SAP ID",
     "col_state": "Stato",
+    "col_face": "Lato",
+    "face_front": "Fronte",
+    "face_rear": "Retro",
     "remove_single": "Rimuovi dal rack"
   },
   "rack_state": {

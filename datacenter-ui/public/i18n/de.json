@@ -334,7 +334,9 @@
     "installing": "Installation läuft…",
     "cancel": "Abbrechen",
     "too_large": "Nicht genug Platz ({{u}}U frei)",
-    "install_error": "Installation fehlgeschlagen: Prüfen Sie, ob die Position frei und das Gerät nicht bereits installiert ist."
+    "install_error": "Installation fehlgeschlagen: Prüfen Sie, ob die Position frei und das Gerät nicht bereits installiert ist.",
+    "face_front": "Vorderseite",
+    "face_rear": "Rückseite"
   },
   "remove_confirm": {
     "single_msg": "Gerät aus dem Rack entfernen?",
@@ -421,6 +423,9 @@
     "col_serial": "Seriennummer",
     "col_sap": "SAP-ID",
     "col_state": "Status",
+    "col_face": "Seite",
+    "face_front": "Vorderseite",
+    "face_rear": "Rückseite",
     "remove_single": "Aus Rack entfernen"
   },
   "rack_state": {

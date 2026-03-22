@@ -218,6 +218,35 @@
     }
   }
 
+  // ── Face selector ─────────────────────────────────────────────────────────
+  &__face {
+    display: flex;
+    gap: 4px;
+    padding: 8px 12px 0;
+    flex-shrink: 0;
+  }
+
+  &__face-btn {
+    flex: 1;
+    background: var(--dc-bg-card);
+    border: 1px solid var(--dc-border-chassis);
+    border-radius: 6px;
+    color: var(--dc-text-muted);
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 5px 8px;
+    cursor: pointer;
+    transition: background 100ms ease, color 100ms ease, border-color 100ms ease;
+    &:hover {
+      color: var(--dc-text-primary);
+    }
+    &--active {
+      background: var(--dc-accent-dim);
+      border-color: var(--dc-accent);
+      color: var(--dc-accent);
+    }
+  }
+
   // ── Tabs ──────────────────────────────────────────────────────────────────
   &__tabs {
     display: flex;

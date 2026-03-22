@@ -361,7 +361,9 @@
     "installing": "安装中…",
     "cancel": "取消",
     "too_large": "空间不足（剩余 {{u}}U）",
-    "install_error": "安装失败：请确认位置空闲且设备未被安装。"
+    "install_error": "安装失败：请确认位置空闲且设备未被安装。",
+    "face_front": "正面",
+    "face_rear": "背面"
   },
   "remove_confirm": {
     "single_msg": "从机柜中移除该设备？",
@@ -448,6 +450,9 @@
     "col_serial": "序列号",
     "col_sap": "SAP ID",
     "col_state": "状态",
+    "col_face": "面板",
+    "face_front": "正面",
+    "face_rear": "背面",
     "remove_single": "从机柜移除"
   },
   "rack_state": {

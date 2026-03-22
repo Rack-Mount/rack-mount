@@ -196,7 +196,8 @@ class RackUnitSerializer(serializers.ModelSerializer):
 
     rack_installation_front = serializers.BooleanField(
         source='front',
-        read_only=True
+        required=False,
+        default=True
     )
 
     def validate(self, attrs):
