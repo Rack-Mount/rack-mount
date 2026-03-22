@@ -162,8 +162,17 @@
         </td>
         <!-- Face -->
         <td class="device-table__td">
-          <span class="device-table__face-badge device-table__face-badge--{{ (row.device?.rack_installation_front ?? true) ? 'front' : 'rear' }}">
-            {{ ((row.device?.rack_installation_front ?? true) ? 'rack_table.face_front' : 'rack_table.face_rear') | translate }}
+          <span
+            class="device-table__face-badge device-table__face-badge--{{
+              (row.device?.rack_installation_front ?? true) ? 'front' : 'rear'
+            }}"
+          >
+            {{
+              ((row.device?.rack_installation_front ?? true)
+                ? "rack_table.face_front"
+                : "rack_table.face_rear"
+              ) | translate
+            }}
           </span>
         </td>
         <!-- Size -->

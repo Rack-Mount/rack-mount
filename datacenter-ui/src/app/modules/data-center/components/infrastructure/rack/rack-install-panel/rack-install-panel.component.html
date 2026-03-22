@@ -19,12 +19,16 @@
       class="rack-install__face-btn"
       [class.rack-install__face-btn--active]="_front()"
       (click)="_front.set(true)"
-    >{{ "install_panel.face_front" | translate }}</button>
+    >
+      {{ "install_panel.face_front" | translate }}
+    </button>
     <button
       class="rack-install__face-btn"
       [class.rack-install__face-btn--active]="!_front()"
       (click)="_front.set(false)"
-    >{{ "install_panel.face_rear" | translate }}</button>
+    >
+      {{ "install_panel.face_rear" | translate }}
+    </button>
   </div>
 
   <!-- Tab switcher -->

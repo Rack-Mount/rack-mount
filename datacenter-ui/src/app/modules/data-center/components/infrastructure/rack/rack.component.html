@@ -75,14 +75,20 @@
                       <app-device
                         [device]="row.device"
                         [position]="row.position"
-                        [rearView]="_rearView() === (row.device?.rack_installation_front ?? true)"
+                        [rearView]="
+                          _rearView() ===
+                          (row.device?.rack_installation_front ?? true)
+                        "
                       />
                     </div>
                   } @else if (row.device?.generic_component_id) {
                     <div class="rack-slot__occupied">
                       <app-generic-component-slot
                         [rackUnit]="row.device!"
-                        [rearView]="_rearView() === (row.device?.rack_installation_front ?? true)"
+                        [rearView]="
+                          _rearView() ===
+                          (row.device?.rack_installation_front ?? true)
+                        "
                         (removeRequest)="onGenericSlotRemoveRequest($event)"
                       />
                     </div>
