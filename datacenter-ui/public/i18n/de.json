@@ -506,6 +506,19 @@
     "save_error": "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
     "saving": "Wird gespeichert…"
   },
+  "rack_models": {
+    "btn_new": "Neues Rack-Modell",
+    "drawer_create_title": "Neues Rack-Modell",
+    "field_model": "Modellname",
+    "field_capacity": "Kapazität",
+    "field_width": "Breite",
+    "field_depth": "Tiefe",
+    "field_height": "Höhe",
+    "field_height_placeholder": "Optional",
+    "field_required": "Bitte alle Pflichtfelder ausfüllen.",
+    "save_error": "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
+    "saving": "Wird gespeichert…"
+  },
   "tabs": {
     "home": "Start",
     "assets": "Geräte",

@@ -23,6 +23,7 @@ import {
   Location,
   LocationService,
   Rack,
+  RackType,
   Room,
 } from '../../../../core/api/v1';
 import { SEARCH_DEBOUNCE_MS } from '../../../../core/constants';
@@ -65,6 +66,7 @@ export class RacksListStore {
   readonly drawerMode = signal<'create' | 'edit' | null>(null);
   readonly editingRack = signal<Rack | null>(null);
   readonly deleteState = signal<DeleteState>({ id: 'none' });
+  readonly rackModelDrawerOpen = signal(false);
 
   private readonly _searchInput = new Subject<string>();
 
@@ -176,6 +178,20 @@ export class RacksListStore {
   onDrawerClose(): void {
     this.drawerMode.set(null);
     this.editingRack.set(null);
+  }
+
+  // ── Rack model drawer ───────────────────────────────────────────────────────
+
+  onNewModel(): void {
+    this.rackModelDrawerOpen.set(true);
+  }
+
+  onModelDrawerClose(): void {
+    this.rackModelDrawerOpen.set(false);
+  }
+
+  onModelDrawerSaved(_model: RackType): void {
+    this.rackModelDrawerOpen.set(false);
   }
 
   // ── Delete ──────────────────────────────────────────────────────────────

@@ -1,0 +1,81 @@
+@use "styles/mixins" as mx;
+
+@include mx.drawer-shell();
+@include mx.form-elements();
+
+// ── Input with unit suffix ────────────────────────────────────────────────────
+.input-with-unit {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+
+  .form-input {
+    flex: 1;
+    border-radius: 6px 0 0 6px;
+    border-right: none;
+
+    &:focus {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  .unit-label {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    background: var(--dc-bg-card);
+    border: 1px solid var(--dc-border);
+    border-left: none;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.8rem;
+    color: var(--dc-text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+.drawer-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--dc-border);
+  flex-shrink: 0;
+}
+
+.save-error {
+  font-size: 0.8rem;
+  color: #f87171;
+  padding: 6px 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  margin: 0;
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-cancel {
+  @include mx.btn-ghost();
+}
+
+.btn-save {
+  @include mx.btn-primary();
+  flex: 0;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  @include mx.spinner(14px, #fff);
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+}
+
+@include mx.spin-keyframe();

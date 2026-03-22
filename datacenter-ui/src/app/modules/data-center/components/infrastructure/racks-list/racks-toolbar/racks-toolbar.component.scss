@@ -35,3 +35,18 @@
 .btn-new {
   @include mx.btn-primary(sm);
 }
+
+.btn-new-model {
+  @include mx.btn-ghost(sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-weight: 500;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+}

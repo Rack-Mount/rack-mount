@@ -69,6 +69,17 @@
 
   <div class="toolbar-right">
     @if (role.canCreateRacks()) {
+      <button class="btn-new-model" (click)="store.onNewModel()">
+        <svg viewBox="0 0 20 20" fill="none">
+          <path
+            d="M10 4v12M4 10h12"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{ "rack_models.btn_new" | translate }}
+      </button>
       <button class="btn-new" (click)="store.onNew()">
         <svg viewBox="0 0 20 20" fill="none">
           <path

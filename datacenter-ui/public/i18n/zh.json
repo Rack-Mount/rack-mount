@@ -272,6 +272,19 @@
     "save_error": "保存时出错，请重试。",
     "saving": "保存中…"
   },
+  "rack_models": {
+    "btn_new": "新建机柜型号",
+    "drawer_create_title": "新建机柜型号",
+    "field_model": "型号名称",
+    "field_capacity": "容量",
+    "field_width": "宽度",
+    "field_depth": "深度",
+    "field_height": "高度",
+    "field_height_placeholder": "可选",
+    "field_required": "请填写所有必填字段。",
+    "save_error": "保存时出错，请重试。",
+    "saving": "保存中…"
+  },
   "assets": {
     "search_placeholder": "搜索主机名、序列号、SAP…",
     "all_states": "所有状态",

@@ -272,6 +272,19 @@
     "save_error": "Error while saving. Please try again.",
     "saving": "Saving…"
   },
+  "rack_models": {
+    "btn_new": "New Rack Model",
+    "drawer_create_title": "New Rack Model",
+    "field_model": "Model name",
+    "field_capacity": "Capacity",
+    "field_width": "Width",
+    "field_depth": "Depth",
+    "field_height": "Height",
+    "field_height_placeholder": "Optional",
+    "field_required": "Please fill in all required fields.",
+    "save_error": "Error while saving. Please try again.",
+    "saving": "Saving…"
+  },
   "assets": {
     "search_placeholder": "Search hostname, serial, SAP…",
     "all_states": "All states",

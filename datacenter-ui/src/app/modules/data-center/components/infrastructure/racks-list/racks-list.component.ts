@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RackCreateDrawerComponent } from './rack-create-drawer/rack-create-drawer.component';
+import { RackModelCreateDrawerComponent } from './rack-model-create-drawer/rack-model-create-drawer.component';
 import { RacksListStore } from './racks-list.store';
 import { RacksTableComponent } from './racks-table/racks-table.component';
 import { RacksToolbarComponent } from './racks-toolbar/racks-toolbar.component';
@@ -11,6 +12,7 @@ import { RacksToolbarComponent } from './racks-toolbar/racks-toolbar.component';
     RacksToolbarComponent,
     RacksTableComponent,
     RackCreateDrawerComponent,
+    RackModelCreateDrawerComponent,
   ],
   providers: [RacksListStore],
   templateUrl: './racks-list.component.html',

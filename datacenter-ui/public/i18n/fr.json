@@ -272,6 +272,19 @@
     "save_error": "Erreur lors de l'enregistrement. Veuillez réessayer.",
     "saving": "Enregistrement…"
   },
+  "rack_models": {
+    "btn_new": "Nouveau modèle de baie",
+    "drawer_create_title": "Nouveau modèle de baie",
+    "field_model": "Nom du modèle",
+    "field_capacity": "Capacité",
+    "field_width": "Largeur",
+    "field_depth": "Profondeur",
+    "field_height": "Hauteur",
+    "field_height_placeholder": "Facultatif",
+    "field_required": "Veuillez remplir tous les champs obligatoires.",
+    "save_error": "Erreur lors de l'enregistrement. Veuillez réessayer.",
+    "saving": "Enregistrement…"
+  },
   "assets": {
     "search_placeholder": "Rechercher hostname, numéro de série, SAP…",
     "all_states": "Tous les états",

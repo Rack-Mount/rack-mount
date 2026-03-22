@@ -272,6 +272,19 @@
     "save_error": "Errore durante il salvataggio. Riprova.",
     "saving": "Salvataggio…"
   },
+  "rack_models": {
+    "btn_new": "Nuovo Modello Rack",
+    "drawer_create_title": "Nuovo Modello Rack",
+    "field_model": "Nome modello",
+    "field_capacity": "Capacità",
+    "field_width": "Larghezza",
+    "field_depth": "Profondità",
+    "field_height": "Altezza",
+    "field_height_placeholder": "Facoltativo",
+    "field_required": "Compila tutti i campi obbligatori.",
+    "save_error": "Errore durante il salvataggio. Riprova.",
+    "saving": "Salvataggio…"
+  },
   "assets": {
     "search_placeholder": "Cerca hostname, seriale, SAP…",
     "all_states": "Tutti gli stati",

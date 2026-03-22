@@ -8,12 +8,20 @@
   </div>
 </div>
 
-<!-- ─── Drawer ──────────────────────────────────────────── -->
+<!-- ─── Rack drawer ──────────────────────────────────── -->
 @if (store.drawerMode() !== null) {
   <app-rack-create-drawer
     [mode]="store.drawerMode()!"
     [rack]="store.editingRack()"
     (saved)="store.onDrawerSaved($event)"
     (cancelled)="store.onDrawerClose()"
+  />
+}
+
+<!-- ─── Rack model drawer ───────────────────────────── -->
+@if (store.rackModelDrawerOpen()) {
+  <app-rack-model-create-drawer
+    (saved)="store.onModelDrawerSaved($event)"
+    (cancelled)="store.onModelDrawerClose()"
   />
 }
