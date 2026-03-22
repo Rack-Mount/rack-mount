@@ -54,7 +54,12 @@ export class RackModelCreateDrawerComponent implements OnInit {
 
   protected onSubmit(): void {
     const f = this.form();
-    if (!f.model.trim() || f.width == null || f.depth == null || f.capacity == null) {
+    if (
+      !f.model.trim() ||
+      f.width == null ||
+      f.depth == null ||
+      f.capacity == null
+    ) {
       this.saveState.set('error');
       this.saveMsg.set('rack_models.field_required');
       return;

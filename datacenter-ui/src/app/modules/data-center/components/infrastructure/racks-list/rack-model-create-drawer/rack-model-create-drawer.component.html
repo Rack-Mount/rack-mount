@@ -54,7 +54,12 @@
           min="1"
           [placeholder]="'rack_models.field_capacity' | translate"
           [value]="form().capacity ?? ''"
-          (input)="onFieldChange('capacity', $any($event.target).value ? +$any($event.target).value : null)"
+          (input)="
+            onFieldChange(
+              'capacity',
+              $any($event.target).value ? +$any($event.target).value : null
+            )
+          "
         />
         <span class="unit-label">U</span>
       </div>
@@ -74,7 +79,12 @@
           min="1"
           [placeholder]="'rack_models.field_width' | translate"
           [value]="form().width ?? ''"
-          (input)="onFieldChange('width', $any($event.target).value ? +$any($event.target).value : null)"
+          (input)="
+            onFieldChange(
+              'width',
+              $any($event.target).value ? +$any($event.target).value : null
+            )
+          "
         />
         <span class="unit-label">mm</span>
       </div>
@@ -94,7 +104,12 @@
           min="1"
           [placeholder]="'rack_models.field_depth' | translate"
           [value]="form().depth ?? ''"
-          (input)="onFieldChange('depth', $any($event.target).value ? +$any($event.target).value : null)"
+          (input)="
+            onFieldChange(
+              'depth',
+              $any($event.target).value ? +$any($event.target).value : null
+            )
+          "
         />
         <span class="unit-label">mm</span>
       </div>
@@ -113,7 +128,12 @@
           min="1"
           [placeholder]="'rack_models.field_height_placeholder' | translate"
           [value]="form().height ?? ''"
-          (input)="onFieldChange('height', $any($event.target).value ? +$any($event.target).value : null)"
+          (input)="
+            onFieldChange(
+              'height',
+              $any($event.target).value ? +$any($event.target).value : null
+            )
+          "
         />
         <span class="unit-label">cm</span>
       </div>
