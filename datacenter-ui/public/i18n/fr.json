@@ -52,8 +52,8 @@
     "rack_models_desc": "Configurer les tailles et dimensions des racks",
     "locations_title": "Sites & Salles",
     "locations_desc": "Gérer les sites physiques et les salles",
-    "asset_settings_title": "Paramètres assets",
-    "asset_settings_desc": "Configurer les états et types d'assets"
+    "application_settings_title": "Paramètres de l'application",
+    "application_settings_desc": "Configurer les paramètres de l'application"
   },
   "vendors": {
     "search_placeholder": "Rechercher un fournisseur…",

@@ -52,8 +52,8 @@
     "rack_models_desc": "Configure rack sizes and dimensions",
     "locations_title": "Locations & Rooms",
     "locations_desc": "Manage physical sites and rooms",
-    "asset_settings_title": "Asset settings",
-    "asset_settings_desc": "Configure asset states and types"
+    "application_settings_title": "Application settings",
+    "application_settings_desc": "Configure application settings"
   },
   "vendors": {
     "search_placeholder": "Search vendor…",

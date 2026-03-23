@@ -52,8 +52,8 @@
     "rack_models_desc": "Configura le dimensioni e le taglie dei rack",
     "locations_title": "Sedi e Sale",
     "locations_desc": "Gestisci le sedi fisiche e le sale",
-    "asset_settings_title": "Impostazioni asset",
-    "asset_settings_desc": "Configura stati e tipi degli asset"
+    "application_settings_title": "Impostazione applicazione",
+    "application_settings_desc": "Configura le impostazioni dell'applicazione"
   },
   "vendors": {
     "search_placeholder": "Cerca Fornitore…",

@@ -52,8 +52,8 @@
     "rack_models_desc": "Rack-Größen und -Abmessungen konfigurieren",
     "locations_title": "Standorte & Räume",
     "locations_desc": "Physische Standorte und Räume verwalten",
-    "asset_settings_title": "Asset-Einstellungen",
-    "asset_settings_desc": "Asset-Zustände und -Typen konfigurieren"
+    "application_settings_title": "Anwendungseinstellungen",
+    "application_settings_desc": "Anwendungseinstellungen konfigurieren"
   },
   "vendors": {
     "search_placeholder": "Hersteller suchen…",
