@@ -26,9 +26,9 @@ $text-muted: mx.$text-muted;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px 20px;
+  padding: 14px 20px;
   background: $bg-surface;
-  border-bottom: 1px solid $border;
+  border-bottom: 1px solid $border-strong;
   flex-shrink: 0;
   flex-wrap: wrap;
 }
@@ -116,7 +116,7 @@ $text-muted: mx.$text-muted;
 
   thead tr {
     background: $bg-surface;
-    border-bottom: 1px solid $border;
+    border-bottom: 1px solid $border-strong;
     position: sticky;
     top: 0;
     z-index: 2;
@@ -125,10 +125,10 @@ $text-muted: mx.$text-muted;
   th {
     padding: 9px 14px;
     text-align: left;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: $text-muted;
-    letter-spacing: 0.05em;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: $text-secondary;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
