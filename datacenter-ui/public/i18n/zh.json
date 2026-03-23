@@ -52,7 +52,7 @@
     "rack_models_desc": "配置机架尺寸和规格",
     "locations_title": "地点与机房",
     "locations_desc": "管理物理地点和机房",
-    "application_settings_title": "应用程序设置",
+    "application_settings_title": "设置",
     "application_settings_desc": "配置应用程序设置"
   },
   "vendors": {

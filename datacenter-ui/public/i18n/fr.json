@@ -52,7 +52,7 @@
     "rack_models_desc": "Configurer les tailles et dimensions des racks",
     "locations_title": "Sites & Salles",
     "locations_desc": "Gérer les sites physiques et les salles",
-    "application_settings_title": "Paramètres de l'application",
+    "application_settings_title": "Paramètres",
     "application_settings_desc": "Configurer les paramètres de l'application"
   },
   "vendors": {

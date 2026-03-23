@@ -52,7 +52,7 @@
     "rack_models_desc": "Configure rack sizes and dimensions",
     "locations_title": "Locations & Rooms",
     "locations_desc": "Manage physical sites and rooms",
-    "application_settings_title": "Application settings",
+    "application_settings_title": "Settings",
     "application_settings_desc": "Configure application settings"
   },
   "vendors": {
