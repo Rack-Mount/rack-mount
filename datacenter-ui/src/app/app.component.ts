@@ -29,14 +29,10 @@ import { RackComponent } from './modules/data-center/components/infrastructure/r
 const STATIC_TAB_PATHS: Record<string, string[]> = {
   home: ['/'],
   assets: ['/assets'],
-  vendors: ['/vendors'],
   models: ['/models'],
-  components: ['/components'],
   racks: ['/racks'],
   admin: ['/admin'],
   options: ['/options'],
-  'rack-models': ['/rack-models'],
-  locations: ['/locations'],
   'asset-settings': ['/asset-settings'],
 };
 
@@ -46,14 +42,10 @@ const STATIC_TAB_PATHS: Record<string, string[]> = {
  */
 const STATIC_TABS = new Set([
   'assets',
-  'vendors',
   'models',
-  'components',
   'racks',
   'admin',
   'options',
-  'rack-models',
-  'locations',
   'asset-settings',
   'not-found',
 ]);
@@ -198,14 +190,6 @@ export class AppComponent implements OnInit {
         this.tabService.ensureAssetsTab();
         this.activeTabId.set('assets');
       },
-      vendors: () => {
-        if (!this.role.canViewCatalog()) {
-          this.activeTabId.set('home');
-          return;
-        }
-        this.tabService.ensureVendorsTab();
-        this.activeTabId.set('vendors');
-      },
       models: () => {
         if (!this.role.canViewCatalog()) {
           this.activeTabId.set('home');
@@ -213,14 +197,6 @@ export class AppComponent implements OnInit {
         }
         this.tabService.ensureModelsTab();
         this.activeTabId.set('models');
-      },
-      components: () => {
-        if (!this.role.canViewCatalog()) {
-          this.activeTabId.set('home');
-          return;
-        }
-        this.tabService.ensureComponentsTab();
-        this.activeTabId.set('components');
       },
       racks: () => {
         if (!this.role.canViewInfrastructure()) {
@@ -241,24 +217,12 @@ export class AppComponent implements OnInit {
       'not-found': () => {
         this.activeTabId.set('not-found');
       },
-      'rack-models': () => {
-        if (!this.role.canViewInfrastructure()) {
-          this.activeTabId.set('home');
-          return;
-        }
-        this.tabService.ensureRackModelsTab();
-        this.activeTabId.set('rack-models');
-      },
-      locations: () => {
-        if (!this.role.canViewInfrastructure()) {
-          this.activeTabId.set('home');
-          return;
-        }
-        this.tabService.ensureLocationsTab();
-        this.activeTabId.set('locations');
-      },
       'asset-settings': () => {
-        if (!this.role.isAdmin()) {
+        if (
+          !this.role.isAdmin() &&
+          !this.role.canViewInfrastructure() &&
+          !this.role.canViewCatalog()
+        ) {
           this.activeTabId.set('home');
           return;
         }

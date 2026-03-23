@@ -73,3 +73,12 @@ export const canViewInfrastructureGuard: CanActivateFn = () => {
   const router = inject(Router);
   return role.canViewInfrastructure() ? true : router.createUrlTree(['/']);
 };
+
+/** Restricts access to admins or users with can_view_infrastructure. Redirects to / when denied. */
+export const adminOrInfraGuard: CanActivateFn = () => {
+  const role = inject(RoleService);
+  const router = inject(Router);
+  return role.isAdmin() || role.canViewInfrastructure() || role.canViewCatalog()
+    ? true
+    : router.createUrlTree(['/']);
+};

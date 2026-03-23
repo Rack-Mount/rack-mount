@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import {
   adminGuard,
+  adminOrInfraGuard,
   authGuard,
   canViewAssetsGuard,
   canViewCatalogGuard,
@@ -33,14 +34,6 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'vendors',
-    canActivate: [authGuard, canViewCatalogGuard],
-    loadComponent: () =>
-      import('./modules/data-center/components/catalog/vendors-list/vendors-list.component').then(
-        (m) => m.VendorsListComponent,
-      ),
-  },
-  {
     path: 'models',
     canActivate: [authGuard, canViewCatalogGuard],
     loadComponent: () =>
@@ -48,6 +41,7 @@ export const routes: Routes = [
         (m) => m.ModelsListComponent,
       ),
   },
+
   {
     path: 'racks',
     canActivate: [authGuard, canViewInfrastructureGuard],
@@ -57,32 +51,8 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'components',
-    canActivate: [authGuard, canViewCatalogGuard],
-    loadComponent: () =>
-      import('./modules/data-center/components/catalog/components-list/components-list.component').then(
-        (m) => m.ComponentsListComponent,
-      ),
-  },
-  {
-    path: 'rack-models',
-    canActivate: [authGuard, canViewInfrastructureGuard],
-    loadComponent: () =>
-      import('./modules/data-center/components/infrastructure/rack-models-list/rack-models-list.component').then(
-        (m) => m.RackModelsListComponent,
-      ),
-  },
-  {
-    path: 'locations',
-    canActivate: [authGuard, canViewInfrastructureGuard],
-    loadComponent: () =>
-      import('./modules/data-center/components/infrastructure/locations-list/locations-list.component').then(
-        (m) => m.LocationsListComponent,
-      ),
-  },
-  {
     path: 'asset-settings',
-    canActivate: [authGuard, adminGuard],
+    canActivate: [authGuard, adminOrInfraGuard],
     loadComponent: () =>
       import('./modules/data-center/components/catalog/asset-settings/asset-settings.component').then(
         (m) => m.AssetSettingsComponent,

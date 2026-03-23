@@ -1,26 +1,62 @@
 <div class="asset-settings-page">
   <!-- ── Tabs ──────────────────────────────────────────────────── -->
   <div class="tab-bar">
-    <button
-      class="tab-btn"
-      [class.tab-btn--active]="activeTab() === 'states'"
-      (click)="activeTab.set('states')"
-    >
-      {{ "asset_settings.tab_states" | translate }}
-      @if (stListState().status === "loaded") {
-        <span class="tab-count">{{ stTotalCount() }}</span>
-      }
-    </button>
-    <button
-      class="tab-btn"
-      [class.tab-btn--active]="activeTab() === 'types'"
-      (click)="activeTab.set('types')"
-    >
-      {{ "asset_settings.tab_types" | translate }}
-      @if (tyListState().status === "loaded") {
-        <span class="tab-count">{{ tyTotalCount() }}</span>
-      }
-    </button>
+    @if (role.canViewCatalog()) {
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === 'vendors'"
+        (click)="activeTab.set('vendors')"
+      >
+        {{ "asset_settings.tab_vendors" | translate }}
+      </button>
+    }
+    @if (role.isAdmin()) {
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === 'states'"
+        (click)="activeTab.set('states')"
+      >
+        {{ "asset_settings.tab_states" | translate }}
+        @if (stListState().status === "loaded") {
+          <span class="tab-count">{{ stTotalCount() }}</span>
+        }
+      </button>
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === 'types'"
+        (click)="activeTab.set('types')"
+      >
+        {{ "asset_settings.tab_types" | translate }}
+        @if (tyListState().status === "loaded") {
+          <span class="tab-count">{{ tyTotalCount() }}</span>
+        }
+      </button>
+    }
+    @if (role.canViewInfrastructure()) {
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === 'rack-models'"
+        (click)="activeTab.set('rack-models')"
+      >
+        {{ "asset_settings.tab_rack_models" | translate }}
+      </button>
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === 'locations'"
+        (click)="activeTab.set('locations')"
+      >
+        {{ "asset_settings.tab_locations" | translate }}
+      </button>
+    }
+    @if (role.canViewCatalog()) {
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === 'components'"
+        (click)="activeTab.set('components')"
+      >
+        {{ "asset_settings.tab_components" | translate }}
+      </button>
+    }
   </div>
 
   <!-- ════════════════════════════════════════════════════════════ -->
@@ -619,5 +655,21 @@
         </div>
       }
     </div>
+  }
+
+  @if (activeTab() === "vendors") {
+    <app-vendors-list />
+  }
+
+  @if (activeTab() === "rack-models") {
+    <app-rack-models-list />
+  }
+
+  @if (activeTab() === "locations") {
+    <app-locations-list />
+  }
+
+  @if (activeTab() === "components") {
+    <app-components-list />
   }
 </div>

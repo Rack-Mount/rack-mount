@@ -31,13 +31,23 @@ import {
   SaveState,
 } from '../../../../core/types/list-state.types';
 import { toggleSort } from '../../../../core/utils/sort.utils';
+import { LocationsListComponent } from '../../infrastructure/locations-list/locations-list.component';
+import { RackModelsListComponent } from '../../infrastructure/rack-models-list/rack-models-list.component';
+import { ComponentsListComponent } from '../components-list/components-list.component';
+import { VendorsListComponent } from '../vendors-list/vendors-list.component';
 
 const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 @Component({
   selector: 'app-asset-settings',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [
+    TranslatePipe,
+    ComponentsListComponent,
+    RackModelsListComponent,
+    LocationsListComponent,
+    VendorsListComponent,
+  ],
   templateUrl: './asset-settings.component.html',
   styleUrl: './asset-settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,7 +59,16 @@ export class AssetSettingsComponent {
   private readonly translate = inject(TranslateService);
   protected readonly role = inject(RoleService);
 
-  protected readonly activeTab = signal<'states' | 'types'>('states');
+  protected readonly activeTab = signal<
+    'states' | 'types' | 'rack-models' | 'locations' | 'vendors' | 'components'
+  >(
+    (() => {
+      const r = inject(RoleService);
+      if (r.isAdmin()) return 'states';
+      if (r.canViewCatalog()) return 'vendors';
+      return 'rack-models';
+    })(),
+  );
 
   // ══════════════════════════════════════════════════════════════════════════
   // ASSET STATES

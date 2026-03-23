@@ -82,28 +82,12 @@ export class HomeComponent {
     this.tabService.openAssets();
   }
 
-  protected onVendorsOpen(): void {
-    this.tabService.openVendors();
-  }
-
   protected onModelsOpen(): void {
     this.tabService.openModels();
   }
 
   protected onRacksOpen(): void {
     this.tabService.openRacks();
-  }
-
-  protected onComponentsOpen(): void {
-    this.tabService.openComponents();
-  }
-
-  protected onRackModelsOpen(): void {
-    this.tabService.openRackModels();
-  }
-
-  protected onLocationsOpen(): void {
-    this.tabService.openLocations();
   }
 
   protected onAssetSettingsOpen(): void {

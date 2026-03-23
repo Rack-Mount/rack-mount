@@ -695,6 +695,11 @@
   "asset_settings": {
     "tab_states": "资产状态",
     "tab_types": "资产类型",
+    "tab_vendors": "供应商",
+    "tab_racks": "机架",
+    "tab_components": "组件",
+    "tab_rack_models": "机架模型",
+    "tab_locations": "地点与机房",
     "search_placeholder": "搜索…",
     "new_state_btn": "新建状态",
     "new_type_btn": "新建类型",

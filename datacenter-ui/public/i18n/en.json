@@ -695,6 +695,11 @@
   "asset_settings": {
     "tab_states": "Asset States",
     "tab_types": "Asset Types",
+    "tab_vendors": "Vendors",
+    "tab_racks": "Racks",
+    "tab_components": "Components",
+    "tab_rack_models": "Rack Models",
+    "tab_locations": "Locations & Rooms",
     "search_placeholder": "Search…",
     "new_state_btn": "New State",
     "new_type_btn": "New Type",

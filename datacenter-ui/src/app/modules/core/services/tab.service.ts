@@ -29,13 +29,9 @@ export class TabService {
   private loadTabsFromStorage(): PanelTab[] {
     const STATIC_LABEL_KEYS: Partial<Record<string, string>> = {
       assets: 'tabs.assets',
-      vendors: 'tabs.vendors',
       models: 'tabs.models',
-      components: 'tabs.components',
       racks: 'tabs.racks',
       options: 'tabs.options',
-      'rack-models': 'tabs.rack_models',
-      locations: 'tabs.locations',
       'asset-settings': 'tabs.asset_settings',
     };
     try {
@@ -74,17 +70,23 @@ export class TabService {
       case 'asset':
         return this.role.canViewAssets();
       case 'vendors':
-      case 'models':
       case 'components':
+        return false;
+      case 'models':
         return this.role.canViewCatalog();
       case 'racks':
       case 'rack':
       case 'room':
+        return this.role.canViewInfrastructure();
       case 'rack-models':
       case 'locations':
-        return this.role.canViewInfrastructure();
+        return false;
       case 'asset-settings':
-        return this.role.isAdmin();
+        return (
+          this.role.canViewInfrastructure() ||
+          this.role.isAdmin() ||
+          this.role.canViewCatalog()
+        );
       case 'admin':
         return this.role.canManageUsers();
       default:
@@ -199,26 +201,11 @@ export class TabService {
   }
 
   openVendors(): void {
-    this.openTab(
-      {
-        id: 'vendors',
-        label: 'Vendor',
-        labelKey: 'tabs.vendors',
-        type: 'vendors',
-        pinned: false,
-      },
-      this.role.canViewCatalog(),
-    );
+    this.openAssetSettings();
   }
 
   ensureVendorsTab(): void {
-    this.ensureTab({
-      id: 'vendors',
-      label: 'Vendor',
-      labelKey: 'tabs.vendors',
-      type: 'vendors',
-      pinned: false,
-    });
+    this.ensureAssetSettingsTab();
   }
 
   openModels(): void {
@@ -268,72 +255,27 @@ export class TabService {
   }
 
   openComponents(): void {
-    this.openTab(
-      {
-        id: 'components',
-        label: 'Componenti',
-        labelKey: 'tabs.components',
-        type: 'components',
-        pinned: false,
-      },
-      this.role.canViewCatalog(),
-    );
+    this.openAssetSettings();
   }
 
   ensureComponentsTab(): void {
-    this.ensureTab({
-      id: 'components',
-      label: 'Componenti',
-      labelKey: 'tabs.components',
-      type: 'components',
-      pinned: false,
-    });
+    this.ensureAssetSettingsTab();
   }
 
   openRackModels(): void {
-    this.openTab(
-      {
-        id: 'rack-models',
-        label: 'Rack Models',
-        labelKey: 'tabs.rack_models',
-        type: 'rack-models',
-        pinned: false,
-      },
-      this.role.canViewInfrastructure(),
-    );
+    this.openAssetSettings();
   }
 
   ensureRackModelsTab(): void {
-    this.ensureTab({
-      id: 'rack-models',
-      label: 'Rack Models',
-      labelKey: 'tabs.rack_models',
-      type: 'rack-models',
-      pinned: false,
-    });
+    this.ensureAssetSettingsTab();
   }
 
   openLocations(): void {
-    this.openTab(
-      {
-        id: 'locations',
-        label: 'Locations',
-        labelKey: 'tabs.locations',
-        type: 'locations',
-        pinned: false,
-      },
-      this.role.canViewInfrastructure(),
-    );
+    this.openAssetSettings();
   }
 
   ensureLocationsTab(): void {
-    this.ensureTab({
-      id: 'locations',
-      label: 'Locations',
-      labelKey: 'tabs.locations',
-      type: 'locations',
-      pinned: false,
-    });
+    this.ensureAssetSettingsTab();
   }
 
   openAssetSettings(): void {
@@ -345,7 +287,9 @@ export class TabService {
         type: 'asset-settings',
         pinned: false,
       },
-      this.role.isAdmin(),
+      this.role.isAdmin() ||
+        this.role.canViewInfrastructure() ||
+        this.role.canViewCatalog(),
     );
   }
 

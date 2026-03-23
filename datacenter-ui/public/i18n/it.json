@@ -695,6 +695,11 @@
   "asset_settings": {
     "tab_states": "Stati Asset",
     "tab_types": "Tipi Asset",
+    "tab_vendors": "Fornitori",
+    "tab_racks": "Rack",
+    "tab_components": "Componenti",
+    "tab_rack_models": "Modelli Rack",
+    "tab_locations": "Sedi e Sale",
     "search_placeholder": "Cerca…",
     "new_state_btn": "Nuovo Stato",
     "new_type_btn": "Nuovo Tipo",

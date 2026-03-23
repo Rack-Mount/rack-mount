@@ -31,12 +31,8 @@ export class HomeLocationsComponent {
 
   readonly roomOpen = output<RoomOpenEvent>();
   readonly assetsOpen = output<void>();
-  readonly vendorsOpen = output<void>();
   readonly modelsOpen = output<void>();
   readonly racksOpen = output<void>();
-  readonly componentsOpen = output<void>();
-  readonly rackModelsOpen = output<void>();
-  readonly locationsOpen = output<void>();
   readonly assetSettingsOpen = output<void>();
 
   protected onRoomClick(id: number, name: string): void {
@@ -47,28 +43,12 @@ export class HomeLocationsComponent {
     this.assetsOpen.emit();
   }
 
-  protected onVendorsClick(): void {
-    this.vendorsOpen.emit();
-  }
-
   protected onModelsClick(): void {
     this.modelsOpen.emit();
   }
 
   protected onRacksClick(): void {
     this.racksOpen.emit();
-  }
-
-  protected onComponentsClick(): void {
-    this.componentsOpen.emit();
-  }
-
-  protected onRackModelsClick(): void {
-    this.rackModelsOpen.emit();
-  }
-
-  protected onLocationsClick(): void {
-    this.locationsOpen.emit();
   }
 
   protected onAssetSettingsClick(): void {
