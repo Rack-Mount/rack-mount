@@ -12,7 +12,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AssetService, RackType } from '../../../../../core/api/v1';
+import { LocationService, RackType } from '../../../../../core/api/v1';
 
 @Component({
   selector: 'app-rack-model-create-drawer',
@@ -23,7 +23,7 @@ import { AssetService, RackType } from '../../../../../core/api/v1';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RackModelCreateDrawerComponent implements OnInit {
-  private readonly assetService = inject(AssetService);
+  private readonly locationService = inject(LocationService);
   private readonly destroyRef = inject(DestroyRef);
 
   // ── Inputs ─────────────────────────────────────────────────────────────────
@@ -94,16 +94,16 @@ export class RackModelCreateDrawerComponent implements OnInit {
 
     const op$ =
       this.mode() === 'edit'
-        ? this.assetService.assetRackTypePartialUpdate({
+        ? this.locationService.locationRackTypePartialUpdate({
             id: this.rackType()!.id,
             patchedRackType: payload as any,
           })
-        : this.assetService.assetRackTypeCreate({
+        : this.locationService.locationRackTypeCreate({
             rackType: payload as RackType,
           });
 
     op$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (result) => {
+      next: (result: RackType) => {
         this.saveState.set('idle');
         this.saved.emit(result);
       },

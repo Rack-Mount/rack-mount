@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject, forkJoin } from 'rxjs';
-import { AssetService } from '../../../../core/api/v1/api/asset.service';
 import { LocationService } from '../../../../core/api/v1/api/location.service';
 import { Location as DjLocation } from '../../../../core/api/v1/model/location';
 import { Rack } from '../../../../core/api/v1/model/rack';
@@ -31,7 +30,6 @@ export interface SavedRoomLabel {
 @Injectable()
 export class MapFloorPlanService implements OnDestroy {
   private readonly locationService = inject(LocationService);
-  private readonly assetService = inject(AssetService);
   private readonly tabService = inject(TabService);
   private readonly settingsService = inject(SettingsService);
   private readonly router = inject(Router);
@@ -162,7 +160,7 @@ export class MapFloorPlanService implements OnDestroy {
     this.router.navigate(['/map', id]);
     return forkJoin({
       room: this.locationService.locationRoomRetrieve({ id }),
-      racks: this.assetService.assetRackList({ room: id, pageSize: 200 }),
+      racks: this.locationService.locationRackList({ room: id, pageSize: 200 }),
     });
   }
 
@@ -183,7 +181,7 @@ export class MapFloorPlanService implements OnDestroy {
   // ── Rack types ────────────────────────────────────────────────────────────
 
   private loadRackTypes(): void {
-    this.assetService.assetRackTypeList({ pageSize: 100 }).subscribe({
+    this.locationService.locationRackTypeList({ pageSize: 100 }).subscribe({
       next: (data) => {
         this.availableRackTypes.set(data.results ?? []);
         if (this.availableRackTypes().length > 0 && !this.selectedRackType()) {
@@ -362,20 +360,20 @@ export class MapFloorPlanService implements OnDestroy {
     modelId: number,
     roomId: number,
   ): Observable<unknown> {
-    return this.assetService.assetRackCreate({
+    return this.locationService.locationRackCreate({
       rack: { name: rackName, model_id: modelId, room_id: roomId } as any,
     });
   }
 
   renameRack(oldName: string, newName: string): Observable<unknown> {
-    return this.assetService.assetRackPartialUpdate({
+    return this.locationService.locationRackPartialUpdate({
       name: oldName,
       patchedRack: { name: newName },
     });
   }
 
   deleteRack(rackName: string): Observable<void> {
-    return this.assetService.assetRackDestroy({ name: rackName });
+    return this.locationService.locationRackDestroy({ name: rackName });
   }
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────

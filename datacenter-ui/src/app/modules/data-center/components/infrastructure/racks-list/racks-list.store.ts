@@ -19,7 +19,6 @@ import {
   switchMap,
 } from 'rxjs';
 import {
-  AssetService,
   Location,
   LocationService,
   Rack,
@@ -38,7 +37,6 @@ import { DeleteState } from './racks.types';
  */
 @Injectable()
 export class RacksListStore {
-  private readonly assetService = inject(AssetService);
   private readonly locationService = inject(LocationService);
   private readonly tabService = inject(TabService);
   private readonly router = inject(Router);
@@ -97,8 +95,8 @@ export class RacksListStore {
         switchMap((p) =>
           concat(
             of<PaginatedListState<Rack>>({ status: 'loading' }),
-            this.assetService
-              .assetRackList({
+            this.locationService
+              .locationRackList({
                 search: p.search || undefined,
                 pageSize: 200,
                 roomLocation: p.locationId ?? undefined,
@@ -208,8 +206,8 @@ export class RacksListStore {
 
   onDeleteConfirm(rack: Rack): void {
     this.deleteState.set({ id: rack.id, status: 'deleting' });
-    this.assetService
-      .assetRackDestroy({ name: rack.name })
+    this.locationService
+      .locationRackDestroy({ name: rack.name })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

@@ -20,6 +20,7 @@ import { catchError, combineLatest, concat, map, of, switchMap } from 'rxjs';
 import {
   AssetService,
   AssetState,
+  LocationService,
   Rack,
   RackUnit,
 } from '../../../../core/api/v1';
@@ -95,6 +96,7 @@ export class RackComponent {
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly assetService = inject(AssetService);
+  private readonly locationService = inject(LocationService);
   private readonly translate = inject(TranslateService);
 
   /** Height of the parent pane element in px (kept up-to-date by ResizeObserver). */
@@ -236,7 +238,7 @@ export class RackComponent {
           if (!name) return of<RackLoadState>({ status: 'loading' });
           return concat(
             of<RackLoadState>({ status: 'loading' }),
-            this.assetService.assetRackRetrieve({ name }).pipe(
+            this.locationService.locationRackRetrieve({ name }).pipe(
               map((rack): RackLoadState => ({ status: 'loaded', rack })),
               catchError(() => {
                 this.rackNotFound.emit(name);

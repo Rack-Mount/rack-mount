@@ -15,7 +15,6 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 import {
-  AssetService,
   LocationService,
   Rack,
   RackType,
@@ -31,7 +30,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RackCreateDrawerComponent implements OnInit {
-  private readonly assetService = inject(AssetService);
   private readonly locationService = inject(LocationService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -85,14 +83,14 @@ export class RackCreateDrawerComponent implements OnInit {
 
     // Load reference lists in parallel
     forkJoin({
-      types: this.assetService.assetRackTypeList(),
+      types: this.locationService.locationRackTypeList({ pageSize: 500 }),
       rooms: this.locationService.locationRoomList({ pageSize: 500 }),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ types, rooms }) => {
-          this.rackTypes.set(types.results ?? (types as unknown as RackType[]));
-          const roomResults = (rooms as any).results ?? rooms;
+          this.rackTypes.set(types.results ?? []);
+          const roomResults = rooms.results ?? [];
           this.rooms.set(roomResults);
           this.refLoading.set(false);
         },
@@ -129,11 +127,11 @@ export class RackCreateDrawerComponent implements OnInit {
 
     const op$ =
       this.mode() === 'edit'
-        ? this.assetService.assetRackPartialUpdate({
+        ? this.locationService.locationRackPartialUpdate({
             name: this.rack()!.name,
             patchedRack: payload,
           })
-        : this.assetService.assetRackCreate({ rack: payload as any });
+        : this.locationService.locationRackCreate({ rack: payload as any });
 
     op$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {

@@ -19,7 +19,7 @@ import {
   Subject,
   switchMap,
 } from 'rxjs';
-import { AssetService, RackType } from '../../../../core/api/v1';
+import { LocationService, RackType } from '../../../../core/api/v1';
 import {
   DEFAULT_PAGE_SIZE,
   SEARCH_DEBOUNCE_MS,
@@ -41,7 +41,7 @@ const PAGE_SIZE = DEFAULT_PAGE_SIZE;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RackModelsListComponent {
-  private readonly svc = inject(AssetService);
+  private readonly svc = inject(LocationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
   private readonly translate = inject(TranslateService);
@@ -117,7 +117,7 @@ export class RackModelsListComponent {
           concat(
             of<PaginatedListState<RackType>>({ status: 'loading' }),
             this.svc
-              .assetRackTypeList({
+              .locationRackTypeList({
                 search: p.search || undefined,
                 page: p.page,
                 pageSize: PAGE_SIZE,
@@ -198,7 +198,7 @@ export class RackModelsListComponent {
     if (id == null) return;
     this.deleteSave.set('saving');
     this.svc
-      .assetRackTypeDestroy({ id })
+      .locationRackTypeDestroy({ id })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
