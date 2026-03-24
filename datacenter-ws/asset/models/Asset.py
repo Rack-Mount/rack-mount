@@ -24,7 +24,7 @@ class Asset(models.Model):
         warranty_expiration (DateField): The warranty expiration date of the asset.
         support_expiration (DateField): The support expiration date of the asset.
         power_supplies (PositiveIntegerField): The number of power supplies in the asset.
-        power_cosumption_watt (PositiveIntegerField): The power consumption of the asset in watts.
+        power_consumption_watt (PositiveIntegerField): The power consumption of the asset in watts.
         note (TextField): Additional notes about the asset.
         created_at (DateTimeField): The date and time when the asset was created.
         updated_at (DateTimeField): The date and time when the asset was last updated.
@@ -51,11 +51,14 @@ class Asset(models.Model):
     purchase_date = models.DateField(null=True, blank=True)
     state = models.ForeignKey(
         AssetState, on_delete=models.PROTECT, related_name='assets')
+    room = models.ForeignKey(
+        'location.Room', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='assets')
     decommissioned_date = models.DateField(null=True, blank=True)
     warranty_expiration = models.DateField(null=True, blank=True)
     support_expiration = models.DateField(null=True, blank=True)
     power_supplies = models.PositiveIntegerField(default=2, null=False)
-    power_cosumption_watt = models.PositiveIntegerField(default=0, null=False)
+    power_consumption_watt = models.PositiveIntegerField(default=0, null=False)
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
