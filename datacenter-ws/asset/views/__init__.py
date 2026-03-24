@@ -5,8 +5,6 @@ from .AssetModelViewSet import AssetModelViewSet
 from .AssetModelPortViewSet import AssetModelPortViewSet
 from .AssetModelImportView import AssetModelImportView
 from .AssetViewSet import AssetViewSet
-from .RackTypeViewSet import RackTypeViewSet
-from .RackViewSet import RackViewSet
 from .RackUnitViewSet import RackUnitViewSet
 from .AssetCustomFieldViewSet import AssetCustomFieldViewSet
 from .GenericComponentViewSet import GenericComponentViewSet

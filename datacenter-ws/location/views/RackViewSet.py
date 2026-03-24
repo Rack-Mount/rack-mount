@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from django.utils.translation import gettext as _
 from django.db.models import Count, Sum, Value
 from django.db.models.functions import Coalesce
-from asset.serializers import RackSerializer
-from asset.models import Rack, RackUnit
+from location.serializers import RackSerializer
+from location.models import Rack
+from asset.models import RackUnit
 from shared.mixins import StandardFilterMixin
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import RackResourcePermission
@@ -16,15 +17,17 @@ class RackViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     """
     permission_classes = [IsAuthenticated, RackResourcePermission]
 
-    queryset = Rack.objects.select_related(
-        'model', 'room', 'room__location'
-    ).annotate(
-        used_units=Count('rackunit__position', distinct=True),
-        total_power_watt=Coalesce(
-            Sum('rackunit__device__power_cosumption_watt'), Value(0)
-        ),
-    ).all()
     serializer_class = RackSerializer
+
+    def get_queryset(self):
+        return Rack.objects.select_related(
+            'model', 'room', 'room__location'
+        ).annotate(
+            used_units=Count('rackunit__position', distinct=True),
+            total_power_watt=Coalesce(
+                Sum('rackunit__device__power_consumption_watt'), Value(0)
+            ),
+        ).all()
     ordering_fields = ['name', 'room__location__name', 'room__name',
                        'model__model', 'used_units', 'total_power_watt']
     ordering = ['name']

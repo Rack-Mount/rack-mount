@@ -1,8 +1,6 @@
 from .CustomFieldName import CustomFieldName
 from .Vendor import Vendor
-from .RackType import RackType
-from .Rack import Rack
-from .AssetState import AssetState
+from .AssetState import AssetState, AssetStateCode
 from .AssetType import AssetType
 from .AssetModel import AssetModel
 from .AssetModelPort import AssetModelPort
@@ -11,13 +9,13 @@ from .Asset import Asset
 from .AssetCustomField import AssetCustomField
 from .GenericComponent import GenericComponent
 from .RackUnit import RackUnit
+from .AssetTransitionLog import AssetTransitionLog
 
 __all__ = [
     'CustomFieldName',
     'Vendor',
-    'RackType',
-    'Rack',
     'AssetState',
+    'AssetStateCode',
     'AssetType',
     'AssetModel',
     'AssetModelPort',
@@ -25,5 +23,6 @@ __all__ = [
     'Asset',
     'AssetCustomField',
     'GenericComponent',
-    'RackUnit'
+    'RackUnit',
+    'AssetTransitionLog',
 ]

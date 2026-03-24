@@ -1,5 +1,5 @@
 from django.contrib import admin
-from asset.models import RackType
+from location.models import RackType
 
 
 @admin.register(RackType)
@@ -8,5 +8,5 @@ class RackTypeAdmin(admin.ModelAdmin):
     list_filter = ('model',)
 
     save_on_top = True
-    ordering = ('model', )
+    ordering = ('model',)
     save_as = True

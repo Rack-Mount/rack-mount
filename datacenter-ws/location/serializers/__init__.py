@@ -1,3 +1,5 @@
 from .LocationCustomFieldSerializer import LocationCustomFieldSerializer
 from .LocationSerializer import LocationSerializer
 from .RoomSerializer import RoomSerializer
+from .RackTypeSerializer import RackTypeSerializer
+from .RackSerializer import RackSerializer

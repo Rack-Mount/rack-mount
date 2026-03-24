@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from asset.models import RackType
+from location.models import RackType
 
 
 class RackTypeSerializer(serializers.ModelSerializer):
     """
     Serializer for the RackType model.
 
-    Fields: id, model, width, height, capacity.
+    Fields: id, model, width, height, depth, capacity.
     """
     capacity = serializers.IntegerField(required=True)
 

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from location.models.Room import Room
-from asset.models import RackType
+from location.models.RackType import RackType
 import reversion
 
 
@@ -25,7 +25,7 @@ class Rack(models.Model):
         verbose_name (str): The singular name for the model.
         verbose_name_plural (str): The plural name for the model.
         ordering (list): Default ordering for the model, by name.
-        unique_together (tuple): Ensures that the combination of name and location is unique.
+        unique_together (tuple): Ensures that the combination of name and room is unique.
         db_table (str): The name of the database table to use for the model.
     """
     name = models.CharField(max_length=100)

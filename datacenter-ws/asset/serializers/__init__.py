@@ -4,8 +4,7 @@ from .VendorSerializer import VendorSerializer
 from .AssetModelSerializer import AssetModelSerializer
 from .AssetModelPortSerializer import AssetModelPortSerializer
 from .AssetSerializer import AssetSerializer
-from .RackTypeSerializer import RackTypeSerializer
-from .RackSerializer import RackSerializer
 from .RackUnitSerializer import RackUnitSerializer
 from .AssetCustomFieldSerializer import AssetCustomFieldSerializer
 from .GenericComponentSerializer import GenericComponentSerializer
+from .AssetTransitionLogSerializer import AssetTransitionLogSerializer

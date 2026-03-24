@@ -10,12 +10,13 @@ class RackType(models.Model):
         model (CharField): The model name of the rack.
         width (PositiveIntegerField): The width of the rack.
         height (PositiveIntegerField): The height of the rack.
+        depth (PositiveIntegerField): The depth of the rack.
         capacity (PositiveIntegerField): The capacity of the rack, default is 48.
         created_at (DateTimeField): The date and time when the rack type was created.
         updated_at (DateTimeField): The date and time when the rack type was last updated.
 
     Methods:
-        __str__(): Returns a string representation of the rack type in the format "model (widthxheight)".
+        __str__(): Returns a string representation of the rack type in the format "model (widthxdepth)".
 
     Meta:
         db_table (str): The name of the database table.
@@ -26,7 +27,7 @@ class RackType(models.Model):
     width = models.PositiveIntegerField(null=False)
     height = models.PositiveIntegerField(
         null=True, blank=True, help_text=_('Height in cm'))
-    depth = models.PositiveIntegerField(null=False,)
+    depth = models.PositiveIntegerField(null=False)
     capacity = models.PositiveIntegerField(null=False, default=48)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

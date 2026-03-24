@@ -18,7 +18,7 @@ class Room(models.Model):
         name (str): The name of the room.
         floor (int): The floor number where the room is located (optional).
         description (str): An optional description of the room.
-        capacity (int): The capacity of the room (number of racks/units), default is 0.
+        capacity (int): The capacity of the room (number of racks/units), optional.
         manager (str): The name of the manager responsible for the room.
         manager_mail (str): The email address of the manager.
         floor_plan (ImageField): An optional image of the room's floor plan (planimetria).
@@ -59,7 +59,7 @@ class Room(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     floor = models.IntegerField(null=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    capacity = models.PositiveIntegerField(default=0, null=False)
+    capacity = models.PositiveIntegerField(null=True, blank=True, default=None)
     manager = models.CharField(max_length=100, blank=True)
     manager_mail = models.EmailField(blank=True, null=True)
     floor_plan = models.ImageField(

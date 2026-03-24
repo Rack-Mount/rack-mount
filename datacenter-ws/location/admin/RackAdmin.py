@@ -1,5 +1,5 @@
 from django.contrib import admin
-from asset.models import Rack
+from location.models import Rack
 from asset.models import RackUnit
 
 

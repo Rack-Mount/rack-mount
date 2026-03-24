@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from asset.models import Asset, Rack, GenericComponent
+from asset.models import Asset, GenericComponent
+from location.models.Rack import Rack
 import reversion
 from django.utils.html import format_html
 
@@ -52,6 +53,16 @@ class RackUnit(models.Model):
             raise ValidationError(
                 'A rack unit cannot have both a device and a generic component assigned.'
             )
+
+        if self.position is not None and self.position < 1:
+            raise ValidationError('Position must be greater than or equal to 1.')
+
+        if self.rack_id and self.position is not None:
+            capacity = self.rack.model.capacity
+            if capacity is not None and self.position > capacity:
+                raise ValidationError(
+                    f'Position {self.position} exceeds rack capacity ({capacity}).'
+                )
 
     def __str__(self):
         position = "front" if self.front else "rear"
