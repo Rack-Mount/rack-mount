@@ -62,6 +62,34 @@
       </select>
     </div>
 
+    <!-- Warehouse item -->
+    <div class="form-group">
+      <label>{{ "components.field_warehouse_item" | translate }}</label>
+      <select
+        class="form-select"
+        [value]="form().warehouse_item ?? ''"
+        (change)="
+          setField(
+            'warehouse_item',
+            $any($event.target).value ? +$any($event.target).value : null
+          )
+        "
+      >
+        <option value="">{{ "components.field_warehouse_item_none" | translate }}</option>
+        @for (wi of warehouseItems(); track wi.id) {
+          <option [value]="wi.id">
+            {{ wi.name }}
+            @if (wi.quantity != null) {
+              ({{ wi.quantity }})
+            }
+          </option>
+        }
+      </select>
+      @if (warehouseItems().length === 0) {
+        <span class="form-hint">{{ "components.field_warehouse_item_empty" | translate }}</span>
+      }
+    </div>
+
     <!-- Rack units -->
     <div class="form-group">
       <label>{{ "components.field_rack_units" | translate }}</label>

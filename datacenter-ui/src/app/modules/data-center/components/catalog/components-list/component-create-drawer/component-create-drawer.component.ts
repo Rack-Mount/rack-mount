@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   input,
   OnInit,
@@ -15,6 +16,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import {
   ComponentTypeEnum,
   GenericComponent,
+  LocationService,
+  WarehouseItem,
 } from '../../../../../core/api/v1';
 import { COMPONENT_TYPE_LABELS } from '../../../../../core/constants';
 import { BackendErrorService } from '../../../../../core/services/backend-error.service';
@@ -29,6 +32,7 @@ interface ComponentForm {
   component_type: ComponentTypeEnum;
   rack_units: number | null;
   note: string;
+  warehouse_item: number | null;
   front_image_file: File | null;
   rear_image_file: File | null;
   front_image_url: string | null;
@@ -45,6 +49,7 @@ function emptyForm(): ComponentForm {
     component_type: 'cable_manager',
     rack_units: 1,
     note: '',
+    warehouse_item: null,
     front_image_file: null,
     rear_image_file: null,
     front_image_url: null,
@@ -68,6 +73,7 @@ export class ComponentCreateDrawerComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
   private readonly uploadSvc = inject(MultipartUploadService);
+  private readonly locationSvc = inject(LocationService);
 
   readonly mode = input<'create' | 'edit'>('create');
   readonly editComponent = input<GenericComponent | null>(null);
@@ -86,10 +92,29 @@ export class ComponentCreateDrawerComponent implements OnInit {
   protected readonly saveState = signal<'idle' | 'saving' | 'error'>('idle');
   protected readonly saveMsg = signal('');
   protected readonly editingImage = signal<'front' | 'rear' | null>(null);
+  protected readonly warehouseItems = signal<WarehouseItem[]>([]);
 
   protected readonly canSave = computed(
     () => !!this.form().name.trim() && !!this.form().component_type,
   );
+
+  constructor() {
+    effect(() => {
+      const category = this.form().component_type;
+      this.locationSvc
+        .locationWarehouseItemList({
+          // ComponentTypeEnum values match WarehouseCategory values directly
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          category: category as any,
+          pageSize: 200,
+        })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (res) => this.warehouseItems.set(res.results ?? []),
+          error: () => this.warehouseItems.set([]),
+        });
+    });
+  }
 
   ngOnInit(): void {
     const c = this.editComponent();
@@ -100,6 +125,7 @@ export class ComponentCreateDrawerComponent implements OnInit {
         (c.component_type as ComponentTypeEnum) ?? 'cable_manager',
       rack_units: c.rack_units ?? null,
       note: c.note ?? '',
+      warehouse_item: c.warehouse_item ?? null,
       front_image_file: null,
       rear_image_file: null,
       front_image_url: c.front_image ?? null,
@@ -182,6 +208,11 @@ export class ComponentCreateDrawerComponent implements OnInit {
     fd.append('component_type', f.component_type);
     if (f.rack_units != null) fd.append('rack_units', String(f.rack_units));
     fd.append('note', f.note ?? '');
+    if (f.warehouse_item != null) {
+      fd.append('warehouse_item', String(f.warehouse_item));
+    } else if (this.mode() === 'edit') {
+      fd.append('warehouse_item', '');
+    }
 
     if (f.front_image_file) {
       fd.append('front_image', f.front_image_file);
