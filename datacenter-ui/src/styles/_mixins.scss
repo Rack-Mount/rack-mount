@@ -885,7 +885,14 @@ $_chevron-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
   // ── Inline edit row ───────────────────────────────────────────────────────────
   .row-edit td {
     padding: 4px 10px;
-    background: color-mix(in srgb, var(--dc-accent) 4%, transparent);
+    background: color-mix(in srgb, var(--dc-accent) 8%, var(--dc-bg-surface));
+    border-top: 1px solid color-mix(in srgb, var(--dc-accent) 18%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--dc-accent) 18%, transparent);
+  }
+
+  .row-edit--multi td {
+    vertical-align: middle;
+    padding: 6px 10px;
   }
 
   .inline-input {
@@ -895,6 +902,7 @@ $_chevron-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
     border-radius: 6px;
     font-size: 0.82rem;
     background: var(--dc-bg-surface);
+    color: $text-primary;
     box-sizing: border-box;
 
     &:focus {
