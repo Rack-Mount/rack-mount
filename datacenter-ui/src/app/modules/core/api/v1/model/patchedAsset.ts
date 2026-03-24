@@ -10,6 +10,7 @@
 import { AssetRack } from './assetRack';
 import { AssetModel } from './assetModel';
 import { AssetState } from './assetState';
+import { AssetRoom } from './assetRoom';
 
 
 /**
@@ -22,9 +23,11 @@ export interface PatchedAsset {
     readonly state?: AssetState;
     model_id?: number;
     state_id?: number;
+    room_id?: number | null;
     serial_number?: string | null;
     sap_id?: string | null;
     rack?: AssetRack;
+    room?: AssetRoom;
     hostname?: string;
     order_id?: string;
     purchase_date?: string | null;
@@ -32,7 +35,7 @@ export interface PatchedAsset {
     warranty_expiration?: string | null;
     support_expiration?: string | null;
     power_supplies?: number;
-    power_cosumption_watt?: number;
+    power_consumption_watt?: number;
     note?: string;
     readonly created_at?: string;
     readonly updated_at?: string;

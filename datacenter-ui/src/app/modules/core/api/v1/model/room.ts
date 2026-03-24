@@ -22,7 +22,7 @@ export interface Room {
     name: string;
     floor?: number | null;
     description?: string | null;
-    capacity?: number;
+    capacity?: number | null;
     manager?: string;
     manager_mail?: string | null;
     floor_plan?: string | null;

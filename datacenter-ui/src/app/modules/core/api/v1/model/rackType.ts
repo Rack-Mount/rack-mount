@@ -10,7 +10,7 @@
 
 
 /**
- * Serializer for the RackType model.  Fields: id, model, width, height, capacity.
+ * Serializer for the RackType model.  Fields: id, model, width, height, depth, capacity.
  */
 export interface RackType { 
     readonly id: number;

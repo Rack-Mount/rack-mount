@@ -21,10 +21,14 @@ model/assetCustomField.ts
 model/assetModel.ts
 model/assetModelPort.ts
 model/assetRack.ts
+model/assetRoom.ts
 model/assetState.ts
+model/assetStateCode.ts
 model/assetType.ts
 model/authDetail.ts
+model/blankEnum.ts
 model/changePassword.ts
+model/codeEnum.ts
 model/componentTypeEnum.ts
 model/cookieTokenObtainRequest.ts
 model/cookieTokenObtainResponse.ts

@@ -11,7 +11,7 @@ import { RackType } from './rackType';
 
 
 /**
- * RackSerializer is a serializer for the Rack model, utilizing HyperlinkedModelSerializer.  Attributes:     model (RackTypeSerializer): Serializer for the RackType model (read).     model_id (PrimaryKeyRelatedField): Write-only FK to RackType for creation/update.     room (serializers.StringRelatedField): Read-only field representing the room of the rack.     room_id (PrimaryKeyRelatedField): Write-only FK to Room for creation/update.     location_name (serializers.StringRelatedField): Read-only field representing the location name.  Meta:     model (Rack): The model that is being serialized.     fields (list): List of fields to be included in the serialized output.
+ * RackSerializer is a serializer for the Rack model.  Attributes:     model (RackTypeSerializer): Serializer for the RackType model (read).     model_id (PrimaryKeyRelatedField): Write-only FK to RackType for creation/update.     room (StringRelatedField): Read-only field representing the room of the rack.     room_id (PrimaryKeyRelatedField): Write-only FK to Room for creation/update.     location_name (StringRelatedField): Read-only field representing the location name.     used_units (IntegerField): Annotated count of occupied rack units.     total_power_watt (IntegerField): Annotated sum of device power consumption.
  */
 export interface Rack { 
     readonly id: number;

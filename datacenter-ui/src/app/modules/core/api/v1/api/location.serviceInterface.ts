@@ -15,10 +15,16 @@ import { Location } from '../model/models';
 import { LocationCustomField } from '../model/models';
 import { PaginatedLocationCustomFieldList } from '../model/models';
 import { PaginatedLocationList } from '../model/models';
+import { PaginatedRackList } from '../model/models';
+import { PaginatedRackTypeList } from '../model/models';
 import { PaginatedRoomList } from '../model/models';
 import { PatchedLocation } from '../model/models';
 import { PatchedLocationCustomField } from '../model/models';
+import { PatchedRack } from '../model/models';
+import { PatchedRackType } from '../model/models';
 import { PatchedRoom } from '../model/models';
+import { Rack } from '../model/models';
+import { RackType } from '../model/models';
 import { Room } from '../model/models';
 
 
@@ -84,6 +90,68 @@ export interface LocationLocationcustomfieldRetrieveRequestParams {
 export interface LocationLocationcustomfieldUpdateRequestParams {
     id: number;
     locationCustomField: LocationCustomField;
+}
+
+export interface LocationRackCreateRequestParams {
+    rack: Rack;
+}
+
+export interface LocationRackDestroyRequestParams {
+    name: string;
+}
+
+export interface LocationRackListRequestParams {
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    room?: number;
+    roomLocation?: number;
+    search?: string;
+}
+
+export interface LocationRackPartialUpdateRequestParams {
+    name: string;
+    patchedRack?: PatchedRack;
+}
+
+export interface LocationRackRetrieveRequestParams {
+    name: string;
+}
+
+export interface LocationRackTypeCreateRequestParams {
+    rackType: RackType;
+}
+
+export interface LocationRackTypeDestroyRequestParams {
+    id: number;
+}
+
+export interface LocationRackTypeListRequestParams {
+    model?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface LocationRackTypePartialUpdateRequestParams {
+    id: number;
+    patchedRackType?: PatchedRackType;
+}
+
+export interface LocationRackTypeRetrieveRequestParams {
+    id: number;
+}
+
+export interface LocationRackTypeUpdateRequestParams {
+    id: number;
+    rackType: RackType;
+}
+
+export interface LocationRackUpdateRequestParams {
+    name: string;
+    rack: Rack;
 }
 
 export interface LocationRoomCreateRequestParams {
@@ -217,6 +285,102 @@ export interface LocationServiceInterface {
 * @param requestParameters
      */
     locationLocationcustomfieldUpdate(requestParameters: LocationLocationcustomfieldUpdateRequestParams, extraHttpRequestParams?: any): Observable<LocationCustomField>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @endpoint post /location/rack
+* @param requestParameters
+     */
+    locationRackCreate(requestParameters: LocationRackCreateRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @endpoint delete /location/rack/{name}
+* @param requestParameters
+     */
+    locationRackDestroy(requestParameters: LocationRackDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @endpoint get /location/rack
+* @param requestParameters
+     */
+    locationRackList(requestParameters: LocationRackListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedRackList>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @endpoint patch /location/rack/{name}
+* @param requestParameters
+     */
+    locationRackPartialUpdate(requestParameters: LocationRackPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @endpoint get /location/rack/{name}
+* @param requestParameters
+     */
+    locationRackRetrieve(requestParameters: LocationRackRetrieveRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
+
+    /**
+     * 
+     * ViewSet for CRUD operations on RackType objects.
+     * @endpoint post /location/rack_type
+* @param requestParameters
+     */
+    locationRackTypeCreate(requestParameters: LocationRackTypeCreateRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
+
+    /**
+     * 
+     * ViewSet for CRUD operations on RackType objects.
+     * @endpoint delete /location/rack_type/{id}
+* @param requestParameters
+     */
+    locationRackTypeDestroy(requestParameters: LocationRackTypeDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * ViewSet for CRUD operations on RackType objects.
+     * @endpoint get /location/rack_type
+* @param requestParameters
+     */
+    locationRackTypeList(requestParameters: LocationRackTypeListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedRackTypeList>;
+
+    /**
+     * 
+     * ViewSet for CRUD operations on RackType objects.
+     * @endpoint patch /location/rack_type/{id}
+* @param requestParameters
+     */
+    locationRackTypePartialUpdate(requestParameters: LocationRackTypePartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
+
+    /**
+     * 
+     * ViewSet for CRUD operations on RackType objects.
+     * @endpoint get /location/rack_type/{id}
+* @param requestParameters
+     */
+    locationRackTypeRetrieve(requestParameters: LocationRackTypeRetrieveRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
+
+    /**
+     * 
+     * ViewSet for CRUD operations on RackType objects.
+     * @endpoint put /location/rack_type/{id}
+* @param requestParameters
+     */
+    locationRackTypeUpdate(requestParameters: LocationRackTypeUpdateRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
+
+    /**
+     * 
+     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
+     * @endpoint put /location/rack/{name}
+* @param requestParameters
+     */
+    locationRackUpdate(requestParameters: LocationRackUpdateRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
 
     /**
      * 

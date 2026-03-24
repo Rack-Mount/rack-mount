@@ -7,6 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AssetStateCode } from './assetStateCode';
 
 
 /**
@@ -15,5 +16,7 @@
 export interface AssetState { 
     readonly id: number;
     name: string;
+    code?: AssetStateCode | null;
+    description?: string;
 }
 

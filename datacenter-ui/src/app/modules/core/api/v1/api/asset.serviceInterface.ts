@@ -27,8 +27,6 @@ import { PaginatedAssetModelPortList } from '../model/models';
 import { PaginatedAssetStateList } from '../model/models';
 import { PaginatedAssetTypeList } from '../model/models';
 import { PaginatedGenericComponentList } from '../model/models';
-import { PaginatedRackList } from '../model/models';
-import { PaginatedRackTypeList } from '../model/models';
 import { PaginatedRackUnitList } from '../model/models';
 import { PaginatedVendorList } from '../model/models';
 import { PatchedAsset } from '../model/models';
@@ -38,8 +36,6 @@ import { PatchedAssetModelPort } from '../model/models';
 import { PatchedAssetState } from '../model/models';
 import { PatchedAssetType } from '../model/models';
 import { PatchedGenericComponent } from '../model/models';
-import { PatchedRack } from '../model/models';
-import { PatchedRackType } from '../model/models';
 import { PatchedRackUnit } from '../model/models';
 import { PatchedVendor } from '../model/models';
 import { PortAnalyzeRequest } from '../model/models';
@@ -52,8 +48,6 @@ import { PortCorrectionRequest } from '../model/models';
 import { PortCorrectionResponse } from '../model/models';
 import { PrivateMediaSignedUrlRequest } from '../model/models';
 import { PrivateMediaSignedUrlResponse } from '../model/models';
-import { Rack } from '../model/models';
-import { RackType } from '../model/models';
 import { RackUnit } from '../model/models';
 import { Vendor } from '../model/models';
 
@@ -113,6 +107,10 @@ export interface AssetAssetCustomFieldUpdateRequestParams {
 }
 
 export interface AssetAssetDestroyRequestParams {
+    id: number;
+}
+
+export interface AssetAssetHistoryRetrieveRequestParams {
     id: number;
 }
 
@@ -203,6 +201,11 @@ export interface AssetAssetModelRetrieveRequestParams {
 export interface AssetAssetModelUpdateRequestParams {
     id: number;
     assetModel: AssetModel;
+}
+
+export interface AssetAssetMoveCreateRequestParams {
+    id: number;
+    asset: Asset;
 }
 
 export interface AssetAssetPartialUpdateRequestParams {
@@ -333,63 +336,6 @@ export interface AssetPrivateMediaUrlCreateRequestParams {
     privateMediaSignedUrlRequest: PrivateMediaSignedUrlRequest;
 }
 
-export interface AssetRackCreateRequestParams {
-    rack: Rack;
-}
-
-export interface AssetRackDestroyRequestParams {
-    name: string;
-}
-
-export interface AssetRackListRequestParams {
-    name?: string;
-    ordering?: string;
-    page?: number;
-    pageSize?: number;
-    room?: number;
-    roomLocation?: number;
-    search?: string;
-}
-
-export interface AssetRackPartialUpdateRequestParams {
-    name: string;
-    patchedRack?: PatchedRack;
-}
-
-export interface AssetRackRetrieveRequestParams {
-    name: string;
-}
-
-export interface AssetRackTypeCreateRequestParams {
-    rackType: RackType;
-}
-
-export interface AssetRackTypeDestroyRequestParams {
-    id: number;
-}
-
-export interface AssetRackTypeListRequestParams {
-    model?: string;
-    ordering?: string;
-    page?: number;
-    pageSize?: number;
-    search?: string;
-}
-
-export interface AssetRackTypePartialUpdateRequestParams {
-    id: number;
-    patchedRackType?: PatchedRackType;
-}
-
-export interface AssetRackTypeRetrieveRequestParams {
-    id: number;
-}
-
-export interface AssetRackTypeUpdateRequestParams {
-    id: number;
-    rackType: RackType;
-}
-
 export interface AssetRackUnitCreateRequestParams {
     rackUnit: RackUnit;
 }
@@ -420,11 +366,6 @@ export interface AssetRackUnitRetrieveRequestParams {
 export interface AssetRackUnitUpdateRequestParams {
     id: number;
     rackUnit: RackUnit;
-}
-
-export interface AssetRackUpdateRequestParams {
-    name: string;
-    rack: Rack;
 }
 
 export interface AssetVendorCreateRequestParams {
@@ -566,6 +507,14 @@ export interface AssetServiceInterface {
     assetAssetExportRetrieve(extraHttpRequestParams?: any): Observable<Blob>;
 
     /**
+     * 
+     * GET /asset/asset/{id}/history Returns the ordered transition log for this asset.
+     * @endpoint get /asset/asset/{id}/history
+* @param requestParameters
+     */
+    assetAssetHistoryRetrieve(requestParameters: AssetAssetHistoryRetrieveRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
      * Import assets from a CSV file
      * Process a CSV file and create Asset records.
      * @endpoint post /asset/asset/import-csv
@@ -699,6 +648,14 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetAssetModelUpdate(requestParameters: AssetAssetModelUpdateRequestParams, extraHttpRequestParams?: any): Observable<AssetModel>;
+
+    /**
+     * 
+     * POST /asset/asset/{id}/move Body: { \&quot;to_state\&quot;: &lt;int&gt;, \&quot;to_room\&quot;: &lt;int|null&gt;, \&quot;notes\&quot;: \&quot;\&quot; }  Records a state/location transition for the asset and updates it in place.
+     * @endpoint post /asset/asset/{id}/move
+* @param requestParameters
+     */
+    assetAssetMoveCreate(requestParameters: AssetAssetMoveCreateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
 
     /**
      * 
@@ -925,94 +882,6 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
-     * @endpoint post /asset/rack
-* @param requestParameters
-     */
-    assetRackCreate(requestParameters: AssetRackCreateRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
-
-    /**
-     * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
-     * @endpoint delete /asset/rack/{name}
-* @param requestParameters
-     */
-    assetRackDestroy(requestParameters: AssetRackDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
-
-    /**
-     * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
-     * @endpoint get /asset/rack
-* @param requestParameters
-     */
-    assetRackList(requestParameters: AssetRackListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedRackList>;
-
-    /**
-     * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
-     * @endpoint patch /asset/rack/{name}
-* @param requestParameters
-     */
-    assetRackPartialUpdate(requestParameters: AssetRackPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
-
-    /**
-     * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
-     * @endpoint get /asset/rack/{name}
-* @param requestParameters
-     */
-    assetRackRetrieve(requestParameters: AssetRackRetrieveRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
-
-    /**
-     * 
-     * ViewSet for CRUD operations on RackType objects.
-     * @endpoint post /asset/rack_type
-* @param requestParameters
-     */
-    assetRackTypeCreate(requestParameters: AssetRackTypeCreateRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
-
-    /**
-     * 
-     * ViewSet for CRUD operations on RackType objects.
-     * @endpoint delete /asset/rack_type/{id}
-* @param requestParameters
-     */
-    assetRackTypeDestroy(requestParameters: AssetRackTypeDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
-
-    /**
-     * 
-     * ViewSet for CRUD operations on RackType objects.
-     * @endpoint get /asset/rack_type
-* @param requestParameters
-     */
-    assetRackTypeList(requestParameters: AssetRackTypeListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedRackTypeList>;
-
-    /**
-     * 
-     * ViewSet for CRUD operations on RackType objects.
-     * @endpoint patch /asset/rack_type/{id}
-* @param requestParameters
-     */
-    assetRackTypePartialUpdate(requestParameters: AssetRackTypePartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
-
-    /**
-     * 
-     * ViewSet for CRUD operations on RackType objects.
-     * @endpoint get /asset/rack_type/{id}
-* @param requestParameters
-     */
-    assetRackTypeRetrieve(requestParameters: AssetRackTypeRetrieveRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
-
-    /**
-     * 
-     * ViewSet for CRUD operations on RackType objects.
-     * @endpoint put /asset/rack_type/{id}
-* @param requestParameters
-     */
-    assetRackTypeUpdate(requestParameters: AssetRackTypeUpdateRequestParams, extraHttpRequestParams?: any): Observable<RackType>;
-
-    /**
-     * 
      * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
      * @endpoint post /asset/rack_unit
 * @param requestParameters
@@ -1058,14 +927,6 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetRackUnitUpdate(requestParameters: AssetRackUnitUpdateRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
-
-    /**
-     * 
-     * RackViewSet is a viewset for handling CRUD operations on Rack objects.
-     * @endpoint put /asset/rack/{name}
-* @param requestParameters
-     */
-    assetRackUpdate(requestParameters: AssetRackUpdateRequestParams, extraHttpRequestParams?: any): Observable<Rack>;
 
     /**
      * 
