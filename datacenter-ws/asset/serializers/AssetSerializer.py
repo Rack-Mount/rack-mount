@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from asset.models import Asset, AssetModel, AssetState
 from asset.serializers import AssetModelSerializer, AssetStateSerializer
+from location.models import Room
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
 
@@ -43,11 +44,19 @@ class AssetSerializer(serializers.HyperlinkedModelSerializer):
         source='state',
         write_only=True,
     )
+    room_id = serializers.PrimaryKeyRelatedField(
+        queryset=Room.objects.all(),
+        source='room',
+        write_only=True,
+        allow_null=True,
+        required=False,
+    )
     serial_number = NullableCharField(
         max_length=50, required=False, allow_null=True, allow_blank=True)
     sap_id = NullableCharField(
         max_length=50, required=False, allow_null=True, allow_blank=True)
     rack = serializers.SerializerMethodField()
+    room = serializers.SerializerMethodField()
 
     @extend_schema_field({
         'type': 'object',
@@ -65,6 +74,20 @@ class AssetSerializer(serializers.HyperlinkedModelSerializer):
             return {'id': ru.rack.id, 'name': ru.rack.name, 'position': ru.position}
         except (ObjectDoesNotExist, AttributeError):
             return None
+
+    @extend_schema_field({
+        'type': 'object',
+        'nullable': True,
+        'properties': {
+            'id':        {'type': 'integer'},
+            'name':      {'type': 'string'},
+            'room_type': {'type': 'string'},
+        },
+    })
+    def get_room(self, obj):
+        if obj.room_id is None:
+            return None
+        return {'id': obj.room.id, 'name': obj.room.name, 'room_type': obj.room.room_type}
 
     class Meta:
         model = Asset

@@ -300,7 +300,7 @@ class AssetImportCsvView(APIView):
                     order_id=order_id,
                     note=note,
                     power_supplies=power_supplies if power_supplies is not None else 2,
-                    power_cosumption_watt=power_watt if power_watt is not None else 0,
+                    power_consumption_watt=power_watt if power_watt is not None else 0,
                     warranty_expiration=warranty_exp,
                     support_expiration=support_exp,
                     purchase_date=purchase_date,

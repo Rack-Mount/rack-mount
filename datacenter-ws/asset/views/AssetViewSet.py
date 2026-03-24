@@ -4,8 +4,9 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
-from asset.serializers import AssetSerializer
-from asset.models import Asset, AssetState, RackUnit
+from asset.serializers import AssetSerializer, AssetTransitionLogSerializer
+from asset.models import Asset, AssetState, AssetTransitionLog, RackUnit
+from location.models import Room
 from django_filters import rest_framework as df_filters
 from shared.mixins import StandardFilterMixin
 from rest_framework.permissions import IsAuthenticated
@@ -60,7 +61,7 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
         return [IsAuthenticated(), AssetResourcePermission()]
 
     queryset = Asset.objects.select_related(
-        'model', 'model__vendor', 'model__type', 'state', 'rackunit__rack'
+        'model', 'model__vendor', 'model__type', 'state', 'rackunit__rack', 'room'
     ).all()
     serializer_class = AssetSerializer
     search_fields = ['hostname', 'sap_id', 'serial_number', 'order_id',
@@ -132,7 +133,7 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
             warranty_expiration=original.warranty_expiration,
             support_expiration=original.support_expiration,
             power_supplies=original.power_supplies,
-            power_cosumption_watt=original.power_cosumption_watt,
+            power_consumption_watt=original.power_consumption_watt,
             note=original.note,
         )
         clone.save()
@@ -180,6 +181,75 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
             response_data['errors'] = errors
             return Response(response_data, status=status.HTTP_207_MULTI_STATUS)
         return Response(response_data)
+
+    # ── Move (state + room transition) ───────────────────────────────────────
+    @action(detail=True, methods=['post'], url_path='move')
+    def move(self, request, pk=None):
+        """
+        POST /asset/asset/{id}/move
+        Body: { "to_state": <int>, "to_room": <int|null>, "notes": "" }
+
+        Records a state/location transition for the asset and updates it in place.
+        """
+        asset = self.get_object()
+
+        to_state_id = request.data.get('to_state')
+        to_room_id = request.data.get('to_room')
+        notes = request.data.get('notes', '')
+
+        if to_state_id is None:
+            return Response(
+                {'error': _('to_state is required')},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            to_state = AssetState.objects.get(pk=to_state_id)
+        except AssetState.DoesNotExist:
+            return Response(
+                {'error': _('Invalid to_state')},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        to_room = None
+        if to_room_id is not None:
+            try:
+                to_room = Room.objects.get(pk=to_room_id)
+            except Room.DoesNotExist:
+                return Response(
+                    {'error': _('Invalid to_room')},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        AssetTransitionLog.objects.create(
+            asset=asset,
+            from_state=asset.state,
+            to_state=to_state,
+            from_room=asset.room,
+            to_room=to_room,
+            user=request.user,
+            notes=notes,
+        )
+
+        asset.state = to_state
+        asset.room = to_room
+        asset.save(update_fields=['state', 'room', 'updated_at'])
+
+        serializer = self.get_serializer(asset)
+        return Response(serializer.data)
+
+    # ── Transition history ────────────────────────────────────────────────────
+    @action(detail=True, methods=['get'], url_path='history')
+    def history(self, request, pk=None):
+        """
+        GET /asset/asset/{id}/history
+        Returns the ordered transition log for this asset.
+        """
+        asset = self.get_object()
+        qs = AssetTransitionLog.objects.filter(asset=asset).select_related(
+            'from_state', 'to_state', 'from_room', 'to_room', 'user'
+        )
+        serializer = AssetTransitionLogSerializer(qs, many=True)
+        return Response(serializer.data)
 
     # ── Bulk delete ───────────────────────────────────────────────────────────
     @action(detail=False, methods=['post'], url_path='bulk_delete')

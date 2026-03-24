@@ -11,7 +11,7 @@ class AssetResource(resources.ModelResource):
     class Meta:
         model = Asset
         fields = ('hostname',  'model__type__name', 'model__name', 'model__vendor__name',
-                  'serial_number', 'sap_id', 'order_id', 'model__rack_units', 'power_cosumption_watt')
+                  'serial_number', 'sap_id', 'order_id', 'model__rack_units', 'power_consumption_watt')
         name = "Export/Import assets"
 
 
@@ -34,7 +34,7 @@ class AssetAdmin(ExportActionModelAdmin, VersionAdmin):
 
     list_display = ('hostname', 'model__type', 'model__name', 'model__vendor',
                     'serial_number', 'sap_id', 'order_id', 'model__rack_units',
-                    'power_supplies', 'power_cosumption_watt', 'state', 'installed_rack')
+                    'power_supplies', 'power_consumption_watt', 'state', 'installed_rack')
     search_fields = ('hostname', 'model__type__name',
                      'model__name', 'serial_number', 'sap_id', 'order_id')
     list_filter = ('model__type__name', 'model__vendor',

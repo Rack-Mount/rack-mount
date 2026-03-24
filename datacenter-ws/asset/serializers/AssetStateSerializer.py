@@ -17,4 +17,4 @@ class AssetStateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AssetState
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'code', 'description']

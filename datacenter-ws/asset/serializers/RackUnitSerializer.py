@@ -2,7 +2,8 @@ from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
 from django.utils.translation import gettext_lazy as _
-from asset.models import RackUnit, Rack, Asset, GenericComponent
+from asset.models import RackUnit, Asset, GenericComponent
+from location.models import Rack
 
 
 class RackUnitSerializer(serializers.ModelSerializer):
@@ -192,7 +193,7 @@ class RackUnitSerializer(serializers.ModelSerializer):
     def get_device_power_watt(self, obj):
         if obj.device is None:
             return 0
-        return (obj.device.power_cosumption_watt or 0) * (obj.device.power_supplies or 1)
+        return (obj.device.power_consumption_watt or 0) * (obj.device.power_supplies or 1)
 
     rack_installation_front = serializers.BooleanField(
         source='front',
@@ -213,11 +214,24 @@ class RackUnitSerializer(serializers.ModelSerializer):
         device = get_val('device')
         generic_component = get_val('generic_component')
         rack = get_val('rack')
+        position = get_val('position')
 
         if device is not None and generic_component is not None:
             raise serializers.ValidationError(
                 _('A rack unit cannot have both a device and a generic component.')
             )
+
+        if position is not None and position < 1:
+            raise serializers.ValidationError(
+                _('Position must be greater than or equal to 1.')
+            )
+
+        if position is not None and rack is not None:
+            capacity = rack.model.capacity
+            if capacity is not None and position > capacity:
+                raise serializers.ValidationError(
+                    _('Position {} exceeds rack capacity ({}).').format(position, capacity)
+                )
 
         if device and rack:
             asset_depth_mm = device.model.depth_mm

@@ -30,7 +30,7 @@ COLUMNS = [
     ('SAP ID', lambda a: a.sap_id or ''),
     ('Order ID', lambda a: a.order_id or ''),
     ('Alimentatori', lambda a: a.power_supplies),
-    ('Assorbimento (W)', lambda a: a.power_cosumption_watt),
+    ('Assorbimento (W)', lambda a: a.power_consumption_watt),
     ('Note', lambda a: a.note or ''),
     ('Creato', lambda a: a.created_at.strftime(
         '%d/%m/%Y') if a.created_at else ''),
