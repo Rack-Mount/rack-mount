@@ -17,24 +17,31 @@ class WarehouseItemFilter(df_filters.FilterSet):
         method='filter_below_threshold',
         label='Solo articoli sotto soglia',
     )
+    compatible_model = df_filters.NumberFilter(
+        method='filter_compatible_model',
+        label='Compatibile con AssetModel (id)',
+    )
 
     def filter_below_threshold(self, queryset, name, value):
         if value:
-            from django.db.models import F, Q
+            from django.db.models import F
             return queryset.filter(
                 min_threshold__isnull=False,
                 quantity__lt=F('min_threshold'),
             )
         return queryset
 
+    def filter_compatible_model(self, queryset, name, value):
+        return queryset.filter(compatible_models__id=value)
+
     class Meta:
         model = WarehouseItem
-        fields = ['warehouse', 'category', 'below_threshold']
+        fields = ['warehouse', 'category', 'below_threshold', 'compatible_model']
 
 
 class WarehouseItemViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, RackResourcePermission]
-    queryset = WarehouseItem.objects.select_related('warehouse').all()
+    queryset = WarehouseItem.objects.select_related('warehouse').prefetch_related('compatible_models__vendor').all()
     serializer_class = WarehouseItemSerializer
     filterset_class = WarehouseItemFilter
     search_fields = ['name', 'specs', 'notes']

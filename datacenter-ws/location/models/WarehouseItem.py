@@ -38,6 +38,11 @@ class WarehouseItem(models.Model):
         on_delete=models.CASCADE,
         related_name='warehouse_items',
     )
+    compatible_models = models.ManyToManyField(
+        'asset.AssetModel',
+        blank=True,
+        related_name='compatible_warehouse_items',
+    )
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

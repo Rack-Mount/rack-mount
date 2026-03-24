@@ -1,5 +1,16 @@
 from rest_framework import serializers
+from asset.models import AssetModel
 from location.models import WarehouseItem
+
+
+class CompatibleModelBriefSerializer(serializers.Serializer):
+    """Minimal read-only representation of an AssetModel for compatibility."""
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    vendor_name = serializers.SerializerMethodField(read_only=True)
+
+    def get_vendor_name(self, obj) -> str:
+        return obj.vendor.name if obj.vendor else ''
 
 
 class WarehouseItemSerializer(serializers.ModelSerializer):
@@ -10,6 +21,14 @@ class WarehouseItemSerializer(serializers.ModelSerializer):
         source='get_unit_display', read_only=True
     )
     below_threshold = serializers.BooleanField(read_only=True)
+    compatible_models = CompatibleModelBriefSerializer(many=True, read_only=True)
+    compatible_model_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        source='compatible_models',
+        queryset=AssetModel.objects.all(),
+        write_only=True,
+        required=False,
+    )
 
     class Meta:
         model = WarehouseItem
@@ -25,6 +44,8 @@ class WarehouseItemSerializer(serializers.ModelSerializer):
             'min_threshold',
             'below_threshold',
             'warehouse',
+            'compatible_models',
+            'compatible_model_ids',
             'notes',
             'created_at',
             'updated_at',
