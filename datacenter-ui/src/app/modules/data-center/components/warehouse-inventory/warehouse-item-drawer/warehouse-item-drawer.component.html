@@ -80,6 +80,31 @@
         </select>
       </div>
 
+      <!-- Compatible models (SFP only) -->
+      @if (isSfp()) {
+        <div class="form-group">
+          <label>{{ "warehouse.field_compatible_models" | translate }}</label>
+          <div class="compatible-models-list">
+            @for (m of assetModels(); track m.id) {
+              <label class="compatible-model-item">
+                <input
+                  type="checkbox"
+                  [checked]="compatibleModelIds().includes(m.id)"
+                  (change)="toggleCompatibleModel(m.id)"
+                />
+                <span class="model-label">
+                  <span class="model-vendor">{{ m.vendor.name }}</span>
+                  <span class="model-name">{{ m.name }}</span>
+                </span>
+              </label>
+            }
+            @if (assetModels().length === 0) {
+              <span class="no-models">{{ "warehouse.no_models" | translate }}</span>
+            }
+          </div>
+        </div>
+      }
+
       <!-- Specs -->
       <div class="form-group">
         <label for="wh-specs">{{ "warehouse.field_specs" | translate }}</label>

@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   inject,
   input,
@@ -13,6 +14,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import {
+  AssetModel,
+  AssetService,
   CategoryEnum,
   LocationService,
   Room,
@@ -30,6 +33,7 @@ import {
 })
 export class WarehouseItemDrawerComponent implements OnInit {
   private readonly locationService = inject(LocationService);
+  private readonly assetService = inject(AssetService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly mode = input.required<'create' | 'edit'>();
@@ -52,7 +56,14 @@ export class WarehouseItemDrawerComponent implements OnInit {
   protected readonly saveState = signal<'idle' | 'saving' | 'error'>('idle');
   protected readonly saveMsg = signal('');
   protected readonly rooms = signal<Room[]>([]);
+  protected readonly assetModels = signal<AssetModel[]>([]);
+  protected readonly compatibleModelIds = signal<number[]>([]);
   protected readonly refLoading = signal(true);
+
+  protected readonly isSfp = computed(() => {
+    const cat = this.form().category;
+    return cat === CategoryEnum.SfpSwitch || cat === CategoryEnum.SfpServer;
+  });
 
   readonly categories = [
     { value: CategoryEnum.Cable, labelKey: 'warehouse.cat_cable' },
@@ -82,6 +93,8 @@ export class WarehouseItemDrawerComponent implements OnInit {
         warehouse: existing.warehouse,
         notes: existing.notes ?? '',
       });
+      const ids = (existing.compatible_models as any[])?.map((m: any) => m.id) ?? [];
+      this.compatibleModelIds.set(ids);
     }
 
     this.locationService
@@ -89,13 +102,20 @@ export class WarehouseItemDrawerComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
-          // Only warehouse-type rooms
           this.rooms.set(
             (res.results ?? []).filter((r) => (r as any).room_type === 'warehouse'),
           );
           this.refLoading.set(false);
         },
         error: () => this.refLoading.set(false),
+      });
+
+    this.assetService
+      .assetAssetModelList({ pageSize: 500 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => this.assetModels.set(res.results ?? []),
+        error: () => {},
       });
   }
 
@@ -104,6 +124,12 @@ export class WarehouseItemDrawerComponent implements OnInit {
     value: ReturnType<typeof this.form>[K],
   ): void {
     this.form.update((f) => ({ ...f, [key]: value }));
+  }
+
+  protected toggleCompatibleModel(id: number): void {
+    this.compatibleModelIds.update((ids) =>
+      ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id],
+    );
   }
 
   protected onSubmit(): void {
@@ -126,6 +152,7 @@ export class WarehouseItemDrawerComponent implements OnInit {
       min_threshold: f.min_threshold ? f.min_threshold : null,
       warehouse: f.warehouse,
       notes: f.notes.trim(),
+      compatible_model_ids: this.isSfp() ? this.compatibleModelIds() : [],
     };
 
     const op$ =

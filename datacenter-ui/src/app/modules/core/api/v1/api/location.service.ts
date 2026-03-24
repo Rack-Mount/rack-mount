@@ -2747,6 +2747,7 @@ export class LocationService extends BaseService implements LocationServiceInter
     public locationWarehouseItemList(requestParameters?: LocationWarehouseItemListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const belowThreshold = requestParameters?.belowThreshold;
         const category = requestParameters?.category;
+        const compatibleModel = requestParameters?.compatibleModel;
         const ordering = requestParameters?.ordering;
         const page = requestParameters?.page;
         const pageSize = requestParameters?.pageSize;
@@ -2768,6 +2769,15 @@ export class LocationService extends BaseService implements LocationServiceInter
             localVarQueryParameters,
             'category',
             <any>category,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'compatible_model',
+            <any>compatibleModel,
             QueryParamStyle.Form,
             true,
         );

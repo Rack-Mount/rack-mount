@@ -290,6 +290,34 @@
       </div>
     </div>
 
+    <!-- ── Compatible SFPs ───────────────────────────────────────────────────── -->
+    @if (isSfpAsset()) {
+      <div class="sfp-section">
+        <h4 class="sfp-title">{{ "asset_device_view.compatible_sfps" | translate }}</h4>
+        @let sfps = compatibleSfps();
+        @if (sfps.length === 0) {
+          <p class="sfp-empty">{{ "asset_device_view.no_sfps" | translate }}</p>
+        } @else {
+          <ul class="sfp-list">
+            @for (sfp of sfps; track sfp.id) {
+              <li class="sfp-item" [class.sfp-item--low]="sfp.below_threshold">
+                <span class="sfp-name">{{ sfp.name }}</span>
+                @if (sfp.specs) {
+                  <span class="sfp-specs">{{ sfp.specs }}</span>
+                }
+                <span class="sfp-qty" [class.sfp-qty--low]="sfp.below_threshold">
+                  @if (sfp.below_threshold) {
+                    <span class="sfp-warn">⚠</span>
+                  }
+                  {{ sfp.quantity }} {{ sfp.unit_display }}
+                </span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    }
+
     <!-- ── Transition history ─────────────────────────────────────────────────── -->
     <div class="history-section">
       <button class="history-toggle" (click)="toggleHistory()">

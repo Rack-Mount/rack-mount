@@ -47,6 +47,7 @@
     "racks_desc": "Gestisci i rack del datacenter",
     "warehouse_title": "Magazzino",
     "warehouse_desc": "Inventario consumabili e materiali",
+    "warehouse_alert": "{{count}} sotto soglia",
     "no_locations": "Nessuna location trovata.",
     "components_title": "Componenti rack",
     "components_desc": "Gestisci passacavi, pannelli ciechi e accessori",
@@ -460,7 +461,9 @@
     "move_notes_placeholder": "Motivo dello spostamento…",
     "move_confirm": "Conferma spostamento",
     "history_title": "Storico transizioni",
-    "history_empty": "Nessuna transizione registrata."
+    "history_empty": "Nessuna transizione registrata.",
+    "compatible_sfps": "SFP compatibili in magazzino",
+    "no_sfps": "Nessun SFP compatibile trovato in magazzino."
   },
   "rack": {
     "error_loading": "Errore nel caricamento delle unità rack",
@@ -775,6 +778,11 @@
     "adjust_notes": "Motivazione",
     "adjust_notes_placeholder": "Motivo del movimento…",
     "adjust_confirm": "Applica",
-    "adjust_error": "Errore durante la rettifica."
+    "adjust_error": "Errore durante la rettifica.",
+    "alert_body": "{{count}} articoli sotto la soglia minima",
+    "alert_filter_btn": "Mostra tutti",
+    "col_compatible": "Compatibile con",
+    "field_compatible_models": "Modelli compatibili",
+    "no_models": "Nessun modello disponibile."
   }
 }

@@ -9,6 +9,7 @@
  */
 import { CategoryEnum } from './categoryEnum';
 import { UnitEnum } from './unitEnum';
+import { CompatibleModelBrief } from './compatibleModelBrief';
 
 
 export interface WarehouseItem { 
@@ -23,6 +24,8 @@ export interface WarehouseItem {
     min_threshold?: string | null;
     readonly below_threshold: boolean;
     warehouse: number;
+    compatible_models: Array<CompatibleModelBrief>;
+    compatible_model_ids?: Array<number>;
     notes?: string;
     readonly created_at: string;
     readonly updated_at: string;

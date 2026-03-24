@@ -47,6 +47,7 @@
     "racks_desc": "Racks des Rechenzentrums verwalten",
     "warehouse_title": "Lager",
     "warehouse_desc": "Inventar von Verbrauchsmaterial und Materialien",
+    "warehouse_alert": "{{count}} unter Schwellenwert",
     "no_locations": "Keine Standorte gefunden.",
     "components_title": "Rack-Komponenten",
     "components_desc": "Kabelmanager, Blindplatten und Zubehör verwalten",
@@ -408,7 +409,9 @@
     "move_notes_placeholder": "Grund für die Verschiebung…",
     "move_confirm": "Verschiebung bestätigen",
     "history_title": "Übergangsverlauf",
-    "history_empty": "Keine Übergänge aufgezeichnet."
+    "history_empty": "Keine Übergänge aufgezeichnet.",
+    "compatible_sfps": "Kompatible SFPs auf Lager",
+    "no_sfps": "Keine kompatiblen SFPs auf Lager gefunden."
   },
   "rack": {
     "error_loading": "Fehler beim Laden der Rack-Einheiten",
@@ -775,6 +778,11 @@
     "adjust_notes": "Grund",
     "adjust_notes_placeholder": "Grund der Bewegung…",
     "adjust_confirm": "Anwenden",
-    "adjust_error": "Fehler beim Anpassen der Menge."
+    "adjust_error": "Fehler beim Anpassen der Menge.",
+    "alert_body": "{{count}} Artikel unter dem Mindestschwellenwert",
+    "alert_filter_btn": "Alle anzeigen",
+    "col_compatible": "Kompatibel mit",
+    "field_compatible_models": "Kompatible Modelle",
+    "no_models": "Keine Modelle verfügbar."
   }
 }

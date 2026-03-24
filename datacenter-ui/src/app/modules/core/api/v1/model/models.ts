@@ -15,6 +15,7 @@ export * from './blankEnum';
 export * from './categoryEnum';
 export * from './changePassword';
 export * from './codeEnum';
+export * from './compatibleModelBrief';
 export * from './componentTypeEnum';
 export * from './cookieTokenObtainRequest';
 export * from './cookieTokenObtainResponse';

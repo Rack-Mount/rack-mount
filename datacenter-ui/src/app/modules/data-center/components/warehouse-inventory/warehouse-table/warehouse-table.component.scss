@@ -92,11 +92,17 @@ $text-muted: mx.$text-muted;
     white-space: nowrap;
     position: relative;
   }
+
+  td.col-compatible {
+    overflow: visible;
+    white-space: normal;
+  }
 }
 
 .col-name    { width: 200px; }
 .col-category { width: 130px; }
 .col-specs   { width: auto; }
+.col-compatible { width: 180px; }
 .col-quantity { width: 140px; }
 .col-threshold { width: 120px; }
 .col-actions { width: 120px; text-align: right; padding-right: 8px; }
@@ -114,6 +120,32 @@ $text-muted: mx.$text-muted;
   font-weight: 500;
   background: var(--dc-badge-bg, rgba(99, 102, 241, 0.12));
   color: var(--dc-badge-text, #6366f1);
+}
+
+// ── Compatible models chips ──────────────────────────────────────────────────
+.compat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.compat-chip {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  white-space: nowrap;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-compat {
+  font-size: 0.8rem;
+  color: $text-muted;
 }
 
 // ── Specs ───────────────────────────────────────────────────────────────────

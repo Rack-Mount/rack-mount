@@ -36,6 +36,7 @@
             ></span>
           </th>
           <th class="col-specs">{{ "warehouse.col_specs" | translate }}</th>
+          <th class="col-compatible">{{ "warehouse.col_compatible" | translate }}</th>
           <th class="col-quantity th--sortable" (click)="store.onSort('quantity')">
             {{ "warehouse.col_quantity" | translate }}
             <span
@@ -68,6 +69,21 @@
             <!-- Specs -->
             <td class="col-specs">
               <span class="specs-text">{{ item.specs || "—" }}</span>
+            </td>
+
+            <!-- Compatible models -->
+            <td class="col-compatible">
+              @if (item.compatible_models.length > 0) {
+                <div class="compat-chips">
+                  @for (m of item.compatible_models; track m.id) {
+                    <span class="compat-chip" [title]="m.vendor_name + ' ' + m.name">
+                      {{ m.name }}
+                    </span>
+                  }
+                </div>
+              } @else {
+                <span class="no-compat">—</span>
+              }
             </td>
 
             <!-- Quantity -->

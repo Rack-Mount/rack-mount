@@ -47,6 +47,7 @@
     "racks_desc": "Gérer les racks du datacenter",
     "warehouse_title": "Entrepôt",
     "warehouse_desc": "Inventaire des consommables et matériaux",
+    "warehouse_alert": "{{count}} sous le seuil",
     "no_locations": "Aucun site trouvé.",
     "components_title": "Composants de baie",
     "components_desc": "Gérer les passe-câbles, les obturateurs de baie et les accessoires",
@@ -460,7 +461,9 @@
     "move_notes_placeholder": "Raison du déplacement…",
     "move_confirm": "Confirmer le déplacement",
     "history_title": "Historique des transitions",
-    "history_empty": "Aucune transition enregistrée."
+    "history_empty": "Aucune transition enregistrée.",
+    "compatible_sfps": "SFP compatibles en stock",
+    "no_sfps": "Aucun SFP compatible trouvé en stock."
   },
   "rack": {
     "error_loading": "Erreur lors du chargement des unités de baie",
@@ -775,6 +778,11 @@
     "adjust_notes": "Motif",
     "adjust_notes_placeholder": "Motif du mouvement…",
     "adjust_confirm": "Appliquer",
-    "adjust_error": "Erreur lors de l'ajustement."
+    "adjust_error": "Erreur lors de l'ajustement.",
+    "alert_body": "{{count}} articles sous le seuil minimum",
+    "alert_filter_btn": "Afficher tout",
+    "col_compatible": "Compatible avec",
+    "field_compatible_models": "Modèles compatibles",
+    "no_models": "Aucun modèle disponible."
   }
 }

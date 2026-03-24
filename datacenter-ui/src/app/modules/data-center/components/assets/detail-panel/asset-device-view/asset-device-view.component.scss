@@ -351,6 +351,88 @@
   }
 }
 
+/* ── Compatible SFPs ───────────────────────────────────────────────────────── */
+
+.sfp-section {
+  border: 1px solid var(--dc-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: var(--dc-surface);
+}
+
+.sfp-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dc-text-muted);
+  margin: 0 0 10px;
+}
+
+.sfp-empty {
+  font-size: 0.82rem;
+  color: var(--dc-text-muted);
+  margin: 0;
+}
+
+.sfp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sfp-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.83rem;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--dc-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.sfp-name {
+  font-weight: 500;
+  color: var(--dc-text);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sfp-specs {
+  font-size: 0.78rem;
+  color: var(--dc-text-muted);
+  flex-shrink: 0;
+}
+
+.sfp-qty {
+  font-size: 0.8rem;
+  color: var(--dc-text-secondary);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+
+  &--low {
+    color: #f87171;
+    font-weight: 600;
+  }
+}
+
+.sfp-warn {
+  color: #f59e0b;
+  font-size: 0.8rem;
+}
+
 /* ── History ───────────────────────────────────────────────────────────────── */
 
 .history-section {

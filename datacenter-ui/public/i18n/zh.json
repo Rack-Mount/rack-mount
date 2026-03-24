@@ -47,6 +47,7 @@
     "racks_desc": "管理数据中心机柜",
     "warehouse_title": "仓库",
     "warehouse_desc": "耗材和材料库存管理",
+    "warehouse_alert": "{{count}} 低于阈值",
     "no_locations": "未找到任何地点。",
     "components_title": "机柜组件",
     "components_desc": "管理理线架、盲板及配件",
@@ -460,7 +461,9 @@
     "move_notes_placeholder": "移动原因…",
     "move_confirm": "确认移动",
     "history_title": "状态变更历史",
-    "history_empty": "暂无变更记录。"
+    "history_empty": "暂无变更记录。",
+    "compatible_sfps": "库存中的兼容SFP模块",
+    "no_sfps": "库存中未找到兼容的SFP模块。"
   },
   "rack": {
     "error_loading": "加载机柜单元时出错",
@@ -775,6 +778,11 @@
     "adjust_notes": "原因",
     "adjust_notes_placeholder": "移动原因…",
     "adjust_confirm": "确认",
-    "adjust_error": "调整数量时出错。"
+    "adjust_error": "调整数量时出错。",
+    "alert_body": "{{count}} 件商品低于最低库存阈值",
+    "alert_filter_btn": "显示全部",
+    "col_compatible": "兼容设备",
+    "field_compatible_models": "兼容型号",
+    "no_models": "暂无可用型号。"
   }
 }

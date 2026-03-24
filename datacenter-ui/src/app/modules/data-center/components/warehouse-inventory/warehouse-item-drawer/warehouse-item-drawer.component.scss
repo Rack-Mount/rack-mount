@@ -50,6 +50,59 @@
   }
 }
 
+// ── Compatible models checklist ────────────────────────────────────────────
+.compatible-models-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--dc-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: var(--dc-input-bg);
+}
+
+.compatible-model-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+
+  &:hover {
+    background: var(--dc-hover);
+  }
+
+  input[type='checkbox'] {
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+}
+
+.model-label {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.model-vendor {
+  color: var(--dc-text-muted);
+  font-size: 0.78rem;
+}
+
+.model-name {
+  color: var(--dc-text);
+}
+
+.no-models {
+  font-size: 0.83rem;
+  color: var(--dc-text-muted);
+  padding: 4px 0;
+}
+
 // ── Footer ─────────────────────────────────────────────────────────────────
 .drawer-footer {
   display: flex;

@@ -23,6 +23,7 @@ import {
   Asset,
   AssetService,
   AssetState,
+  WarehouseItem,
 } from '../../../../../core/api/v1';
 import { LocationService, Room } from '../../../../../core/api/v1';
 
@@ -220,6 +221,31 @@ export class AssetDeviceViewComponent {
         },
       });
   }
+
+  // ── Compatible SFPs ────────────────────────────────────────────────────────
+  protected readonly isSfpAsset = computed(() => {
+    const a = this.asset();
+    if (!a) return false;
+    const t = (a.model.type.name ?? '').toLowerCase();
+    return t.includes('switch') || t.includes('server');
+  });
+
+  protected readonly compatibleSfps = toSignal(
+    toObservable(this.asset).pipe(
+      switchMap((a) => {
+        if (!a) return of([] as WarehouseItem[]);
+        const t = (a.model.type.name ?? '').toLowerCase();
+        if (!t.includes('switch') && !t.includes('server')) return of([] as WarehouseItem[]);
+        return this.locationService
+          .locationWarehouseItemList({ compatibleModel: a.model.id, pageSize: 100 })
+          .pipe(
+            map((res) => res.results ?? []),
+            catchError(() => of([] as WarehouseItem[])),
+          );
+      }),
+    ),
+    { initialValue: [] as WarehouseItem[] },
+  );
 
   // ── History ────────────────────────────────────────────────────────────────
   protected readonly historyOpen = signal(false);

@@ -204,6 +204,7 @@ export interface LocationWarehouseItemDestroyRequestParams {
 export interface LocationWarehouseItemListRequestParams {
     belowThreshold?: boolean;
     category?: 'cable' | 'cable_manager' | 'fiber' | 'other' | 'sfp_server' | 'sfp_switch';
+    compatibleModel?: number;
     ordering?: string;
     page?: number;
     pageSize?: number;
