@@ -431,6 +431,17 @@
               </button>
             }
           </div>
+          <select
+            class="filter-select"
+            [value]="roomTypeFilter()"
+            (change)="setRoomTypeFilter($any($event.target).value)"
+          >
+            <option value="">{{ "rooms.filter_all_types" | translate }}</option>
+            <option value="datacenter">{{ "rooms.type_datacenter" | translate }}</option>
+            <option value="warehouse">{{ "rooms.type_warehouse" | translate }}</option>
+            <option value="laboratory">{{ "rooms.type_laboratory" | translate }}</option>
+            <option value="technical_office">{{ "rooms.type_technical_office" | translate }}</option>
+          </select>
         </div>
         <div class="toolbar-right">
           @if (roomListState().status === "loaded") {

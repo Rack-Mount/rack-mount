@@ -130,6 +130,22 @@
   }
 }
 
+// ── Toolbar filter select ─────────────────────────────────────────────────────
+.filter-select {
+  padding: 6px 10px;
+  border: 1px solid mx.$border-strong;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  background: var(--dc-bg-surface);
+  color: inherit;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--dc-accent);
+  }
+}
+
 // ── Type badges ───────────────────────────────────────────────────────────────
 .type-badge {
   display: inline-block;

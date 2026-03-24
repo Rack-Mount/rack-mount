@@ -127,6 +127,7 @@ export class LocationsListComponent {
   protected readonly roomSearch = signal('');
   protected readonly roomPage = signal(1);
   protected readonly roomOrdering = signal('name');
+  protected readonly roomTypeFilter = signal<RoomTypeEnum | ''>('');
   private readonly _roomSearchInput = new Subject<string>();
 
   protected readonly roomSortField = computed(() =>
@@ -257,6 +258,7 @@ export class LocationsListComponent {
         search: this.roomSearch(),
         page: this.roomPage(),
         ordering: this.roomOrdering(),
+        roomTypeFilter: this.roomTypeFilter(),
       })),
     )
       .pipe(
@@ -269,6 +271,7 @@ export class LocationsListComponent {
                 page: p.page,
                 pageSize: PAGE_SIZE,
                 ordering: p.ordering,
+                roomType: (p.roomTypeFilter as RoomTypeEnum) || undefined,
               })
               .pipe(
                 map(
@@ -451,6 +454,10 @@ export class LocationsListComponent {
   }
   protected resetRoomSearch(): void {
     this.roomSearch.set('');
+    this.roomPage.set(1);
+  }
+  protected setRoomTypeFilter(v: string): void {
+    this.roomTypeFilter.set(v as RoomTypeEnum | '');
     this.roomPage.set(1);
   }
   protected roomSort(field: string): void {

@@ -282,6 +282,63 @@
       opacity: 1;
     }
   }
+
+  &--static {
+    cursor: default;
+    pointer-events: none;
+
+    svg {
+      opacity: 0.5;
+    }
+  }
+
+  &--datacenter {
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.2);
+
+    &:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: rgba(59, 130, 246, 0.35);
+      color: #1d4ed8;
+    }
+  }
+
+  &--warehouse {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.2);
+
+    &:hover {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: #b45309;
+    }
+  }
+
+  &--laboratory {
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.08);
+    border-color: rgba(139, 92, 246, 0.2);
+
+    &:hover {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: rgba(139, 92, 246, 0.35);
+      color: #6d28d9;
+    }
+  }
+
+  &--technical_office {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.2);
+
+    &:hover {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: #047857;
+    }
+  }
 }
 
 /* ── Skeleton loading ── */
