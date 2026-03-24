@@ -18,14 +18,17 @@ import { PaginatedLocationList } from '../model/models';
 import { PaginatedRackList } from '../model/models';
 import { PaginatedRackTypeList } from '../model/models';
 import { PaginatedRoomList } from '../model/models';
+import { PaginatedWarehouseItemList } from '../model/models';
 import { PatchedLocation } from '../model/models';
 import { PatchedLocationCustomField } from '../model/models';
 import { PatchedRack } from '../model/models';
 import { PatchedRackType } from '../model/models';
 import { PatchedRoom } from '../model/models';
+import { PatchedWarehouseItem } from '../model/models';
 import { Rack } from '../model/models';
 import { RackType } from '../model/models';
 import { Room } from '../model/models';
+import { WarehouseItem } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -183,6 +186,43 @@ export interface LocationRoomRetrieveRequestParams {
 export interface LocationRoomUpdateRequestParams {
     id: number;
     room: Room;
+}
+
+export interface LocationWarehouseItemAdjustCreateRequestParams {
+    id: number;
+    warehouseItem: WarehouseItem;
+}
+
+export interface LocationWarehouseItemCreateRequestParams {
+    warehouseItem: WarehouseItem;
+}
+
+export interface LocationWarehouseItemDestroyRequestParams {
+    id: number;
+}
+
+export interface LocationWarehouseItemListRequestParams {
+    belowThreshold?: boolean;
+    category?: 'cable' | 'cable_manager' | 'fiber' | 'other' | 'sfp_server' | 'sfp_switch';
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    warehouse?: number;
+}
+
+export interface LocationWarehouseItemPartialUpdateRequestParams {
+    id: number;
+    patchedWarehouseItem?: PatchedWarehouseItem;
+}
+
+export interface LocationWarehouseItemRetrieveRequestParams {
+    id: number;
+}
+
+export interface LocationWarehouseItemUpdateRequestParams {
+    id: number;
+    warehouseItem: WarehouseItem;
 }
 
 
@@ -429,5 +469,61 @@ export interface LocationServiceInterface {
 * @param requestParameters
      */
     locationRoomUpdate(requestParameters: LocationRoomUpdateRequestParams, extraHttpRequestParams?: any): Observable<Room>;
+
+    /**
+     * 
+     * Adjust quantity by a signed delta. Body: { \&quot;delta\&quot;: &lt;number&gt;, \&quot;notes\&quot;: &lt;str optional&gt; } Positive delta &#x3D; restock, negative &#x3D; withdrawal.
+     * @endpoint post /location/warehouse_item/{id}/adjust
+* @param requestParameters
+     */
+    locationWarehouseItemAdjustCreate(requestParameters: LocationWarehouseItemAdjustCreateRequestParams, extraHttpRequestParams?: any): Observable<WarehouseItem>;
+
+    /**
+     * 
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * @endpoint post /location/warehouse_item
+* @param requestParameters
+     */
+    locationWarehouseItemCreate(requestParameters: LocationWarehouseItemCreateRequestParams, extraHttpRequestParams?: any): Observable<WarehouseItem>;
+
+    /**
+     * 
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * @endpoint delete /location/warehouse_item/{id}
+* @param requestParameters
+     */
+    locationWarehouseItemDestroy(requestParameters: LocationWarehouseItemDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * @endpoint get /location/warehouse_item
+* @param requestParameters
+     */
+    locationWarehouseItemList(requestParameters: LocationWarehouseItemListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedWarehouseItemList>;
+
+    /**
+     * 
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * @endpoint patch /location/warehouse_item/{id}
+* @param requestParameters
+     */
+    locationWarehouseItemPartialUpdate(requestParameters: LocationWarehouseItemPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<WarehouseItem>;
+
+    /**
+     * 
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * @endpoint get /location/warehouse_item/{id}
+* @param requestParameters
+     */
+    locationWarehouseItemRetrieve(requestParameters: LocationWarehouseItemRetrieveRequestParams, extraHttpRequestParams?: any): Observable<WarehouseItem>;
+
+    /**
+     * 
+     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * @endpoint put /location/warehouse_item/{id}
+* @param requestParameters
+     */
+    locationWarehouseItemUpdate(requestParameters: LocationWarehouseItemUpdateRequestParams, extraHttpRequestParams?: any): Observable<WarehouseItem>;
 
 }

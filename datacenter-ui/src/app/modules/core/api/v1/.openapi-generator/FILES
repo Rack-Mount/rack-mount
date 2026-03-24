@@ -27,6 +27,7 @@ model/assetStateCode.ts
 model/assetType.ts
 model/authDetail.ts
 model/blankEnum.ts
+model/categoryEnum.ts
 model/changePassword.ts
 model/codeEnum.ts
 model/componentTypeEnum.ts
@@ -55,6 +56,7 @@ model/paginatedRackUnitList.ts
 model/paginatedRoomList.ts
 model/paginatedUserListList.ts
 model/paginatedVendorList.ts
+model/paginatedWarehouseItemList.ts
 model/patchedAsset.ts
 model/patchedAssetCustomField.ts
 model/patchedAssetModel.ts
@@ -71,6 +73,7 @@ model/patchedRoom.ts
 model/patchedUserPreferences.ts
 model/patchedUserUpdate.ts
 model/patchedVendor.ts
+model/patchedWarehouseItem.ts
 model/portAnalyzeRequest.ts
 model/portAnalyzeResult.ts
 model/portAnnotateRequest.ts
@@ -90,11 +93,13 @@ model/role.ts
 model/room.ts
 model/roomTypeEnum.ts
 model/sideEnum.ts
+model/unitEnum.ts
 model/userCreate.ts
 model/userList.ts
 model/userPreferences.ts
 model/userUpdate.ts
 model/vendor.ts
+model/warehouseItem.ts
 param.ts
 provide-api.ts
 query.params.ts
