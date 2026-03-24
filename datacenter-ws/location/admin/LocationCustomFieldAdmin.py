@@ -6,6 +6,7 @@ from location.models import LocationCustomField
 class LocationCustomFieldInline(admin.TabularInline):
     model = LocationCustomField
     fields = ['field_name', 'field_value']
+    autocomplete_fields = ['field_name']
     extra = 0
     list_per_page = 12
 
@@ -13,6 +14,7 @@ class LocationCustomFieldInline(admin.TabularInline):
 @admin.register(LocationCustomField)
 class LocationCustomFieldAdmin(admin.ModelAdmin):
     save_on_top = True
+    autocomplete_fields = ['field_name']
     fields = [
         ('field_name', 'field_value'),
     ]
@@ -21,4 +23,4 @@ class LocationCustomFieldAdmin(admin.ModelAdmin):
         'field_name',
         'field_value'
     )
-    search_fields = ['datacenter__name', 'field_name']
+    search_fields = ['location__name', 'field_name__name']

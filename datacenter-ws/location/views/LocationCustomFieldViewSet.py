@@ -11,8 +11,8 @@ class LocationCustomFieldViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     """
     ViewSet for viewing and editing LocationCustomField instances.
     """
-    queryset = LocationCustomField.objects.select_related('location').all()
+    queryset = LocationCustomField.objects.select_related('location', 'field_name').all()
     serializer_class = LocationCustomFieldSerializer
     filterset_fields = ['location']
-    search_fields = ['field_name', 'field_value']
-    ordering = ['location__name', 'field_name']
+    search_fields = ['field_name__name', 'field_value']
+    ordering = ['location__name', 'field_name__name']

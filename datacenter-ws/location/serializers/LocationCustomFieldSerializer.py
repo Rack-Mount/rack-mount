@@ -1,19 +1,11 @@
 from rest_framework import serializers
+from asset.models import CustomFieldName
 from location.models import LocationCustomField
 
 
 class LocationCustomFieldSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for the LocationCustomField model.
-
-    This serializer uses HyperlinkedModelSerializer to provide a hyperlinked representation
-    of the LocationCustomField model. It includes the following fields:
-    - id: An integer field that is read-only.
-    - url: A hyperlinked identity field that is read-only and points to the 'locationcustomfield-detail' view.
-
-    Meta:
-        model: The model that is being serialized (LocationCustomField).
-        fields: Specifies that all fields of the model should be included in the serialization.
     """
     id = serializers.IntegerField(read_only=True)
     url = serializers.HyperlinkedIdentityField(
@@ -21,6 +13,16 @@ class LocationCustomFieldSerializer(serializers.HyperlinkedModelSerializer):
         view_name='locationcustomfield-detail'
     )
 
+    field_name = serializers.StringRelatedField(
+        source='field_name.name',
+        read_only=True,
+    )
+    field_name_id = serializers.PrimaryKeyRelatedField(
+        queryset=CustomFieldName.objects.all(),
+        source='field_name',
+        write_only=True,
+    )
+
     class Meta:
         model = LocationCustomField
-        fields = '__all__'
+        fields = ['id', 'url', 'location', 'field_name', 'field_name_id', 'field_value']
