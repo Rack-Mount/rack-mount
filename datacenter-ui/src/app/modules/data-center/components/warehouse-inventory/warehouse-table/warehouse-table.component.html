@@ -37,6 +37,7 @@
           </th>
           <th class="col-specs">{{ "warehouse.col_specs" | translate }}</th>
           <th class="col-compatible">{{ "warehouse.col_compatible" | translate }}</th>
+          <th class="col-installed">{{ "warehouse.col_installed" | translate }}</th>
           <th class="col-quantity th--sortable" (click)="store.onSort('quantity')">
             {{ "warehouse.col_quantity" | translate }}
             <span
@@ -83,6 +84,15 @@
                 </div>
               } @else {
                 <span class="no-compat">—</span>
+              }
+            </td>
+
+            <!-- Installed count -->
+            <td class="col-installed">
+              @if (item.installed_count > 0) {
+                <span class="installed-badge">{{ item.installed_count }}</span>
+              } @else {
+                <span class="no-installed">—</span>
               }
             </td>
 
