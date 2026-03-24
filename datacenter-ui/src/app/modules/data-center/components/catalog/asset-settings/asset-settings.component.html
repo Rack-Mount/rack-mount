@@ -8,6 +8,9 @@
         (click)="activeTab.set('vendors')"
       >
         {{ "asset_settings.tab_vendors" | translate }}
+        @if (vendorCount() !== null) {
+          <span class="tab-count">{{ vendorCount() }}</span>
+        }
       </button>
     }
     @if (role.isAdmin()) {
@@ -39,6 +42,9 @@
         (click)="activeTab.set('rack-models')"
       >
         {{ "asset_settings.tab_rack_models" | translate }}
+        @if (rackModelCount() !== null) {
+          <span class="tab-count">{{ rackModelCount() }}</span>
+        }
       </button>
       <button
         class="tab-btn"
@@ -46,6 +52,9 @@
         (click)="activeTab.set('locations')"
       >
         {{ "asset_settings.tab_locations" | translate }}
+        @if (locationCount() !== null) {
+          <span class="tab-count">{{ locationCount() }}</span>
+        }
       </button>
     }
     @if (role.canViewCatalog()) {
@@ -55,6 +64,9 @@
         (click)="activeTab.set('components')"
       >
         {{ "asset_settings.tab_components" | translate }}
+        @if (componentCount() !== null) {
+          <span class="tab-count">{{ componentCount() }}</span>
+        }
       </button>
     }
   </div>

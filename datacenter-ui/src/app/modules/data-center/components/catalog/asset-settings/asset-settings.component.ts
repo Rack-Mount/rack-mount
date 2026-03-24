@@ -19,7 +19,12 @@ import {
   Subject,
   switchMap,
 } from 'rxjs';
-import { AssetService, AssetState, AssetType } from '../../../../core/api/v1';
+import {
+  AssetService,
+  AssetState,
+  AssetType,
+  LocationService,
+} from '../../../../core/api/v1';
 import {
   DEFAULT_PAGE_SIZE,
   SEARCH_DEBOUNCE_MS,
@@ -54,10 +59,16 @@ const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 })
 export class AssetSettingsComponent {
   private readonly svc = inject(AssetService);
+  private readonly locSvc = inject(LocationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly backendErr = inject(BackendErrorService);
   private readonly translate = inject(TranslateService);
   protected readonly role = inject(RoleService);
+
+  protected readonly vendorCount = signal<number | null>(null);
+  protected readonly rackModelCount = signal<number | null>(null);
+  protected readonly locationCount = signal<number | null>(null);
+  protected readonly componentCount = signal<number | null>(null);
 
   protected readonly activeTab = signal<
     'states' | 'types' | 'rack-models' | 'locations' | 'vendors' | 'components'
@@ -271,6 +282,30 @@ export class AssetSettingsComponent {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((s) => this.tyListState.set(s));
+
+    if (this.role.canViewCatalog()) {
+      this.svc
+        .assetVendorList({ pageSize: 1 })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({ next: (r) => this.vendorCount.set(r.count ?? 0) });
+
+      this.svc
+        .assetGenericComponentList({ pageSize: 1 })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({ next: (r) => this.componentCount.set(r.count ?? 0) });
+    }
+
+    if (this.role.canViewInfrastructure()) {
+      this.locSvc
+        .locationRackTypeList({ pageSize: 1 })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({ next: (r) => this.rackModelCount.set(r.count ?? 0) });
+
+      this.locSvc
+        .locationLocationList({ pageSize: 1 })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({ next: (r) => this.locationCount.set(r.count ?? 0) });
+    }
   }
 
   // ── State helpers ─────────────────────────────────────────────────────────
