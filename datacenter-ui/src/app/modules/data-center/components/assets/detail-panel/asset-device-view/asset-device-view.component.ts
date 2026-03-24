@@ -1,16 +1,48 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   input,
+  signal,
 } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { TranslatePipe } from '@ngx-translate/core';
-import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import {
+  catchError,
+  map,
+  Observable,
+  of,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import { environment } from '../../../../../../../environments/environment';
-import { Asset, AssetService } from '../../../../../core/api/v1';
+import {
+  Asset,
+  AssetService,
+  AssetState,
+} from '../../../../../core/api/v1';
+import { LocationService, Room } from '../../../../../core/api/v1';
+
+export interface AssetTransitionLog {
+  readonly id: number;
+  readonly from_state: number | null;
+  readonly from_state_name: string | null;
+  readonly to_state: number;
+  readonly to_state_name: string;
+  readonly from_room: number | null;
+  readonly from_room_name: string | null;
+  readonly to_room: number | null;
+  readonly to_room_name: string | null;
+  readonly user: number;
+  readonly username: string;
+  readonly notes: string;
+  readonly timestamp: string;
+}
 import { MediaUrlService } from '../../../../../core/services/media-url.service';
+import { BackendErrorService } from '../../../../../core/services/backend-error.service';
 import { formatDate, stateColor } from '../../assets-list/assets-list-utils';
 
 type LoadState =
@@ -30,13 +62,18 @@ export class AssetDeviceViewComponent {
   readonly assetId = input.required<number>();
 
   private readonly assetService = inject(AssetService);
+  private readonly locationService = inject(LocationService);
   private readonly mediaUrlService = inject(MediaUrlService);
+  private readonly backendErr = inject(BackendErrorService);
+  private readonly translate = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly serviceUrl = environment.service_url;
   protected readonly stateColor = stateColor;
   protected readonly formatDate = formatDate;
   protected readonly today = new Date().toISOString().slice(0, 10);
 
+  // ── Asset load ─────────────────────────────────────────────────────────────
   readonly loadState = toSignal(
     toObservable(this.assetId).pipe(
       switchMap((id) =>
@@ -55,20 +92,15 @@ export class AssetDeviceViewComponent {
     return s.status === 'loaded' ? s.asset : null;
   });
 
+  // ── Images ─────────────────────────────────────────────────────────────────
   private readonly frontImagePath = computed(() => {
     const a = this.asset();
-    if (!a) return null;
-    const img = a.model.front_image;
-    if (!img) return null;
-    return img;
+    return a?.model.front_image ?? null;
   });
 
   private readonly rearImagePath = computed(() => {
     const a = this.asset();
-    if (!a) return null;
-    const img = a.model.rear_image;
-    if (!img) return null;
-    return img;
+    return a?.model.rear_image ?? null;
   });
 
   protected readonly frontImage = toSignal(
@@ -107,14 +139,112 @@ export class AssetDeviceViewComponent {
   protected readonly warrantyExpired = computed(() => {
     const a = this.asset();
     if (!a) return false;
-    const d = a.warranty_expiration;
-    return !!d && d < this.today;
+    return !!a.warranty_expiration && a.warranty_expiration < this.today;
   });
 
   protected readonly supportExpired = computed(() => {
     const a = this.asset();
     if (!a) return false;
-    const d = a.support_expiration;
-    return !!d && d < this.today;
+    return !!a.support_expiration && a.support_expiration < this.today;
   });
+
+  // ── Move form ──────────────────────────────────────────────────────────────
+  protected readonly moveFormOpen = signal(false);
+  protected readonly moveToStateId = signal<number | null>(null);
+  protected readonly moveToRoomId = signal<number | null>(null);
+  protected readonly moveNotes = signal('');
+  protected readonly moveSaving = signal(false);
+  protected readonly moveError = signal('');
+
+  protected readonly availableStates = signal<AssetState[]>([]);
+  protected readonly availableRooms = signal<Room[]>([]);
+
+  protected openMoveForm(): void {
+    const a = this.asset();
+    this.moveToStateId.set(a?.state.id ?? null);
+    this.moveToRoomId.set(a?.room?.id ?? null);
+    this.moveNotes.set('');
+    this.moveSaving.set(false);
+    this.moveError.set('');
+    this.moveFormOpen.set(true);
+
+    if (this.availableStates().length === 0) {
+      this.assetService
+        .assetAssetStateList({ pageSize: 100 })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((r) => this.availableStates.set(r.results ?? []));
+    }
+    if (this.availableRooms().length === 0) {
+      this.locationService
+        .locationRoomList({ pageSize: 1000, ordering: 'name' })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((r) => this.availableRooms.set(r.results ?? []));
+    }
+  }
+
+  protected cancelMoveForm(): void {
+    this.moveFormOpen.set(false);
+  }
+
+  protected submitMove(): void {
+    const id = this.assetId();
+    const to_state = this.moveToStateId();
+    if (!to_state) return;
+
+    this.moveSaving.set(true);
+    this.moveError.set('');
+
+    this.assetService
+      .assetAssetMoveCreate({
+        id,
+        asset: { to_state, to_room: this.moveToRoomId(), notes: this.moveNotes() } as any,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.moveSaving.set(false);
+          this.moveFormOpen.set(false);
+          this.historyOpen.set(true);
+          this.loadHistory();
+          // Reload asset state
+          toObservable(this.assetId)
+            .pipe(
+              switchMap((assetId) => this.assetService.assetAssetRetrieve({ id: assetId })),
+              takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.moveSaving.set(false);
+          this.moveError.set(this.backendErr.parse(err));
+        },
+      });
+  }
+
+  // ── History ────────────────────────────────────────────────────────────────
+  protected readonly historyOpen = signal(false);
+  protected readonly historyLoading = signal(false);
+  protected readonly historyEntries = signal<AssetTransitionLog[]>([]);
+
+  protected toggleHistory(): void {
+    const next = !this.historyOpen();
+    this.historyOpen.set(next);
+    if (next && this.historyEntries().length === 0) {
+      this.loadHistory();
+    }
+  }
+
+  private loadHistory(): void {
+    this.historyLoading.set(true);
+    (this.assetService
+      .assetAssetHistoryRetrieve({ id: this.assetId() }) as unknown as Observable<AssetTransitionLog[]>)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (entries) => {
+          this.historyEntries.set(entries);
+          this.historyLoading.set(false);
+        },
+        error: () => this.historyLoading.set(false),
+      });
+  }
 }

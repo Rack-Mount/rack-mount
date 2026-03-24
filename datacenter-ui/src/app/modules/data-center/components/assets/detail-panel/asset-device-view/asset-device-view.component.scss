@@ -204,3 +204,251 @@
   font-size: 12px;
   color: var(--dc-text-secondary);
 }
+
+/* ── Toolbar ───────────────────────────────────────────────────────────────── */
+
+.dv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dv-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.dv-hostname {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--dc-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.room-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  white-space: nowrap;
+}
+
+.btn-move {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border: 1px solid var(--dc-accent, #3b82f6);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dc-accent, #3b82f6);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(59, 130, 246, 0.1);
+  }
+}
+
+/* ── Move form ─────────────────────────────────────────────────────────────── */
+
+.move-form {
+  background: var(--dc-bg-row);
+  border: 1px solid var(--dc-border-panel);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--dc-text-primary);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+.move-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--dc-text-secondary);
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.move-select,
+.move-textarea {
+  padding: 6px 8px;
+  border: 1px solid var(--dc-border-strong);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  background: var(--dc-bg-surface);
+  color: inherit;
+
+  &:focus {
+    outline: none;
+    border-color: var(--dc-accent, #3b82f6);
+  }
+}
+
+.move-textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.move-error {
+  color: #f87171;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.btn-action {
+  padding: 6px 14px;
+  border: 1px solid var(--dc-border-strong);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  background: var(--dc-bg-surface);
+  color: inherit;
+
+  &--save {
+    background: var(--dc-accent, #3b82f6);
+    color: #fff;
+    border-color: var(--dc-accent, #3b82f6);
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+}
+
+/* ── History ───────────────────────────────────────────────────────────────── */
+
+.history-section {
+  border: 1px solid var(--dc-border-panel);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.history-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--dc-bg-row);
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--dc-text-secondary);
+  cursor: pointer;
+  text-align: left;
+
+  .chevron {
+    margin-left: auto;
+    transition: transform 0.2s;
+
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.history-body {
+  padding: 12px 14px;
+  background: var(--dc-bg-surface);
+}
+
+.history-empty {
+  font-size: 0.82rem;
+  color: var(--dc-text-muted);
+  text-align: center;
+  padding: 8px 0;
+}
+
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-entry {
+  border-left: 2px solid var(--dc-border-panel);
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.history-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 0.73rem;
+  color: var(--dc-text-muted);
+}
+
+.history-transition,
+.history-rooms {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+}
+
+.history-from {
+  color: var(--dc-text-secondary);
+}
+
+.history-arrow {
+  color: var(--dc-text-muted);
+  font-size: 0.75rem;
+}
+
+.history-to {
+  font-weight: 600;
+  color: var(--dc-text-primary);
+}
+
+.history-rooms {
+  font-size: 0.75rem;
+  color: var(--dc-text-secondary);
+}
+
+.history-notes {
+  font-size: 0.75rem;
+  color: var(--dc-text-muted);
+  margin: 0;
+  font-style: italic;
+}

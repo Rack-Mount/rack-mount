@@ -12,7 +12,7 @@ import {
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, map, of, startWith, switchMap } from 'rxjs';
-import { Asset, AssetService, Rack } from '../../../../core/api/v1';
+import { Asset, AssetService, LocationService, Rack } from '../../../../core/api/v1';
 import { RackComponent } from '../../infrastructure/rack/rack.component';
 import { AssetDeviceViewComponent } from './asset-device-view/asset-device-view.component';
 import { PanelTab } from './detail-panel.types';
@@ -32,6 +32,7 @@ import { PanelTab } from './detail-panel.types';
 })
 export class DetailPanelComponent {
   private readonly assetService = inject(AssetService);
+  private readonly locationService = inject(LocationService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly tabs = input<PanelTab[]>([]);
@@ -54,8 +55,8 @@ export class DetailPanelComponent {
       .pipe(
         switchMap((tab) => {
           if (tab?.type === 'rack' && tab.rackName) {
-            return this.assetService
-              .assetRackRetrieve({ name: tab.rackName })
+            return this.locationService
+              .locationRackRetrieve({ name: tab.rackName })
               .pipe(
                 map((rack) => ({ rack, asset: null, loading: false })),
                 catchError((err) => {

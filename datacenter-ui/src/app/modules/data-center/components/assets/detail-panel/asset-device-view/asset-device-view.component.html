@@ -12,6 +12,88 @@
   </div>
 } @else if (asset(); as a) {
   <div class="device-view">
+
+    <!-- ── Toolbar ───────────────────────────────────────────────────────────── -->
+    <div class="dv-toolbar">
+      <div class="dv-title">
+        <span class="dv-hostname">{{ a.hostname || "—" }}</span>
+        <span class="state-badge" [attr.data-color]="stateColor(a.state.name)">
+          {{ a.state.name }}
+        </span>
+        @if (a.room) {
+          <span class="room-badge">{{ a.room.name }}</span>
+        }
+      </div>
+      <button class="btn-move" (click)="openMoveForm()">
+        <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+          <path d="M8 2v12M2 8l6-6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ "asset_device_view.move_btn" | translate }}
+      </button>
+    </div>
+
+    <!-- ── Move form ─────────────────────────────────────────────────────────── -->
+    @if (moveFormOpen()) {
+      <div class="move-form">
+        <h4 class="move-form__title">{{ "asset_device_view.move_title" | translate }}</h4>
+        <div class="move-form__grid">
+          <label class="move-label">
+            {{ "asset_device_view.move_state" | translate }}
+            <select
+              class="move-select"
+              [value]="moveToStateId()"
+              (change)="moveToStateId.set(+$any($event.target).value || null)"
+            >
+              <option value="">—</option>
+              @for (s of availableStates(); track s.id) {
+                <option [value]="s.id">{{ s.name }}</option>
+              }
+            </select>
+          </label>
+          <label class="move-label">
+            {{ "asset_device_view.move_room" | translate }}
+            <select
+              class="move-select"
+              [value]="moveToRoomId() ?? ''"
+              (change)="moveToRoomId.set($any($event.target).value ? +$any($event.target).value : null)"
+            >
+              <option value="">—</option>
+              @for (r of availableRooms(); track r.id) {
+                <option [value]="r.id">{{ r.name }}</option>
+              }
+            </select>
+          </label>
+          <label class="move-label move-label--full">
+            {{ "asset_device_view.move_notes" | translate }}
+            <textarea
+              class="move-textarea"
+              rows="2"
+              [value]="moveNotes()"
+              (input)="moveNotes.set($any($event.target).value)"
+              [placeholder]="'asset_device_view.move_notes_placeholder' | translate"
+            ></textarea>
+          </label>
+        </div>
+        @if (moveError()) {
+          <p class="move-error">{{ moveError() }}</p>
+        }
+        <div class="move-form__actions">
+          <button
+            class="btn-action btn-action--save"
+            [disabled]="moveSaving() || !moveToStateId()"
+            (click)="submitMove()"
+          >
+            @if (moveSaving()) { … } @else {
+              {{ "asset_device_view.move_confirm" | translate }}
+            }
+          </button>
+          <button class="btn-action" (click)="cancelMoveForm()">
+            {{ "common.cancel" | translate }}
+          </button>
+        </div>
+      </div>
+    }
+
     <!-- ── Device panels: front + rear ──────────────────────────────────────── -->
     <div class="panels-row">
       <!-- Front -->
@@ -119,10 +201,10 @@
             <dt>{{ "asset_device_view.rack_units" | translate }}</dt>
             <dd>{{ a.model.rack_units }}U</dd>
           </div>
-          @if (a.power_cosumption_watt) {
+          @if (a.power_consumption_watt) {
             <div class="info-item">
               <dt>{{ "asset_device_view.power" | translate }}</dt>
-              <dd>{{ a.power_cosumption_watt }} W</dd>
+              <dd>{{ a.power_consumption_watt }} W</dd>
             </div>
           }
           @if (a.power_supplies) {
@@ -140,6 +222,12 @@
           {{ "asset_device_view.section_location" | translate }}
         </h4>
         <dl class="info-list">
+          @if (a.room) {
+            <div class="info-item">
+              <dt>{{ "asset_device_view.room" | translate }}</dt>
+              <dd>{{ a.room.name }}</dd>
+            </div>
+          }
           @if (a.rack; as r) {
             <div class="info-item">
               <dt>{{ "asset_device_view.rack" | translate }}</dt>
@@ -149,7 +237,8 @@
               <dt>{{ "asset_device_view.rack_position" | translate }}</dt>
               <dd>U{{ r.position }}</dd>
             </div>
-          } @else {
+          }
+          @if (!a.room && !a.rack) {
             <div class="info-item info-item--full">
               <dd class="text-muted">
                 {{ "asset_device_view.not_installed" | translate }}
@@ -200,5 +289,66 @@
         </dl>
       </div>
     </div>
+
+    <!-- ── Transition history ─────────────────────────────────────────────────── -->
+    <div class="history-section">
+      <button class="history-toggle" (click)="toggleHistory()">
+        <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M8 5v3.5l2 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        {{ "asset_device_view.history_title" | translate }}
+        <svg
+          class="chevron"
+          [class.chevron--open]="historyOpen()"
+          viewBox="0 0 16 16" fill="none" width="12" height="12"
+        >
+          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      @if (historyOpen()) {
+        <div class="history-body">
+          @if (historyLoading()) {
+            <div class="history-empty">{{ "common.loading" | translate }}</div>
+          } @else if (historyEntries().length === 0) {
+            <div class="history-empty">{{ "asset_device_view.history_empty" | translate }}</div>
+          } @else {
+            <ol class="history-list">
+              @for (entry of historyEntries(); track entry.id) {
+                <li class="history-entry">
+                  <div class="history-meta">
+                    <span class="history-time">{{ formatDate(entry.timestamp) }}</span>
+                    <span class="history-user">{{ entry.username }}</span>
+                  </div>
+                  <div class="history-transition">
+                    @if (entry.from_state_name) {
+                      <span class="history-from">{{ entry.from_state_name }}</span>
+                      <span class="history-arrow">→</span>
+                    }
+                    <span class="history-to">{{ entry.to_state_name }}</span>
+                  </div>
+                  @if (entry.from_room_name || entry.to_room_name) {
+                    <div class="history-rooms">
+                      @if (entry.from_room_name) {
+                        <span class="history-from">{{ entry.from_room_name }}</span>
+                        <span class="history-arrow">→</span>
+                      }
+                      @if (entry.to_room_name) {
+                        <span class="history-to">{{ entry.to_room_name }}</span>
+                      }
+                    </div>
+                  }
+                  @if (entry.notes) {
+                    <p class="history-notes">{{ entry.notes }}</p>
+                  }
+                </li>
+              }
+            </ol>
+          }
+        </div>
+      }
+    </div>
+
   </div>
 }
