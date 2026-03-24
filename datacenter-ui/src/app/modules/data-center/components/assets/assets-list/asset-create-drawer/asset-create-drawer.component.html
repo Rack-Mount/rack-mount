@@ -160,10 +160,10 @@
           type="number"
           min="0"
           [placeholder]="'asset_form.power_watt_placeholder' | translate"
-          [value]="createForm().power_cosumption_watt ?? ''"
+          [value]="createForm().power_consumption_watt ?? ''"
           (input)="
             patchForm(
-              'power_cosumption_watt',
+              'power_consumption_watt',
               $any($event.target).value === ''
                 ? null
                 : +$any($event.target).value

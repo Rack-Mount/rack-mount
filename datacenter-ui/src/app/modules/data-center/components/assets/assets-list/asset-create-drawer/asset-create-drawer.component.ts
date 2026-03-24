@@ -63,7 +63,7 @@ export class AssetCreateDrawerComponent implements OnInit {
     support_expiration: '',
     decommissioned_date: '',
     power_supplies: null as number | null,
-    power_cosumption_watt: null as number | null,
+    power_consumption_watt: null as number | null,
     note: '',
   });
 
@@ -121,7 +121,7 @@ export class AssetCreateDrawerComponent implements OnInit {
       support_expiration: a.support_expiration ?? '',
       decommissioned_date: a.decommissioned_date ?? '',
       power_supplies: a.power_supplies ?? null,
-      power_cosumption_watt: a.power_cosumption_watt ?? null,
+      power_consumption_watt: a.power_consumption_watt ?? null,
       note: a.note ?? '',
     });
     this.modelSearch.set(
@@ -146,7 +146,7 @@ export class AssetCreateDrawerComponent implements OnInit {
     this.createForm.update((f) => ({
       ...f,
       model_id: m.id,
-      power_cosumption_watt: m.power_consumption_watt ?? null,
+      power_consumption_watt: m.power_consumption_watt ?? null,
     }));
     this.modelSearch.set(`${m.name ?? ''} (${m.vendor.name})`.trim());
     this.modelDropdownOpen.set(false);
@@ -181,7 +181,7 @@ export class AssetCreateDrawerComponent implements OnInit {
       support_expiration: form.support_expiration || undefined,
       decommissioned_date: form.decommissioned_date || undefined,
       power_supplies: form.power_supplies ?? undefined,
-      power_cosumption_watt: form.power_cosumption_watt ?? undefined,
+      power_consumption_watt: form.power_consumption_watt ?? undefined,
       note: form.note || undefined,
     };
     if (this.mode() === 'edit') {
