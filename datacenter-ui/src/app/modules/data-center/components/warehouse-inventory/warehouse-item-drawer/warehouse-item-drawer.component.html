@@ -1,0 +1,185 @@
+<div class="drawer-backdrop" (click)="cancelled.emit()"></div>
+
+<div class="create-drawer">
+  <!-- Header -->
+  <div class="drawer-header">
+    <h3>
+      @if (mode() === "edit") {
+        {{ "warehouse.drawer_edit_title" | translate }}
+      } @else {
+        {{ "warehouse.drawer_create_title" | translate }}
+      }
+    </h3>
+    <button
+      class="drawer-close"
+      type="button"
+      (click)="cancelled.emit()"
+      [title]="'common.close' | translate"
+    >
+      <svg viewBox="0 0 16 16" fill="none">
+        <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="drawer-body">
+    @if (refLoading()) {
+      <div class="ref-loading">
+        <span class="spinner"></span>
+        <span>{{ "common.loading" | translate }}</span>
+      </div>
+    } @else {
+      <!-- Name -->
+      <div class="form-group">
+        <label for="wh-name">
+          {{ "warehouse.field_name" | translate }}<span class="required">*</span>
+        </label>
+        <input
+          id="wh-name"
+          class="form-input"
+          type="text"
+          autocomplete="off"
+          [value]="form().name"
+          (input)="onFieldChange('name', $any($event.target).value)"
+        />
+      </div>
+
+      <!-- Warehouse room -->
+      <div class="form-group">
+        <label for="wh-room">
+          {{ "warehouse.field_warehouse" | translate }}<span class="required">*</span>
+        </label>
+        <select
+          id="wh-room"
+          class="form-select"
+          [value]="form().warehouse ?? ''"
+          (change)="onFieldChange('warehouse', $any($event.target).value ? +$any($event.target).value : null)"
+        >
+          <option value="">— {{ "warehouse.field_warehouse" | translate }} —</option>
+          @for (r of rooms(); track r.id) {
+            <option [value]="r.id" [selected]="r.id === form().warehouse">{{ r.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label for="wh-category">{{ "warehouse.field_category" | translate }}</label>
+        <select
+          id="wh-category"
+          class="form-select"
+          [value]="form().category"
+          (change)="onFieldChange('category', $any($event.target).value)"
+        >
+          @for (cat of categories; track cat.value) {
+            <option [value]="cat.value" [selected]="cat.value === form().category">
+              {{ cat.labelKey | translate }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <!-- Specs -->
+      <div class="form-group">
+        <label for="wh-specs">{{ "warehouse.field_specs" | translate }}</label>
+        <input
+          id="wh-specs"
+          class="form-input"
+          type="text"
+          autocomplete="off"
+          [value]="form().specs"
+          (input)="onFieldChange('specs', $any($event.target).value)"
+        />
+      </div>
+
+      <!-- Quantity + Unit (row) -->
+      <div class="form-row">
+        <div class="form-group form-group--grow">
+          <label for="wh-qty">{{ "warehouse.field_quantity" | translate }}</label>
+          <input
+            id="wh-qty"
+            class="form-input"
+            type="number"
+            min="0"
+            step="1"
+            [value]="form().quantity"
+            (input)="onFieldChange('quantity', $any($event.target).value)"
+          />
+        </div>
+        <div class="form-group form-group--unit">
+          <label for="wh-unit">{{ "warehouse.field_unit" | translate }}</label>
+          <select
+            id="wh-unit"
+            class="form-select"
+            [value]="form().unit"
+            (change)="onFieldChange('unit', $any($event.target).value)"
+          >
+            @for (u of units; track u.value) {
+              <option [value]="u.value" [selected]="u.value === form().unit">
+                {{ u.labelKey | translate }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Min threshold -->
+      <div class="form-group">
+        <label for="wh-threshold">{{ "warehouse.field_threshold" | translate }}</label>
+        <input
+          id="wh-threshold"
+          class="form-input"
+          type="number"
+          min="0"
+          step="1"
+          [placeholder]="'warehouse.field_threshold_placeholder' | translate"
+          [value]="form().min_threshold"
+          (input)="onFieldChange('min_threshold', $any($event.target).value)"
+        />
+      </div>
+
+      <!-- Notes -->
+      <div class="form-group">
+        <label for="wh-notes">{{ "warehouse.field_notes" | translate }}</label>
+        <textarea
+          id="wh-notes"
+          class="form-textarea"
+          rows="3"
+          [value]="form().notes"
+          (input)="onFieldChange('notes', $any($event.target).value)"
+        ></textarea>
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="drawer-footer">
+    @if (saveState() === "error") {
+      <p class="save-error">{{ saveMsg() | translate }}</p>
+    }
+    <div class="footer-actions">
+      <button
+        class="btn-cancel"
+        type="button"
+        [disabled]="saveState() === 'saving'"
+        (click)="cancelled.emit()"
+      >
+        {{ "common.cancel" | translate }}
+      </button>
+      <button
+        class="btn-save"
+        type="button"
+        [disabled]="saveState() === 'saving' || refLoading()"
+        (click)="onSubmit()"
+      >
+        @if (saveState() === "saving") {
+          <span class="spinner"></span>
+          {{ "common.saving" | translate }}
+        } @else {
+          {{ "common.save" | translate }}
+        }
+      </button>
+    </div>
+  </div>
+</div>

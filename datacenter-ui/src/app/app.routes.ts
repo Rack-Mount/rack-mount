@@ -51,6 +51,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'warehouse',
+    canActivate: [authGuard, canViewInfrastructureGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/warehouse-inventory/warehouse-inventory.component').then(
+        (m) => m.WarehouseInventoryComponent,
+      ),
+  },
+  {
     path: 'asset-settings',
     canActivate: [authGuard, adminOrInfraGuard],
     loadComponent: () =>

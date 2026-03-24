@@ -90,6 +90,10 @@ export class HomeComponent {
     this.tabService.openRacks();
   }
 
+  protected onWarehouseOpen(): void {
+    this.tabService.openWarehouse();
+  }
+
   protected onAssetSettingsOpen(): void {
     this.tabService.openAssetSettings();
   }

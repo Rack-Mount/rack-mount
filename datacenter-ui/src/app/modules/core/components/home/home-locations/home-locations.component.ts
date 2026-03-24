@@ -33,6 +33,7 @@ export class HomeLocationsComponent {
   readonly assetsOpen = output<void>();
   readonly modelsOpen = output<void>();
   readonly racksOpen = output<void>();
+  readonly warehouseOpen = output<void>();
   readonly assetSettingsOpen = output<void>();
 
   protected onRoomClick(id: number, name: string): void {
@@ -49,6 +50,10 @@ export class HomeLocationsComponent {
 
   protected onRacksClick(): void {
     this.racksOpen.emit();
+  }
+
+  protected onWarehouseClick(): void {
+    this.warehouseOpen.emit();
   }
 
   protected onAssetSettingsClick(): void {

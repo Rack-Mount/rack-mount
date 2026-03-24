@@ -1,0 +1,175 @@
+@if (store.listState().status === "loading") {
+  <div class="loading-state">
+    <span class="spinner"></span>
+    {{ "common.loading" | translate }}
+  </div>
+} @else if (store.listState().status === "error") {
+  <div class="empty-state">{{ "common.error_loading" | translate }}</div>
+} @else {
+  @let loaded = $any(store.listState());
+  @if (loaded.results.length === 0) {
+    <div class="empty-state">
+      {{
+        store.searchQuery()
+          ? ("warehouse.no_match" | translate)
+          : ("warehouse.no_data" | translate)
+      }}
+    </div>
+  } @else {
+    <table class="warehouse-table">
+      <thead>
+        <tr>
+          <th class="col-name th--sortable" (click)="store.onSort('name')">
+            {{ "warehouse.col_name" | translate }}
+            <span
+              class="sort-indicator"
+              [class.sort-indicator--asc]="sortDir('name') === 'asc'"
+              [class.sort-indicator--desc]="sortDir('name') === 'desc'"
+            ></span>
+          </th>
+          <th class="col-category th--sortable" (click)="store.onSort('category')">
+            {{ "warehouse.col_category" | translate }}
+            <span
+              class="sort-indicator"
+              [class.sort-indicator--asc]="sortDir('category') === 'asc'"
+              [class.sort-indicator--desc]="sortDir('category') === 'desc'"
+            ></span>
+          </th>
+          <th class="col-specs">{{ "warehouse.col_specs" | translate }}</th>
+          <th class="col-quantity th--sortable" (click)="store.onSort('quantity')">
+            {{ "warehouse.col_quantity" | translate }}
+            <span
+              class="sort-indicator"
+              [class.sort-indicator--asc]="sortDir('quantity') === 'asc'"
+              [class.sort-indicator--desc]="sortDir('quantity') === 'desc'"
+            ></span>
+          </th>
+          <th class="col-threshold">{{ "warehouse.col_threshold" | translate }}</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of loaded.results; track item.id) {
+          @let del = store.deleteState();
+          <tr
+            [class.row--below-threshold]="item.below_threshold"
+            [class.row--deleting]="del.id === item.id && $any(del).status === 'deleting'"
+          >
+            <!-- Name -->
+            <td class="col-name">
+              <span class="item-name">{{ item.name }}</span>
+            </td>
+
+            <!-- Category -->
+            <td class="col-category">
+              <span class="category-badge">{{ item.category_display }}</span>
+            </td>
+
+            <!-- Specs -->
+            <td class="col-specs">
+              <span class="specs-text">{{ item.specs || "—" }}</span>
+            </td>
+
+            <!-- Quantity -->
+            <td class="col-quantity">
+              <div class="qty-cell" [class.qty-cell--low]="item.below_threshold">
+                @if (item.below_threshold) {
+                  <span class="low-icon" [title]="'warehouse.below_threshold' | translate">⚠</span>
+                }
+                <span class="qty-value">{{ formatQuantity(item) }}</span>
+              </div>
+            </td>
+
+            <!-- Threshold -->
+            <td class="col-threshold">
+              @if (item.min_threshold != null) {
+                <span class="threshold-value">{{ item.min_threshold }} {{ item.unit_display }}</span>
+              } @else {
+                <span class="no-threshold">—</span>
+              }
+            </td>
+
+            <!-- Actions -->
+            <td class="col-actions">
+              @if (del.id === item.id) {
+                @if ($any(del).status === "confirming") {
+                  <div class="delete-confirm">
+                    <span class="delete-confirm__msg">{{
+                      "warehouse.delete_confirm" | translate: { name: item.name }
+                    }}</span>
+                    <div class="delete-confirm__btns">
+                      <button class="btn-danger-sm" (click)="store.onDeleteConfirm(item)">
+                        {{ "common.delete" | translate }}
+                      </button>
+                      <button class="btn-ghost-sm" (click)="store.onDeleteCancel()">
+                        {{ "common.cancel" | translate }}
+                      </button>
+                    </div>
+                  </div>
+                } @else if ($any(del).status === "deleting") {
+                  <span class="action-msg">{{ "common.deleting" | translate }}</span>
+                } @else {
+                  <div class="delete-confirm">
+                    <span class="action-msg action-msg--error">{{ "common.error_retry" | translate }}</span>
+                    <button class="btn-ghost-sm" (click)="store.onDeleteCancel()">
+                      {{ "common.cancel" | translate }}
+                    </button>
+                  </div>
+                }
+              } @else {
+                <div class="row-actions">
+                  <!-- Adjust quantity -->
+                  <button
+                    class="btn-row-action btn-row-action--adjust"
+                    (click)="store.onAdjust(item)"
+                    [title]="'warehouse.btn_adjust' | translate"
+                  >
+                    <svg viewBox="0 0 20 20" fill="none">
+                      <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                  </button>
+                  <!-- Edit -->
+                  @if (role.canEditRacks()) {
+                    <button
+                      class="btn-row-action"
+                      (click)="store.onEdit(item)"
+                      [title]="'common.edit' | translate"
+                    >
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M14.7 3.3a1 1 0 0 1 1.4 0l.6.6a1 1 0 0 1 0 1.4L5.5 16.5l-2.5.5.5-2.5L14.7 3.3z"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  }
+                  <!-- Delete -->
+                  @if (role.canDeleteRacks()) {
+                    <button
+                      class="btn-row-action btn-row-action--danger"
+                      (click)="store.onDeleteRequest(item)"
+                      [title]="'common.delete' | translate"
+                    >
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M3 6h14M8 6V4h4v2M6 6l1 10h6l1-10"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  }
+                </div>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+}

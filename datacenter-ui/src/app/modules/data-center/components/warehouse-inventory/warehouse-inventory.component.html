@@ -1,0 +1,28 @@
+<div class="warehouse-page">
+  <!-- Toolbar -->
+  <app-warehouse-toolbar />
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <app-warehouse-table />
+  </div>
+</div>
+
+<!-- Item create/edit drawer -->
+@if (store.drawerMode() !== null) {
+  <app-warehouse-item-drawer
+    [mode]="store.drawerMode()!"
+    [item]="store.editingItem()"
+    (saved)="store.onDrawerSaved($event)"
+    (cancelled)="store.onDrawerClose()"
+  />
+}
+
+<!-- Adjust dialog -->
+@if (store.adjustingItem() !== null) {
+  <app-warehouse-adjust-dialog
+    [item]="store.adjustingItem()!"
+    (saved)="store.onAdjustSaved($event)"
+    (cancelled)="store.onAdjustClose()"
+  />
+}

@@ -1,0 +1,96 @@
+@use "styles/mixins" as mx;
+
+@include mx.drawer-shell();
+@include mx.form-elements();
+
+.ref-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 0;
+  justify-content: center;
+  color: var(--dc-text-muted);
+  font-size: 0.88rem;
+}
+
+// ── Row layout for qty + unit ──────────────────────────────────────────────
+.form-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.form-group--grow {
+  flex: 1;
+}
+
+.form-group--unit {
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.875rem;
+  padding: 8px 12px;
+  border: 1px solid var(--dc-border);
+  border-radius: 6px;
+  background: var(--dc-input-bg);
+  color: var(--dc-text);
+  line-height: 1.5;
+  min-height: 70px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--dc-accent);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+  }
+}
+
+// ── Footer ─────────────────────────────────────────────────────────────────
+.drawer-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--dc-border);
+  flex-shrink: 0;
+}
+
+.save-error {
+  font-size: 0.8rem;
+  color: #f87171;
+  padding: 6px 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  margin: 0;
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-cancel {
+  @include mx.btn-ghost();
+}
+
+.btn-save {
+  @include mx.btn-primary();
+  flex: 0;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  @include mx.spinner(14px, #fff);
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+}
+
+@include mx.spin-keyframe();

@@ -1,0 +1,93 @@
+<div class="dialog-backdrop" (click)="cancelled.emit()"></div>
+
+<div class="adjust-dialog">
+  <div class="dialog-header">
+    <div class="dialog-title">
+      <strong>{{ item().name }}</strong>
+      <span class="current-qty">
+        {{ "warehouse.adjust_current" | translate }}:
+        {{ item().quantity }} {{ item().unit_display }}
+      </span>
+    </div>
+    <button
+      class="dialog-close"
+      type="button"
+      (click)="cancelled.emit()"
+      [title]="'common.close' | translate"
+    >
+      <svg viewBox="0 0 16 16" fill="none">
+        <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="dialog-body">
+    <!-- Delta input -->
+    <div class="form-group">
+      <label for="adj-delta">
+        {{ "warehouse.adjust_delta_label" | translate }}
+        <span class="hint">{{ "warehouse.adjust_delta_hint" | translate }}</span>
+      </label>
+      <input
+        id="adj-delta"
+        class="form-input form-input--large"
+        type="number"
+        step="1"
+        [placeholder]="'warehouse.adjust_delta_placeholder' | translate"
+        [value]="deltaRaw()"
+        (input)="setDelta($any($event.target).value)"
+        autofocus
+      />
+    </div>
+
+    <!-- Quick buttons -->
+    <div class="quick-btns">
+      <button class="quick-btn quick-btn--withdraw" (click)="setDelta('-1')">−1</button>
+      <button class="quick-btn quick-btn--withdraw" (click)="setDelta('-5')">−5</button>
+      <button class="quick-btn quick-btn--restock" (click)="setDelta('+1')">+1</button>
+      <button class="quick-btn quick-btn--restock" (click)="setDelta('+5')">+5</button>
+      <button class="quick-btn quick-btn--restock" (click)="setDelta('+10')">+10</button>
+    </div>
+
+    <!-- Notes -->
+    <div class="form-group">
+      <label for="adj-notes">{{ "warehouse.adjust_notes" | translate }}</label>
+      <textarea
+        id="adj-notes"
+        class="form-textarea"
+        rows="2"
+        [placeholder]="'warehouse.adjust_notes_placeholder' | translate"
+        [value]="notes()"
+        (input)="setNotes($any($event.target).value)"
+      ></textarea>
+    </div>
+
+    @if (saveState() === "error") {
+      <p class="save-error">{{ saveMsg() | translate }}</p>
+    }
+  </div>
+
+  <div class="dialog-footer">
+    <button
+      class="btn-cancel"
+      type="button"
+      [disabled]="saveState() === 'saving'"
+      (click)="cancelled.emit()"
+    >
+      {{ "common.cancel" | translate }}
+    </button>
+    <button
+      class="btn-save"
+      type="button"
+      [disabled]="saveState() === 'saving' || !deltaRaw()"
+      (click)="onSubmit()"
+    >
+      @if (saveState() === "saving") {
+        <span class="spinner"></span>
+        {{ "common.saving" | translate }}
+      } @else {
+        {{ "warehouse.adjust_confirm" | translate }}
+      }
+    </button>
+  </div>
+</div>

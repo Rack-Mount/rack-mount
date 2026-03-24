@@ -1,0 +1,49 @@
+@use "styles/mixins" as mx;
+
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+
+.toolbar {
+  @include mx.toolbar-base(wrap);
+}
+.toolbar-left {
+  @include mx.toolbar-left();
+}
+.toolbar-right {
+  @include mx.toolbar-right(false);
+}
+
+.dc-filter {
+  @include mx.filter-select();
+  height: 34px;
+}
+
+.search-box {
+  @include mx.search-box(220px);
+}
+
+.count-badge {
+  @include mx.count-badge();
+}
+
+.btn-new {
+  @include mx.btn-primary(sm);
+}
+
+.threshold-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--dc-text-secondary);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  input[type='checkbox'] {
+    cursor: pointer;
+    accent-color: var(--dc-accent);
+  }
+}

@@ -1,0 +1,199 @@
+@use "styles/mixins" as mx;
+
+$bg-surface: mx.$bg-surface;
+$bg-row: mx.$bg-row;
+$bg-row-alt: mx.$bg-row-alt;
+$bg-row-hover: mx.$bg-row-hover;
+$border: mx.$border;
+$border-strong: mx.$border-strong;
+$text-primary: mx.$text-primary;
+$text-secondary: mx.$text-secondary;
+$text-muted: mx.$text-muted;
+
+:host {
+  display: block;
+}
+
+.loading-state {
+  @include mx.loading-state();
+}
+.empty-state {
+  @include mx.empty-state-center();
+}
+.spinner {
+  @include mx.spinner();
+}
+
+@include mx.spin-keyframe();
+
+.warehouse-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.85rem;
+
+  thead tr {
+    background: $bg-surface;
+    border-bottom: 1px solid $border-strong;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  th {
+    padding: 9px 14px;
+    text-align: left;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: $text-secondary;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  th.th--sortable {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid $border;
+    background: $bg-row;
+    transition: background 0.12s;
+
+    &:nth-child(even) {
+      background: $bg-row-alt;
+    }
+    &:hover {
+      background: $bg-row-hover;
+    }
+    &.row--deleting {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    &.row--below-threshold td.col-name .item-name::after {
+      content: '';
+    }
+  }
+
+  td {
+    padding: 9px 14px;
+    color: $text-primary;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  td.col-actions {
+    overflow: visible;
+    white-space: nowrap;
+    position: relative;
+  }
+}
+
+.col-name    { width: 200px; }
+.col-category { width: 130px; }
+.col-specs   { width: auto; }
+.col-quantity { width: 140px; }
+.col-threshold { width: 120px; }
+.col-actions { width: 120px; text-align: right; padding-right: 8px; }
+
+.sort-indicator {
+  @include mx.sort-indicator();
+}
+
+// ── Category badge ──────────────────────────────────────────────────────────
+.category-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--dc-badge-bg, rgba(99, 102, 241, 0.12));
+  color: var(--dc-badge-text, #6366f1);
+}
+
+// ── Specs ───────────────────────────────────────────────────────────────────
+.specs-text {
+  font-size: 0.8rem;
+  color: $text-secondary;
+}
+
+// ── Quantity cell ────────────────────────────────────────────────────────────
+.qty-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-variant-numeric: tabular-nums;
+
+  &--low .qty-value {
+    color: #f87171;
+    font-weight: 600;
+  }
+}
+
+.low-icon {
+  color: #f59e0b;
+  font-size: 0.85rem;
+}
+
+.qty-value {
+  font-size: 0.84rem;
+  color: $text-primary;
+}
+
+// ── Threshold ────────────────────────────────────────────────────────────────
+.threshold-value {
+  font-size: 0.8rem;
+  color: $text-secondary;
+  font-variant-numeric: tabular-nums;
+}
+
+.no-threshold {
+  font-size: 0.8rem;
+  color: $text-muted;
+}
+
+// ── Row actions ─────────────────────────────────────────────────────────────
+.row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  opacity: 0.35;
+  transition: opacity 0.15s;
+  tr:hover & {
+    opacity: 1;
+  }
+}
+
+.btn-row-action {
+  @include mx.btn-row-action();
+
+  &--adjust {
+    color: var(--dc-accent-text);
+  }
+}
+
+.delete-confirm {
+  @include mx.delete-confirm-popover();
+}
+
+.action-msg {
+  font-size: 0.8rem;
+  color: $text-muted;
+
+  &--error {
+    color: var(--dc-danger-text);
+  }
+}
+
+.btn-danger-sm {
+  @include mx.btn-danger-sm();
+}
+.btn-ghost-sm {
+  @include mx.btn-ghost-sm();
+}

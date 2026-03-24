@@ -134,6 +134,24 @@
           </button>
         }
 
+        @if (canViewInfrastructure()) {
+          <button class="quick-card" (click)="onWarehouseClick()">
+            <div class="quick-card__icon quick-card__icon--warehouse">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <div class="quick-card__body">
+              <span class="quick-card__title">{{ "home.warehouse_title" | translate }}</span>
+              <span class="quick-card__desc">{{ "home.warehouse_desc" | translate }}</span>
+            </div>
+            <svg class="quick-card__arrow" viewBox="0 0 16 16" fill="none">
+              <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        }
+
         @if (canViewInfrastructure() || canViewCatalog()) {
           <button class="quick-card" (click)="onAssetSettingsClick()">
             <div class="quick-card__icon quick-card__icon--application-settings">

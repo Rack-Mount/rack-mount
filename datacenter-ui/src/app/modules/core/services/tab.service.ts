@@ -33,6 +33,7 @@ export class TabService {
       racks: 'tabs.racks',
       options: 'tabs.options',
       'asset-settings': 'tabs.asset_settings',
+      warehouse: 'tabs.warehouse',
     };
     try {
       const raw = localStorage.getItem(LS_TABS_KEY);
@@ -81,6 +82,8 @@ export class TabService {
       case 'rack-models':
       case 'locations':
         return false;
+      case 'warehouse':
+        return this.role.canViewInfrastructure();
       case 'asset-settings':
         return (
           this.role.canViewInfrastructure() ||
@@ -299,6 +302,29 @@ export class TabService {
       label: 'Asset Settings',
       labelKey: 'tabs.asset_settings',
       type: 'asset-settings',
+      pinned: false,
+    });
+  }
+
+  openWarehouse(): void {
+    this.openTab(
+      {
+        id: 'warehouse',
+        label: 'Magazzino',
+        labelKey: 'tabs.warehouse',
+        type: 'warehouse',
+        pinned: false,
+      },
+      this.role.canViewInfrastructure(),
+    );
+  }
+
+  ensureWarehouseTab(): void {
+    this.ensureTab({
+      id: 'warehouse',
+      label: 'Magazzino',
+      labelKey: 'tabs.warehouse',
+      type: 'warehouse',
       pinned: false,
     });
   }

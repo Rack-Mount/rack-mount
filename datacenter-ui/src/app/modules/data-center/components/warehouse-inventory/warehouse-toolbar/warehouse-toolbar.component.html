@@ -1,0 +1,87 @@
+<div class="toolbar">
+  <div class="toolbar-left">
+    <!-- Location filter -->
+    <select
+      class="dc-filter"
+      [value]="store.locationFilter() ?? ''"
+      (change)="onLocationFilter($any($event.target).value)"
+    >
+      <option value="">{{ "warehouse.filter_all_dc" | translate }}</option>
+      @for (loc of store.locations(); track loc.id) {
+        <option [value]="loc.id">{{ loc.name }}</option>
+      }
+    </select>
+
+    <!-- Warehouse room filter -->
+    <select
+      class="dc-filter"
+      [value]="store.warehouseFilter() ?? ''"
+      (change)="onWarehouseFilter($any($event.target).value)"
+    >
+      <option value="">{{ "warehouse.filter_all_warehouses" | translate }}</option>
+      @for (room of store.filteredRooms(); track room.id) {
+        <option [value]="room.id">{{ room.name }}</option>
+      }
+    </select>
+
+    <!-- Category filter -->
+    <select
+      class="dc-filter"
+      [value]="store.categoryFilter() ?? ''"
+      (change)="onCategoryFilter($any($event.target).value)"
+    >
+      <option value="">{{ "warehouse.filter_all_categories" | translate }}</option>
+      @for (cat of store.categories; track cat.value) {
+        <option [value]="cat.value">{{ cat.label | translate }}</option>
+      }
+    </select>
+
+    <!-- Below threshold toggle -->
+    <label class="threshold-toggle">
+      <input
+        type="checkbox"
+        [checked]="store.belowThresholdFilter()"
+        (change)="onBelowThreshold($any($event.target).checked)"
+      />
+      {{ "warehouse.filter_below_threshold" | translate }}
+    </label>
+
+    <!-- Search -->
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+        <circle cx="8.5" cy="8.5" r="5.25" stroke="currentColor" stroke-width="1.6" />
+        <path d="M13 13l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <input
+        class="search-input"
+        type="text"
+        [value]="store.searchQuery()"
+        (input)="onSearch($any($event.target).value)"
+        [placeholder]="'warehouse.search_placeholder' | translate"
+      />
+      @if (store.searchQuery()) {
+        <button class="search-clear" (click)="clearSearch()" [title]="'common.search_clear' | translate">
+          ×
+        </button>
+      }
+    </div>
+
+    <!-- Count badge -->
+    @if (store.itemCount() !== null) {
+      <span class="count-badge">
+        {{ store.itemCount() }} {{ "warehouse.count_badge_suffix" | translate }}
+      </span>
+    }
+  </div>
+
+  <div class="toolbar-right">
+    @if (role.canCreateRacks()) {
+      <button class="btn-new" (click)="store.onNew()">
+        <svg viewBox="0 0 20 20" fill="none">
+          <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        {{ "warehouse.btn_new" | translate }}
+      </button>
+    }
+  </div>
+</div>

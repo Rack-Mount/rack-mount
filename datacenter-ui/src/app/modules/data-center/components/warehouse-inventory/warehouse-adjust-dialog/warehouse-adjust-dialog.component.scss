@@ -1,0 +1,221 @@
+@use "styles/mixins" as mx;
+
+// ── Backdrop ────────────────────────────────────────────────────────────────
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+}
+
+// ── Dialog ───────────────────────────────────────────────────────────────────
+.adjust-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 201;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  background: var(--dc-surface);
+  border: 1px solid var(--dc-border);
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ── Header ───────────────────────────────────────────────────────────────────
+.dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--dc-border);
+  gap: 12px;
+}
+
+.dialog-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dc-text);
+  }
+}
+
+.current-qty {
+  font-size: 0.78rem;
+  color: var(--dc-text-muted);
+}
+
+.dialog-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--dc-text-muted);
+  padding: 2px;
+  line-height: 0;
+  flex-shrink: 0;
+  border-radius: 4px;
+  transition: color 0.12s, background 0.12s;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    color: var(--dc-text);
+    background: var(--dc-hover);
+  }
+}
+
+// ── Body ─────────────────────────────────────────────────────────────────────
+.dialog-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--dc-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.hint {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--dc-text-muted);
+}
+
+.form-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--dc-border);
+  border-radius: 6px;
+  background: var(--dc-input-bg);
+  color: var(--dc-text);
+  font-size: 0.875rem;
+
+  &:focus {
+    outline: none;
+    border-color: var(--dc-accent);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+  }
+
+  &--large {
+    height: 42px;
+    font-size: 1.1rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+}
+
+.form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.82rem;
+  padding: 8px 12px;
+  border: 1px solid var(--dc-border);
+  border-radius: 6px;
+  background: var(--dc-input-bg);
+  color: var(--dc-text);
+  min-height: 52px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--dc-accent);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+  }
+}
+
+// ── Quick buttons ─────────────────────────────────────────────────────────────
+.quick-btns {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.quick-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.12s, transform 0.1s;
+
+  &:hover { opacity: 0.85; }
+  &:active { transform: scale(0.96); }
+
+  &--withdraw {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+  }
+
+  &--restock {
+    background: rgba(34, 197, 94, 0.12);
+    color: #4ade80;
+  }
+}
+
+// ── Error ─────────────────────────────────────────────────────────────────────
+.save-error {
+  font-size: 0.8rem;
+  color: #f87171;
+  padding: 6px 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  margin: 0;
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--dc-border);
+  flex-shrink: 0;
+}
+
+.btn-cancel {
+  @include mx.btn-ghost();
+}
+
+.btn-save {
+  @include mx.btn-primary();
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  @include mx.spinner(14px, #fff);
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+}
+
+@include mx.spin-keyframe();
