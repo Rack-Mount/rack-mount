@@ -11,6 +11,7 @@ import { LocationService } from '../../api/v1/api/location.service';
 import { Location as DjLocation } from '../../api/v1/model/location';
 import { RoleService } from '../../services/role.service';
 import { TabService } from '../../services/tab.service';
+import { WarehouseAlertService } from '../../services/warehouse-alert.service';
 import { HomeHeroComponent } from './home-hero/home-hero.component';
 import {
   HomeLocationsComponent,
@@ -30,6 +31,7 @@ export class HomeComponent {
   private readonly tabService = inject(TabService);
   protected readonly role = inject(RoleService);
   private readonly locationService = inject(LocationService);
+  protected readonly warehouseAlerts = inject(WarehouseAlertService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -49,6 +51,7 @@ export class HomeComponent {
       }
 
       this.loadLocations();
+      this.warehouseAlerts.load();
     });
   }
 

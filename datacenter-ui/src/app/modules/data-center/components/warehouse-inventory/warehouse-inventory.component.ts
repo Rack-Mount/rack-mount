@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { WarehouseAlertService } from '../../../core/services/warehouse-alert.service';
 import { WarehouseAdjustDialogComponent } from './warehouse-adjust-dialog/warehouse-adjust-dialog.component';
 import { WarehouseInventoryStore } from './warehouse-inventory.store';
 import { WarehouseItemDrawerComponent } from './warehouse-item-drawer/warehouse-item-drawer.component';
@@ -9,6 +11,7 @@ import { WarehouseToolbarComponent } from './warehouse-toolbar/warehouse-toolbar
   selector: 'app-warehouse-inventory',
   standalone: true,
   imports: [
+    TranslatePipe,
     WarehouseToolbarComponent,
     WarehouseTableComponent,
     WarehouseItemDrawerComponent,
@@ -21,4 +24,5 @@ import { WarehouseToolbarComponent } from './warehouse-toolbar/warehouse-toolbar
 })
 export class WarehouseInventoryComponent {
   protected readonly store = inject(WarehouseInventoryStore);
+  protected readonly alerts = inject(WarehouseAlertService);
 }

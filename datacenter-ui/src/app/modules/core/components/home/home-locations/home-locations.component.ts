@@ -28,6 +28,7 @@ export class HomeLocationsComponent {
   readonly canViewCatalog = input<boolean>(false);
   readonly canViewInfrastructure = input<boolean>(false);
   readonly isAdmin = input<boolean>(false);
+  readonly warehouseAlertCount = input<number>(0);
 
   readonly roomOpen = output<RoomOpenEvent>();
   readonly assetsOpen = output<void>();

@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PanelTab } from '../../../data-center/components/assets/detail-panel/detail-panel.types';
+import { WarehouseAlertService } from '../../services/warehouse-alert.service';
 import { TabService } from '../../services/tab.service';
 
 const TAB_ICONS: Record<string, string> = {
@@ -24,6 +25,7 @@ const TAB_ICONS: Record<string, string> = {
   'rack-models': '📐',
   locations: '📍',
   'asset-settings': '🔧',
+  warehouse: '🏪',
 };
 
 @Component({
@@ -36,6 +38,7 @@ const TAB_ICONS: Record<string, string> = {
 })
 export class TabBarComponent {
   private readonly tabService = inject(TabService);
+  protected readonly warehouseAlerts = inject(WarehouseAlertService);
 
   readonly tabs = input.required<PanelTab[]>();
   readonly activeTabId = input.required<string>();

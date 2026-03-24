@@ -18,6 +18,9 @@
       <span class="tab-label">{{
         tab.labelKey ? (tab.labelKey | translate) : tab.label
       }}</span>
+      @if (tab.type === 'warehouse' && warehouseAlerts.count() > 0) {
+        <span class="tab-alert-badge">{{ warehouseAlerts.count() }}</span>
+      }
       @if (!tab.pinned) {
         <button
           class="tab-close"

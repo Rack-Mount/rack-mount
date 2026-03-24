@@ -15,6 +15,7 @@
     [canViewCatalog]="role.canViewCatalog()"
     [canViewInfrastructure]="role.canViewInfrastructure()"
     [isAdmin]="role.isAdmin()"
+    [warehouseAlertCount]="warehouseAlerts.count()"
     (roomOpen)="onRoomOpen($event)"
     (assetsOpen)="onAssetsOpen()"
     (modelsOpen)="onModelsOpen()"

@@ -25,6 +25,7 @@ import {
   WarehouseItem,
 } from '../../../core/api/v1';
 import { SEARCH_DEBOUNCE_MS } from '../../../core/constants';
+import { WarehouseAlertService } from '../../../core/services/warehouse-alert.service';
 import { PaginatedListState } from '../../../core/types/list-state.types';
 import { toggleSort } from '../../../core/utils/sort.utils';
 
@@ -35,6 +36,7 @@ export type DeleteState =
 @Injectable()
 export class WarehouseInventoryStore {
   private readonly locationService = inject(LocationService);
+  private readonly alertService = inject(WarehouseAlertService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly listState = signal<PaginatedListState<WarehouseItem>>({
@@ -81,6 +83,8 @@ export class WarehouseInventoryStore {
   private readonly _searchInput = new Subject<string>();
 
   constructor() {
+    this.alertService.load();
+
     this.locationService
       .locationLocationList({ pageSize: 200 })
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -193,6 +197,7 @@ export class WarehouseInventoryStore {
         : [item, ...s.results];
       return { ...s, results, count: exists ? s.count : s.count + 1 };
     });
+    this.alertService.load();
   }
 
   onDrawerClose(): void {
@@ -215,6 +220,7 @@ export class WarehouseInventoryStore {
         results: s.results.map((r) => (r.id === item.id ? item : r)),
       };
     });
+    this.alertService.load();
   }
 
   onAdjustClose(): void {
@@ -247,6 +253,7 @@ export class WarehouseInventoryStore {
               count: s.count - 1,
             };
           });
+          this.alertService.load();
         },
         error: (_err: HttpErrorResponse) => {
           this.deleteState.set({ id: item.id, status: 'error' });

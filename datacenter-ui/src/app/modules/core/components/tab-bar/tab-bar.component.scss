@@ -85,6 +85,20 @@
   }
 }
 
+.tab-alert-badge {
+  flex-shrink: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
 // ── Drag-and-drop states ─────────────────────────────────────────────────
 .tab--dragging {
   opacity: 0.35;

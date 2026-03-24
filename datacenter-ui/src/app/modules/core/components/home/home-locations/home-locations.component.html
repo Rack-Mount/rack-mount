@@ -144,7 +144,15 @@
             </div>
             <div class="quick-card__body">
               <span class="quick-card__title">{{ "home.warehouse_title" | translate }}</span>
-              <span class="quick-card__desc">{{ "home.warehouse_desc" | translate }}</span>
+              <span class="quick-card__desc">
+                @if (warehouseAlertCount() > 0) {
+                  <span class="card-alert-badge">
+                    ⚠ {{ "home.warehouse_alert" | translate: { count: warehouseAlertCount() } }}
+                  </span>
+                } @else {
+                  {{ "home.warehouse_desc" | translate }}
+                }
+              </span>
             </div>
             <svg class="quick-card__arrow" viewBox="0 0 16 16" fill="none">
               <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
