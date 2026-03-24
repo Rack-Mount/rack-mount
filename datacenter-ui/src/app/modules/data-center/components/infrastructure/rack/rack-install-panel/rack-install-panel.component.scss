@@ -153,6 +153,15 @@
     color: #4b5563;
   }
 
+  &__stock {
+    font-size: 0.68rem;
+    color: #22c55e;
+    font-weight: 500;
+    &--empty {
+      color: #ef4444;
+    }
+  }
+
   &__loading,
   &__empty {
     padding: 20px 16px;

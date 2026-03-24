@@ -119,6 +119,12 @@ export class RackInstallPanelComponent implements OnInit {
     return (asset.model.rack_units ?? 1) > avail;
   }
 
+  /** Returns true when a linked warehouse item exists and its stock is 0. */
+  protected isOutOfStock(comp: GenericComponent): boolean {
+    if (comp.warehouse_item == null) return false;
+    return parseFloat(comp.warehouse_item_stock ?? '1') <= 0;
+  }
+
   // Two rx subjects: one debounced (typed search), one immediate (panel open)
   private readonly _immediateSearch$ = new Subject<string>();
   private readonly _debouncedSearch$ = new Subject<string>();

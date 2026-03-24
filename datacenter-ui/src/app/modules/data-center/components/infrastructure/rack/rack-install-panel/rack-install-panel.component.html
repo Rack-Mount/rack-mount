@@ -151,7 +151,8 @@
           <div
             class="rack-install__item rack-install__item--component"
             [class.rack-install__item--selected]="_selectedId() === comp.id"
-            (click)="selectAndInstallComponent(comp.id)"
+            [class.rack-install__item--disabled]="isOutOfStock(comp)"
+            (click)="!isOutOfStock(comp) && selectAndInstallComponent(comp.id)"
           >
             @if (comp.front_image) {
               <img
@@ -171,6 +172,17 @@
                 {{ comp.component_type_display }} &middot;
                 {{ comp.rack_units ?? 1 }}U
               </span>
+              @if (comp.warehouse_item != null) {
+                <span
+                  class="rack-install__stock"
+                  [class.rack-install__stock--empty]="isOutOfStock(comp)"
+                >
+                  {{ "install_panel.stock" | translate: { qty: comp.warehouse_item_stock } }}
+                  @if (isOutOfStock(comp)) {
+                    &nbsp;· {{ "install_panel.out_of_stock" | translate }}
+                  }
+                </span>
+              }
             </div>
           </div>
         }

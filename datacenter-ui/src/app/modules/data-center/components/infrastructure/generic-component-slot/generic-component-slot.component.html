@@ -41,8 +41,25 @@
   }
 
   @if (role.canEditRacks()) {
-    <button class="gslot__remove" title="Rimuovi" (click)="onRemove($event)">
+    <button class="gslot__remove" [title]="'generic_slot.remove' | translate" (click)="onRemove($event)">
       ✕
     </button>
+  }
+
+  @if (_showReturnDialog()) {
+    <div class="gslot__return-dialog" (click)="$event.stopPropagation()">
+      <p class="gslot__return-dialog-msg">{{ "generic_slot.return_dialog_msg" | translate }}</p>
+      <div class="gslot__return-dialog-actions">
+        <button class="gslot__return-btn gslot__return-btn--stock" (click)="onDialogReturnToStock($event)">
+          {{ "generic_slot.return_to_stock" | translate }}
+        </button>
+        <button class="gslot__return-btn gslot__return-btn--remove" (click)="onDialogRemoveOnly($event)">
+          {{ "generic_slot.remove_only" | translate }}
+        </button>
+        <button class="gslot__return-btn gslot__return-btn--cancel" (click)="onDialogCancel($event)">
+          {{ "common.cancel" | translate }}
+        </button>
+      </div>
+    </div>
   }
 </div>

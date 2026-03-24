@@ -356,6 +356,15 @@ export class RackComponent {
     this._removeConfirmAssetId.set(null); // no asset to decommission
   }
 
+  /** Handle return-to-stock request from a generic-component slot. */
+  protected onGenericSlotReturnToStock(e: { rackUnitId: number }): void {
+    this.assetService
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .assetRackUnitReturnToStockCreate({ id: e.rackUnitId } as any)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ next: () => this.refreshRack() });
+  }
+
   protected closeBulkRemoveConfirm(): void {
     this._bulkRemoveConfirm.set(false);
   }

@@ -5,9 +5,11 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of, switchMap } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from '../../../../../../environments/environment';
 import { RackUnit } from '../../../../core/api/v1';
 import { MediaUrlService } from '../../../../core/services/media-url.service';
@@ -33,7 +35,7 @@ const TYPE_ICON_MAP: Record<string, string> = {
 
 @Component({
   selector: 'app-generic-component-slot',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './generic-component-slot.component.html',
   styleUrl: './generic-component-slot.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,16 +47,26 @@ export class GenericComponentSlotComponent {
   /** True when the rack is shown from the rear face. */
   readonly rearView = input<boolean>(false);
 
-  /** Emitted when the user requests removal of this slot. */
+  /** Emitted when the user requests removal of this slot (no stock return). */
   readonly removeRequest = output<{
     rackUnitId: number;
     anchorX: number;
     anchorY: number;
   }>();
 
+  /** Emitted when the user requests removal and stock return. */
+  readonly returnToStockRequest = output<{ rackUnitId: number }>();
+
   protected readonly role = inject(RoleService);
   protected readonly serviceUrl = environment.service_url;
   private readonly mediaUrlService = inject(MediaUrlService);
+
+  /** True when the inline "return to stock?" dialog is visible. */
+  protected readonly _showReturnDialog = signal(false);
+
+  /** Cached anchor coordinates for when the remove dialog is resolved. */
+  private _pendingAnchorX = 0;
+  private _pendingAnchorY = 0;
 
   protected readonly typeClass = computed(() => {
     const t = this.rackUnit().generic_component_type ?? '';
@@ -95,10 +107,37 @@ export class GenericComponentSlotComponent {
   protected onRemove(event: MouseEvent): void {
     event.stopPropagation();
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    if (this.rackUnit().generic_component_warehouse_item_id != null) {
+      this._pendingAnchorX = rect.right + 8;
+      this._pendingAnchorY = rect.top;
+      this._showReturnDialog.set(true);
+    } else {
+      this.removeRequest.emit({
+        rackUnitId: this.rackUnit().id,
+        anchorX: rect.right + 8,
+        anchorY: rect.top,
+      });
+    }
+  }
+
+  protected onDialogReturnToStock(event: MouseEvent): void {
+    event.stopPropagation();
+    this._showReturnDialog.set(false);
+    this.returnToStockRequest.emit({ rackUnitId: this.rackUnit().id });
+  }
+
+  protected onDialogRemoveOnly(event: MouseEvent): void {
+    event.stopPropagation();
+    this._showReturnDialog.set(false);
     this.removeRequest.emit({
       rackUnitId: this.rackUnit().id,
-      anchorX: rect.right + 8,
-      anchorY: rect.top,
+      anchorX: this._pendingAnchorX,
+      anchorY: this._pendingAnchorY,
     });
+  }
+
+  protected onDialogCancel(event: MouseEvent): void {
+    event.stopPropagation();
+    this._showReturnDialog.set(false);
   }
 }
