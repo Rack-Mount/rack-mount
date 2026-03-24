@@ -448,7 +448,17 @@
     "warranty": "保修",
     "support": "支持",
     "expired": "已过期",
-    "note": "备注"
+    "note": "备注",
+    "room": "机房",
+    "move_btn": "移动",
+    "move_title": "移动资产",
+    "move_state": "新状态",
+    "move_room": "新机房",
+    "move_notes": "备注",
+    "move_notes_placeholder": "移动原因…",
+    "move_confirm": "确认移动",
+    "history_title": "状态变更历史",
+    "history_empty": "暂无变更记录。"
   },
   "rack": {
     "error_loading": "加载机柜单元时出错",
@@ -690,7 +700,8 @@
     "type_datacenter": "数据中心",
     "type_warehouse": "仓库",
     "type_laboratory": "实验室",
-    "type_technical_office": "技术办公室"
+    "type_technical_office": "技术办公室",
+    "filter_all_types": "所有类型"
   },
   "asset_settings": {
     "tab_states": "资产状态",

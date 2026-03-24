@@ -448,7 +448,17 @@
     "warranty": "Garantie",
     "support": "Support",
     "expired": "Expiré",
-    "note": "Note"
+    "note": "Note",
+    "room": "Salle",
+    "move_btn": "Déplacer",
+    "move_title": "Déplacer l'actif",
+    "move_state": "Nouvel état",
+    "move_room": "Nouvelle salle",
+    "move_notes": "Notes",
+    "move_notes_placeholder": "Raison du déplacement…",
+    "move_confirm": "Confirmer le déplacement",
+    "history_title": "Historique des transitions",
+    "history_empty": "Aucune transition enregistrée."
   },
   "rack": {
     "error_loading": "Erreur lors du chargement des unités de baie",
@@ -690,7 +700,8 @@
     "type_datacenter": "Centre de données",
     "type_warehouse": "Entrepôt",
     "type_laboratory": "Laboratoire",
-    "type_technical_office": "Bureau technique"
+    "type_technical_office": "Bureau technique",
+    "filter_all_types": "Tous les types"
   },
   "asset_settings": {
     "tab_states": "États des assets",

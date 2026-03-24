@@ -448,7 +448,17 @@
     "warranty": "Warranty",
     "support": "Support",
     "expired": "Expired",
-    "note": "Note"
+    "note": "Note",
+    "room": "Room",
+    "move_btn": "Move",
+    "move_title": "Move asset",
+    "move_state": "New state",
+    "move_room": "New room",
+    "move_notes": "Notes",
+    "move_notes_placeholder": "Reason for the move…",
+    "move_confirm": "Confirm move",
+    "history_title": "Transition history",
+    "history_empty": "No transitions recorded."
   },
   "rack": {
     "error_loading": "Error loading rack units",
@@ -690,7 +700,8 @@
     "type_datacenter": "Datacenter",
     "type_warehouse": "Warehouse",
     "type_laboratory": "Laboratory",
-    "type_technical_office": "Technical Office"
+    "type_technical_office": "Technical Office",
+    "filter_all_types": "All types"
   },
   "asset_settings": {
     "tab_states": "Asset States",

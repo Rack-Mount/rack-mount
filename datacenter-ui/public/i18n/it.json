@@ -448,7 +448,17 @@
     "warranty": "Garanzia",
     "support": "Supporto",
     "expired": "Scaduto",
-    "note": "Note"
+    "note": "Note",
+    "room": "Sala",
+    "move_btn": "Sposta",
+    "move_title": "Sposta asset",
+    "move_state": "Nuovo stato",
+    "move_room": "Nuova sala",
+    "move_notes": "Note",
+    "move_notes_placeholder": "Motivo dello spostamento…",
+    "move_confirm": "Conferma spostamento",
+    "history_title": "Storico transizioni",
+    "history_empty": "Nessuna transizione registrata."
   },
   "rack": {
     "error_loading": "Errore nel caricamento delle unità rack",
@@ -690,7 +700,8 @@
     "type_datacenter": "Data Center",
     "type_warehouse": "Magazzino",
     "type_laboratory": "Laboratorio",
-    "type_technical_office": "Ufficio Tecnico"
+    "type_technical_office": "Ufficio Tecnico",
+    "filter_all_types": "Tutti i tipi"
   },
   "asset_settings": {
     "tab_states": "Stati Asset",
