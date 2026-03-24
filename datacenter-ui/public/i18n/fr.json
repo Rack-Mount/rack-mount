@@ -252,7 +252,10 @@
     "field_notes_ph": "Informations supplémentaires…",
     "field_front_img": "Image face avant",
     "field_rear_img": "Image face arrière",
-    "saving_form": "Enregistrement…"
+    "saving_form": "Enregistrement…",
+    "field_warehouse_item": "Article de stock",
+    "field_warehouse_item_none": "— Aucun —",
+    "field_warehouse_item_empty": "Aucun article de stock pour ce type de composant"
   },
   "racks": {
     "search_placeholder": "Rechercher une baie…",
@@ -382,6 +385,12 @@
     "saving": "Création…",
     "error": "Erreur lors de l'enregistrement — vérifiez les données et réessayez."
   },
+  "generic_slot": {
+    "remove": "Supprimer",
+    "return_dialog_msg": "Retourner au stock ?",
+    "return_to_stock": "Retourner au stock",
+    "remove_only": "Supprimer sans retour"
+  },
   "install_panel": {
     "title": "Installer à la position {{pos}}U",
     "tab_asset": "Équipement",
@@ -397,7 +406,9 @@
     "too_large": "Espace insuffisant ({{u}}U disponibles)",
     "install_error": "Échec de l'installation : vérifiez que la position est libre et que l'équipement n'est pas déjà installé.",
     "face_front": "Avant",
-    "face_rear": "Arrière"
+    "face_rear": "Arrière",
+    "stock": "Stock : {{qty}}",
+    "out_of_stock": "Rupture de stock"
   },
   "remove_confirm": {
     "single_msg": "Retirer l'équipement de la baie ?",
@@ -782,6 +793,7 @@
     "alert_body": "{{count}} articles sous le seuil minimum",
     "alert_filter_btn": "Afficher tout",
     "col_compatible": "Compatible avec",
+    "col_installed": "Installés",
     "field_compatible_models": "Modèles compatibles",
     "no_models": "Aucun modèle disponible."
   }

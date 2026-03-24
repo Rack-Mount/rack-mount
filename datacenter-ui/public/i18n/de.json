@@ -252,7 +252,10 @@
     "field_notes_ph": "Zusätzliche Informationen…",
     "field_front_img": "Bild Vorderseite",
     "field_rear_img": "Bild Rückseite",
-    "saving_form": "Wird gespeichert…"
+    "saving_form": "Wird gespeichert…",
+    "field_warehouse_item": "Lagerartikel",
+    "field_warehouse_item_none": "— Kein Artikel —",
+    "field_warehouse_item_empty": "Keine Lagerartikel für diesen Komponententyp"
   },
   "assets": {
     "search_placeholder": "Hostname, Seriennummer, SAP suchen…",
@@ -330,6 +333,12 @@
     "saving": "Wird erstellt…",
     "error": "Fehler beim Speichern — bitte Daten prüfen und erneut versuchen."
   },
+  "generic_slot": {
+    "remove": "Entfernen",
+    "return_dialog_msg": "Ins Lager zurückgeben?",
+    "return_to_stock": "Ins Lager zurückgeben",
+    "remove_only": "Nur entfernen"
+  },
   "install_panel": {
     "title": "An Position {{pos}}U installieren",
     "tab_asset": "Gerät",
@@ -345,7 +354,9 @@
     "too_large": "Nicht genug Platz ({{u}}U frei)",
     "install_error": "Installation fehlgeschlagen: Prüfen Sie, ob die Position frei und das Gerät nicht bereits installiert ist.",
     "face_front": "Vorderseite",
-    "face_rear": "Rückseite"
+    "face_rear": "Rückseite",
+    "stock": "Bestand: {{qty}}",
+    "out_of_stock": "Nicht verfügbar"
   },
   "remove_confirm": {
     "single_msg": "Gerät aus dem Rack entfernen?",
@@ -782,6 +793,7 @@
     "alert_body": "{{count}} Artikel unter dem Mindestschwellenwert",
     "alert_filter_btn": "Alle anzeigen",
     "col_compatible": "Kompatibel mit",
+    "col_installed": "Installiert",
     "field_compatible_models": "Kompatible Modelle",
     "no_models": "Keine Modelle verfügbar."
   }

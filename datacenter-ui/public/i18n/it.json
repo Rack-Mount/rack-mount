@@ -252,7 +252,10 @@
     "field_notes_ph": "Informazioni aggiuntive…",
     "field_front_img": "Immagine fronte",
     "field_rear_img": "Immagine retro",
-    "saving_form": "Salvataggio…"
+    "saving_form": "Salvataggio…",
+    "field_warehouse_item": "Articolo di magazzino",
+    "field_warehouse_item_none": "— Nessun articolo —",
+    "field_warehouse_item_empty": "Nessun articolo di magazzino per questo tipo di componente"
   },
   "racks": {
     "search_placeholder": "Cerca rack…",
@@ -382,6 +385,12 @@
     "saving": "Creazione…",
     "error": "Errore nel salvataggio — ricontrolla i dati e riprova."
   },
+  "generic_slot": {
+    "remove": "Rimuovi",
+    "return_dialog_msg": "Ritorna al magazzino?",
+    "return_to_stock": "Ritorna al magazzino",
+    "remove_only": "Rimuovi senza ritorno"
+  },
   "install_panel": {
     "title": "Installa in posizione {{pos}}U",
     "tab_asset": "Apparato",
@@ -397,7 +406,9 @@
     "too_large": "Spazio insufficiente ({{u}}U libere)",
     "install_error": "Installazione non riuscita: verificare che la posizione sia libera e l'apparato non sia già installato.",
     "face_front": "Fronte",
-    "face_rear": "Retro"
+    "face_rear": "Retro",
+    "stock": "Scorte: {{qty}}",
+    "out_of_stock": "Esaurito"
   },
   "remove_confirm": {
     "single_msg": "Rimuovere l'apparato dal rack?",
@@ -782,6 +793,7 @@
     "alert_body": "{{count}} articoli sotto la soglia minima",
     "alert_filter_btn": "Mostra tutti",
     "col_compatible": "Compatibile con",
+    "col_installed": "Installati",
     "field_compatible_models": "Modelli compatibili",
     "no_models": "Nessun modello disponibile."
   }

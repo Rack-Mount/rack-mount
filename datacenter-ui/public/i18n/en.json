@@ -252,7 +252,10 @@
     "field_notes_ph": "Additional information…",
     "field_front_img": "Front image",
     "field_rear_img": "Rear image",
-    "saving_form": "Saving…"
+    "saving_form": "Saving…",
+    "field_warehouse_item": "Warehouse item",
+    "field_warehouse_item_none": "— None —",
+    "field_warehouse_item_empty": "No warehouse items for this component type"
   },
   "racks": {
     "search_placeholder": "Search rack…",
@@ -382,6 +385,12 @@
     "saving": "Creating…",
     "error": "Save error — please check the data and try again."
   },
+  "generic_slot": {
+    "remove": "Remove",
+    "return_dialog_msg": "Return to stock?",
+    "return_to_stock": "Return to stock",
+    "remove_only": "Remove without return"
+  },
   "install_panel": {
     "title": "Install at position {{pos}}U",
     "tab_asset": "Device",
@@ -397,7 +406,9 @@
     "too_large": "Insufficient space ({{u}}U free)",
     "install_error": "Installation failed: verify the position is free and the device is not already installed.",
     "face_front": "Front",
-    "face_rear": "Rear"
+    "face_rear": "Rear",
+    "stock": "Stock: {{qty}}",
+    "out_of_stock": "Out of stock"
   },
   "remove_confirm": {
     "single_msg": "Remove device from rack?",
@@ -782,6 +793,7 @@
     "alert_body": "{{count}} items below minimum threshold",
     "alert_filter_btn": "Show all",
     "col_compatible": "Compatible with",
+    "col_installed": "Installed",
     "field_compatible_models": "Compatible models",
     "no_models": "No models available."
   }

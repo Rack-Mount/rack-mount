@@ -252,7 +252,10 @@
     "field_notes_ph": "附加信息…",
     "field_front_img": "正面图片",
     "field_rear_img": "背面图片",
-    "saving_form": "保存中…"
+    "saving_form": "保存中…",
+    "field_warehouse_item": "仓库物品",
+    "field_warehouse_item_none": "— 无 —",
+    "field_warehouse_item_empty": "此组件类型没有仓库物品"
   },
   "racks": {
     "search_placeholder": "搜索机柜…",
@@ -382,6 +385,12 @@
     "saving": "创建中…",
     "error": "保存时出错 — 请检查数据后重试。"
   },
+  "generic_slot": {
+    "remove": "移除",
+    "return_dialog_msg": "归还至仓库？",
+    "return_to_stock": "归还至仓库",
+    "remove_only": "仅移除"
+  },
   "install_panel": {
     "title": "安装至位置 {{pos}}U",
     "tab_asset": "设备",
@@ -397,7 +406,9 @@
     "too_large": "空间不足（剩余 {{u}}U）",
     "install_error": "安装失败：请确认位置空闲且设备未被安装。",
     "face_front": "正面",
-    "face_rear": "背面"
+    "face_rear": "背面",
+    "stock": "库存：{{qty}}",
+    "out_of_stock": "缺货"
   },
   "remove_confirm": {
     "single_msg": "从机柜中移除该设备？",
@@ -782,6 +793,7 @@
     "alert_body": "{{count}} 件商品低于最低库存阈值",
     "alert_filter_btn": "显示全部",
     "col_compatible": "兼容设备",
+    "col_installed": "已安装",
     "field_compatible_models": "兼容型号",
     "no_models": "暂无可用型号。"
   }
