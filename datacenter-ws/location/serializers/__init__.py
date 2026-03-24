@@ -3,3 +3,4 @@ from .LocationSerializer import LocationSerializer
 from .RoomSerializer import RoomSerializer
 from .RackTypeSerializer import RackTypeSerializer
 from .RackSerializer import RackSerializer
+from .WarehouseItemSerializer import WarehouseItemSerializer
