@@ -21,6 +21,7 @@ class WarehouseItemSerializer(serializers.ModelSerializer):
         source='get_unit_display', read_only=True
     )
     below_threshold = serializers.BooleanField(read_only=True)
+    installed_count = serializers.SerializerMethodField(read_only=True)
     compatible_models = CompatibleModelBriefSerializer(many=True, read_only=True)
     compatible_model_ids = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -29,6 +30,13 @@ class WarehouseItemSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False,
     )
+
+    def get_installed_count(self, obj) -> int:
+        from asset.models import RackUnit
+        return RackUnit.objects.filter(
+            generic_component__warehouse_item=obj,
+            generic_component__isnull=False,
+        ).count()
 
     class Meta:
         model = WarehouseItem
@@ -43,6 +51,7 @@ class WarehouseItemSerializer(serializers.ModelSerializer):
             'unit_display',
             'min_threshold',
             'below_threshold',
+            'installed_count',
             'warehouse',
             'compatible_models',
             'compatible_model_ids',

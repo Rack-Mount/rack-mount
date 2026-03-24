@@ -131,6 +131,18 @@ class RackUnitSerializer(serializers.ModelSerializer):
         read_only=True,
         default=None
     )
+    generic_component_warehouse_item_id = serializers.IntegerField(
+        source='generic_component.warehouse_item.id',
+        read_only=True,
+        default=None,
+    )
+    generic_component_warehouse_stock = serializers.DecimalField(
+        source='generic_component.warehouse_item.quantity',
+        max_digits=10,
+        decimal_places=2,
+        read_only=True,
+        default=None,
+    )
 
     # ---- Generic Component (write) ----
     generic_component = serializers.PrimaryKeyRelatedField(
@@ -254,4 +266,6 @@ class RackUnitSerializer(serializers.ModelSerializer):
                   'rack', 'device',
                   'generic_component_id', 'generic_component_name', 'generic_component_type',
                   'generic_component_type_display', 'generic_component_rack_units',
-                  'generic_component_front_image', 'generic_component_rear_image', 'generic_component']
+                  'generic_component_front_image', 'generic_component_rear_image',
+                  'generic_component_warehouse_item_id', 'generic_component_warehouse_stock',
+                  'generic_component']

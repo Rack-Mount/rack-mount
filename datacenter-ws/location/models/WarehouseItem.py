@@ -7,6 +7,10 @@ class WarehouseCategory(models.TextChoices):
     SFP_SWITCH = 'sfp_switch', 'SFP Switch'
     SFP_SERVER = 'sfp_server', 'SFP Server'
     CABLE_MANAGER = 'cable_manager', 'Passacavi'
+    BLANKING_PANEL = 'blanking_panel', 'Pannello cieco'
+    PATCH_PANEL = 'patch_panel', 'Patch Panel'
+    PDU = 'pdu', 'PDU'
+    SHELF = 'shelf', 'Ripiano'
     OTHER = 'other', 'Altro'
 
 
@@ -19,7 +23,7 @@ class WarehouseUnit(models.TextChoices):
 class WarehouseItem(models.Model):
     name = models.CharField(max_length=200)
     category = models.CharField(
-        max_length=20,
+        max_length=30,
         choices=WarehouseCategory.choices,
         default=WarehouseCategory.OTHER,
     )

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from asset.models import GenericComponent
+from location.models import WarehouseItem
 
 
 class GenericComponentSerializer(serializers.ModelSerializer):
@@ -24,6 +25,24 @@ class GenericComponentSerializer(serializers.ModelSerializer):
         write_only=True, required=False, allow_blank=True, default=''
     )
 
+    warehouse_item = serializers.PrimaryKeyRelatedField(
+        queryset=WarehouseItem.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+    warehouse_item_name = serializers.CharField(
+        source='warehouse_item.name',
+        read_only=True,
+        default=None,
+    )
+    warehouse_item_stock = serializers.DecimalField(
+        source='warehouse_item.quantity',
+        max_digits=10,
+        decimal_places=2,
+        read_only=True,
+        default=None,
+    )
+
     class Meta:
         model = GenericComponent
         fields = [
@@ -37,6 +56,9 @@ class GenericComponentSerializer(serializers.ModelSerializer):
             'front_image_transform',
             'rear_image',
             'rear_image_transform',
+            'warehouse_item',
+            'warehouse_item_name',
+            'warehouse_item_stock',
             'note',
             'created_at',
             'updated_at',

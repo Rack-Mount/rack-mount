@@ -55,6 +55,14 @@ class GenericComponent(models.Model):
         null=True, blank=True, upload_to=generic_component_rear_upload,
         help_text='Rear-face image of the component.'
     )
+    warehouse_item = models.ForeignKey(
+        'location.WarehouseItem',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='component_definitions',
+        help_text='Articolo di magazzino da cui attingere quando il componente viene installato in rack.',
+    )
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
