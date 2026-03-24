@@ -163,6 +163,7 @@ import {
     AssetRackUnitListRequestParams,
     AssetRackUnitPartialUpdateRequestParams,
     AssetRackUnitRetrieveRequestParams,
+    AssetRackUnitReturnToStockCreateRequestParams,
     AssetRackUnitUpdateRequestParams,
     AssetVendorCreateRequestParams,
     AssetVendorDestroyRequestParams,
@@ -5273,6 +5274,86 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         return this.httpClient.request<RackUnit>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Ritorna il componente installato al magazzino: incrementa la quantità dell\&#39;articolo collegato e rimuove il componente dal rack.
+     * @endpoint post /asset/rack_unit/{id}/return-to-stock
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetRackUnitReturnToStockCreate(requestParameters: AssetRackUnitReturnToStockCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RackUnit>;
+    public assetRackUnitReturnToStockCreate(requestParameters: AssetRackUnitReturnToStockCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RackUnit>>;
+    public assetRackUnitReturnToStockCreate(requestParameters: AssetRackUnitReturnToStockCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RackUnit>>;
+    public assetRackUnitReturnToStockCreate(requestParameters: AssetRackUnitReturnToStockCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetRackUnitReturnToStockCreate.');
+        }
+        const rackUnit = requestParameters?.rackUnit;
+        if (rackUnit === null || rackUnit === undefined) {
+            throw new Error('Required parameter rackUnit was null or undefined when calling assetRackUnitReturnToStockCreate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (CookieJWTAuth) required
+
+        // authentication (cookieAuth) required
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/rack_unit/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}/return-to-stock`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RackUnit>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: rackUnit,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

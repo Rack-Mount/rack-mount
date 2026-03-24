@@ -42,6 +42,8 @@ export interface PatchedRackUnit {
     readonly generic_component_rack_units?: number;
     readonly generic_component_front_image?: string;
     readonly generic_component_rear_image?: string;
+    readonly generic_component_warehouse_item_id?: number;
+    readonly generic_component_warehouse_stock?: string;
     generic_component?: number | null;
 }
 

@@ -203,7 +203,7 @@ export interface LocationWarehouseItemDestroyRequestParams {
 
 export interface LocationWarehouseItemListRequestParams {
     belowThreshold?: boolean;
-    category?: 'cable' | 'cable_manager' | 'fiber' | 'other' | 'sfp_server' | 'sfp_switch';
+    category?: 'blanking_panel' | 'cable' | 'cable_manager' | 'fiber' | 'other' | 'patch_panel' | 'pdu' | 'sfp_server' | 'sfp_switch' | 'shelf';
     compatibleModel?: number;
     ordering?: string;
     page?: number;

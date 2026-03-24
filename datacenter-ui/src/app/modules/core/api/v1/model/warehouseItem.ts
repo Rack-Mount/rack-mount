@@ -23,6 +23,7 @@ export interface WarehouseItem {
     readonly unit_display: string;
     min_threshold?: string | null;
     readonly below_threshold: boolean;
+    readonly installed_count: number;
     warehouse: number;
     compatible_models: Array<CompatibleModelBrief>;
     compatible_model_ids?: Array<number>;

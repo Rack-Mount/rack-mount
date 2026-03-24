@@ -33,6 +33,9 @@ export interface GenericComponent {
      */
     rear_image?: string | null;
     rear_image_transform?: string;
+    warehouse_item?: number | null;
+    readonly warehouse_item_name: string;
+    readonly warehouse_item_stock: string;
     note?: string;
     readonly created_at: string;
     readonly updated_at: string;

@@ -363,6 +363,11 @@ export interface AssetRackUnitRetrieveRequestParams {
     id: number;
 }
 
+export interface AssetRackUnitReturnToStockCreateRequestParams {
+    id: number;
+    rackUnit: RackUnit;
+}
+
 export interface AssetRackUnitUpdateRequestParams {
     id: number;
     rackUnit: RackUnit;
@@ -919,6 +924,14 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetRackUnitRetrieve(requestParameters: AssetRackUnitRetrieveRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
+
+    /**
+     * 
+     * Ritorna il componente installato al magazzino: incrementa la quantità dell\&#39;articolo collegato e rimuove il componente dal rack.
+     * @endpoint post /asset/rack_unit/{id}/return-to-stock
+* @param requestParameters
+     */
+    assetRackUnitReturnToStockCreate(requestParameters: AssetRackUnitReturnToStockCreateRequestParams, extraHttpRequestParams?: any): Observable<RackUnit>;
 
     /**
      * 
