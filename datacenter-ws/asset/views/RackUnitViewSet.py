@@ -45,7 +45,7 @@ class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
             wi_locked = WarehouseItem.objects.select_for_update().get(pk=wi.pk)
             if wi_locked.quantity <= Decimal('0'):
                 raise ValidationError(
-                    {'generic_component': _('Scorte esaurite per questo articolo di magazzino.')}
+                    {'generic_component': _('Warehouse stock exhausted for this item.')}
                 )
             wi_locked.quantity -= Decimal('1')
             wi_locked.save(update_fields=['quantity'])
@@ -66,13 +66,13 @@ class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
         gc = rack_unit.generic_component
         if gc is None:
             return Response(
-                {'detail': _('Nessun componente installato in questa posizione.')},
+                {'detail': _('No component installed in this rack unit.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         wi = getattr(gc, 'warehouse_item', None)
         if wi is None:
             return Response(
-                {'detail': _('Il componente non ha un articolo di magazzino collegato.')},
+                {'detail': _('This component has no linked warehouse item.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         from location.models import WarehouseItem
@@ -83,4 +83,4 @@ class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
             rack_unit.generic_component = None
             rack_unit.save(update_fields=['generic_component'])
 
-        return Response({'detail': _('Componente rimosso e ritornato al magazzino.')}, status=status.HTTP_200_OK)
+        return Response({'detail': _('Component removed and returned to stock.')}, status=status.HTTP_200_OK)

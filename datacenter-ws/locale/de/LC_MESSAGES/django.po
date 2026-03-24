@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: datacenter 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-21 23:17+0000\n"
+"POT-Creation-Date: 2026-03-24 18:58+0000\n"
 "PO-Revision-Date: 2026-03-01 07:47+0000\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -14,320 +14,400 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: accounts/admin.py:14 accounts/admin.py:15
 msgid "Profile"
 msgstr "Profil"
 
-#: accounts/admin.py:65 accounts/admin.py:103 asset/models/Asset.py:95
 msgid "Assets"
 msgstr "Geräte"
 
-#: accounts/admin.py:72 accounts/admin.py:115
 msgid "Catalog"
 msgstr "Katalog"
 
-#: accounts/admin.py:79 accounts/admin.py:125
 msgid "Infrastructure"
 msgstr "Infrastruktur"
 
-#: accounts/admin.py:86
+msgid "Model Training (YOLO)"
+msgstr ""
+
+msgid "Permissions for YOLO port detection model training and feedback"
+msgstr ""
+
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: accounts/admin.py:93 accounts/models.py:70 accounts/models.py:93
 msgid "Role"
 msgstr "Rolle"
 
-#: accounts/admin.py:135
 msgid "Users"
 msgstr "Benutzer"
 
-#: accounts/models.py:13
+msgid "Action"
+msgstr "Aktion"
+
 msgid "Admin"
 msgstr "Administrator"
 
-#: accounts/models.py:14
 msgid "Editor"
 msgstr "Editor"
 
-#: accounts/models.py:15
 msgid "Viewer"
 msgstr "Betrachter"
 
-#: accounts/models.py:16
 msgid "Guest"
 msgstr "Gast"
 
-#: accounts/models.py:22
 msgid "Name"
 msgstr "Name"
 
-#: accounts/models.py:27
 msgid "Can view assets"
 msgstr "Kann Assets ansehen"
 
-#: accounts/models.py:29
 msgid "Can create assets"
 msgstr "Kann Assets erstellen"
 
-#: accounts/models.py:31
 msgid "Can edit assets"
 msgstr "Kann Assets bearbeiten"
 
-#: accounts/models.py:33
 msgid "Can delete assets"
 msgstr "Kann Assets löschen"
 
-#: accounts/models.py:35
 msgid "Can import assets"
 msgstr "Kann Assets importieren"
 
-#: accounts/models.py:37
 msgid "Can export assets"
 msgstr "Kann Assets exportieren"
 
-#: accounts/models.py:39
 msgid "Can clone assets"
 msgstr "Kann Assets klonen"
 
-#: accounts/models.py:43
 msgid "Can view catalog"
 msgstr "Kann den Katalog ansehen"
 
-#: accounts/models.py:45
 msgid "Can create catalog entries"
 msgstr "Kann Katalogeinträge erstellen"
 
-#: accounts/models.py:47
 msgid "Can edit catalog entries"
 msgstr "Kann Katalogeinträge bearbeiten"
 
-#: accounts/models.py:49
 msgid "Can delete catalog entries"
 msgstr "Kann Katalogeinträge löschen"
 
-#: accounts/models.py:51
 msgid "Can import catalog"
 msgstr "Kann den Katalog importieren"
 
-#: accounts/models.py:55
 msgid "Can view infrastructure (racks, rooms, map)"
 msgstr "Kann die Infrastruktur ansehen (Racks, Räume, Karte)"
 
-#: accounts/models.py:57
 msgid "Can create racks"
 msgstr "Kann Racks erstellen"
 
-#: accounts/models.py:59
 msgid "Can edit racks and rack units"
 msgstr "Kann Racks und Rack-Einheiten bearbeiten"
 
-#: accounts/models.py:61
 msgid "Can delete racks"
 msgstr "Kann Racks löschen"
 
-#: accounts/models.py:63
 msgid "Can edit floor plans"
 msgstr "Kann Grundrisse bearbeiten"
 
-#: accounts/models.py:67
 msgid "Can manage users"
 msgstr "Kann Benutzer verwalten"
 
-#: accounts/models.py:71
+msgid "Can provide port training data (annotations)"
+msgstr ""
+
+msgid "Allows users to submit labeled port images for YOLO model training"
+msgstr ""
+
+msgid "Can provide port corrections"
+msgstr ""
+
+msgid ""
+"Allows users to suggest corrections for misclassified ports (triggering "
+"retraining)"
+msgstr ""
+
+msgid "Can view model training status"
+msgstr ""
+
+msgid "Allows users to monitor YOLO training progress and validation metrics"
+msgstr ""
+
 msgid "Roles"
 msgstr "Rollen"
 
-#: accounts/models.py:87
+msgid "Auto"
+msgstr ""
+
+msgid "Metric"
+msgstr ""
+
+msgid "Imperial"
+msgstr ""
+
 msgid "User"
 msgstr "Benutzer"
 
-#: accounts/models.py:97
+msgid "Measurement System"
+msgstr ""
+
 msgid "User Profile"
 msgstr "Benutzerprofil"
 
-#: accounts/models.py:98
 msgid "User Profiles"
 msgstr "Benutzerprofile"
 
-#: asset/models/Asset.py:94
+msgid "Port annotation submitted"
+msgstr ""
+
+msgid "Port correction submitted"
+msgstr ""
+
+msgid "Model retraining triggered"
+msgstr ""
+
+msgid "Model weights updated"
+msgstr ""
+
+msgid "User logged out"
+msgstr ""
+
+msgid "Failed login attempt"
+msgstr ""
+
+msgid "Resource Type (e.g. port, model)"
+msgstr ""
+
+msgid "Resource ID (e.g. image filename)"
+msgstr ""
+
+msgid "Change data (JSON)"
+msgstr ""
+
+msgid "For corrections: {old_label, new_label, position}"
+msgstr ""
+
+msgid "Client IP"
+msgstr ""
+
+msgid "Timestamp"
+msgstr ""
+
+msgid "Security Audit Log"
+msgstr ""
+
+msgid "Security Audit Logs"
+msgstr ""
+
+msgid "A user with this username already exists."
+msgstr "Ein Benutzer mit diesem Benutzernamen existiert bereits."
+
+msgid "You cannot delete your own account."
+msgstr "Sie können Ihr eigenes Konto nicht löschen."
+
+msgid "Incorrect password."
+msgstr "Falsches Passwort."
+
+msgid "Password changed successfully."
+msgstr "Passwort erfolgreich geändert."
+
+msgid "Refresh token not found in cookies."
+msgstr "Refresh-Token nicht in den Cookies gefunden."
+
+msgid "Refresh token does not belong to the authenticated user."
+msgstr "Der Refresh-Token gehört nicht dem angemeldeten Benutzer."
+
+msgid "Logout successful. Token blacklisted."
+msgstr "Abmeldung erfolgreich. Token gesperrt."
+
+msgid "Unable to logout with the provided refresh token."
+msgstr "Abmeldung mit dem angegebenen Refresh-Token nicht möglich."
+
+msgid "Username and password required."
+msgstr "Benutzername und Passwort sind erforderlich."
+
+msgid "Invalid credentials."
+msgstr "Ungültige Anmeldedaten."
+
+msgid "Login successful."
+msgstr "Anmeldung erfolgreich."
+
+msgid "Invalid or expired refresh token."
+msgstr "Ungültiger oder abgelaufener Refresh-Token."
+
+msgid "Token refreshed."
+msgstr "Token aktualisiert."
+
+msgid "Logout successful."
+msgstr "Abmeldung erfolgreich."
+
+msgid "Unable to blacklist refresh token."
+msgstr "Refresh-Token konnte nicht gesperrt werden."
+
 msgid "Asset"
 msgstr "Gerät"
 
-#: asset/models/Rack.py:44
-msgid "Rack"
-msgstr "Rack"
-
-#: asset/models/Rack.py:45
-msgid "Racks"
-msgstr "Racks"
-
-#: asset/models/RackType.py:28
-msgid "Height in cm"
-msgstr "Höhe in cm"
-
-#: asset/models/RackType.py:39
-msgid "Rack Type"
-msgstr "Rack-Typ"
-
-#: asset/models/RackType.py:40
-msgid "Rack Types"
-msgstr "Rack-Typen"
-
-#: asset/serializers/RackUnitSerializer.py:218
 msgid "A rack unit cannot have both a device and a generic component."
-msgstr "Eine Rack-Einheit kann nicht gleichzeitig ein Gerät und eine generische Komponente haben."
+msgstr ""
+"Eine Rack-Einheit kann nicht gleichzeitig ein Gerät und eine generische "
+"Komponente haben."
 
-#: asset/serializers/RackUnitSerializer.py:227
+msgid "Position must be greater than or equal to 1."
+msgstr "Die Position muss größer oder gleich 1 sein."
+
+#, python-brace-format
+msgid "Position {} exceeds rack capacity ({})."
+msgstr "Position {} überschreitet die Rack-Kapazität ({})."
+
 #, python-brace-format
 msgid "The device is too deep for this rack (Device: {}mm > Rack: {}mm)."
 msgstr "Das Gerät ist zu tief für dieses Rack (Gerät: {}mm > Rack: {}mm)."
 
-#: asset/views/AssetModelImportView.py:43
 msgid "Not a valid Data URL."
 msgstr "Keine gültige Data-URL."
 
-#: asset/views/AssetModelImportView.py:47
 msgid "Malformed Data URL."
 msgstr "Fehlerhafte Data-URL."
 
-#: asset/views/AssetModelImportView.py:54
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "Nicht unterstützter Bildtyp: %s"
 
-#: asset/views/AssetModelImportView.py:59
 msgid "Invalid base64 data."
 msgstr "Ungültige Base64-Daten."
 
-#: asset/views/AssetModelImportView.py:64
 #, python-format
 msgid "Image exceeds maximum allowed size of %d MB."
 msgstr "Das Bild überschreitet die maximale erlaubte Größe von %d MB."
 
-#: asset/views/AssetModelImportView.py:75
 #, python-format
 msgid "Uploaded file for %s is not a valid image."
 msgstr "Die hochgeladene Datei für %s ist kein gültiges Bild."
 
-#: asset/views/AssetModelImportView.py:157
-#: asset/views/AssetModelImportView.py:159
-#: asset/views/AssetModelImportView.py:161
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
-#: asset/views/AssetModelImportView.py:173
 #, python-format
 msgid "A model named \"%(name)s\" already exists for %(vendor)s (%(type)s)."
 msgstr ""
 "Ein Modell mit dem Namen \"%(name)s\" existiert bereits für %(vendor)s "
 "(%(type)s)."
 
-#: asset/views/AssetModelImportView.py:205
 msgid "Invalid front image data."
 msgstr "Ungültige Daten für das Frontbild."
 
-#: asset/views/AssetModelImportView.py:214
 msgid "Invalid rear image data."
 msgstr "Ungültige Daten für das Rückbild."
 
-#: asset/views/AssetModelViewSet.py:52
 #, python-format
 msgid "Cannot delete: this model is used by %(count)d asset(s)."
 msgstr ""
 "Löschen nicht möglich: dieses Modell wird von %(count)d Gerät(en) verwendet."
 
-#: asset/views/AssetModelViewSet.py:72 asset/views/AssetViewSet.py:199
 msgid "ids must be a list"
 msgstr "ids muss eine Liste sein"
 
-#: asset/views/AssetViewSet.py:98
 msgid "state_id is required"
 msgstr "state_id ist erforderlich"
 
-#: asset/views/AssetViewSet.py:105 asset/views/AssetViewSet.py:110
 msgid "Invalid state_id"
 msgstr "Ungültige state_id"
 
-#: asset/views/AssetViewSet.py:166
 msgid "ids must be a non-empty list"
 msgstr "ids muss eine nicht leere Liste sein"
 
-#: asset/views/CatalogImportView.py:95
+msgid "to_state is required"
+msgstr "to_state ist erforderlich"
+
+msgid "Invalid to_state"
+msgstr "Ungültiger to_state"
+
+msgid "Invalid to_room"
+msgstr "Ungültiger to_room"
+
 msgid "Expected a JSON object."
 msgstr "Es wird ein JSON-Objekt erwartet."
 
-#: asset/views/CatalogImportView.py:135
 msgid "name, vendor and type are required."
 msgstr "Name, Hersteller und Typ sind erforderlich."
 
-#: asset/views/CatalogImportView.py:189
 msgid "name is required."
 msgstr "Der Name ist erforderlich."
 
-#: asset/views/RackViewSet.py:40
-msgid "Rack has associated units — remove them before deleting."
-msgstr "Das Rack enthält Einheiten — bitte vor dem Löschen entfernen."
+msgid "Warehouse stock exhausted for this item."
+msgstr "Lagerbestand für diesen Artikel aufgebraucht."
 
-#: datacenter-app/settings.py:134
+msgid "No component installed in this rack unit."
+msgstr "Keine Komponente in dieser Rack-Einheit installiert."
+
+msgid "This component has no linked warehouse item."
+msgstr "Diese Komponente hat keinen verknüpften Lagerartikel."
+
+msgid "Component removed and returned to stock."
+msgstr "Komponente entfernt und ins Lager zurückgelegt."
+
 msgid "English"
 msgstr "Englisch"
 
-#: datacenter-app/settings.py:135
 msgid "Italian"
 msgstr "Italienisch"
 
-#: datacenter-app/settings.py:136
 msgid "German"
 msgstr "Deutsch"
 
-#: datacenter-app/settings.py:137
 msgid "French"
 msgstr "Französisch"
 
-#: datacenter-app/settings.py:138
 msgid "Chinese (Simplified)"
 msgstr "Chinesisch (Vereinfacht)"
 
-#: location/models/Location.py:39
 msgid "Location"
 msgstr "Standort"
 
-#: location/models/Location.py:40
 msgid "Locations"
 msgstr "Standorte"
 
-#: location/models/Room.py:40
+msgid "Rack"
+msgstr "Rack"
+
+msgid "Racks"
+msgstr "Racks"
+
+msgid "Height in cm"
+msgstr "Höhe in cm"
+
+msgid "Rack Type"
+msgstr "Rack-Typ"
+
+msgid "Rack Types"
+msgstr "Rack-Typen"
+
 msgid "Datacenter"
 msgstr "Rechenzentrum"
 
-#: location/models/Room.py:41
 msgid "Warehouse"
 msgstr "Lager"
 
-#: location/models/Room.py:42
 msgid "Laboratory"
 msgstr "Labor"
 
-#: location/models/Room.py:43
 msgid "Technical Office"
 msgstr "Technisches Büro"
 
-#: location/models/Room.py:49
 msgid "Room type"
 msgstr "Raumtyp"
 
-#: location/models/Room.py:74
 msgid ""
 "Interactive floor plan elements (walls, racks, doors) from the Angular "
 "editor."
 msgstr ""
 "Interaktive Grundriss-Elemente (Wände, Racks, Türen) aus dem Angular-Editor."
 
-#: location/models/Room.py:84
 msgid "Room"
 msgstr "Raum"
 
-#: location/models/Room.py:85
 msgid "Rooms"
 msgstr "Räume"
+
+msgid "Rack has associated units — remove them before deleting."
+msgstr "Das Rack enthält Einheiten — bitte vor dem Löschen entfernen."
