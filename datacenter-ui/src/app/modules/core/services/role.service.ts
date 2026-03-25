@@ -22,6 +22,9 @@ export interface RoleData {
   can_edit_racks: boolean;
   can_delete_racks: boolean;
   can_edit_map: boolean;
+  // Warehouse
+  can_view_warehouse: boolean;
+  can_manage_warehouse: boolean;
   // Admin
   can_manage_users: boolean;
   // Model training (YOLO port detection)
@@ -90,6 +93,14 @@ export class RoleService {
     () => this._p()?.can_delete_racks ?? false,
   );
   readonly canEditMap = computed(() => this._p()?.can_edit_map ?? false);
+
+  // Warehouse
+  readonly canViewWarehouse = computed(
+    () => this._p()?.can_view_warehouse ?? false,
+  );
+  readonly canManageWarehouse = computed(
+    () => this._p()?.can_manage_warehouse ?? false,
+  );
 
   // Admin
   readonly canManageUsers = computed(

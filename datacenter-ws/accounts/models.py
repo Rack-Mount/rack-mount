@@ -61,6 +61,12 @@ class Role(models.Model):
     can_edit_map = models.BooleanField(
         default=False, verbose_name=_('Can edit floor plans'))
 
+    # ── Warehouse permissions ─────────────────────────────────────────────
+    can_view_warehouse = models.BooleanField(
+        default=False, verbose_name=_('Can view warehouse'))
+    can_manage_warehouse = models.BooleanField(
+        default=False, verbose_name=_('Can manage warehouse (stock movements, inventory)'))
+
     # ── Admin permissions ─────────────────────────────────────────────────
     can_manage_users = models.BooleanField(
         default=False, verbose_name=_('Can manage users'))
