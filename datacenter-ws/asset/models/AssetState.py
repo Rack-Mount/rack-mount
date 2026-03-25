@@ -9,6 +9,34 @@ class AssetStateCode(models.TextChoices):
     DISMESSO = 'dismesso', 'Dismesso'
 
 
+# Transizioni ammesse tra stati standard.
+# Se from_state o to_state hanno code=None (stato custom) non viene applicata validazione.
+# Lo stato 'dismesso' è terminale: nessuna transizione in uscita è permessa.
+ALLOWED_TRANSITIONS: dict[str, set[str]] = {
+    AssetStateCode.IN_STOCK: {
+        AssetStateCode.IN_PREPARAZIONE,
+        AssetStateCode.IN_PRODUZIONE,
+        AssetStateCode.DISMESSO,
+    },
+    AssetStateCode.IN_PREPARAZIONE: {
+        AssetStateCode.IN_STOCK,
+        AssetStateCode.IN_PRODUZIONE,
+        AssetStateCode.DISMESSO,
+    },
+    AssetStateCode.IN_PRODUZIONE: {
+        AssetStateCode.IN_MANUTENZIONE,
+        AssetStateCode.IN_STOCK,
+        AssetStateCode.DISMESSO,
+    },
+    AssetStateCode.IN_MANUTENZIONE: {
+        AssetStateCode.IN_PRODUZIONE,
+        AssetStateCode.IN_STOCK,
+        AssetStateCode.DISMESSO,
+    },
+    AssetStateCode.DISMESSO: set(),
+}
+
+
 class AssetState(models.Model):
     """
     Represents the state of an asset in the system.

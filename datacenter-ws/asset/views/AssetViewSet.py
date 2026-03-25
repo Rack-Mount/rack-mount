@@ -1,11 +1,13 @@
 from uuid import uuid4
 
+from django.db import transaction
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
 from asset.serializers import AssetSerializer, AssetTransitionLogSerializer
 from asset.models import Asset, AssetState, AssetTransitionLog, RackUnit
+from asset.models.AssetState import AssetStateCode, ALLOWED_TRANSITIONS
 from location.models import Room
 from django_filters import rest_framework as df_filters
 from shared.mixins import StandardFilterMixin
@@ -60,7 +62,7 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ('clone', 'bulk_clone'):
             return [IsAuthenticated(), CloneAssetPermission()]
-        if self.action == 'bulk_state':
+        if self.action in ('bulk_state', 'move'):
             return [IsAuthenticated(), EditAssetPermission()]
         if self.action == 'bulk_delete':
             return [IsAuthenticated(), DeleteAssetPermission()]
@@ -97,6 +99,8 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
         Body: { "state_id": <int> }
 
         Updates the state of ALL assets matching the current filter params.
+        Requires can_edit_assets. Forbidden for in_produzione (use move instead).
+        Writes an AssetTransitionLog entry for each affected asset.
         Returns: { "updated": <int> }
         """
         state_id = request.data.get('state_id')
@@ -112,13 +116,43 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
                 {'error': _('Invalid state_id')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        if not AssetState.objects.filter(pk=state_id).exists():
+        try:
+            to_state = AssetState.objects.get(pk=state_id)
+        except AssetState.DoesNotExist:
             return Response(
                 {'error': _('Invalid state_id')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        queryset = self.filter_queryset(self.get_queryset())
-        updated_count = queryset.update(state_id=state_id)
+
+        # in_produzione requires rack placement: use the move endpoint instead.
+        if to_state.code == AssetStateCode.IN_PRODUZIONE:
+            return Response(
+                {'error': _('Cannot set in_produzione via bulk update. Use the move endpoint to assign rack placement.')},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        queryset = self.filter_queryset(self.get_queryset()).select_related('state', 'room')
+        assets = list(queryset)
+
+        if not assets:
+            return Response({'updated': 0})
+
+        logs = [
+            AssetTransitionLog(
+                asset=asset,
+                from_state=asset.state,
+                to_state=to_state,
+                from_room=asset.room,
+                to_room=asset.room,
+                user=request.user,
+            )
+            for asset in assets
+        ]
+
+        with transaction.atomic():
+            AssetTransitionLog.objects.bulk_create(logs)
+            updated_count = queryset.update(state_id=state_id)
+
         log_action(request, SecurityAuditLog.Action.ASSET_BULK_STATE, 'asset',
                    delta_data={'state_id': state_id, 'updated': updated_count})
         return Response({'updated': updated_count})
@@ -200,6 +234,7 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
         Body: { "to_state": <int>, "to_room": <int|null>, "notes": "" }
 
         Records a state/location transition for the asset and updates it in place.
+        Requires can_edit_assets. Enforces allowed transitions between standard states.
         """
         asset = self.get_object()
 
@@ -220,6 +255,21 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # State machine: validate the transition when both states are standard (have a code).
+        from_state = asset.state
+        if from_state and from_state.code and to_state.code:
+            allowed = ALLOWED_TRANSITIONS.get(from_state.code, set())
+            if to_state.code not in allowed:
+                return Response(
+                    {
+                        'error': _('Transition not allowed'),
+                        'from_state': from_state.code,
+                        'to_state': to_state.code,
+                        'allowed': sorted(allowed),
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         to_room = None
         if to_room_id is not None:
             try:
@@ -232,7 +282,7 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
 
         AssetTransitionLog.objects.create(
             asset=asset,
-            from_state=asset.state,
+            from_state=from_state,
             to_state=to_state,
             from_room=asset.room,
             to_room=to_room,

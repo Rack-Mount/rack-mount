@@ -426,7 +426,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * PATCH /asset/asset/bulk_state?search&#x3D;...&amp;state&#x3D;...&amp;model__type&#x3D;... Body: { \&quot;state_id\&quot;: &lt;int&gt; }  Updates the state of ALL assets matching the current filter params. Returns: { \&quot;updated\&quot;: &lt;int&gt; }
+     * PATCH /asset/asset/bulk_state?search&#x3D;...&amp;state&#x3D;...&amp;model__type&#x3D;... Body: { \&quot;state_id\&quot;: &lt;int&gt; }  Updates the state of ALL assets matching the current filter params. Requires can_edit_assets. Forbidden for in_produzione (use move instead). Writes an AssetTransitionLog entry for each affected asset. Returns: { \&quot;updated\&quot;: &lt;int&gt; }
      * @endpoint patch /asset/asset/bulk_state
 * @param requestParameters
      */
@@ -656,7 +656,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/asset/{id}/move Body: { \&quot;to_state\&quot;: &lt;int&gt;, \&quot;to_room\&quot;: &lt;int|null&gt;, \&quot;notes\&quot;: \&quot;\&quot; }  Records a state/location transition for the asset and updates it in place.
+     * POST /asset/asset/{id}/move Body: { \&quot;to_state\&quot;: &lt;int&gt;, \&quot;to_room\&quot;: &lt;int|null&gt;, \&quot;notes\&quot;: \&quot;\&quot; }  Records a state/location transition for the asset and updates it in place. Requires can_edit_assets. Enforces allowed transitions between standard states.
      * @endpoint post /asset/asset/{id}/move
 * @param requestParameters
      */
