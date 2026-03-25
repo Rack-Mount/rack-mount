@@ -25,7 +25,6 @@ import {
   AssetService,
   AssetState,
   AssetType,
-  PatchedAsset,
 } from '../../../../core/api/v1';
 import { AssetActionsService } from '../../../../core/services/asset-actions.service';
 import {
@@ -353,9 +352,9 @@ export class AssetsListStore {
     if (!assetId) return;
     this.stateEditState.set('saving');
     this.assetService
-      .assetAssetPartialUpdate({
+      .assetAssetMoveCreate({
         id: assetId,
-        patchedAsset: { state_id: stateId } satisfies PatchedAsset,
+        asset: { to_state: stateId } as any,
       })
       .subscribe({
         next: (updated) => {
@@ -418,9 +417,9 @@ export class AssetsListStore {
     this.bulkEditState.set('saving');
     forkJoin(
       ids.map((id) =>
-        this.assetService.assetAssetPartialUpdate({
+        this.assetService.assetAssetMoveCreate({
           id,
-          patchedAsset: { state_id: stateId } satisfies PatchedAsset,
+          asset: { to_state: stateId } as any,
         }),
       ),
     )

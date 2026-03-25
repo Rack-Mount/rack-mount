@@ -44,7 +44,8 @@ export interface AssetTransitionLog {
 }
 import { MediaUrlService } from '../../../../../core/services/media-url.service';
 import { BackendErrorService } from '../../../../../core/services/backend-error.service';
-import { formatDate, stateColor } from '../../assets-list/assets-list-utils';
+import { RoleService } from '../../../../../core/services/role.service';
+import { ALLOWED_TRANSITIONS, formatDate, stateColor } from '../../assets-list/assets-list-utils';
 
 type LoadState =
   | { status: 'loading' }
@@ -68,6 +69,7 @@ export class AssetDeviceViewComponent {
   private readonly backendErr = inject(BackendErrorService);
   private readonly translate = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
+  protected readonly role = inject(RoleService);
 
   protected readonly serviceUrl = environment.service_url;
   protected readonly stateColor = stateColor;
@@ -159,6 +161,19 @@ export class AssetDeviceViewComponent {
 
   protected readonly availableStates = signal<AssetState[]>([]);
   protected readonly availableRooms = signal<Room[]>([]);
+
+  /** States reachable from the current asset state, based on the backend state machine. */
+  protected readonly allowedStates = computed(() => {
+    const all = this.availableStates();
+    const currentCode = (this.asset()?.state as any)?.code as string | null | undefined;
+    if (!currentCode) return all;
+    const allowed = ALLOWED_TRANSITIONS[currentCode];
+    if (!allowed) return all;
+    return all.filter((s) => {
+      const code = (s as any).code as string | null | undefined;
+      return !code || allowed.has(code);
+    });
+  });
 
   protected openMoveForm(): void {
     const a = this.asset();

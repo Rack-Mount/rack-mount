@@ -24,6 +24,19 @@ export interface BulkPickerOpenEvent {
 
 // ── Shared view helpers ───────────────────────────────────────────────────
 
+/**
+ * Mirror of the backend ALLOWED_TRANSITIONS state machine.
+ * Keys and values are AssetState.code strings (standard states only).
+ * If a state has no code (custom state), all transitions are allowed.
+ */
+export const ALLOWED_TRANSITIONS: Record<string, ReadonlySet<string>> = {
+  in_stock:        new Set(['in_preparazione', 'in_produzione', 'dismesso']),
+  in_preparazione: new Set(['in_stock', 'in_produzione', 'dismesso']),
+  in_produzione:   new Set(['in_manutenzione', 'in_stock', 'dismesso']),
+  in_manutenzione: new Set(['in_produzione', 'in_stock', 'dismesso']),
+  dismesso:        new Set(),
+};
+
 /** Map asset state name to a CSS colour token */
 export function stateColor(name: string): string {
   const n = name.toLowerCase();

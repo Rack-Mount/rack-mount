@@ -270,10 +270,19 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-        to_room = None
-        if to_room_id is not None:
+        # Use a sentinel to distinguish "not provided" from "explicitly null".
+        # - key absent → preserve current room
+        # - key present and null → clear room
+        # - key present with an id → set new room
+        _UNSET = object()
+        to_room_raw = request.data.get('to_room', _UNSET)
+        if to_room_raw is _UNSET:
+            to_room = asset.room
+        elif to_room_raw is None:
+            to_room = None
+        else:
             try:
-                to_room = Room.objects.get(pk=to_room_id)
+                to_room = Room.objects.get(pk=to_room_raw)
             except Room.DoesNotExist:
                 return Response(
                     {'error': _('Invalid to_room')},

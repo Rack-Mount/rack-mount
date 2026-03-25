@@ -24,12 +24,14 @@
           <span class="room-badge">{{ a.room.name }}</span>
         }
       </div>
-      <button class="btn-move" (click)="openMoveForm()">
-        <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
-          <path d="M8 2v12M2 8l6-6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        {{ "asset_device_view.move_btn" | translate }}
-      </button>
+      @if (role.canEditAssets()) {
+        <button class="btn-move" (click)="openMoveForm()">
+          <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+            <path d="M8 2v12M2 8l6-6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ "asset_device_view.move_btn" | translate }}
+        </button>
+      }
     </div>
 
     <!-- ── Move form ─────────────────────────────────────────────────────────── -->
@@ -45,7 +47,7 @@
               (change)="moveToStateId.set(+$any($event.target).value || null)"
             >
               <option value="">—</option>
-              @for (s of availableStates(); track s.id) {
+              @for (s of allowedStates(); track s.id) {
                 <option [value]="s.id">{{ s.name }}</option>
               }
             </select>
