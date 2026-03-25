@@ -102,7 +102,9 @@ export class AppComponent implements OnInit {
 
     // Re-fetch the role from the server on every cold start so that
     // permission changes made in Django admin take effect without a new login.
-    if (this.auth.isAuthenticated()) {
+    // Also covers the F5 scenario: even when _username is empty, a stored
+    // refresh token lets the interceptor silently restore the session.
+    if (this.auth.isAuthenticated() || this.auth.hasRefreshToken()) {
       this.auth
         .fetchAndLoadRole()
         .pipe(takeUntilDestroyed(this.destroyRef))

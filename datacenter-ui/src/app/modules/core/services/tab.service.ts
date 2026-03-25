@@ -53,7 +53,9 @@ export class TabService {
                   }
                 : t,
             )
-            .filter((t) => this.isTabAllowed(t))
+            // Permission filtering happens later via purgeForbiddenTabs(),
+            // after the role is loaded from the server. Filtering here would
+            // drop all tabs on page refresh because the role is not yet available.
             .map((t) =>
               STATIC_LABEL_KEYS[t.id]
                 ? { ...t, labelKey: STATIC_LABEL_KEYS[t.id] }
