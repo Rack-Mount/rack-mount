@@ -212,7 +212,7 @@ export class AppComponent implements OnInit {
         this.activeTabId.set('racks');
       },
       warehouse: () => {
-        if (!this.role.canViewInfrastructure()) {
+        if (!this.role.canViewWarehouse()) {
           this.activeTabId.set('home');
           return;
         }
