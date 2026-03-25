@@ -5,9 +5,10 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
-import { catchError, map, of } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { RoleService } from '../services/role.service';
+import { TabService } from '../services/tab.service';
 
 /** Protects routes that require authentication. Redirects to /login when not authenticated. */
 export const authGuard: CanActivateFn = (
@@ -16,23 +17,31 @@ export const authGuard: CanActivateFn = (
 ) => {
   const auth = inject(AuthService);
   const router = inject(Router);
+  const tabs = inject(TabService);
 
   const loginTree = router.createUrlTree(['/login'], {
     queryParams: { returnUrl: state.url },
   });
 
-  // If neither username nor refresh token is available, redirect immediately
-  // without making any HTTP request.
-  if (!auth.isAuthenticated() && !auth.hasRefreshToken()) {
+  // Fast path: already authenticated — no HTTP call needed.
+  if (auth.isAuthenticated()) {
+    return true;
+  }
+
+  // No token at all — redirect immediately without any HTTP request.
+  if (!auth.hasRefreshToken()) {
     return loginTree;
   }
 
-  // Either already authenticated or we have a refresh token (F5 scenario).
-  // fetchAndLoadRole calls /auth/me/ — if the access token is missing/expired
-  // the interceptor will transparently refresh it and retry. If refresh also
-  // fails (401) the catchError below handles the redirect.
-  return auth.fetchAndLoadRole().pipe(
-    map(() => true),
+  // F5 / cold-start: refresh token exists but access token is gone.
+  // Explicitly refresh first, then fetch /auth/me/ with the new access token.
+  // This avoids relying on the interceptor's 401-retry dance for session restore.
+  return auth.refresh().pipe(
+    switchMap(() => auth.fetchAndLoadRole()),
+    map(() => {
+      tabs.purgeForbiddenTabs();
+      return true;
+    }),
     catchError(() => {
       auth.logout().subscribe({
         next: () => {},

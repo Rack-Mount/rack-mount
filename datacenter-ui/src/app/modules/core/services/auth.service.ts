@@ -150,13 +150,16 @@ export class AuthService {
       )
       .pipe(
         tap(({ access, refresh, username, role }) => {
-          this._isRefreshing = false;
-          this._refreshSubject.next(undefined);
+          // Set state BEFORE notifying waiters: _refreshSubject.next() is
+          // synchronous and immediately runs any queued interceptor's switchMap.
+          // If accessToken were still '' at that point, the retry would send
+          // an empty Bearer header and get another 401.
           this._accessToken.set(access);
-          // Backend returns a new refresh token when ROTATE_REFRESH_TOKENS is enabled.
           if (refresh) this._setRefreshToken(refresh);
           if (username) this._username.set(username);
           if (role) this.roleService.load(role);
+          this._isRefreshing = false;
+          this._refreshSubject.next(undefined);
         }),
         map(() => undefined),
         catchError((err) => {

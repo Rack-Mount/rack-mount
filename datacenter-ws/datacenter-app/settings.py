@@ -182,6 +182,9 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '60/hour',
         'user': '1000/hour',
+        # ─── Auth-specific scopes (login / token endpoints) ───────────────────
+        'login_anon': '20/hour',             # Username+password login attempts (brute-force protection)
+        'token_refresh': '300/hour',         # Token refresh calls (automatic every 15 min + F5)
         'media_file': '600/hour',          # Image/file serving requests
         # ─── YOLO-specific throttle scopes ────────────────────────────────────
         'port_training': '10/hour',              # Annotation submissions

@@ -13,6 +13,7 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from accounts.models import Role
 from accounts.permissions import IsAdminRole
+from accounts.throttling import LoginAnonThrottle, TokenRefreshThrottle
 from accounts.serializers import (
     RoleSerializer,
     UserListSerializer,
@@ -175,6 +176,7 @@ class CookieTokenObtainView(APIView):
     Return access and refresh tokens in the response body.
     """
     permission_classes = [AllowAny]
+    throttle_classes = [LoginAnonThrottle]
 
     @extend_schema(
         tags=['auth'],
@@ -246,6 +248,7 @@ class CookieTokenRefreshView(APIView):
     Return new access token in response body.
     """
     permission_classes = [AllowAny]
+    throttle_classes = [TokenRefreshThrottle]
 
     @extend_schema(
         tags=['auth'],
