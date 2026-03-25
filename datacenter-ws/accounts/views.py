@@ -97,7 +97,8 @@ class ChangePasswordView(generics.GenericAPIView):
         user = request.user
         if not user.check_password(serializer.validated_data['current_password']):
             from rest_framework.exceptions import ValidationError
-            raise ValidationError({'current_password': _('Incorrect password.')})
+            raise ValidationError(
+                {'current_password': _('Incorrect password.')})
         user.set_password(serializer.validated_data['new_password'])
         user.save()
         return Response({'detail': _('Password changed successfully.')}, status=status.HTTP_200_OK)
@@ -153,10 +154,12 @@ class LogoutView(APIView):
             if token_user_id is None or str(token_user_id) != str(request.user.id):
                 logger.warning(
                     'Logout blocked due to refresh-token/user mismatch',
-                    extra={'request_user_id': request.user.id, 'token_user_id': token_user_id},
+                    extra={'request_user_id': request.user.id,
+                           'token_user_id': token_user_id},
                 )
                 return Response(
-                    {'detail': _('Refresh token does not belong to the authenticated user.')},
+                    {'detail': _(
+                        'Refresh token does not belong to the authenticated user.')},
                     status=status.HTTP_403_FORBIDDEN,
                 )
             token.blacklist()
@@ -167,7 +170,8 @@ class LogoutView(APIView):
         except Exception:
             logger.exception('Logout failed while blacklisting refresh token')
             return Response(
-                {'detail': _('Unable to logout with the provided refresh token.')},
+                {'detail': _(
+                    'Unable to logout with the provided refresh token.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -219,7 +223,8 @@ class CookieTokenObtainView(APIView):
             role_data = RoleSerializer(user.profile.role).data
         except Exception:
             role_data = None
-        refresh['role'] = role_data      # copied into access token by simple_jwt
+        # copied into access token by simple_jwt
+        refresh['role'] = role_data
         access['role'] = role_data
         refresh['username'] = user.username
         access['username'] = user.username
@@ -299,7 +304,8 @@ class CookieTokenRefreshView(APIView):
         username = refresh.get('username', None)
 
         response = Response(
-            {'detail': _('Token refreshed.'), 'username': username, 'role': role_data},
+            {'detail': _('Token refreshed.'),
+             'username': username, 'role': role_data},
             status=status.HTTP_200_OK,
         )
 
@@ -350,10 +356,12 @@ class CookieTokenBlacklistView(APIView):
                 if token_user_id is None or str(token_user_id) != str(request.user.id):
                     logger.warning(
                         'Cookie token blacklist blocked due to refresh-token/user mismatch',
-                        extra={'request_user_id': request.user.id, 'token_user_id': token_user_id},
+                        extra={'request_user_id': request.user.id,
+                               'token_user_id': token_user_id},
                     )
                     return Response(
-                        {'detail': _('Refresh token does not belong to the authenticated user.')},
+                        {'detail': _(
+                            'Refresh token does not belong to the authenticated user.')},
                         status=status.HTTP_403_FORBIDDEN,
                     )
                 token.blacklist()
