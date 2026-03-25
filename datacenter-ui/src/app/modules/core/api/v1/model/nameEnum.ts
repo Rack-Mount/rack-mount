@@ -10,13 +10,12 @@
 
 
 /**
- * * `admin` - Admin * `editor` - Editor * `viewer` - Viewer * `guest` - Guest
+ * * `admin` - Admin * `editor` - Editor * `viewer` - Viewer
  */
 export const NameEnum = {
     Admin: 'admin',
     Editor: 'editor',
-    Viewer: 'viewer',
-    Guest: 'guest'
+    Viewer: 'viewer'
 } as const;
 export type NameEnum = typeof NameEnum[keyof typeof NameEnum];
 

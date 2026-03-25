@@ -634,8 +634,7 @@
   "roles": {
     "admin": "管理员",
     "editor": "编辑者",
-    "viewer": "查看者",
-    "guest": "访客"
+    "viewer": "查看者"
   },
   "users": {
     "title": "用户管理",

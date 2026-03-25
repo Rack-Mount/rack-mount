@@ -13,7 +13,6 @@ class Role(models.Model):
         ADMIN = 'admin', _('Admin')
         EDITOR = 'editor', _('Editor')
         VIEWER = 'viewer', _('Viewer')
-        GUEST = 'guest', _('Guest')
 
     name = models.CharField(
         max_length=20,

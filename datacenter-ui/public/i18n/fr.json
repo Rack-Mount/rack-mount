@@ -634,8 +634,7 @@
   "roles": {
     "admin": "Administrateur",
     "editor": "Éditeur",
-    "viewer": "Lecteur",
-    "guest": "Invité"
+    "viewer": "Lecteur"
   },
   "users": {
     "title": "Gestion des utilisateurs",

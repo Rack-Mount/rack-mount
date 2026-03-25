@@ -33,7 +33,6 @@ _ROLE_COLORS = {
     'admin':  ('#c0392b', '#fff'),
     'editor': ('#d68910', '#fff'),
     'viewer': ('#1a6fa8', '#fff'),
-    'guest':  ('#7f8c8d', '#fff'),
 }
 
 

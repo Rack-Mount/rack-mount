@@ -53,9 +53,6 @@ msgstr "编辑者"
 msgid "Viewer"
 msgstr "查看者"
 
-msgid "Guest"
-msgstr "访客"
-
 msgid "Name"
 msgstr "名称"
 

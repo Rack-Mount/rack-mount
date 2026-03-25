@@ -53,9 +53,6 @@ msgstr "Editor"
 msgid "Viewer"
 msgstr "Betrachter"
 
-msgid "Guest"
-msgstr "Gast"
-
 msgid "Name"
 msgstr "Name"
 
