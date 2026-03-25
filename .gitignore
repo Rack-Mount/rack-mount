@@ -8,3 +8,4 @@ datacenter-ws/files
 .Ds_Store
 .idea
 datacenter-ws/yolov8n.pt
+docs/*

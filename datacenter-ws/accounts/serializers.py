@@ -36,6 +36,9 @@ class RoleSerializer(serializers.ModelSerializer):
             'can_edit_map',
             # Admin
             'can_manage_users',
+            # Model training
+            'can_provide_port_training', 'can_provide_port_corrections',
+            'can_view_model_training_status',
         ]
         read_only_fields = fields
 
@@ -174,3 +177,4 @@ class CookieTokenObtainRequestSerializer(serializers.Serializer):
 
 class CookieTokenObtainResponseSerializer(AuthDetailSerializer):
     username = serializers.CharField()
+    role = RoleSerializer(allow_null=True)

@@ -30,11 +30,9 @@ export interface RoleData {
   can_view_model_training_status: boolean;
 }
 
-const STORAGE_KEY = 'auth_role';
-
 @Injectable({ providedIn: 'root' })
 export class RoleService {
-  private readonly _role = signal<RoleData | null>(this._loadFromStorage());
+  private readonly _role = signal<RoleData | null>(null);
 
   readonly role = this._role.asReadonly();
 
@@ -114,22 +112,11 @@ export class RoleService {
     return !!this._role()?.[flag];
   }
 
-  private _loadFromStorage(): RoleData | null {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as RoleData) : null;
-    } catch {
-      return null;
-    }
-  }
-
   load(role: RoleData): void {
     this._role.set(role);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(role));
   }
 
   clear(): void {
     this._role.set(null);
-    localStorage.removeItem(STORAGE_KEY);
   }
 }

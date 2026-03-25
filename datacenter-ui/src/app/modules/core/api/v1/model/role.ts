@@ -31,6 +31,18 @@ export interface Role {
     readonly can_delete_racks: boolean;
     readonly can_edit_map: boolean;
     readonly can_manage_users: boolean;
+    /**
+     * Allows users to submit labeled port images for YOLO model training
+     */
+    readonly can_provide_port_training: boolean;
+    /**
+     * Allows users to suggest corrections for misclassified ports (triggering retraining)
+     */
+    readonly can_provide_port_corrections: boolean;
+    /**
+     * Allows users to monitor YOLO training progress and validation metrics
+     */
+    readonly can_view_model_training_status: boolean;
 }
 export namespace Role {
 }

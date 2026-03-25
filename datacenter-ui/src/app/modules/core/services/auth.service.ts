@@ -19,19 +19,13 @@ interface LoginCredentials {
   password: string;
 }
 
-const STORAGE_KEYS = {
-  username: 'auth_username',
-} as const;
-
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly roleService = inject(RoleService);
   private readonly settingsService = inject(SettingsService);
 
-  private readonly _username = signal<string>(
-    localStorage.getItem(STORAGE_KEYS.username) ?? '',
-  );
+  private readonly _username = signal<string>('');
 
   readonly isAuthenticated = computed(() => !!this._username());
   readonly username = computed(() => this._username());
@@ -44,16 +38,15 @@ export class AuthService {
     // If credentials provided, validate credentials first
     if (credentials) {
       return this.http
-        .post<{ detail: string; username: string }>(
+        .post<{ detail: string; username: string; role: RoleData }>(
           `${environment.service_url}/auth/token/`,
           credentials,
           { withCredentials: true }, // Important: include cookies in request/response
         )
         .pipe(
-          tap(({ username: returnedUsername }) => {
+          tap(({ username: returnedUsername, role }) => {
             this._username.set(returnedUsername);
-            localStorage.setItem(STORAGE_KEYS.username, returnedUsername);
-            // Tokens are now in HttpOnly cookies; no need to store them
+            if (role) this.roleService.load(role);
           }),
           map(() => undefined),
           catchError((error) => throwError(() => error)),
@@ -62,7 +55,6 @@ export class AuthService {
 
     // If no credentials, just set username (already authenticated via cookies)
     this._username.set(username);
-    localStorage.setItem(STORAGE_KEYS.username, username);
     return new Observable((observer) => {
       observer.next();
       observer.complete();
@@ -71,7 +63,6 @@ export class AuthService {
 
   logout(): Observable<void> {
     this._username.set('');
-    localStorage.removeItem(STORAGE_KEYS.username);
     this._isRefreshing = false;
     this._refreshSubject.next(null);
     this.roleService.clear();
@@ -92,15 +83,17 @@ export class AuthService {
       );
   }
 
-  /** Fetches /auth/me/ and stores the returned role and preferences in their services. */
+  /** Fetches /auth/me/ and stores the returned username, role and preferences in memory. */
   fetchAndLoadRole(): Observable<void> {
     return this.http
       .get<{
+        username: string;
         role: RoleData;
         measurement_system?: string;
       }>(`${environment.service_url}/auth/me/`)
       .pipe(
-        map(({ role, measurement_system }) => {
+        map(({ username, role, measurement_system }) => {
+          if (username) this._username.set(username);
           if (role) this.roleService.load(role);
           if (measurement_system) {
             this.settingsService.loadFromServer(
@@ -128,16 +121,17 @@ export class AuthService {
     this._refreshSubject.next(null);
 
     return this.http
-      .post<{ detail: string }>(
+      .post<{ detail: string; username: string; role: RoleData }>(
         `${environment.service_url}/auth/token/refresh/`,
         {},
         { withCredentials: true }, // Include cookies in request/response
       )
       .pipe(
-        tap(() => {
+        tap(({ username, role }) => {
           this._isRefreshing = false;
           this._refreshSubject.next(undefined);
-          // New access token is automatically set in HttpOnly cookie by backend
+          if (username) this._username.set(username);
+          if (role) this.roleService.load(role);
         }),
         map(() => undefined),
         catchError((err) => {

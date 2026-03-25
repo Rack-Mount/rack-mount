@@ -213,11 +213,23 @@ class CookieTokenObtainView(APIView):
         refresh = RefreshToken.for_user(user)
         access = refresh.access_token
 
+        # Embed role claims in both tokens so the backend can read them
+        # without a DB lookup, and so the refresh view can return them.
+        try:
+            role_data = RoleSerializer(user.profile.role).data
+        except Exception:
+            role_data = None
+        refresh['role'] = role_data      # copied into access token by simple_jwt
+        access['role'] = role_data
+        refresh['username'] = user.username
+        access['username'] = user.username
+
         # Prepare response with Set-Cookie headers
         response = Response(
             {
                 'detail': _('Login successful.'),
                 'username': user.username,
+                'role': role_data,
             },
             status=status.HTTP_200_OK,
         )
@@ -276,14 +288,18 @@ class CookieTokenRefreshView(APIView):
         try:
             refresh = RefreshToken(refresh_token)
             new_access = refresh.access_token
-        except (InvalidToken, TokenError) as e:
+        except (InvalidToken, TokenError):
             return Response(
                 {'detail': _('Invalid or expired refresh token.')},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
+        # Claims embedded at login time are carried in the refresh token.
+        role_data = refresh.get('role', None)
+        username = refresh.get('username', None)
+
         response = Response(
-            {'detail': _('Token refreshed.')},
+            {'detail': _('Token refreshed.'), 'username': username, 'role': role_data},
             status=status.HTTP_200_OK,
         )
 

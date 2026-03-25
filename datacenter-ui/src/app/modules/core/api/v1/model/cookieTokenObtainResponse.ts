@@ -7,10 +7,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Role } from './role';
 
 
 export interface CookieTokenObtainResponse { 
     detail: string;
     username: string;
+    role: Role | null;
 }
 
