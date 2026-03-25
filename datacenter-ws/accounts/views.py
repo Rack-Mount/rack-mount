@@ -276,10 +276,25 @@ class CookieTokenRefreshView(APIView):
         role_data = refresh.get('role', None)
         username = refresh.get('username', None)
 
+        # Honour ROTATE_REFRESH_TOKENS: blacklist old token and issue a new one.
+        from rest_framework_simplejwt.settings import api_settings as jwt_settings
+        new_refresh_str = None
+        if jwt_settings.ROTATE_REFRESH_TOKENS:
+            if jwt_settings.BLACKLIST_AFTER_ROTATION:
+                try:
+                    refresh.blacklist()
+                except Exception:
+                    pass
+            refresh.set_jti()
+            refresh.set_exp()
+            refresh.set_iat()
+            new_refresh_str = str(refresh)
+
         return Response(
             {
                 'detail': _('Token refreshed.'),
                 'access': str(new_access),
+                'refresh': new_refresh_str,
                 'username': username,
                 'role': role_data,
             },

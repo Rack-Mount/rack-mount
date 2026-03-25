@@ -188,6 +188,7 @@ class TokenRefreshRequestSerializer(serializers.Serializer):
 
 class TokenRefreshResponseSerializer(AuthDetailSerializer):
     access = serializers.CharField()
+    refresh = serializers.CharField(allow_null=True)
     username = serializers.CharField(allow_null=True)
     role = RoleSerializer(allow_null=True)
 

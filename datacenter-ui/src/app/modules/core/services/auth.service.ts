@@ -19,6 +19,9 @@ interface LoginCredentials {
   password: string;
 }
 
+/** sessionStorage key for the refresh token (survives F5, cleared on tab close). */
+const REFRESH_TOKEN_KEY = 'rt';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -27,12 +30,17 @@ export class AuthService {
 
   private readonly _username = signal<string>('');
   private readonly _accessToken = signal<string>('');
-  private readonly _refreshToken = signal<string>('');
+  /** Refresh token — restored from sessionStorage on page load. */
+  private readonly _refreshToken = signal<string>(
+    sessionStorage.getItem(REFRESH_TOKEN_KEY) ?? '',
+  );
 
   readonly isAuthenticated = computed(() => !!this._username());
   readonly username = computed(() => this._username());
   /** Current access token — read by the auth interceptor. */
   readonly accessToken = computed(() => this._accessToken());
+  /** True when a refresh token is stored — used by the guard to decide whether to attempt session restoration. */
+  readonly hasRefreshToken = computed(() => !!this._refreshToken());
 
   // ── Token refresh ─────────────────────────────────────────────────────────
   private _isRefreshing = false;
@@ -50,7 +58,7 @@ export class AuthService {
           tap(({ username: returnedUsername, access, refresh, role }) => {
             this._username.set(returnedUsername);
             this._accessToken.set(access);
-            this._refreshToken.set(refresh);
+            this._setRefreshToken(refresh);
             if (role) this.roleService.load(role);
           }),
           map(() => undefined),
@@ -66,11 +74,20 @@ export class AuthService {
     });
   }
 
+  private _setRefreshToken(token: string): void {
+    this._refreshToken.set(token);
+    if (token) {
+      sessionStorage.setItem(REFRESH_TOKEN_KEY, token);
+    } else {
+      sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+    }
+  }
+
   logout(): Observable<void> {
     const refresh = this._refreshToken();
     this._username.set('');
     this._accessToken.set('');
-    this._refreshToken.set('');
+    this._setRefreshToken('');
     this._isRefreshing = false;
     this._refreshSubject.next(null);
     this.roleService.clear();
@@ -127,15 +144,17 @@ export class AuthService {
     this._refreshSubject.next(null);
 
     return this.http
-      .post<{ detail: string; access: string; username: string; role: RoleData }>(
+      .post<{ detail: string; access: string; refresh: string | null; username: string; role: RoleData }>(
         `${environment.service_url}/auth/token/refresh/`,
         { refresh: this._refreshToken() },
       )
       .pipe(
-        tap(({ access, username, role }) => {
+        tap(({ access, refresh, username, role }) => {
           this._isRefreshing = false;
           this._refreshSubject.next(undefined);
           this._accessToken.set(access);
+          // Backend returns a new refresh token when ROTATE_REFRESH_TOKENS is enabled.
+          if (refresh) this._setRefreshToken(refresh);
           if (username) this._username.set(username);
           if (role) this.roleService.load(role);
         }),

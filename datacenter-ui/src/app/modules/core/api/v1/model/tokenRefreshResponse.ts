@@ -13,6 +13,7 @@ import { Role } from './role';
 export interface TokenRefreshResponse { 
     detail: string;
     access: string;
+    refresh: string | null;
     username: string | null;
     role: Role | null;
 }

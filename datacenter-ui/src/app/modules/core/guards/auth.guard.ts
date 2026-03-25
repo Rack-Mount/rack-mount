@@ -21,12 +21,16 @@ export const authGuard: CanActivateFn = (
     queryParams: { returnUrl: state.url },
   });
 
-  if (!auth.isAuthenticated()) {
+  // If neither username nor refresh token is available, redirect immediately
+  // without making any HTTP request.
+  if (!auth.isAuthenticated() && !auth.hasRefreshToken()) {
     return loginTree;
   }
 
-  // Validate local auth state against the server session to avoid stale
-  // localStorage-based authenticated routes after cookie expiry/revocation.
+  // Either already authenticated or we have a refresh token (F5 scenario).
+  // fetchAndLoadRole calls /auth/me/ — if the access token is missing/expired
+  // the interceptor will transparently refresh it and retry. If refresh also
+  // fails (401) the catchError below handles the redirect.
   return auth.fetchAndLoadRole().pipe(
     map(() => true),
     catchError(() => {
