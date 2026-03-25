@@ -4,9 +4,15 @@ from location.serializers import RoomSerializer
 from shared.mixins import StandardFilterMixin
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import MapEditPermission
+from accounts.audit import AuditLogMixin
+from accounts.models import SecurityAuditLog
 
 
-class RoomViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class RoomViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
+    audit_resource_type = 'room'
+    audit_action_create = SecurityAuditLog.Action.INFRA_CREATE
+    audit_action_update = SecurityAuditLog.Action.INFRA_UPDATE
+    audit_action_delete = SecurityAuditLog.Action.INFRA_DELETE
     """
     RoomViewSet is a viewset for handling CRUD operations on the Room model.
 

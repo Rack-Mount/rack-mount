@@ -9,9 +9,15 @@ from asset.models import RackUnit
 from shared.mixins import StandardFilterMixin
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import RackResourcePermission
+from accounts.audit import AuditLogMixin
+from accounts.models import SecurityAuditLog
 
 
-class RackViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class RackViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
+    audit_resource_type = 'rack'
+    audit_action_create = SecurityAuditLog.Action.INFRA_CREATE
+    audit_action_update = SecurityAuditLog.Action.INFRA_UPDATE
+    audit_action_delete = SecurityAuditLog.Action.INFRA_DELETE
     """
     RackViewSet is a viewset for handling CRUD operations on Rack objects.
     """

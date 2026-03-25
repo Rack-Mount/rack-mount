@@ -442,7 +442,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint post /asset/asset
 * @param requestParameters
      */
@@ -498,7 +498,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint delete /asset/asset/{id}
 * @param requestParameters
      */
@@ -536,7 +536,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/asset
 * @param requestParameters
      */
@@ -552,7 +552,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint post /asset/asset_model
 * @param requestParameters
      */
@@ -560,7 +560,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint delete /asset/asset_model/{id}
 * @param requestParameters
      */
@@ -576,7 +576,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/asset_model
 * @param requestParameters
      */
@@ -584,7 +584,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint patch /asset/asset_model/{id}
 * @param requestParameters
      */
@@ -640,7 +640,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/asset_model/{id}
 * @param requestParameters
      */
@@ -648,7 +648,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all AssetModel objects.     serializer_class (Serializer): The serializer class used for serializing and deserializing AssetModel objects.     pagination_class (Pagination): The pagination class used for paginating the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for filtering and ordering the results.     ordering_fields (list): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint put /asset/asset_model/{id}
 * @param requestParameters
      */
@@ -664,7 +664,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint patch /asset/asset/{id}
 * @param requestParameters
      */
@@ -672,7 +672,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/asset/{id}
 * @param requestParameters
      */
@@ -776,7 +776,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * AssetViewSet is a viewset for handling CRUD operations on Asset objects.  Attributes:     queryset (QuerySet): The queryset that retrieves all Asset objects.     serializer_class (Serializer): The serializer class used to serialize Asset objects.     pagination_class (Pagination): The pagination class used to paginate the results.     search_fields (list): The fields that can be searched using the search filter.     filter_backends (tuple): The filter backends used for ordering and filtering the results.     ordering_fields (str): The fields that can be used for ordering the results.     ordering (list): The default ordering for the results.     filterset_fields (list): The fields that can be used for filtering the results.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint put /asset/asset/{id}
 * @param requestParameters
      */
@@ -799,7 +799,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint post /asset/generic_component
 * @param requestParameters
      */
@@ -807,7 +807,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint delete /asset/generic_component/{id}
 * @param requestParameters
      */
@@ -815,7 +815,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/generic_component
 * @param requestParameters
      */
@@ -823,7 +823,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint patch /asset/generic_component/{id}
 * @param requestParameters
      */
@@ -831,7 +831,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/generic_component/{id}
 * @param requestParameters
      */
@@ -839,7 +839,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for managing GenericComponent objects (cable managers, blanking panels, patch panels, PDUs, shelves, and other consumable rack accessories).  Supports standard CRUD operations, filtering, ordering and searching. Accepts multipart/form-data with optional front_image / rear_image file uploads and corresponding *_transform JSON for server-side crop/rotate processing.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint put /asset/generic_component/{id}
 * @param requestParameters
      */
@@ -943,7 +943,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet handles CRUD operations on the Vendor model.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint post /asset/vendor
 * @param requestParameters
      */
@@ -951,7 +951,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet handles CRUD operations on the Vendor model.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint delete /asset/vendor/{id}
 * @param requestParameters
      */
@@ -959,7 +959,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet handles CRUD operations on the Vendor model.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/vendor
 * @param requestParameters
      */
@@ -967,7 +967,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet handles CRUD operations on the Vendor model.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint patch /asset/vendor/{id}
 * @param requestParameters
      */
@@ -975,7 +975,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet handles CRUD operations on the Vendor model.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/vendor/{id}
 * @param requestParameters
      */
@@ -983,7 +983,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * VendorViewSet handles CRUD operations on the Vendor model.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint put /asset/vendor/{id}
 * @param requestParameters
      */

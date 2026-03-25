@@ -4,9 +4,15 @@ from location.serializers import LocationSerializer
 from shared.mixins import StandardFilterMixin
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import MapEditPermission
+from accounts.audit import AuditLogMixin
+from accounts.models import SecurityAuditLog
 
 
-class LocationViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class LocationViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
+    audit_resource_type = 'location'
+    audit_action_create = SecurityAuditLog.Action.INFRA_CREATE
+    audit_action_update = SecurityAuditLog.Action.INFRA_UPDATE
+    audit_action_delete = SecurityAuditLog.Action.INFRA_DELETE
     """
     LocationViewSet is a viewset for handling CRUD operations on Location model.
 

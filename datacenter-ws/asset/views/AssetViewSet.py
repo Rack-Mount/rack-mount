@@ -16,6 +16,8 @@ from accounts.permissions import (
     DeleteAssetPermission,
     EditAssetPermission,
 )
+from accounts.audit import AuditLogMixin, log_action
+from accounts.models import SecurityAuditLog
 
 
 class AssetFilter(df_filters.FilterSet):
@@ -35,7 +37,11 @@ class AssetFilter(df_filters.FilterSet):
                   'model', 'state', 'model__vendor', 'model__type']
 
 
-class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
+    audit_resource_type = 'asset'
+    audit_action_create = SecurityAuditLog.Action.ASSET_CREATE
+    audit_action_update = SecurityAuditLog.Action.ASSET_UPDATE
+    audit_action_delete = SecurityAuditLog.Action.ASSET_DELETE
     """
     AssetViewSet is a viewset for handling CRUD operations on Asset objects.
 
@@ -113,6 +119,8 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
             )
         queryset = self.filter_queryset(self.get_queryset())
         updated_count = queryset.update(state_id=state_id)
+        log_action(request, SecurityAuditLog.Action.ASSET_BULK_STATE, 'asset',
+                   delta_data={'state_id': state_id, 'updated': updated_count})
         return Response({'updated': updated_count})
 
     # ── Helper ────────────────────────────────────────────────────────────────
@@ -149,6 +157,8 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
         """
         original = self.get_object()
         clone = self._clone_asset(original)
+        log_action(request, SecurityAuditLog.Action.ASSET_CLONE, 'asset',
+                   resource_id=clone.pk, delta_data={'source_id': original.pk})
         serializer = self.get_serializer(clone)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -279,4 +289,6 @@ class AssetViewSet(StandardFilterMixin, viewsets.ModelViewSet):
         )
         to_delete = queryset.exclude(id__in=mounted_ids)
         deleted_count, _ = to_delete.delete()
+        log_action(request, SecurityAuditLog.Action.ASSET_BULK_DELETE, 'asset',
+                   delta_data={'deleted': deleted_count, 'skipped': len(mounted_ids)})
         return Response({'deleted': deleted_count, 'skipped': len(mounted_ids)})

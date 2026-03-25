@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth.models import User
+from accounts.audit import log_action
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics, viewsets, mixins, status
 from rest_framework import exceptions
@@ -208,6 +209,9 @@ class CookieTokenObtainView(APIView):
 
         user = authenticate(username=username, password=password)
         if not user:
+            from accounts.models import SecurityAuditLog
+            log_action(request, SecurityAuditLog.Action.LOGIN_FAILED, 'auth',
+                       resource_id=username or '')
             return Response(
                 {'detail': _('Invalid credentials.')},
                 status=status.HTTP_401_UNAUTHORIZED,
@@ -228,6 +232,10 @@ class CookieTokenObtainView(APIView):
         access['role'] = role_data
         refresh['username'] = user.username
         access['username'] = user.username
+
+        from accounts.models import SecurityAuditLog
+        log_action(request, SecurityAuditLog.Action.LOGIN_SUCCESS, 'auth',
+                   resource_id=user.username)
 
         # Prepare response with Set-Cookie headers
         response = Response(

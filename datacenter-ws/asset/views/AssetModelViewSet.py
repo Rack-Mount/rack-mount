@@ -9,9 +9,15 @@ from shared.mixins import ImageTransformMixin
 from shared.paginations import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import CatalogResourcePermission, DeleteCatalogPermission
+from accounts.audit import AuditLogMixin, log_action
+from accounts.models import SecurityAuditLog
 
 
-class AssetModelViewSet(ImageTransformMixin, viewsets.ModelViewSet):
+class AssetModelViewSet(AuditLogMixin, ImageTransformMixin, viewsets.ModelViewSet):
+    audit_resource_type = 'asset_model'
+    audit_action_create = SecurityAuditLog.Action.CATALOG_CREATE
+    audit_action_update = SecurityAuditLog.Action.CATALOG_UPDATE
+    audit_action_delete = SecurityAuditLog.Action.CATALOG_DELETE
     """
     AssetModelViewSet is a viewset for handling CRUD operations on AssetModel objects.
 
@@ -78,4 +84,6 @@ class AssetModelViewSet(ImageTransformMixin, viewsets.ModelViewSet):
         )
         to_delete = queryset.exclude(id__in=in_use_ids)
         deleted_count, _ = to_delete.delete()
+        log_action(request, SecurityAuditLog.Action.CATALOG_DELETE, 'asset_model',
+                   delta_data={'deleted': deleted_count, 'skipped': len(in_use_ids)})
         return Response({'deleted': deleted_count, 'skipped': len(in_use_ids)})

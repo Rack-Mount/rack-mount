@@ -139,12 +139,30 @@ class SecurityAuditLog(models.Model):
     """
 
     class Action(models.TextChoices):
+        # ── Authentication ────────────────────────────────────────────────────
+        LOGIN_SUCCESS = 'login_success', _('Login successful')
+        LOGIN_FAILED = 'login_failed', _('Failed login attempt')
+        LOGOUT = 'logout', _('User logged out')
+        # ── Assets ────────────────────────────────────────────────────────────
+        ASSET_CREATE = 'asset_create', _('Asset created')
+        ASSET_UPDATE = 'asset_update', _('Asset updated')
+        ASSET_DELETE = 'asset_delete', _('Asset deleted')
+        ASSET_CLONE = 'asset_clone', _('Asset cloned')
+        ASSET_BULK_STATE = 'asset_bulk_state', _('Asset bulk state update')
+        ASSET_BULK_DELETE = 'asset_bulk_delete', _('Asset bulk delete')
+        # ── Catalog ───────────────────────────────────────────────────────────
+        CATALOG_CREATE = 'catalog_create', _('Catalog item created')
+        CATALOG_UPDATE = 'catalog_update', _('Catalog item updated')
+        CATALOG_DELETE = 'catalog_delete', _('Catalog item deleted')
+        # ── Infrastructure ────────────────────────────────────────────────────
+        INFRA_CREATE = 'infra_create', _('Infrastructure item created')
+        INFRA_UPDATE = 'infra_update', _('Infrastructure item updated')
+        INFRA_DELETE = 'infra_delete', _('Infrastructure item deleted')
+        # ── ML model training ─────────────────────────────────────────────────
         PORT_ANNOTATE = 'port_annotate', _('Port annotation submitted')
         PORT_CORRECTION = 'port_correction', _('Port correction submitted')
         MODEL_RETRAIN = 'model_retrain', _('Model retraining triggered')
         MODEL_UPDATE = 'model_update', _('Model weights updated')
-        LOGOUT = 'logout', _('User logged out')
-        LOGIN_FAILED = 'login_failed', _('Failed login attempt')
 
     user = models.ForeignKey(
         User,

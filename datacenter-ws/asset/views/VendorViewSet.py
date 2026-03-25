@@ -6,9 +6,15 @@ from asset.models import Vendor
 from shared.mixins import NameSearchMixin
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import CatalogResourcePermission
+from accounts.audit import AuditLogMixin
+from accounts.models import SecurityAuditLog
 
 
-class VendorViewSet(NameSearchMixin, viewsets.ModelViewSet):
+class VendorViewSet(AuditLogMixin, NameSearchMixin, viewsets.ModelViewSet):
+    audit_resource_type = 'vendor'
+    audit_action_create = SecurityAuditLog.Action.CATALOG_CREATE
+    audit_action_update = SecurityAuditLog.Action.CATALOG_UPDATE
+    audit_action_delete = SecurityAuditLog.Action.CATALOG_DELETE
     """
     VendorViewSet handles CRUD operations on the Vendor model.
     """

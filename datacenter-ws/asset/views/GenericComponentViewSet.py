@@ -6,9 +6,15 @@ from shared.mixins import ImageTransformMixin
 from shared.paginations import StandardResultsSetPagination
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import CatalogResourcePermission
+from accounts.audit import AuditLogMixin
+from accounts.models import SecurityAuditLog
 
 
-class GenericComponentViewSet(ImageTransformMixin, viewsets.ModelViewSet):
+class GenericComponentViewSet(AuditLogMixin, ImageTransformMixin, viewsets.ModelViewSet):
+    audit_resource_type = 'generic_component'
+    audit_action_create = SecurityAuditLog.Action.CATALOG_CREATE
+    audit_action_update = SecurityAuditLog.Action.CATALOG_UPDATE
+    audit_action_delete = SecurityAuditLog.Action.CATALOG_DELETE
     """
     ViewSet for managing GenericComponent objects (cable managers, blanking panels,
     patch panels, PDUs, shelves, and other consumable rack accessories).
