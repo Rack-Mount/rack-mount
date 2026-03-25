@@ -25,7 +25,7 @@ export interface PatchedWarehouseItem {
     readonly below_threshold?: boolean;
     readonly installed_count?: number;
     warehouse?: number;
-    compatible_models?: Array<CompatibleModelBrief>;
+    readonly compatible_models?: Array<CompatibleModelBrief>;
     compatible_model_ids?: Array<number>;
     notes?: string;
     readonly created_at?: string;

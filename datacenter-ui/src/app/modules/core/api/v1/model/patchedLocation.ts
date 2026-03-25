@@ -17,8 +17,8 @@ import { Room } from './room';
 export interface PatchedLocation { 
     readonly url?: string;
     readonly id?: number;
-    custom_fields?: Array<LocationCustomField>;
-    rooms?: Array<Room>;
+    readonly custom_fields?: Array<LocationCustomField>;
+    readonly rooms?: Array<Room>;
     name?: string;
     short_name?: string;
     location?: string;

@@ -49,6 +49,6 @@ export interface PatchedAssetModel {
     rear_image?: string | null;
     rear_image_transform?: string;
     note?: string;
-    ports?: Array<AssetModelPort>;
+    readonly ports?: Array<AssetModelPort>;
 }
 
