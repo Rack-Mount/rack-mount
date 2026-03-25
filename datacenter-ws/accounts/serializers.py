@@ -175,6 +175,22 @@ class CookieTokenObtainRequestSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, write_only=True)
 
 
-class CookieTokenObtainResponseSerializer(AuthDetailSerializer):
+class TokenObtainResponseSerializer(AuthDetailSerializer):
     username = serializers.CharField()
+    access = serializers.CharField()
+    refresh = serializers.CharField()
     role = RoleSerializer(allow_null=True)
+
+
+class TokenRefreshRequestSerializer(serializers.Serializer):
+    refresh = serializers.CharField(required=True)
+
+
+class TokenRefreshResponseSerializer(AuthDetailSerializer):
+    access = serializers.CharField()
+    username = serializers.CharField(allow_null=True)
+    role = RoleSerializer(allow_null=True)
+
+
+# Keep old name as alias for backwards compatibility with existing OpenAPI imports
+CookieTokenObtainResponseSerializer = TokenObtainResponseSerializer

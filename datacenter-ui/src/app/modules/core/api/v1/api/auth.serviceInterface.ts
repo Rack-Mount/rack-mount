@@ -14,13 +14,15 @@ import { Observable }                                        from 'rxjs';
 import { AuthDetail } from '../model/models';
 import { ChangePassword } from '../model/models';
 import { CookieTokenObtainRequest } from '../model/models';
-import { CookieTokenObtainResponse } from '../model/models';
 import { LogoutRequest } from '../model/models';
 import { MeResponse } from '../model/models';
 import { PaginatedUserListList } from '../model/models';
 import { PatchedUserPreferences } from '../model/models';
 import { PatchedUserUpdate } from '../model/models';
 import { Role } from '../model/models';
+import { TokenObtainResponse } from '../model/models';
+import { TokenRefreshRequest } from '../model/models';
+import { TokenRefreshResponse } from '../model/models';
 import { UserCreate } from '../model/models';
 import { UserList } from '../model/models';
 import { UserPreferences } from '../model/models';
@@ -42,8 +44,16 @@ export interface AuthPreferencesPartialUpdateRequestParams {
     patchedUserPreferences?: PatchedUserPreferences;
 }
 
+export interface AuthTokenBlacklistCreateRequestParams {
+    logoutRequest: LogoutRequest;
+}
+
 export interface AuthTokenCreateRequestParams {
     cookieTokenObtainRequest: CookieTokenObtainRequest;
+}
+
+export interface AuthTokenRefreshCreateRequestParams {
+    tokenRefreshRequest: TokenRefreshRequest;
 }
 
 export interface AuthUsersCreateRequestParams {
@@ -125,25 +135,27 @@ export interface AuthServiceInterface {
 
     /**
      * 
-     * POST /auth/token/blacklist/  Invalidate refresh token from cookie and add to blacklist. Clear cookies on frontend.
+     * POST /auth/token/blacklist/  Accept refresh token in request body and add it to the blacklist.
      * @endpoint post /auth/token/blacklist/
-*/
-    authTokenBlacklistCreate(extraHttpRequestParams?: any): Observable<AuthDetail>;
+* @param requestParameters
+     */
+    authTokenBlacklistCreate(requestParameters: AuthTokenBlacklistCreateRequestParams, extraHttpRequestParams?: any): Observable<AuthDetail>;
 
     /**
      * 
-     * POST /auth/token/  Accept username + password credentials. Return access + refresh tokens via HttpOnly, Secure, SameSite&#x3D;Strict cookies. Minimal JSON response for frontend confirmation.
+     * POST /auth/token/  Accept username + password credentials. Return access and refresh tokens in the response body.
      * @endpoint post /auth/token/
 * @param requestParameters
      */
-    authTokenCreate(requestParameters: AuthTokenCreateRequestParams, extraHttpRequestParams?: any): Observable<CookieTokenObtainResponse>;
+    authTokenCreate(requestParameters: AuthTokenCreateRequestParams, extraHttpRequestParams?: any): Observable<TokenObtainResponse>;
 
     /**
      * 
-     * POST /auth/token/refresh/  Accept refresh token from HttpOnly cookie. Return new access token via HttpOnly cookie. Requires no request body (cookie handled automatically).
+     * POST /auth/token/refresh/  Accept refresh token in request body. Return new access token in response body.
      * @endpoint post /auth/token/refresh/
-*/
-    authTokenRefreshCreate(extraHttpRequestParams?: any): Observable<AuthDetail>;
+* @param requestParameters
+     */
+    authTokenRefreshCreate(requestParameters: AuthTokenRefreshCreateRequestParams, extraHttpRequestParams?: any): Observable<TokenRefreshResponse>;
 
     /**
      * 

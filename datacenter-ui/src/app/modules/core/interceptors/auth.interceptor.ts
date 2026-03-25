@@ -11,23 +11,13 @@ import { AuthService } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
 
 /**
- * HTTP Interceptor for cookie-based JWT authentication.
+ * HTTP Interceptor for Bearer-token JWT authentication.
  *
- * - Automatically includes HttpOnly cookies in all requests (via withCredentials=true)
- * - Handles 401 Unauthorized by attempting silent token refresh
- * - Handles 403 Forbidden by showing permission denied toast
- *
- * No manual Authorization header needed; cookies are sent automatically by browser.
+ * - Adds Authorization: Bearer <access_token> to all API requests.
+ * - Handles 401 Unauthorized by attempting a silent token refresh, then retrying once.
+ * - Handles 403 Forbidden by showing a permission-denied toast.
  */
 const RETRY_ALREADY_PERFORMED = new HttpContextToken<boolean>(() => false);
-
-const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
-
-function getCookie(name: string): string | null {
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const match = document.cookie.match(new RegExp(`(?:^|; )${escaped}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
 
 function isApiRequest(url: string): boolean {
   try {
@@ -47,22 +37,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const toast = inject(ToastService);
   const translate = inject(TranslateService);
 
-  // Ensure credentials (cookies) are included in all requests and add CSRF header
-  // for unsafe methods when csrftoken cookie is available.
-  const csrfToken =
-    !SAFE_METHODS.has(req.method) && isApiRequest(req.url)
-      ? getCookie('csrftoken')
-      : null;
+  const token = auth.accessToken();
+  const outgoing =
+    token && isApiRequest(req.url)
+      ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+      : req;
 
-  const reqWithCredentials = req.clone({
-    withCredentials: true,
-    setHeaders:
-      csrfToken && !req.headers.has('X-CSRFToken')
-        ? { 'X-CSRFToken': csrfToken }
-        : {},
-  });
-
-  return next(reqWithCredentials).pipe(
+  return next(outgoing).pipe(
     catchError((error) => {
       const isAuthEndpoint =
         req.url.includes('/auth/token/') ||
@@ -80,18 +61,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (isAuthEndpoint || req.context.get(RETRY_ALREADY_PERFORMED)) {
         return throwError(() => error);
       }
-      // Access token expired (or invalid) — try a silent refresh then retry once.
+
+      // Access token expired — refresh and retry once with the new token.
       return auth.refresh().pipe(
-        switchMap(() =>
-          next(
-            reqWithCredentials.clone({
-              context: reqWithCredentials.context.set(
-                RETRY_ALREADY_PERFORMED,
-                true,
-              ),
-            }),
-          ),
-        ),
+        switchMap(() => {
+          const newToken = auth.accessToken();
+          const retryReq = outgoing.clone({
+            setHeaders: { Authorization: `Bearer ${newToken}` },
+            context: outgoing.context.set(RETRY_ALREADY_PERFORMED, true),
+          });
+          return next(retryReq);
+        }),
         catchError(() => throwError(() => error)),
       );
     }),

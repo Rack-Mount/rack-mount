@@ -33,7 +33,6 @@ model/codeEnum.ts
 model/compatibleModelBrief.ts
 model/componentTypeEnum.ts
 model/cookieTokenObtainRequest.ts
-model/cookieTokenObtainResponse.ts
 model/genericComponent.ts
 model/location.ts
 model/locationCustomField.ts
@@ -94,6 +93,9 @@ model/role.ts
 model/room.ts
 model/roomTypeEnum.ts
 model/sideEnum.ts
+model/tokenObtainResponse.ts
+model/tokenRefreshRequest.ts
+model/tokenRefreshResponse.ts
 model/unitEnum.ts
 model/userCreate.ts
 model/userList.ts

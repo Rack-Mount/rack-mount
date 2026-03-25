@@ -203,10 +203,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -279,10 +275,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -351,10 +343,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const patchedAsset = requestParameters?.patchedAsset;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -432,10 +420,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -508,10 +492,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -580,10 +560,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const assetCustomField = requestParameters?.assetCustomField;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -656,10 +632,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -768,10 +740,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -833,10 +801,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const patchedAssetCustomField = requestParameters?.patchedAssetCustomField;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -910,10 +874,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -974,10 +934,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const assetCustomField = requestParameters?.assetCustomField;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -1051,10 +1007,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -1110,10 +1062,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -1162,10 +1110,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -1227,10 +1171,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -1309,10 +1249,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
     public assetAssetImportCsvRetrieve(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -1491,10 +1427,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -1555,10 +1487,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -1632,10 +1560,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -1708,10 +1632,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -1768,10 +1688,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const assetAssetModelImportCreateRequest = requestParameters?.assetAssetModelImportCreateRequest;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -1911,10 +1827,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -1976,10 +1888,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const patchedAssetModel = requestParameters?.patchedAssetModel;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -2053,10 +1961,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -2128,10 +2032,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -2230,10 +2130,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -2295,10 +2191,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const patchedAssetModelPort = requestParameters?.patchedAssetModelPort;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -2372,10 +2264,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -2439,10 +2327,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -2516,10 +2400,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -2583,10 +2463,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -2664,10 +2540,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -2741,10 +2613,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -2817,10 +2685,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -2880,10 +2744,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -2956,10 +2816,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -3068,10 +2924,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -3133,10 +2985,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const patchedAssetState = requestParameters?.patchedAssetState;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -3210,10 +3058,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -3277,10 +3121,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -3354,10 +3194,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -3429,10 +3265,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -3541,10 +3373,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -3606,10 +3434,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const patchedAssetType = requestParameters?.patchedAssetType;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -3683,10 +3507,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -3750,10 +3570,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -3831,10 +3647,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -3903,10 +3715,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -3963,10 +3771,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const assetCatalogImportCreateRequest = requestParameters?.assetCatalogImportCreateRequest;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -4036,10 +3840,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -4112,10 +3912,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -4224,10 +4020,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -4289,10 +4081,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const patchedGenericComponent = requestParameters?.patchedGenericComponent;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -4366,10 +4154,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -4433,10 +4217,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -4510,10 +4290,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -4585,10 +4361,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -4662,10 +4434,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -4737,10 +4505,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -4814,10 +4578,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -4890,10 +4650,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -4965,10 +4721,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -5097,10 +4849,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -5162,10 +4910,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const patchedRackUnit = requestParameters?.patchedRackUnit;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -5239,10 +4983,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -5306,10 +5046,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -5387,10 +5123,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -5463,10 +5195,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -5538,10 +5266,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -5650,10 +5374,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -5715,10 +5435,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         const patchedVendor = requestParameters?.patchedVendor;
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -5792,10 +5508,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
-
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
@@ -5859,10 +5571,6 @@ export class AssetService extends BaseService implements AssetServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (CookieJWTAuth) required
-
-        // authentication (cookieAuth) required
 
         // authentication (jwtAuth) required
         localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');

@@ -4,14 +4,11 @@ from django.contrib.auth.models import User
 from accounts.audit import log_action
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics, viewsets, mixins, status
-from rest_framework import exceptions
-from rest_framework.authentication import CSRFCheck
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from accounts.models import Role
@@ -26,20 +23,15 @@ from accounts.serializers import (
     LogoutRequestSerializer,
     AuthDetailSerializer,
     CookieTokenObtainRequestSerializer,
-    CookieTokenObtainResponseSerializer,
+    TokenObtainResponseSerializer,
+    TokenRefreshRequestSerializer,
+    TokenRefreshResponseSerializer,
 )
 
 
 logger = logging.getLogger(__name__)
 
 
-def _enforce_csrf(request):
-    """Require a valid CSRF token for cookie-authenticated state-changing auth endpoints."""
-    check = CSRFCheck(lambda req: None)
-    check.process_request(request)
-    reason = check.process_view(request, None, (), {})
-    if reason:
-        raise exceptions.PermissionDenied(f'CSRF Failed: {reason}')
 
 
 class UserManagementViewSet(
@@ -143,13 +135,13 @@ class LogoutView(APIView):
         },
     )
     def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if not refresh_token:
+            return Response(
+                {'detail': _('Refresh token required.')},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         try:
-            refresh_token = request.COOKIES.get('refresh_token')
-            if not refresh_token:
-                return Response(
-                    {'detail': _('Refresh token not found in cookies.')},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
             token = RefreshToken(refresh_token)
             token_user_id = token.get('user_id')
             if token_user_id is None or str(token_user_id) != str(request.user.id):
@@ -159,8 +151,7 @@ class LogoutView(APIView):
                            'token_user_id': token_user_id},
                 )
                 return Response(
-                    {'detail': _(
-                        'Refresh token does not belong to the authenticated user.')},
+                    {'detail': _('Refresh token does not belong to the authenticated user.')},
                     status=status.HTTP_403_FORBIDDEN,
                 )
             token.blacklist()
@@ -171,8 +162,7 @@ class LogoutView(APIView):
         except Exception:
             logger.exception('Logout failed while blacklisting refresh token')
             return Response(
-                {'detail': _(
-                    'Unable to logout with the provided refresh token.')},
+                {'detail': _('Unable to logout with the provided refresh token.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -182,8 +172,7 @@ class CookieTokenObtainView(APIView):
     POST /auth/token/
 
     Accept username + password credentials.
-    Return access + refresh tokens via HttpOnly, Secure, SameSite=Strict cookies.
-    Minimal JSON response for frontend confirmation.
+    Return access and refresh tokens in the response body.
     """
     permission_classes = [AllowAny]
 
@@ -191,7 +180,7 @@ class CookieTokenObtainView(APIView):
         tags=['auth'],
         request=CookieTokenObtainRequestSerializer,
         responses={
-            200: CookieTokenObtainResponseSerializer,
+            200: TokenObtainResponseSerializer,
             400: AuthDetailSerializer,
             401: AuthDetailSerializer,
         },
@@ -237,64 +226,40 @@ class CookieTokenObtainView(APIView):
         log_action(request, SecurityAuditLog.Action.LOGIN_SUCCESS, 'auth',
                    resource_id=user.username)
 
-        # Prepare response with Set-Cookie headers
-        response = Response(
+        return Response(
             {
                 'detail': _('Login successful.'),
                 'username': user.username,
+                'access': str(access),
+                'refresh': str(refresh),
                 'role': role_data,
             },
             status=status.HTTP_200_OK,
         )
-
-        # Set HttpOnly cookies
-        response.set_cookie(
-            key='refresh_token',
-            value=str(refresh),
-            max_age=3 * 24 * 60 * 60,  # 3 days
-            httponly=True,
-            secure=request.is_secure(),  # True in production (HTTPS)
-            samesite='Strict',
-            path='/',
-        )
-        response.set_cookie(
-            key='access_token',
-            value=str(access),
-            max_age=15 * 60,  # 15 minutes
-            httponly=True,
-            secure=request.is_secure(),
-            samesite='Strict',
-            path='/',
-        )
-
-        return response
 
 
 class CookieTokenRefreshView(APIView):
     """
     POST /auth/token/refresh/
 
-    Accept refresh token from HttpOnly cookie.
-    Return new access token via HttpOnly cookie.
-    Requires no request body (cookie handled automatically).
+    Accept refresh token in request body.
+    Return new access token in response body.
     """
     permission_classes = [AllowAny]
 
     @extend_schema(
         tags=['auth'],
-        request=None,
+        request=TokenRefreshRequestSerializer,
         responses={
-            200: AuthDetailSerializer,
+            200: TokenRefreshResponseSerializer,
             401: AuthDetailSerializer,
         },
     )
     def post(self, request):
-        _enforce_csrf(request)
-        refresh_token = request.COOKIES.get('refresh_token')
-
+        refresh_token = request.data.get('refresh')
         if not refresh_token:
             return Response(
-                {'detail': _('Refresh token not found in cookies.')},
+                {'detail': _('Refresh token required.')},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
@@ -311,81 +276,61 @@ class CookieTokenRefreshView(APIView):
         role_data = refresh.get('role', None)
         username = refresh.get('username', None)
 
-        response = Response(
-            {'detail': _('Token refreshed.'),
-             'username': username, 'role': role_data},
+        return Response(
+            {
+                'detail': _('Token refreshed.'),
+                'access': str(new_access),
+                'username': username,
+                'role': role_data,
+            },
             status=status.HTTP_200_OK,
         )
-
-        # Set new access token cookie
-        response.set_cookie(
-            key='access_token',
-            value=str(new_access),
-            max_age=15 * 60,  # 15 minutes
-            httponly=True,
-            secure=request.is_secure(),
-            samesite='Strict',
-            path='/',
-        )
-
-        return response
 
 
 class CookieTokenBlacklistView(APIView):
     """
     POST /auth/token/blacklist/
 
-    Invalidate refresh token from cookie and add to blacklist.
-    Clear cookies on frontend.
+    Accept refresh token in request body and add it to the blacklist.
     """
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
         tags=['auth'],
-        request=None,
+        request=LogoutRequestSerializer,
         responses={
             200: AuthDetailSerializer,
             400: AuthDetailSerializer,
         },
     )
     def post(self, request):
-        refresh_token = request.COOKIES.get('refresh_token')
-
+        refresh_token = request.data.get('refresh')
         if not refresh_token:
-            # Cookie may already be cleared on frontend; consider success
-            response = Response(
+            return Response(
                 {'detail': _('Logout successful.')},
                 status=status.HTTP_200_OK,
             )
-        else:
-            try:
-                token = RefreshToken(refresh_token)
-                token_user_id = token.get('user_id')
-                if token_user_id is None or str(token_user_id) != str(request.user.id):
-                    logger.warning(
-                        'Cookie token blacklist blocked due to refresh-token/user mismatch',
-                        extra={'request_user_id': request.user.id,
-                               'token_user_id': token_user_id},
-                    )
-                    return Response(
-                        {'detail': _(
-                            'Refresh token does not belong to the authenticated user.')},
-                        status=status.HTTP_403_FORBIDDEN,
-                    )
-                token.blacklist()
-                response = Response(
-                    {'detail': _('Logout successful. Token blacklisted.')},
-                    status=status.HTTP_200_OK,
+        try:
+            token = RefreshToken(refresh_token)
+            token_user_id = token.get('user_id')
+            if token_user_id is None or str(token_user_id) != str(request.user.id):
+                logger.warning(
+                    'Cookie token blacklist blocked due to refresh-token/user mismatch',
+                    extra={'request_user_id': request.user.id,
+                           'token_user_id': token_user_id},
                 )
-            except Exception:
-                logger.exception('Cookie token blacklist failed')
                 return Response(
-                    {'detail': _('Unable to blacklist refresh token.')},
-                    status=status.HTTP_400_BAD_REQUEST,
+                    {'detail': _('Refresh token does not belong to the authenticated user.')},
+                    status=status.HTTP_403_FORBIDDEN,
                 )
-
-        # Clear cookies on client side via response (browser will delete them)
-        response.delete_cookie('access_token', path='/')
-        response.delete_cookie('refresh_token', path='/')
-
-        return response
+            token.blacklist()
+            return Response(
+                {'detail': _('Logout successful. Token blacklisted.')},
+                status=status.HTTP_200_OK,
+            )
+        except Exception:
+            logger.exception('Cookie token blacklist failed')
+            return Response(
+                {'detail': _('Unable to blacklist refresh token.')},
+                status=status.HTTP_400_BAD_REQUEST,
+            )

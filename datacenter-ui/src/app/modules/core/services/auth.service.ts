@@ -26,9 +26,13 @@ export class AuthService {
   private readonly settingsService = inject(SettingsService);
 
   private readonly _username = signal<string>('');
+  private readonly _accessToken = signal<string>('');
+  private readonly _refreshToken = signal<string>('');
 
   readonly isAuthenticated = computed(() => !!this._username());
   readonly username = computed(() => this._username());
+  /** Current access token — read by the auth interceptor. */
+  readonly accessToken = computed(() => this._accessToken());
 
   // ── Token refresh ─────────────────────────────────────────────────────────
   private _isRefreshing = false;
@@ -38,14 +42,15 @@ export class AuthService {
     // If credentials provided, validate credentials first
     if (credentials) {
       return this.http
-        .post<{ detail: string; username: string; role: RoleData }>(
+        .post<{ detail: string; username: string; access: string; refresh: string; role: RoleData }>(
           `${environment.service_url}/auth/token/`,
           credentials,
-          { withCredentials: true }, // Important: include cookies in request/response
         )
         .pipe(
-          tap(({ username: returnedUsername, role }) => {
+          tap(({ username: returnedUsername, access, refresh, role }) => {
             this._username.set(returnedUsername);
+            this._accessToken.set(access);
+            this._refreshToken.set(refresh);
             if (role) this.roleService.load(role);
           }),
           map(() => undefined),
@@ -62,17 +67,18 @@ export class AuthService {
   }
 
   logout(): Observable<void> {
+    const refresh = this._refreshToken();
     this._username.set('');
+    this._accessToken.set('');
+    this._refreshToken.set('');
     this._isRefreshing = false;
     this._refreshSubject.next(null);
     this.roleService.clear();
 
-    // Call backend to blacklist the refresh token
     return this.http
       .post<{ detail: string }>(
         `${environment.service_url}/auth/token/blacklist/`,
-        {},
-        { withCredentials: true }, // Include cookies
+        { refresh },
       )
       .pipe(
         map(() => undefined),
@@ -121,15 +127,15 @@ export class AuthService {
     this._refreshSubject.next(null);
 
     return this.http
-      .post<{ detail: string; username: string; role: RoleData }>(
+      .post<{ detail: string; access: string; username: string; role: RoleData }>(
         `${environment.service_url}/auth/token/refresh/`,
-        {},
-        { withCredentials: true }, // Include cookies in request/response
+        { refresh: this._refreshToken() },
       )
       .pipe(
-        tap(({ username, role }) => {
+        tap(({ access, username, role }) => {
           this._isRefreshing = false;
           this._refreshSubject.next(undefined);
+          this._accessToken.set(access);
           if (username) this._username.set(username);
           if (role) this.roleService.load(role);
         }),
