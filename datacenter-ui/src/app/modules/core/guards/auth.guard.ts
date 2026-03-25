@@ -87,6 +87,13 @@ export const canViewInfrastructureGuard: CanActivateFn = () => {
   return role.canViewInfrastructure() ? true : router.createUrlTree(['/']);
 };
 
+/** Restricts access to users with can_view_warehouse. Redirects to / when denied. */
+export const canViewWarehouseGuard: CanActivateFn = () => {
+  const role = inject(RoleService);
+  const router = inject(Router);
+  return role.canViewWarehouse() ? true : router.createUrlTree(['/']);
+};
+
 /** Restricts access to admins or users with can_view_infrastructure. Redirects to / when denied. */
 export const adminOrInfraGuard: CanActivateFn = () => {
   const role = inject(RoleService);

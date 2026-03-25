@@ -6,6 +6,7 @@ import {
   canViewAssetsGuard,
   canViewCatalogGuard,
   canViewInfrastructureGuard,
+  canViewWarehouseGuard,
   noAuthGuard,
 } from './modules/core/guards/auth.guard';
 
@@ -52,7 +53,7 @@ export const routes: Routes = [
   },
   {
     path: 'warehouse',
-    canActivate: [authGuard, canViewInfrastructureGuard],
+    canActivate: [authGuard, canViewWarehouseGuard],
     loadComponent: () =>
       import('./modules/data-center/components/warehouse-inventory/warehouse-inventory.component').then(
         (m) => m.WarehouseInventoryComponent,

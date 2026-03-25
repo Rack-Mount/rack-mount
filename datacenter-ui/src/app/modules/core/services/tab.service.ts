@@ -85,7 +85,7 @@ export class TabService {
       case 'locations':
         return false;
       case 'warehouse':
-        return this.role.canViewInfrastructure();
+        return this.role.canViewWarehouse();
       case 'asset-settings':
         return (
           this.role.canViewInfrastructure() ||
@@ -317,7 +317,7 @@ export class TabService {
         type: 'warehouse',
         pinned: false,
       },
-      this.role.canViewInfrastructure(),
+      this.role.canViewWarehouse(),
     );
   }
 
