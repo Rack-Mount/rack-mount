@@ -67,6 +67,14 @@ class Role(models.Model):
     can_manage_warehouse = models.BooleanField(
         default=False, verbose_name=_('Can manage warehouse (stock movements, inventory)'))
 
+    # ── Asset request permissions ─────────────────────────────────────────
+    can_view_requests = models.BooleanField(
+        default=False, verbose_name=_('Can view asset requests'))
+    can_create_requests = models.BooleanField(
+        default=False, verbose_name=_('Can create asset requests'))
+    can_manage_requests = models.BooleanField(
+        default=False, verbose_name=_('Can plan, execute, reject or clarify asset requests'))
+
     # ── Admin permissions ─────────────────────────────────────────────────
     can_manage_users = models.BooleanField(
         default=False, verbose_name=_('Can manage users'))
@@ -156,6 +164,12 @@ class SecurityAuditLog(models.Model):
         ASSET_CLONE = 'asset_clone', _('Asset cloned')
         ASSET_BULK_STATE = 'asset_bulk_state', _('Asset bulk state update')
         ASSET_BULK_DELETE = 'asset_bulk_delete', _('Asset bulk delete')
+        ASSET_REQUEST_CREATE = 'asset_request_create', _('Asset request created')
+        ASSET_REQUEST_PLAN = 'asset_request_plan', _('Asset request planned')
+        ASSET_REQUEST_EXECUTE = 'asset_request_execute', _('Asset request executed')
+        ASSET_REQUEST_REJECT = 'asset_request_reject', _('Asset request rejected')
+        ASSET_REQUEST_CLARIFY = 'asset_request_clarify', _('Asset request sent for clarification')
+        ASSET_REQUEST_RESUBMIT = 'asset_request_resubmit', _('Asset request resubmitted')
         # ── Catalog ───────────────────────────────────────────────────────────
         CATALOG_CREATE = 'catalog_create', _('Catalog item created')
         CATALOG_UPDATE = 'catalog_update', _('Catalog item updated')
@@ -178,7 +192,7 @@ class SecurityAuditLog(models.Model):
         verbose_name=_('User'),
     )
     action = models.CharField(
-        max_length=20,
+        max_length=30,
         choices=Action.choices,
         verbose_name=_('Action'),
         db_index=True,

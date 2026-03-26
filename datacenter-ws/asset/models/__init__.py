@@ -10,6 +10,7 @@ from .AssetCustomField import AssetCustomField
 from .GenericComponent import GenericComponent
 from .RackUnit import RackUnit
 from .AssetTransitionLog import AssetTransitionLog
+from .AssetRequest import AssetRequest, AssetRequestType, AssetRequestStatus
 
 __all__ = [
     'CustomFieldName',
@@ -25,4 +26,7 @@ __all__ = [
     'GenericComponent',
     'RackUnit',
     'AssetTransitionLog',
+    'AssetRequest',
+    'AssetRequestType',
+    'AssetRequestStatus',
 ]

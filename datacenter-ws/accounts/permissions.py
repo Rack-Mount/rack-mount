@@ -221,3 +221,20 @@ class ViewModelTrainingStatusPermission(_RoleFlagPermission):
     Only users with `can_view_model_training_status` can access training logs.
     """
     flag = 'can_view_model_training_status'
+
+
+# ── Asset Request Permissions ─────────────────────────────────────────────────
+
+class ViewRequestsPermission(_RoleFlagPermission):
+    """Allow reading asset requests."""
+    flag = 'can_view_requests'
+
+
+class CreateRequestPermission(_RoleFlagPermission):
+    """Allow creating new asset requests."""
+    flag = 'can_create_requests'
+
+
+class ManageRequestsPermission(_RoleFlagPermission):
+    """Allow planning, executing, rejecting or clarifying asset requests."""
+    flag = 'can_manage_requests'
