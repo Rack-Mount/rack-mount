@@ -79,7 +79,7 @@ tomli_w==1.2.0
 torch==2.11.0
 torchvision==0.26.0
 typing_extensions==4.15.0
-ultralytics==8.4.27
+ultralytics==8.4.30
 ultralytics-thop==2.0.18
 uritemplate==4.2.0
 urllib3==2.6.3
