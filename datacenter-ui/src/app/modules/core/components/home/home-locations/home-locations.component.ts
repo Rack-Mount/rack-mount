@@ -27,6 +27,7 @@ export class HomeLocationsComponent {
   readonly canViewAssets = input<boolean>(false);
   readonly canViewCatalog = input<boolean>(false);
   readonly canViewInfrastructure = input<boolean>(false);
+  readonly canViewRequests = input<boolean>(false);
   readonly isAdmin = input<boolean>(false);
   readonly warehouseAlertCount = input<number>(0);
 
@@ -35,6 +36,7 @@ export class HomeLocationsComponent {
   readonly modelsOpen = output<void>();
   readonly racksOpen = output<void>();
   readonly warehouseOpen = output<void>();
+  readonly requestsOpen = output<void>();
   readonly assetSettingsOpen = output<void>();
 
   protected onRoomClick(id: number, name: string): void {
@@ -55,6 +57,10 @@ export class HomeLocationsComponent {
 
   protected onWarehouseClick(): void {
     this.warehouseOpen.emit();
+  }
+
+  protected onRequestsClick(): void {
+    this.requestsOpen.emit();
   }
 
   protected onAssetSettingsClick(): void {

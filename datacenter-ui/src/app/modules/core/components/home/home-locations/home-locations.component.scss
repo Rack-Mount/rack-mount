@@ -131,6 +131,12 @@
       border: 1px solid rgba(245, 158, 11, 0.22);
       color: #fbbf24;
     }
+
+    &--requests {
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.22);
+      color: #818cf8;
+    }
   }
 
   &__body {

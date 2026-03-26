@@ -14,6 +14,7 @@
     [canViewAssets]="role.canViewAssets()"
     [canViewCatalog]="role.canViewCatalog()"
     [canViewInfrastructure]="role.canViewInfrastructure()"
+    [canViewRequests]="role.canViewRequests()"
     [isAdmin]="role.isAdmin()"
     [warehouseAlertCount]="warehouseAlerts.count()"
     (roomOpen)="onRoomOpen($event)"
@@ -21,6 +22,7 @@
     (modelsOpen)="onModelsOpen()"
     (racksOpen)="onRacksOpen()"
     (warehouseOpen)="onWarehouseOpen()"
+    (requestsOpen)="onRequestsOpen()"
     (assetSettingsOpen)="onAssetSettingsOpen()"
   />
 </div>

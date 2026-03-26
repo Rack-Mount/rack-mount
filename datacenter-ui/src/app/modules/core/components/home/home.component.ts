@@ -97,6 +97,10 @@ export class HomeComponent {
     this.tabService.openWarehouse();
   }
 
+  protected onRequestsOpen(): void {
+    this.tabService.openRequests();
+  }
+
   protected onAssetSettingsOpen(): void {
     this.tabService.openAssetSettings();
   }
