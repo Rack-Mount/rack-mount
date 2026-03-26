@@ -9,3 +9,4 @@ from .AssetAdmin import AssetAdmin
 from .RackUnitAdmin import RackUnitAdmin
 from .GenericComponentAdmin import GenericComponentAdmin
 from .AssetTransitionLogAdmin import AssetTransitionLogAdmin
+from .AssetRequestAdmin import AssetRequestAdmin

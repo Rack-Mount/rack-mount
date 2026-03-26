@@ -51,6 +51,7 @@ class RoleAdmin(admin.ModelAdmin):
         'catalog_summary',
         'infrastructure_summary',
         'warehouse_summary',
+        'requests_summary',
         'can_manage_users',
         'user_count',
     )
@@ -89,6 +90,12 @@ class RoleAdmin(admin.ModelAdmin):
             'fields': (
                 'can_view_warehouse',
                 'can_manage_warehouse',
+            ),
+        }),
+        (_('Asset Requests'), {
+            'fields': (
+                'can_view_requests',
+                ('can_create_requests', 'can_manage_requests'),
             ),
         }),
         (_('Model Training (YOLO)'), {
@@ -155,6 +162,14 @@ class RoleAdmin(admin.ModelAdmin):
             ('manage', obj.can_manage_warehouse),
         ])
 
+    @admin.display(description=_('Requests'))
+    def requests_summary(self, obj):
+        return self._perm_chips([
+            ('view',   obj.can_view_requests),
+            ('create', obj.can_create_requests),
+            ('manage', obj.can_manage_requests),
+        ])
+
     @admin.display(description=_('Users'), ordering='user_profiles__count')
     def user_count(self, obj):
         return obj.user_profiles.count()
@@ -215,12 +230,28 @@ class SecurityAuditLogAdmin(admin.ModelAdmin):
     @admin.display(description=_('Action'))
     def get_action_color(self, obj):
         color_map = {
-            'port_annotate': '#2ecc71',
-            'port_correction': '#f39c12',
-            'model_retrain': '#e74c3c',
-            'model_update': '#9b59b6',
-            'logout': '#3498db',
-            'login_failed': '#c0392b',
+            # Auth
+            'login_failed':           '#c0392b',
+            'logout':                 '#3498db',
+            # Assets
+            'asset_create':           '#27ae60',
+            'asset_update':           '#2980b9',
+            'asset_delete':           '#e74c3c',
+            'asset_clone':            '#8e44ad',
+            'asset_bulk_state':       '#16a085',
+            'asset_bulk_delete':      '#c0392b',
+            # Asset requests
+            'asset_request_create':   '#2980b9',
+            'asset_request_plan':     '#8e44ad',
+            'asset_request_execute':  '#27ae60',
+            'asset_request_reject':   '#c0392b',
+            'asset_request_clarify':  '#e67e22',
+            'asset_request_resubmit': '#f39c12',
+            # ML
+            'port_annotate':          '#2ecc71',
+            'port_correction':        '#f39c12',
+            'model_retrain':          '#e74c3c',
+            'model_update':           '#9b59b6',
         }
         bg = color_map.get(obj.action, '#95a5a6')
         return format_html(
