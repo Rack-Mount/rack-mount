@@ -18,7 +18,8 @@ export interface PanelTab {
     | 'rack-models'
     | 'locations'
     | 'asset-settings'
-    | 'warehouse';
+    | 'warehouse'
+    | 'requests';
   roomId?: number;
   rackName?: string;
   /** ID of the asset — used when type === 'asset' */

@@ -534,3 +534,40 @@
   margin: 0;
   font-style: italic;
 }
+
+/* ── Asset request inline ─────────────────────────────────────────── */
+
+.req-inline-toolbar {
+  padding: 0.5rem 0 0.25rem;
+}
+
+.req-type-badge {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.2rem;
+  background: var(--dc-bg-subtle, rgba(0, 0, 0, 0.06));
+  color: var(--dc-text-secondary);
+  margin-right: 0.35rem;
+  text-transform: capitalize;
+}
+
+.state-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.2rem;
+
+  &[data-color="green"]  { background: #d1fae5; color: #065f46; }
+  &[data-color="blue"]   { background: #dbeafe; color: #1e40af; }
+  &[data-color="yellow"] { background: #fef3c7; color: #92400e; }
+  &[data-color="red"]    { background: #fee2e2; color: #991b1b; }
+  &[data-color="gray"]   { background: #f3f4f6; color: #4b5563; }
+}
+
+.btn-action--save {
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  border-color: transparent;
+  &:not(:disabled):hover { filter: brightness(0.92); }
+}

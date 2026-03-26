@@ -34,6 +34,7 @@ export class TabService {
       options: 'tabs.options',
       'asset-settings': 'tabs.asset_settings',
       warehouse: 'tabs.warehouse',
+      requests: 'tabs.requests',
     };
     try {
       const raw = localStorage.getItem(LS_TABS_KEY);
@@ -86,6 +87,8 @@ export class TabService {
         return false;
       case 'warehouse':
         return this.role.canViewWarehouse();
+      case 'requests':
+        return this.role.canViewRequests();
       case 'asset-settings':
         return (
           this.role.canViewInfrastructure() ||
@@ -327,6 +330,29 @@ export class TabService {
       label: 'Magazzino',
       labelKey: 'tabs.warehouse',
       type: 'warehouse',
+      pinned: false,
+    });
+  }
+
+  openRequests(): void {
+    this.openTab(
+      {
+        id: 'requests',
+        label: 'Richieste',
+        labelKey: 'tabs.requests',
+        type: 'requests',
+        pinned: false,
+      },
+      this.role.canViewRequests(),
+    );
+  }
+
+  ensureRequestsTab(): void {
+    this.ensureTab({
+      id: 'requests',
+      label: 'Richieste',
+      labelKey: 'tabs.requests',
+      type: 'requests',
       pinned: false,
     });
   }

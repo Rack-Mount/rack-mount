@@ -6,6 +6,7 @@ import {
   canViewAssetsGuard,
   canViewCatalogGuard,
   canViewInfrastructureGuard,
+  canViewRequestsGuard,
   canViewWarehouseGuard,
   noAuthGuard,
 } from './modules/core/guards/auth.guard';
@@ -57,6 +58,14 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./modules/data-center/components/warehouse-inventory/warehouse-inventory.component').then(
         (m) => m.WarehouseInventoryComponent,
+      ),
+  },
+  {
+    path: 'requests',
+    canActivate: [authGuard, canViewRequestsGuard],
+    loadComponent: () =>
+      import('./modules/data-center/components/requests/requests-list/requests-list.component').then(
+        (m) => m.RequestsListComponent,
       ),
   },
   {

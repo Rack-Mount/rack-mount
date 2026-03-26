@@ -46,6 +46,8 @@ import { MediaUrlService } from '../../../../../core/services/media-url.service'
 import { BackendErrorService } from '../../../../../core/services/backend-error.service';
 import { RoleService } from '../../../../../core/services/role.service';
 import { ALLOWED_TRANSITIONS, formatDate, stateColor } from '../../assets-list/assets-list-utils';
+import { AssetRequestService } from '../../../../../core/services/asset-request.service';
+import { AssetRequest, AssetRequestType, isRequestTerminal, requestStatusColor } from '../../../../../core/models/asset-request.model';
 
 type LoadState =
   | { status: 'loading' }
@@ -70,10 +72,13 @@ export class AssetDeviceViewComponent {
   private readonly translate = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly role = inject(RoleService);
+  private readonly requestSvc = inject(AssetRequestService);
 
   protected readonly serviceUrl = environment.service_url;
   protected readonly stateColor = stateColor;
   protected readonly formatDate = formatDate;
+  protected readonly requestStatusColor = requestStatusColor;
+  protected readonly isRequestTerminal = isRequestTerminal;
   protected readonly today = new Date().toISOString().slice(0, 10);
 
   // ── Asset load ─────────────────────────────────────────────────────────────
@@ -286,6 +291,99 @@ export class AssetDeviceViewComponent {
           this.historyLoading.set(false);
         },
         error: () => this.historyLoading.set(false),
+      });
+  }
+
+  // ── Asset Requests ─────────────────────────────────────────────────────────
+  protected readonly requestsOpen = signal(false);
+  protected readonly requestsLoading = signal(false);
+  protected readonly assetRequests = signal<AssetRequest[]>([]);
+
+  protected toggleRequests(): void {
+    const next = !this.requestsOpen();
+    this.requestsOpen.set(next);
+    if (next && this.assetRequests().length === 0) {
+      this.loadAssetRequests();
+    }
+  }
+
+  private loadAssetRequests(): void {
+    this.requestsLoading.set(true);
+    this.requestSvc
+      .list({ asset: this.assetId(), pageSize: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.assetRequests.set(res.results);
+          this.requestsLoading.set(false);
+        },
+        error: () => this.requestsLoading.set(false),
+      });
+  }
+
+  // ── New request form ───────────────────────────────────────────────────────
+  protected readonly newRequestOpen = signal(false);
+  protected readonly newReqType = signal<AssetRequestType>('spostamento');
+  protected readonly newReqToStateId = signal<number | null>(null);
+  protected readonly newReqToRoomId = signal<number | null>(null);
+  protected readonly newReqNotes = signal('');
+  protected readonly newReqSaving = signal(false);
+  protected readonly newReqError = signal('');
+
+  protected openNewRequest(): void {
+    const a = this.asset();
+    this.newReqToStateId.set(null);
+    this.newReqToRoomId.set(a?.room?.id ?? null);
+    this.newReqNotes.set('');
+    this.newReqError.set('');
+    this.newReqSaving.set(false);
+    this.newRequestOpen.set(true);
+
+    if (this.availableStates().length === 0) {
+      this.assetService
+        .assetAssetStateList({ pageSize: 100 })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((r) => this.availableStates.set(r.results ?? []));
+    }
+    if (this.availableRooms().length === 0) {
+      this.locationService
+        .locationRoomList({ pageSize: 1000, ordering: 'name' })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((r) => this.availableRooms.set(r.results ?? []));
+    }
+  }
+
+  protected cancelNewRequest(): void {
+    this.newRequestOpen.set(false);
+  }
+
+  protected submitNewRequest(): void {
+    const toState = this.newReqToStateId();
+    if (!toState) return;
+
+    this.newReqSaving.set(true);
+    this.newReqError.set('');
+
+    this.requestSvc
+      .create({
+        asset: this.assetId(),
+        request_type: this.newReqType(),
+        to_state: toState,
+        to_room: this.newReqToRoomId(),
+        notes: this.newReqNotes(),
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (created) => {
+          this.newReqSaving.set(false);
+          this.newRequestOpen.set(false);
+          this.requestsOpen.set(true);
+          this.assetRequests.update((list) => [created, ...list]);
+        },
+        error: (err: import('@angular/common/http').HttpErrorResponse) => {
+          this.newReqSaving.set(false);
+          this.newReqError.set(this.backendErr.parse(err));
+        },
       });
   }
 }

@@ -21,6 +21,12 @@ model/assetCustomField.ts
 model/assetModel.ts
 model/assetModelPort.ts
 model/assetRack.ts
+model/assetRequest.ts
+model/assetRequestClarify.ts
+model/assetRequestCreate.ts
+model/assetRequestPlan.ts
+model/assetRequestReject.ts
+model/assetRequestResubmit.ts
 model/assetRoom.ts
 model/assetState.ts
 model/assetStateCode.ts
@@ -45,6 +51,7 @@ model/paginatedAssetCustomFieldList.ts
 model/paginatedAssetList.ts
 model/paginatedAssetModelList.ts
 model/paginatedAssetModelPortList.ts
+model/paginatedAssetRequestList.ts
 model/paginatedAssetStateList.ts
 model/paginatedAssetTypeList.ts
 model/paginatedGenericComponentList.ts
@@ -89,10 +96,12 @@ model/privateMediaSignedUrlResponse.ts
 model/rack.ts
 model/rackType.ts
 model/rackUnit.ts
+model/requestTypeEnum.ts
 model/role.ts
 model/room.ts
 model/roomTypeEnum.ts
 model/sideEnum.ts
+model/statusEnum.ts
 model/tokenObtainResponse.ts
 model/tokenRefreshRequest.ts
 model/tokenRefreshResponse.ts

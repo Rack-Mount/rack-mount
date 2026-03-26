@@ -26,6 +26,10 @@ export interface RoleData {
   // Warehouse
   can_view_warehouse: boolean;
   can_manage_warehouse: boolean;
+  // Asset requests
+  can_view_requests: boolean;
+  can_create_requests: boolean;
+  can_manage_requests: boolean;
   // Admin
   can_manage_users: boolean;
   // Model training (YOLO port detection)
@@ -116,6 +120,17 @@ export class RoleService {
   );
   readonly canManageWarehouse = computed(
     () => this._p()?.can_manage_warehouse ?? false,
+  );
+
+  // Asset requests
+  readonly canViewRequests = computed(
+    () => this._p()?.can_view_requests ?? false,
+  );
+  readonly canCreateRequests = computed(
+    () => this._p()?.can_create_requests ?? false,
+  );
+  readonly canManageRequests = computed(
+    () => this._p()?.can_manage_requests ?? false,
   );
 
   // Admin

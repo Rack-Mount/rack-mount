@@ -17,6 +17,12 @@ import { AssetCatalogImportCreateRequest } from '../model/models';
 import { AssetCustomField } from '../model/models';
 import { AssetModel } from '../model/models';
 import { AssetModelPort } from '../model/models';
+import { AssetRequest } from '../model/models';
+import { AssetRequestClarify } from '../model/models';
+import { AssetRequestCreate } from '../model/models';
+import { AssetRequestPlan } from '../model/models';
+import { AssetRequestReject } from '../model/models';
+import { AssetRequestResubmit } from '../model/models';
 import { AssetState } from '../model/models';
 import { AssetType } from '../model/models';
 import { GenericComponent } from '../model/models';
@@ -24,6 +30,7 @@ import { PaginatedAssetCustomFieldList } from '../model/models';
 import { PaginatedAssetList } from '../model/models';
 import { PaginatedAssetModelList } from '../model/models';
 import { PaginatedAssetModelPortList } from '../model/models';
+import { PaginatedAssetRequestList } from '../model/models';
 import { PaginatedAssetStateList } from '../model/models';
 import { PaginatedAssetTypeList } from '../model/models';
 import { PaginatedGenericComponentList } from '../model/models';
@@ -211,6 +218,51 @@ export interface AssetAssetMoveCreateRequestParams {
 export interface AssetAssetPartialUpdateRequestParams {
     id: number;
     patchedAsset?: PatchedAsset;
+}
+
+export interface AssetAssetRequestClarifyCreateRequestParams {
+    id: number;
+    assetRequestClarify: AssetRequestClarify;
+}
+
+export interface AssetAssetRequestCreateRequestParams {
+    assetRequestCreate: AssetRequestCreate;
+}
+
+export interface AssetAssetRequestExecuteCreateRequestParams {
+    id: number;
+    assetRequest: AssetRequest;
+}
+
+export interface AssetAssetRequestListRequestParams {
+    asset?: number;
+    assignedTo?: number;
+    createdBy?: number;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    requestType?: 'dismissione' | 'manutenzione' | 'registrazione' | 'spostamento';
+    search?: string;
+    status?: 'evasa' | 'in_chiarimento' | 'inserita' | 'pianificata' | 'rifiutata';
+}
+
+export interface AssetAssetRequestPlanCreateRequestParams {
+    id: number;
+    assetRequestPlan?: AssetRequestPlan;
+}
+
+export interface AssetAssetRequestRejectCreateRequestParams {
+    id: number;
+    assetRequestReject: AssetRequestReject;
+}
+
+export interface AssetAssetRequestResubmitCreateRequestParams {
+    id: number;
+    assetRequestResubmit?: AssetRequestResubmit;
+}
+
+export interface AssetAssetRequestRetrieveRequestParams {
+    id: number;
 }
 
 export interface AssetAssetRetrieveRequestParams {
@@ -669,6 +721,70 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetAssetPartialUpdate(requestParameters: AssetAssetPartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
+
+    /**
+     * 
+     * POST /asset/asset_request/{id}/clarify Body: { \&quot;clarification_notes\&quot;: \&quot;...\&quot; }  Transizione → IN_CHIARIMENTO.
+     * @endpoint post /asset/asset_request/{id}/clarify
+* @param requestParameters
+     */
+    assetAssetRequestClarifyCreate(requestParameters: AssetAssetRequestClarifyCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetRequestClarify>;
+
+    /**
+     * 
+     * Gestione delle richieste di ciclo di vita degli asset.  Ciclo di vita di una richiesta:     INSERITA → PIANIFICATA → EVASA  (percorso normale)     INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)     INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)  Quando una richiesta viene EVASA, l\&#39;asset cambia effettivamente stato e location, e viene creato un AssetTransitionLog.
+     * @endpoint post /asset/asset_request
+* @param requestParameters
+     */
+    assetAssetRequestCreate(requestParameters: AssetAssetRequestCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetRequestCreate>;
+
+    /**
+     * 
+     * POST /asset/asset_request/{id}/execute  Transizione → EVASA. Esegue effettivamente la transizione di stato e location sull\&#39;asset, crea un AssetTransitionLog e aggiorna la richiesta come evasa.
+     * @endpoint post /asset/asset_request/{id}/execute
+* @param requestParameters
+     */
+    assetAssetRequestExecuteCreate(requestParameters: AssetAssetRequestExecuteCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetRequest>;
+
+    /**
+     * 
+     * Gestione delle richieste di ciclo di vita degli asset.  Ciclo di vita di una richiesta:     INSERITA → PIANIFICATA → EVASA  (percorso normale)     INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)     INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)  Quando una richiesta viene EVASA, l\&#39;asset cambia effettivamente stato e location, e viene creato un AssetTransitionLog.
+     * @endpoint get /asset/asset_request
+* @param requestParameters
+     */
+    assetAssetRequestList(requestParameters: AssetAssetRequestListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedAssetRequestList>;
+
+    /**
+     * 
+     * POST /asset/asset_request/{id}/plan Body: { \&quot;planned_date\&quot;: \&quot;YYYY-MM-DD\&quot;, \&quot;assigned_to\&quot;: &lt;int|null&gt;, \&quot;notes\&quot;: \&quot;\&quot; }  Transizione INSERITA → PIANIFICATA.
+     * @endpoint post /asset/asset_request/{id}/plan
+* @param requestParameters
+     */
+    assetAssetRequestPlanCreate(requestParameters: AssetAssetRequestPlanCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetRequestPlan>;
+
+    /**
+     * 
+     * POST /asset/asset_request/{id}/reject Body: { \&quot;rejection_notes\&quot;: \&quot;...\&quot; }  Transizione → RIFIUTATA (terminale).
+     * @endpoint post /asset/asset_request/{id}/reject
+* @param requestParameters
+     */
+    assetAssetRequestRejectCreate(requestParameters: AssetAssetRequestRejectCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetRequestReject>;
+
+    /**
+     * 
+     * POST /asset/asset_request/{id}/resubmit Body: { \&quot;notes\&quot;: \&quot;...\&quot; }  (opzionale)  Transizione IN_CHIARIMENTO → INSERITA. Solo il richiedente originale può reinserire la propria richiesta.
+     * @endpoint post /asset/asset_request/{id}/resubmit
+* @param requestParameters
+     */
+    assetAssetRequestResubmitCreate(requestParameters: AssetAssetRequestResubmitCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetRequestResubmit>;
+
+    /**
+     * 
+     * Gestione delle richieste di ciclo di vita degli asset.  Ciclo di vita di una richiesta:     INSERITA → PIANIFICATA → EVASA  (percorso normale)     INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)     INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)  Quando una richiesta viene EVASA, l\&#39;asset cambia effettivamente stato e location, e viene creato un AssetTransitionLog.
+     * @endpoint get /asset/asset_request/{id}
+* @param requestParameters
+     */
+    assetAssetRequestRetrieve(requestParameters: AssetAssetRequestRetrieveRequestParams, extraHttpRequestParams?: any): Observable<AssetRequest>;
 
     /**
      * 

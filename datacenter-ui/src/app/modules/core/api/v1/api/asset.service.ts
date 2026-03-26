@@ -29,6 +29,18 @@ import { AssetModel } from '../model/assetModel';
 // @ts-ignore
 import { AssetModelPort } from '../model/assetModelPort';
 // @ts-ignore
+import { AssetRequest } from '../model/assetRequest';
+// @ts-ignore
+import { AssetRequestClarify } from '../model/assetRequestClarify';
+// @ts-ignore
+import { AssetRequestCreate } from '../model/assetRequestCreate';
+// @ts-ignore
+import { AssetRequestPlan } from '../model/assetRequestPlan';
+// @ts-ignore
+import { AssetRequestReject } from '../model/assetRequestReject';
+// @ts-ignore
+import { AssetRequestResubmit } from '../model/assetRequestResubmit';
+// @ts-ignore
 import { AssetState } from '../model/assetState';
 // @ts-ignore
 import { AssetType } from '../model/assetType';
@@ -42,6 +54,8 @@ import { PaginatedAssetList } from '../model/paginatedAssetList';
 import { PaginatedAssetModelList } from '../model/paginatedAssetModelList';
 // @ts-ignore
 import { PaginatedAssetModelPortList } from '../model/paginatedAssetModelPortList';
+// @ts-ignore
+import { PaginatedAssetRequestList } from '../model/paginatedAssetRequestList';
 // @ts-ignore
 import { PaginatedAssetStateList } from '../model/paginatedAssetStateList';
 // @ts-ignore
@@ -132,6 +146,14 @@ import {
     AssetAssetModelUpdateRequestParams,
     AssetAssetMoveCreateRequestParams,
     AssetAssetPartialUpdateRequestParams,
+    AssetAssetRequestClarifyCreateRequestParams,
+    AssetAssetRequestCreateRequestParams,
+    AssetAssetRequestExecuteCreateRequestParams,
+    AssetAssetRequestListRequestParams,
+    AssetAssetRequestPlanCreateRequestParams,
+    AssetAssetRequestRejectCreateRequestParams,
+    AssetAssetRequestResubmitCreateRequestParams,
+    AssetAssetRequestRetrieveRequestParams,
     AssetAssetRetrieveRequestParams,
     AssetAssetStateCreateRequestParams,
     AssetAssetStateDestroyRequestParams,
@@ -2656,6 +2678,661 @@ export class AssetService extends BaseService implements AssetServiceInterface {
             {
                 context: localVarHttpContext,
                 body: patchedAsset,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * POST /asset/asset_request/{id}/clarify Body: { \&quot;clarification_notes\&quot;: \&quot;...\&quot; }  Transizione → IN_CHIARIMENTO.
+     * @endpoint post /asset/asset_request/{id}/clarify
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetRequestClarifyCreate(requestParameters: AssetAssetRequestClarifyCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetRequestClarify>;
+    public assetAssetRequestClarifyCreate(requestParameters: AssetAssetRequestClarifyCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetRequestClarify>>;
+    public assetAssetRequestClarifyCreate(requestParameters: AssetAssetRequestClarifyCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetRequestClarify>>;
+    public assetAssetRequestClarifyCreate(requestParameters: AssetAssetRequestClarifyCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetAssetRequestClarifyCreate.');
+        }
+        const assetRequestClarify = requestParameters?.assetRequestClarify;
+        if (assetRequestClarify === null || assetRequestClarify === undefined) {
+            throw new Error('Required parameter assetRequestClarify was null or undefined when calling assetAssetRequestClarifyCreate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset_request/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}/clarify`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetRequestClarify>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: assetRequestClarify,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Gestione delle richieste di ciclo di vita degli asset.  Ciclo di vita di una richiesta:     INSERITA → PIANIFICATA → EVASA  (percorso normale)     INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)     INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)  Quando una richiesta viene EVASA, l\&#39;asset cambia effettivamente stato e location, e viene creato un AssetTransitionLog.
+     * @endpoint post /asset/asset_request
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetRequestCreate(requestParameters: AssetAssetRequestCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetRequestCreate>;
+    public assetAssetRequestCreate(requestParameters: AssetAssetRequestCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetRequestCreate>>;
+    public assetAssetRequestCreate(requestParameters: AssetAssetRequestCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetRequestCreate>>;
+    public assetAssetRequestCreate(requestParameters: AssetAssetRequestCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const assetRequestCreate = requestParameters?.assetRequestCreate;
+        if (assetRequestCreate === null || assetRequestCreate === undefined) {
+            throw new Error('Required parameter assetRequestCreate was null or undefined when calling assetAssetRequestCreate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset_request`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetRequestCreate>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: assetRequestCreate,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * POST /asset/asset_request/{id}/execute  Transizione → EVASA. Esegue effettivamente la transizione di stato e location sull\&#39;asset, crea un AssetTransitionLog e aggiorna la richiesta come evasa.
+     * @endpoint post /asset/asset_request/{id}/execute
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetRequestExecuteCreate(requestParameters: AssetAssetRequestExecuteCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetRequest>;
+    public assetAssetRequestExecuteCreate(requestParameters: AssetAssetRequestExecuteCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetRequest>>;
+    public assetAssetRequestExecuteCreate(requestParameters: AssetAssetRequestExecuteCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetRequest>>;
+    public assetAssetRequestExecuteCreate(requestParameters: AssetAssetRequestExecuteCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetAssetRequestExecuteCreate.');
+        }
+        const assetRequest = requestParameters?.assetRequest;
+        if (assetRequest === null || assetRequest === undefined) {
+            throw new Error('Required parameter assetRequest was null or undefined when calling assetAssetRequestExecuteCreate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset_request/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}/execute`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetRequest>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: assetRequest,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Gestione delle richieste di ciclo di vita degli asset.  Ciclo di vita di una richiesta:     INSERITA → PIANIFICATA → EVASA  (percorso normale)     INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)     INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)  Quando una richiesta viene EVASA, l\&#39;asset cambia effettivamente stato e location, e viene creato un AssetTransitionLog.
+     * @endpoint get /asset/asset_request
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetRequestList(requestParameters?: AssetAssetRequestListRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedAssetRequestList>;
+    public assetAssetRequestList(requestParameters?: AssetAssetRequestListRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedAssetRequestList>>;
+    public assetAssetRequestList(requestParameters?: AssetAssetRequestListRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedAssetRequestList>>;
+    public assetAssetRequestList(requestParameters?: AssetAssetRequestListRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const asset = requestParameters?.asset;
+        const assignedTo = requestParameters?.assignedTo;
+        const createdBy = requestParameters?.createdBy;
+        const ordering = requestParameters?.ordering;
+        const page = requestParameters?.page;
+        const pageSize = requestParameters?.pageSize;
+        const requestType = requestParameters?.requestType;
+        const search = requestParameters?.search;
+        const status = requestParameters?.status;
+
+        let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'asset',
+            <any>asset,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'assigned_to',
+            <any>assignedTo,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'created_by',
+            <any>createdBy,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'ordering',
+            <any>ordering,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page',
+            <any>page,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page_size',
+            <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'request_type',
+            <any>requestType,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'search',
+            <any>search,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'status',
+            <any>status,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset_request`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PaginatedAssetRequestList>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters.toHttpParams(),
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * POST /asset/asset_request/{id}/plan Body: { \&quot;planned_date\&quot;: \&quot;YYYY-MM-DD\&quot;, \&quot;assigned_to\&quot;: &lt;int|null&gt;, \&quot;notes\&quot;: \&quot;\&quot; }  Transizione INSERITA → PIANIFICATA.
+     * @endpoint post /asset/asset_request/{id}/plan
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetRequestPlanCreate(requestParameters: AssetAssetRequestPlanCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetRequestPlan>;
+    public assetAssetRequestPlanCreate(requestParameters: AssetAssetRequestPlanCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetRequestPlan>>;
+    public assetAssetRequestPlanCreate(requestParameters: AssetAssetRequestPlanCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetRequestPlan>>;
+    public assetAssetRequestPlanCreate(requestParameters: AssetAssetRequestPlanCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetAssetRequestPlanCreate.');
+        }
+        const assetRequestPlan = requestParameters?.assetRequestPlan;
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset_request/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}/plan`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetRequestPlan>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: assetRequestPlan,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * POST /asset/asset_request/{id}/reject Body: { \&quot;rejection_notes\&quot;: \&quot;...\&quot; }  Transizione → RIFIUTATA (terminale).
+     * @endpoint post /asset/asset_request/{id}/reject
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetRequestRejectCreate(requestParameters: AssetAssetRequestRejectCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetRequestReject>;
+    public assetAssetRequestRejectCreate(requestParameters: AssetAssetRequestRejectCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetRequestReject>>;
+    public assetAssetRequestRejectCreate(requestParameters: AssetAssetRequestRejectCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetRequestReject>>;
+    public assetAssetRequestRejectCreate(requestParameters: AssetAssetRequestRejectCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetAssetRequestRejectCreate.');
+        }
+        const assetRequestReject = requestParameters?.assetRequestReject;
+        if (assetRequestReject === null || assetRequestReject === undefined) {
+            throw new Error('Required parameter assetRequestReject was null or undefined when calling assetAssetRequestRejectCreate.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset_request/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}/reject`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetRequestReject>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: assetRequestReject,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * POST /asset/asset_request/{id}/resubmit Body: { \&quot;notes\&quot;: \&quot;...\&quot; }  (opzionale)  Transizione IN_CHIARIMENTO → INSERITA. Solo il richiedente originale può reinserire la propria richiesta.
+     * @endpoint post /asset/asset_request/{id}/resubmit
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetRequestResubmitCreate(requestParameters: AssetAssetRequestResubmitCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetRequestResubmit>;
+    public assetAssetRequestResubmitCreate(requestParameters: AssetAssetRequestResubmitCreateRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetRequestResubmit>>;
+    public assetAssetRequestResubmitCreate(requestParameters: AssetAssetRequestResubmitCreateRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetRequestResubmit>>;
+    public assetAssetRequestResubmitCreate(requestParameters: AssetAssetRequestResubmitCreateRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetAssetRequestResubmitCreate.');
+        }
+        const assetRequestResubmit = requestParameters?.assetRequestResubmit;
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'multipart/form-data'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset_request/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}/resubmit`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetRequestResubmit>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: assetRequestResubmit,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Gestione delle richieste di ciclo di vita degli asset.  Ciclo di vita di una richiesta:     INSERITA → PIANIFICATA → EVASA  (percorso normale)     INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)     INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)  Quando una richiesta viene EVASA, l\&#39;asset cambia effettivamente stato e location, e viene creato un AssetTransitionLog.
+     * @endpoint get /asset/asset_request/{id}
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public assetAssetRequestRetrieve(requestParameters: AssetAssetRequestRetrieveRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AssetRequest>;
+    public assetAssetRequestRetrieve(requestParameters: AssetAssetRequestRetrieveRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AssetRequest>>;
+    public assetAssetRequestRetrieve(requestParameters: AssetAssetRequestRetrieveRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AssetRequest>>;
+    public assetAssetRequestRetrieve(requestParameters: AssetAssetRequestRetrieveRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        const id = requestParameters?.id;
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling assetAssetRequestRetrieve.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        // authentication (jwtAuth) required
+        localVarHeaders = this.configuration.addCredentialToHeaders('jwtAuth', 'Authorization', localVarHeaders, 'Bearer ');
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/asset/asset_request/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AssetRequest>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

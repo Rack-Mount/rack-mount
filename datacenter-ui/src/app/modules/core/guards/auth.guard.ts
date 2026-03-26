@@ -124,6 +124,16 @@ export const canViewWarehouseGuard: CanActivateFn = () => {
   );
 };
 
+/** Restricts access to users with can_view_requests. Redirects to / when denied. */
+export const canViewRequestsGuard: CanActivateFn = () => {
+  const role = inject(RoleService);
+  const router = inject(Router);
+  return role.whenReady().pipe(
+    take(1),
+    map(() => (role.canViewRequests() ? true : router.createUrlTree(['/']))),
+  );
+};
+
 /** Restricts access to admins or users with can_view_infrastructure. Redirects to / when denied. */
 export const adminOrInfraGuard: CanActivateFn = () => {
   const role = inject(RoleService);
