@@ -144,20 +144,28 @@ export class AuthService {
     this._refreshSubject.next(null);
 
     return this.http
-      .post<{ detail: string; access: string; refresh: string | null; username: string; role: RoleData }>(
+      .post<{ detail: string; access: string; refresh: string | null; username: string }>(
         `${environment.service_url}/auth/token/refresh/`,
         { refresh: this._refreshToken() },
       )
       .pipe(
-        tap(({ access, refresh, username, role }) => {
+        tap(({ access, refresh, username }) => {
           // Set state BEFORE notifying waiters: _refreshSubject.next() is
           // synchronous and immediately runs any queued interceptor's switchMap.
           // If accessToken were still '' at that point, the retry would send
           // an empty Bearer header and get another 401.
+          //
+          // NOTE: We intentionally do NOT load the role from the JWT claims
+          // returned here. Those claims are a stale snapshot from login time
+          // and may be missing fields added by later DB migrations (e.g.
+          // can_view_requests). Loading stale role data here fires
+          // _roleLoaded$.next() prematurely, which causes permission guards
+          // (canViewRequestsGuard, etc.) to evaluate against incomplete data
+          // and redirect to "/" on browser refresh. The authoritative role is
+          // always fetched from /auth/me/ via fetchAndLoadRole().
           this._accessToken.set(access);
           if (refresh) this._setRefreshToken(refresh);
           if (username) this._username.set(username);
-          if (role) this.roleService.load(role);
           this._isRefreshing = false;
           this._refreshSubject.next(undefined);
         }),
