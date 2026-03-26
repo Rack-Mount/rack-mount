@@ -634,7 +634,9 @@
   "roles": {
     "admin": "管理员",
     "editor": "编辑者",
-    "viewer": "查看者"
+    "viewer": "查看者",
+    "warehouse_manager": "仓库管理员",
+    "warehouse_viewer": "仓库查看者"
   },
   "users": {
     "title": "用户管理",

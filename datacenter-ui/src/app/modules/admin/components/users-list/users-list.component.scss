@@ -253,6 +253,16 @@ td.actions {
     color: #4ade80;
   }
 
+  &.role-badge--warehouse_manager {
+    background: rgba(251, 191, 36, 0.14);
+    color: #fbbf24;
+  }
+
+  &.role-badge--warehouse_viewer {
+    background: rgba(251, 191, 36, 0.08);
+    color: #d97706;
+  }
+
 }
 
 /* ── Status dot ───────────────────────────────────────────────────────────── */

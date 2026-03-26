@@ -118,6 +118,11 @@
           />
         </svg>
         <span class="user-info__name">{{ auth.username() }}</span>
+        @if (role.role(); as r) {
+          <span class="user-info__role role-badge--{{ r.name }}">
+            {{ "roles." + r.name | translate }}
+          </span>
+        }
       </button>
       <button
         class="logout-btn"

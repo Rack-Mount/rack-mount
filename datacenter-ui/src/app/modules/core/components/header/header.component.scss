@@ -165,6 +165,26 @@
   }
 }
 
+.user-info__role {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--dc-surface-2, rgba(255,255,255,0.08));
+  color: var(--dc-text-secondary);
+  white-space: nowrap;
+
+  &.role-badge--admin        { background: rgba(239, 68, 68, 0.14); color: var(--dc-danger-text); }
+  &.role-badge--editor       { background: var(--dc-accent-dim);    color: var(--dc-accent-text); }
+  &.role-badge--viewer       { background: rgba(34, 197, 94, 0.14); color: #4ade80; }
+  &.role-badge--warehouse_manager { background: rgba(251, 191, 36, 0.14); color: #fbbf24; }
+  &.role-badge--warehouse_viewer  { background: rgba(251, 191, 36, 0.08); color: #d97706; }
+
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
 // ── Admin / User management button ───────────────────────────────────────
 
 .admin-btn {

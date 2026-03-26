@@ -30,9 +30,11 @@ class UserAdminWithProfile(BaseUserAdmin):
 # ── Role admin ────────────────────────────────────────────────────────────────
 
 _ROLE_COLORS = {
-    'admin':  ('#c0392b', '#fff'),
-    'editor': ('#d68910', '#fff'),
-    'viewer': ('#1a6fa8', '#fff'),
+    'admin':             ('#c0392b', '#fff'),
+    'editor':            ('#d68910', '#fff'),
+    'viewer':            ('#1a6fa8', '#fff'),
+    'warehouse_manager': ('#b7770d', '#fff'),
+    'warehouse_viewer':  ('#8a6515', '#fff'),
 }
 
 
@@ -48,6 +50,7 @@ class RoleAdmin(admin.ModelAdmin):
         'assets_summary',
         'catalog_summary',
         'infrastructure_summary',
+        'warehouse_summary',
         'can_manage_users',
         'user_count',
     )
@@ -80,6 +83,12 @@ class RoleAdmin(admin.ModelAdmin):
                 'can_view_infrastructure',
                 ('can_create_racks', 'can_edit_racks', 'can_delete_racks'),
                 'can_edit_map',
+            ),
+        }),
+        (_('Warehouse'), {
+            'fields': (
+                'can_view_warehouse',
+                'can_manage_warehouse',
             ),
         }),
         (_('Model Training (YOLO)'), {
@@ -137,6 +146,13 @@ class RoleAdmin(admin.ModelAdmin):
             ('edit racks',   obj.can_edit_racks),
             ('delete racks', obj.can_delete_racks),
             ('edit map',     obj.can_edit_map),
+        ])
+
+    @admin.display(description=_('Warehouse'))
+    def warehouse_summary(self, obj):
+        return self._perm_chips([
+            ('view',   obj.can_view_warehouse),
+            ('manage', obj.can_manage_warehouse),
         ])
 
     @admin.display(description=_('Users'), ordering='user_profiles__count')

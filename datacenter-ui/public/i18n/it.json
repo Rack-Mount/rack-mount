@@ -634,7 +634,9 @@
   "roles": {
     "admin": "Amministratore",
     "editor": "Editor",
-    "viewer": "Visualizzatore"
+    "viewer": "Visualizzatore",
+    "warehouse_manager": "Responsabile Magazzino",
+    "warehouse_viewer": "Osservatore Magazzino"
   },
   "users": {
     "title": "Gestione Utenti",
