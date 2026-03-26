@@ -44,7 +44,7 @@
           </div>
         } @else {
           @for (row of rackRender(); track row.position) {
-            @if (row.visible || _dragging()) {
+            @if (row.visible || isDraggedGhost(row.position)) {
               <div
                 class="rack-row"
                 [class.rack-row--occupied]="!!row.device"
@@ -56,7 +56,7 @@
                   isInDropSpan(row.position) && !canDropAt(_dropTarget())
                 "
                 [class.rack-row--ghost-target]="!row.visible && !!_dragging()"
-                [style.--u-span]="row.device && !_dragging() ? row.rackUnit : 1"
+                [style.--u-span]="row.device?.id === _dragging()?.id ? 1 : row.rackUnit"
                 (dragover)="onDragOver($event, row.position)"
                 (dragleave)="onDragLeave($event)"
                 (drop)="onDrop($event, row.position)"

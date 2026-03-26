@@ -463,6 +463,19 @@ export class RackComponent {
     return m;
   });
 
+  /**
+   * True when `position` is a ghost row that belongs to the device currently
+   * being dragged (i.e. one of the positions hidden behind the dragged device,
+   * below its top position). Used to show only the dragged device's ghost rows
+   * during drag, leaving other multi-U devices at their real span.
+   */
+  protected isDraggedGhost(position: number): boolean {
+    const d = this._dragging();
+    if (!d) return false;
+    const span = d.device_rack_units || 1;
+    return position < d.position && position >= d.position - span + 1;
+  }
+
   /** True when `position` falls within the span the dragged device would occupy at _dropTarget. */
   protected isInDropSpan(position: number): boolean {
     const dt = this._dropTarget();
