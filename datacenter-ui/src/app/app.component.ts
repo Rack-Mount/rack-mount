@@ -146,6 +146,10 @@ export class AppComponent implements OnInit {
   }
 
   private syncFromUrl(): void {
+    // Role not yet loaded (warm start with valid access token):
+    // defer until fetchAndLoadRole() completes and calls syncFromUrl() again.
+    if (this.role.role() === null) return;
+
     const tree = this.router.parseUrl(this.router.url);
     const segments = tree.root.children['primary']?.segments ?? [];
     const first = segments[0]?.path;

@@ -1,4 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { Observable, of, Subject, switchMap } from 'rxjs';
 
 export interface RoleData {
   name: string;
@@ -36,8 +37,23 @@ export interface RoleData {
 @Injectable({ providedIn: 'root' })
 export class RoleService {
   private readonly _role = signal<RoleData | null>(null);
+  private readonly _roleLoaded$ = new Subject<void>();
 
   readonly role = this._role.asReadonly();
+
+  /**
+   * Emits once each time the role is loaded (e.g. after login or token refresh).
+   * Permission guards use this to defer their check until the role is available.
+   */
+  readonly roleLoaded$ = this._roleLoaded$.asObservable();
+
+  /**
+   * Returns an Observable that emits immediately if the role is already loaded,
+   * or waits for the next load event otherwise.
+   */
+  whenReady(): Observable<void> {
+    return this._role() !== null ? of(undefined) : this._roleLoaded$;
+  }
 
   readonly isAdmin = computed(() => this._role()?.name === 'admin');
 
@@ -125,6 +141,7 @@ export class RoleService {
 
   load(role: RoleData): void {
     this._role.set(role);
+    this._roleLoaded$.next();
   }
 
   clear(): void {

@@ -5,7 +5,7 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, take } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { RoleService } from '../services/role.service';
 import { TabService } from '../services/tab.service';
@@ -17,15 +17,28 @@ export const authGuard: CanActivateFn = (
 ) => {
   const auth = inject(AuthService);
   const router = inject(Router);
+  const role = inject(RoleService);
   const tabs = inject(TabService);
 
   const loginTree = router.createUrlTree(['/login'], {
     queryParams: { returnUrl: state.url },
   });
 
-  // Fast path: already authenticated — no HTTP call needed.
-  if (auth.isAuthenticated()) {
+  // Fast path: already authenticated AND role already loaded.
+  if (auth.isAuthenticated() && role.role() !== null) {
     return true;
+  }
+
+  // Warm start: access token still valid but role not yet in memory.
+  // Fetch the role so that downstream permission guards can evaluate correctly.
+  if (auth.isAuthenticated()) {
+    return auth.fetchAndLoadRole().pipe(
+      map(() => {
+        tabs.purgeForbiddenTabs();
+        return true;
+      }),
+      catchError(() => of(loginTree)),
+    );
   }
 
   // No token at all — redirect immediately without any HTTP request.
@@ -63,42 +76,64 @@ export const noAuthGuard: CanActivateFn = () => {
 export const adminGuard: CanActivateFn = () => {
   const role = inject(RoleService);
   const router = inject(Router);
-  return role.isAdmin() ? true : router.createUrlTree(['/']);
+  return role.whenReady().pipe(
+    take(1),
+    map(() => (role.isAdmin() ? true : router.createUrlTree(['/']))),
+  );
 };
 
 /** Restricts access to users with can_view_assets. Redirects to / when denied. */
 export const canViewAssetsGuard: CanActivateFn = () => {
   const role = inject(RoleService);
   const router = inject(Router);
-  return role.canViewAssets() ? true : router.createUrlTree(['/']);
+  return role.whenReady().pipe(
+    take(1),
+    map(() => (role.canViewAssets() ? true : router.createUrlTree(['/']))),
+  );
 };
 
 /** Restricts access to users with can_view_catalog. Redirects to / when denied. */
 export const canViewCatalogGuard: CanActivateFn = () => {
   const role = inject(RoleService);
   const router = inject(Router);
-  return role.canViewCatalog() ? true : router.createUrlTree(['/']);
+  return role.whenReady().pipe(
+    take(1),
+    map(() => (role.canViewCatalog() ? true : router.createUrlTree(['/']))),
+  );
 };
 
 /** Restricts access to users with can_view_infrastructure. Redirects to / when denied. */
 export const canViewInfrastructureGuard: CanActivateFn = () => {
   const role = inject(RoleService);
   const router = inject(Router);
-  return role.canViewInfrastructure() ? true : router.createUrlTree(['/']);
+  return role.whenReady().pipe(
+    take(1),
+    map(() =>
+      role.canViewInfrastructure() ? true : router.createUrlTree(['/']),
+    ),
+  );
 };
 
 /** Restricts access to users with can_view_warehouse. Redirects to / when denied. */
 export const canViewWarehouseGuard: CanActivateFn = () => {
   const role = inject(RoleService);
   const router = inject(Router);
-  return role.canViewWarehouse() ? true : router.createUrlTree(['/']);
+  return role.whenReady().pipe(
+    take(1),
+    map(() => (role.canViewWarehouse() ? true : router.createUrlTree(['/']))),
+  );
 };
 
 /** Restricts access to admins or users with can_view_infrastructure. Redirects to / when denied. */
 export const adminOrInfraGuard: CanActivateFn = () => {
   const role = inject(RoleService);
   const router = inject(Router);
-  return role.isAdmin() || role.canViewInfrastructure() || role.canViewCatalog()
-    ? true
-    : router.createUrlTree(['/']);
+  return role.whenReady().pipe(
+    take(1),
+    map(() =>
+      role.isAdmin() || role.canViewInfrastructure() || role.canViewCatalog()
+        ? true
+        : router.createUrlTree(['/']),
+    ),
+  );
 };
