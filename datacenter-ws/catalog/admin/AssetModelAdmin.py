@@ -1,5 +1,5 @@
 from django.contrib import admin
-from asset.models import AssetModel
+from catalog.models import AssetModel
 from reversion.admin import VersionAdmin
 
 
@@ -28,5 +28,4 @@ class AssetModelAdmin(VersionAdmin):
     )
 
     def has_delete_permission(self, request, obj=None):
-        # Disable delete
         return False

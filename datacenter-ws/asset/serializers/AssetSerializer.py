@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from asset.models import Asset, AssetModel, AssetState
-from asset.serializers import AssetModelSerializer, AssetStateSerializer
+from asset.models import Asset, AssetState
+from catalog.models import AssetModel
+from asset.serializers.AssetStateSerializer import AssetStateSerializer
+from catalog.serializers import AssetModelSerializer
 from location.models import Room
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes

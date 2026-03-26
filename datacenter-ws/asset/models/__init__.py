@@ -1,10 +1,4 @@
-from .CustomFieldName import CustomFieldName
-from .Vendor import Vendor
 from .AssetState import AssetState, AssetStateCode
-from .AssetType import AssetType
-from .AssetModel import AssetModel
-from .AssetModelPort import AssetModelPort
-from .NetworkSwitchAssetModel import NetworkSwitchAssetModel
 from .Asset import Asset
 from .AssetCustomField import AssetCustomField
 from .GenericComponent import GenericComponent
@@ -12,15 +6,19 @@ from .RackUnit import RackUnit
 from .AssetTransitionLog import AssetTransitionLog
 from .AssetRequest import AssetRequest, AssetRequestType, AssetRequestStatus
 
+# Re-exported from catalog for backward compatibility
+from catalog.models import (
+    CustomFieldName,
+    Vendor,
+    AssetType,
+    AssetModel,
+    AssetModelPort,
+    NetworkSwitchAssetModel,
+)
+
 __all__ = [
-    'CustomFieldName',
-    'Vendor',
     'AssetState',
     'AssetStateCode',
-    'AssetType',
-    'AssetModel',
-    'AssetModelPort',
-    'NetworkSwitchAssetModel',
     'Asset',
     'AssetCustomField',
     'GenericComponent',
@@ -29,4 +27,11 @@ __all__ = [
     'AssetRequest',
     'AssetRequestType',
     'AssetRequestStatus',
+    # catalog re-exports
+    'CustomFieldName',
+    'Vendor',
+    'AssetType',
+    'AssetModel',
+    'AssetModelPort',
+    'NetworkSwitchAssetModel',
 ]

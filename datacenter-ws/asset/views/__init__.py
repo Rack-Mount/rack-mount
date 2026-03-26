@@ -1,14 +1,16 @@
-from .AssetTypeViewSet import AssetTypeViewSet
 from .AssetStateViewSet import AssetStateViewSet
-from .VendorViewSet import VendorViewSet
-from .AssetModelViewSet import AssetModelViewSet
-from .AssetModelPortViewSet import AssetModelPortViewSet
-from .AssetModelImportView import AssetModelImportView
 from .AssetViewSet import AssetViewSet
 from .RackUnitViewSet import RackUnitViewSet
 from .AssetCustomFieldViewSet import AssetCustomFieldViewSet
 from .GenericComponentViewSet import GenericComponentViewSet
-from .PortAnalyzeView import PortAnalyzeView
-from .PortAnnotateView import PortAnnotateView
 from .PrivateMediaSignedUrlView import PrivateMediaSignedUrlView
 from .AssetRequestViewSet import AssetRequestViewSet
+
+# Re-exported from catalog for backward compatibility
+from catalog.views import (
+    AssetTypeViewSet,
+    VendorViewSet,
+    AssetModelViewSet,
+    AssetModelPortViewSet,
+    AssetModelImportView,
+)

@@ -1,8 +1,4 @@
-from .AssetTypeSerializer import AssetTypeSerializer
 from .AssetStateSerializer import AssetStateSerializer
-from .VendorSerializer import VendorSerializer
-from .AssetModelSerializer import AssetModelSerializer
-from .AssetModelPortSerializer import AssetModelPortSerializer
 from .AssetSerializer import AssetSerializer
 from .RackUnitSerializer import RackUnitSerializer
 from .AssetCustomFieldSerializer import AssetCustomFieldSerializer
@@ -15,4 +11,12 @@ from .AssetRequestSerializer import (
     AssetRequestClarifySerializer,
     AssetRequestRejectSerializer,
     AssetRequestResubmitSerializer,
+)
+
+# Re-exported from catalog for backward compatibility
+from catalog.serializers import (
+    VendorSerializer,
+    AssetTypeSerializer,
+    AssetModelSerializer,
+    AssetModelPortSerializer,
 )

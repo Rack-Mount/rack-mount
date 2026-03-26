@@ -28,7 +28,7 @@ from __future__ import annotations
 from asset.utils.csv_sanitize import sanitize_cell as _sanitize_cell
 import datetime
 from asset.models.AssetState import AssetState
-from asset.models.AssetModel import AssetModel
+from catalog.models import AssetModel
 from asset.models import Asset
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiResponse

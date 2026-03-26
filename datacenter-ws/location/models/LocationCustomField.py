@@ -1,6 +1,6 @@
 from django.db import models
 from location.models import Location
-from asset.models import CustomFieldName
+from catalog.models import CustomFieldName
 
 
 class LocationCustomField(models.Model):

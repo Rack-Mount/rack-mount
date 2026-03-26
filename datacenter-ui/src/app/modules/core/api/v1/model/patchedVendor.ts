@@ -9,9 +9,6 @@
  */
 
 
-/**
- * Serializer for the Vendor model.
- */
 export interface PatchedVendor { 
     readonly id?: number;
     name?: string;

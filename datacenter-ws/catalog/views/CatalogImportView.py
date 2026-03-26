@@ -1,38 +1,6 @@
-"""
-CatalogImportView.py
-
-POST /asset/catalog/import
-
-Accepts the full catalog JSON produced by GET /asset/catalog/export and
-bulk-creates any missing records.  Existing rows are skipped (no overwrite).
-
-Request body:
-  The same structure returned by the export endpoint:
-  {
-    "vendors":            [{"name": "Dell"}, ...],
-    "asset_types":        [{"name": "Server"}, ...],
-    "asset_models":       [{"name": "...", "vendor": "...", "type": "...",
-                            "rack_units": 2, "note": "",
-                            "front_image": "data:image/jpeg;base64,...",
-                            "rear_image":  null}, ...],
-    "generic_components": [{"name": "...", "component_type": "...",
-                            "rack_units": 1, "note": ""}, ...]
-  }
-
-Response 200:
-  {
-    "vendors":            {"created": N, "skipped": N},
-    "asset_types":        {"created": N, "skipped": N},
-    "asset_models":       {"created": N, "skipped": N,
-                           "errors": [{"index": i, "message": "..."}]},
-    "generic_components": {"created": N, "skipped": N,
-                           "errors": [{"index": i, "message": "..."}]}
-  }
-"""
 from __future__ import annotations
 
 from django.utils.translation import gettext as _
-from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -40,12 +8,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.permissions import ImportCatalogPermission
-from asset.models import AssetModel, Vendor
-from asset.models.AssetType import AssetType
+from catalog.models import AssetModel, Vendor
+from catalog.models.AssetType import AssetType
+from catalog.views.AssetModelImportView import _decode_image
 from asset.models.GenericComponent import GenericComponent
-from asset.views.AssetModelImportView import _decode_image
 
-# Valid component_type choices drawn from GenericComponent.COMPONENT_TYPE_CHOICES
 _VALID_COMPONENT_TYPES = {
     'cable_manager', 'blanking_panel', 'patch_panel', 'pdu', 'shelf', 'other',
 }
@@ -59,12 +26,10 @@ def _summary(created: int, skipped: int, errors: list | None = None) -> dict:
 
 
 class CatalogImportView(APIView):
-    """POST /asset/catalog/import — bulk-import a full catalog JSON."""
-
     permission_classes = [IsAuthenticated, ImportCatalogPermission]
 
     @extend_schema(
-        tags=['asset'],
+        tags=['catalog'],
         summary='Import full catalog from JSON',
         request={
             'application/json': {
@@ -96,7 +61,6 @@ class CatalogImportView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # ── Vendors ───────────────────────────────────────────────────────────
         vendors_created = vendors_skipped = 0
         for item in data.get('vendors') or []:
             name = str(item.get('name', '')).strip()
@@ -108,7 +72,6 @@ class CatalogImportView(APIView):
             else:
                 vendors_skipped += 1
 
-        # ── Asset types ───────────────────────────────────────────────────────
         types_created = types_skipped = 0
         for item in data.get('asset_types') or []:
             name = str(item.get('name', '')).strip()
@@ -120,7 +83,6 @@ class CatalogImportView(APIView):
             else:
                 types_skipped += 1
 
-        # ── Asset models ──────────────────────────────────────────────────────
         models_created = models_skipped = 0
         model_errors: list[dict] = []
 
@@ -161,8 +123,7 @@ class CatalogImportView(APIView):
 
             if front_raw:
                 try:
-                    instance.front_image = _decode_image(
-                        front_raw, 'front_image')
+                    instance.front_image = _decode_image(front_raw, 'front_image')
                 except ValueError as exc:
                     model_errors.append({'index': idx, 'message': str(exc)})
                     continue
@@ -177,7 +138,6 @@ class CatalogImportView(APIView):
             instance.save()
             models_created += 1
 
-        # ── Generic components ────────────────────────────────────────────────
         components_created = components_skipped = 0
         component_errors: list[dict] = []
 

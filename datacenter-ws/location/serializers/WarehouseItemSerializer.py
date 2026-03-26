@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from asset.models import AssetModel
+from catalog.models import AssetModel
 from location.models import WarehouseItem
 
 

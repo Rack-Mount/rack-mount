@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from asset.models.AssetModelPort import AssetModelPort
+from catalog.models import AssetModelPort
 
 
 class AssetModelPortSerializer(serializers.ModelSerializer):

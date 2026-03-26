@@ -262,7 +262,7 @@ class Command(BaseCommand):
                                  '(default: auto-detect)')
 
     def handle(self, *args, **options):
-        from asset.models.AssetModelPort import AssetModelPort
+        from catalog.models import AssetModelPort
 
         media_root = os.path.realpath(settings.MEDIA_ROOT)
         train_imgs = os.path.join(media_root, 'training', 'images')

@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from location.models import Location
-from asset.models import AssetModel, AssetState
+from catalog.models import AssetModel
+from asset.models.AssetState import AssetState
 import reversion
 from django.utils.html import format_html
 from django.conf import settings

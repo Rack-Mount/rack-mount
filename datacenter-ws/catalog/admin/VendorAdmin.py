@@ -1,5 +1,5 @@
 from django.contrib import admin
-from asset.models import Vendor
+from catalog.models import Vendor
 
 
 @admin.register(Vendor)
@@ -12,5 +12,4 @@ class VendorAdmin(admin.ModelAdmin):
     ordering = ('name',)
 
     def has_delete_permission(self, request, obj=None):
-        # Disable delete
         return False

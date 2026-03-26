@@ -13,14 +13,13 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
 from accounts.permissions import ImportCatalogPermission
-from asset.models import AssetModel, Vendor
-from asset.models.AssetType import AssetType
-from asset.serializers import AssetModelSerializer
+from catalog.models import AssetModel, Vendor
+from catalog.models.AssetType import AssetType
+from catalog.serializers import AssetModelSerializer
 
 # Max 10 MB per image payload
 _MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
-# Strict MIME whitelist — unknown types are rejected, not silently coerced
 _ALLOWED_MIME = {
     'image/jpeg': 'jpg',
     'image/jpg':  'jpg',
@@ -31,14 +30,6 @@ _ALLOWED_MIME = {
 
 
 def _decode_image(data_url: str, field_name: str):
-    """
-    Decode a Data URL (``data:<mime>;base64,<data>``) into a Django ContentFile.
-
-    Validates:
-    - MIME type against an explicit whitelist (rejects unknown types)
-    - Decoded payload size (max 10 MB)
-    - That the bytes are a valid image (via PIL)
-    """
     if not data_url.startswith('data:'):
         raise ValueError(_('Not a valid Data URL.'))
     try:
@@ -48,7 +39,6 @@ def _decode_image(data_url: str, field_name: str):
 
     mime = meta.split(';')[0].replace('data:', '').strip()
 
-    # Reject any MIME type not in the whitelist
     ext = _ALLOWED_MIME.get(mime)
     if ext is None:
         raise ValueError(_('Unsupported image type: %s') % mime)
@@ -58,14 +48,12 @@ def _decode_image(data_url: str, field_name: str):
     except binascii.Error:
         raise ValueError(_('Invalid base64 data.'))
 
-    # Enforce size limit before any further processing
     if len(raw) > _MAX_IMAGE_BYTES:
         raise ValueError(
             _('Image exceeds maximum allowed size of %d MB.') % (
                 _MAX_IMAGE_BYTES // 1024 // 1024)
         )
 
-    # Validate that the bytes are actually a recognisable image
     try:
         from PIL import Image
         with Image.open(io.BytesIO(raw)) as img:
@@ -79,32 +67,6 @@ def _decode_image(data_url: str, field_name: str):
 
 
 class AssetModelImportView(APIView):
-    """
-    POST /asset/asset-model/import
-
-    Import an AssetModel from a JSON payload.  Accepts the same fields as the
-    standard form, but ``vendor`` and ``type`` are provided as **name strings**
-    (not IDs) and images are optional **Data URL (base64)** strings.
-
-    Request body (JSON):
-    ```json
-    {
-      "name": "PowerEdge R750",
-      "vendor": "Dell",
-      "type": "Server",
-      "rack_units": 2,
-      "note": "...",
-      "front_image": "data:image/jpeg;base64,...",
-      "rear_image":  "data:image/jpeg;base64,..."
-    }
-    ```
-
-    Responses:
-    - 201: model created, returns AssetModelSerializer data.
-    - 400: missing/invalid fields.
-    - 409: a model with the same (name, vendor, type) already exists.
-    """
-
     permission_classes = [IsAuthenticated, ImportCatalogPermission]
 
     @extend_schema(
@@ -115,12 +77,12 @@ class AssetModelImportView(APIView):
                 'required': ['name', 'vendor', 'type'],
                 'properties': {
                     'name':        {'type': 'string'},
-                    'vendor':      {'type': 'string', 'description': 'Vendor name (created if missing)'},
-                    'type':        {'type': 'string', 'description': 'AssetType name (created if missing)'},
+                    'vendor':      {'type': 'string'},
+                    'type':        {'type': 'string'},
                     'rack_units':  {'type': 'integer', 'default': 1},
                     'note':        {'type': 'string'},
-                    'front_image': {'type': 'string', 'description': 'Data URL (base64) — optional'},
-                    'rear_image':  {'type': 'string', 'description': 'Data URL (base64) — optional'},
+                    'front_image': {'type': 'string'},
+                    'rear_image':  {'type': 'string'},
                 },
             }
         },
@@ -129,25 +91,10 @@ class AssetModelImportView(APIView):
             400: OpenApiResponse(description='Missing or invalid fields'),
             409: OpenApiResponse(description='Model already exists'),
         },
-        examples=[
-            OpenApiExample(
-                'PowerEdge R750',
-                value={
-                    'name': 'PowerEdge R750',
-                    'vendor': 'Dell',
-                    'type': 'Server',
-                    'rack_units': 2,
-                    'note': '',
-                    'front_image': 'data:image/jpeg;base64,...',
-                },
-                request_only=True,
-            )
-        ],
     )
     def post(self, request):
         data = request.data
 
-        # ── Required fields ───────────────────────────────────────────────────
         name = str(data.get('name', '')).strip()
         vendor_name = str(data.get('vendor', '')).strip()
         type_name = str(data.get('type', '')).strip()
@@ -162,11 +109,9 @@ class AssetModelImportView(APIView):
         if errors:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # ── Resolve FK objects (create if missing) ────────────────────────────
         vendor, _ = Vendor.objects.get_or_create(name=vendor_name)
         asset_type, _ = AssetType.objects.get_or_create(name=type_name)
 
-        # ── Duplicate check ───────────────────────────────────────────────────
         if AssetModel.objects.filter(name=name, vendor=vendor, type=asset_type).exists():
             return Response(
                 {
@@ -178,7 +123,6 @@ class AssetModelImportView(APIView):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        # ── Build instance ────────────────────────────────────────────────────
         rack_units = data.get('rack_units', 1)
         try:
             rack_units = max(1, int(rack_units))
@@ -193,14 +137,13 @@ class AssetModelImportView(APIView):
             note=str(data.get('note', '')),
         )
 
-        # ── Decode images ─────────────────────────────────────────────────────
         front_raw = data.get('front_image')
         rear_raw = data.get('rear_image')
 
         if front_raw:
             try:
                 instance.front_image = _decode_image(front_raw, 'front_image')
-            except ValueError as exc:
+            except ValueError:
                 return Response(
                     {'front_image': _('Invalid front image data.')},
                     status=status.HTTP_400_BAD_REQUEST,
@@ -209,7 +152,7 @@ class AssetModelImportView(APIView):
         if rear_raw:
             try:
                 instance.rear_image = _decode_image(rear_raw, 'rear_image')
-            except ValueError as exc:
+            except ValueError:
                 return Response(
                     {'rear_image': _('Invalid rear image data.')},
                     status=status.HTTP_400_BAD_REQUEST,
@@ -217,7 +160,5 @@ class AssetModelImportView(APIView):
 
         instance.save()
 
-        serializer = AssetModelSerializer(
-            instance, context={'request': request}
-        )
+        serializer = AssetModelSerializer(instance, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)

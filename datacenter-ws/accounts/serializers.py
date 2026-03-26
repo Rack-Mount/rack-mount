@@ -36,6 +36,8 @@ class RoleSerializer(serializers.ModelSerializer):
             'can_edit_map',
             # Warehouse
             'can_view_warehouse', 'can_manage_warehouse',
+            # Asset requests
+            'can_view_requests', 'can_create_requests', 'can_manage_requests',
             # Admin
             'can_manage_users',
             # Model training

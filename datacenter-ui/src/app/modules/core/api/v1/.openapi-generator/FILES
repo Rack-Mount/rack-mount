@@ -7,6 +7,8 @@ api/asset.service.ts
 api/asset.serviceInterface.ts
 api/auth.service.ts
 api/auth.serviceInterface.ts
+api/catalog.service.ts
+api/catalog.serviceInterface.ts
 api/location.service.ts
 api/location.serviceInterface.ts
 configuration.ts

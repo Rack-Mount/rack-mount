@@ -1,13 +1,3 @@
-"""
-CatalogExportView.py
-
-GET /asset/catalog/export
-
-Returns the entire catalog (vendors, asset types, asset models, generic components)
-as a single JSON document.  The `asset_models` section includes front/rear images
-encoded as base64 Data URLs, so the export can be directly re-imported via the
-existing POST /asset/asset-model/import endpoint.
-"""
 from __future__ import annotations
 
 import base64
@@ -19,13 +9,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.permissions import CatalogResourcePermission
-from asset.models import AssetModel, Vendor
-from asset.models.AssetType import AssetType
+from catalog.models import AssetModel, Vendor
+from catalog.models.AssetType import AssetType
 from asset.models.GenericComponent import GenericComponent
 
 
 def _image_to_data_url(image_field) -> str | None:
-    """Read an ImageField and return a base64 Data URL, or None if empty."""
     if not image_field:
         return None
     try:
@@ -47,47 +36,26 @@ def _image_to_data_url(image_field) -> str | None:
 
 
 class CatalogExportView(APIView):
-    """
-    GET /asset/catalog/export
-
-    Returns the full catalog as a JSON object:
-    - ``vendors``          – list of vendor names
-    - ``asset_types``      – list of asset-type names
-    - ``asset_models``     – list of models with vendor/type resolved to names
-                             and images encoded as base64 Data URLs
-    - ``generic_components`` – list of generic / consumable components
-    """
-
-    # Export is a read-only operation; CatalogResourcePermission allows GET
-    # when the user has can_view_catalog.
     permission_classes = [IsAuthenticated, CatalogResourcePermission]
 
     @extend_schema(
-        tags=['asset'],
+        tags=['catalog'],
         summary='Export catalog as JSON',
         responses={
-            200: OpenApiResponse(
-                description=(
-                    'Full catalog JSON including vendors, types, models '
-                    '(with base64 images) and generic components.'
-                ),
-            ),
+            200: OpenApiResponse(description='Full catalog JSON including vendors, types, models and generic components.'),
         },
     )
     def get(self, request):
-        # ── Vendors ───────────────────────────────────────────────────────────
         vendors = [
             {'name': name}
             for name in Vendor.objects.values_list('name', flat=True).order_by('name')
         ]
 
-        # ── Asset types ───────────────────────────────────────────────────────
         asset_types = [
             {'name': name}
             for name in AssetType.objects.values_list('name', flat=True).order_by('name')
         ]
 
-        # ── Asset models ──────────────────────────────────────────────────────
         models_qs = (
             AssetModel.objects
             .select_related('vendor', 'type')
@@ -106,7 +74,6 @@ class CatalogExportView(APIView):
             for m in models_qs
         ]
 
-        # ── Generic components ────────────────────────────────────────────────
         generic_components = [
             {
                 'name': c.name,
@@ -119,9 +86,7 @@ class CatalogExportView(APIView):
 
         return Response({
             'version': 1,
-            'exported_at': datetime.datetime.utcnow().replace(
-                microsecond=0
-            ).isoformat() + 'Z',
+            'exported_at': datetime.datetime.utcnow().replace(microsecond=0).isoformat() + 'Z',
             'vendors': vendors,
             'asset_types': asset_types,
             'asset_models': asset_models,

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from asset.models import NetworkSwitchAssetModel
+from catalog.models import NetworkSwitchAssetModel
 from reversion.admin import VersionAdmin
 
 
@@ -15,5 +15,4 @@ class NetworkSwitchAssetModelAdmin(VersionAdmin):
     readonly_fields = ['front_image_preview', 'rear_image_preview']
 
     def has_delete_permission(self, request, obj=None):
-        # Disable delete
         return False

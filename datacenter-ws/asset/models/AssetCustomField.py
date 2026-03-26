@@ -1,5 +1,6 @@
 from django.db import models
-from asset.models import Asset, CustomFieldName
+from asset.models.Asset import Asset
+from catalog.models import CustomFieldName
 
 
 class AssetCustomField(models.Model):

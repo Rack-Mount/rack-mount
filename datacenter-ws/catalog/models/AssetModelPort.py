@@ -1,16 +1,8 @@
 from django.db import models
-from .AssetModel import AssetModel
+from catalog.models.AssetModel import AssetModel
 
 
 class AssetModelPort(models.Model):
-    """
-    AssetModelPort represents a network interface / port defined on an AssetModel.
-
-    Each port has a name, type, which side of the device it is on (front/rear),
-    and optional X/Y coordinates (percentage 0-100) describing where it appears
-    on the corresponding device image.
-    """
-
     PORT_TYPE_CHOICES = [
         ('RJ45', 'RJ45 (1GbE)'),
         ('SFP', 'SFP (1G)'),
@@ -52,12 +44,12 @@ class AssetModelPort(models.Model):
         choices=SIDE_CHOICES,
         default='rear',
     )
-    # Position as percentage of image dimensions (0-100). Null = not positioned.
     pos_x = models.FloatField(null=True, blank=True)
     pos_y = models.FloatField(null=True, blank=True)
     notes = models.TextField(blank=True)
 
     class Meta:
+        app_label = 'catalog'
         db_table = 'asset_model_port'
         ordering = ['side', 'name']
 

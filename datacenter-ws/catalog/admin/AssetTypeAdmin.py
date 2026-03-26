@@ -1,5 +1,5 @@
 from django.contrib import admin
-from asset.models import AssetType
+from catalog.models import AssetType
 
 
 @admin.register(AssetType)
@@ -12,7 +12,6 @@ class AssetTypeAdmin(admin.ModelAdmin):
     ordering = ('name',)
 
     def has_delete_permission(self, request, obj=None):
-        # Disable delete
         return False
 
     def has_change_permission(self, request, obj=...):

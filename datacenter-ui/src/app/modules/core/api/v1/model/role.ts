@@ -32,6 +32,9 @@ export interface Role {
     readonly can_edit_map: boolean;
     readonly can_view_warehouse: boolean;
     readonly can_manage_warehouse: boolean;
+    readonly can_view_requests: boolean;
+    readonly can_create_requests: boolean;
+    readonly can_manage_requests: boolean;
     readonly can_manage_users: boolean;
     /**
      * Allows users to submit labeled port images for YOLO model training

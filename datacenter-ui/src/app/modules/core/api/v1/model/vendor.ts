@@ -9,9 +9,6 @@
  */
 
 
-/**
- * Serializer for the Vendor model.
- */
 export interface Vendor { 
     readonly id: number;
     name: string;

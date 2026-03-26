@@ -13,7 +13,6 @@ import { Observable }                                        from 'rxjs';
 
 import { Asset } from '../model/models';
 import { AssetAssetModelImportCreateRequest } from '../model/models';
-import { AssetCatalogImportCreateRequest } from '../model/models';
 import { AssetCustomField } from '../model/models';
 import { AssetModel } from '../model/models';
 import { AssetModelPort } from '../model/models';
@@ -334,10 +333,6 @@ export interface AssetAssetUpdateRequestParams {
     asset: Asset;
 }
 
-export interface AssetCatalogImportCreateRequestParams {
-    assetCatalogImportCreateRequest?: AssetCatalogImportCreateRequest;
-}
-
 export interface AssetGenericComponentCreateRequestParams {
     genericComponent: GenericComponent;
 }
@@ -596,7 +591,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/asset_model/bulk_delete Body: { \&quot;ids\&quot;: [1, 2, 3] } Skips models currently in use (have assets attached). Returns: { \&quot;deleted\&quot;: &lt;int&gt;, \&quot;skipped\&quot;: &lt;int&gt; }
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint post /asset/asset_model/bulk_delete
 * @param requestParameters
      */
@@ -620,7 +615,7 @@ export interface AssetServiceInterface {
 
     /**
      * Import an AssetModel from JSON (with optional base64 images)
-     * POST /asset/asset-model/import  Import an AssetModel from a JSON payload.  Accepts the same fields as the standard form, but &#x60;&#x60;vendor&#x60;&#x60; and &#x60;&#x60;type&#x60;&#x60; are provided as **name strings** (not IDs) and images are optional **Data URL (base64)** strings.  Request body (JSON): &#x60;&#x60;&#x60;json {   \&quot;name\&quot;: \&quot;PowerEdge R750\&quot;,   \&quot;vendor\&quot;: \&quot;Dell\&quot;,   \&quot;type\&quot;: \&quot;Server\&quot;,   \&quot;rack_units\&quot;: 2,   \&quot;note\&quot;: \&quot;...\&quot;,   \&quot;front_image\&quot;: \&quot;data:image/jpeg;base64,...\&quot;,   \&quot;rear_image\&quot;:  \&quot;data:image/jpeg;base64,...\&quot; } &#x60;&#x60;&#x60;  Responses: - 201: model created, returns AssetModelSerializer data. - 400: missing/invalid fields. - 409: a model with the same (name, vendor, type) already exists.
+     * 
      * @endpoint post /asset/asset-model/import
 * @param requestParameters
      */
@@ -644,7 +639,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * 
      * @endpoint post /asset/asset_model_port
 * @param requestParameters
      */
@@ -652,7 +647,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * 
      * @endpoint delete /asset/asset_model_port/{id}
 * @param requestParameters
      */
@@ -660,7 +655,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * 
      * @endpoint get /asset/asset_model_port
 * @param requestParameters
      */
@@ -668,7 +663,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * 
      * @endpoint patch /asset/asset_model_port/{id}
 * @param requestParameters
      */
@@ -676,7 +671,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * 
      * @endpoint get /asset/asset_model_port/{id}
 * @param requestParameters
      */
@@ -684,7 +679,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * CRUD viewset for AssetModelPort.  Supports filtering by asset_model so the frontend can load all ports for a given model: GET /asset/asset_model_port?asset_model&#x3D;&lt;id&gt;
+     * 
      * @endpoint put /asset/asset_model_port/{id}
 * @param requestParameters
      */
@@ -844,7 +839,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for CRUD operations on AssetType objects.
+     * Shared configuration for name-based lookup-table ViewSets.
      * @endpoint post /asset/asset_type
 * @param requestParameters
      */
@@ -852,7 +847,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for CRUD operations on AssetType objects.
+     * Shared configuration for name-based lookup-table ViewSets.
      * @endpoint delete /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -860,7 +855,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for CRUD operations on AssetType objects.
+     * Shared configuration for name-based lookup-table ViewSets.
      * @endpoint get /asset/asset_type
 * @param requestParameters
      */
@@ -868,7 +863,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for CRUD operations on AssetType objects.
+     * Shared configuration for name-based lookup-table ViewSets.
      * @endpoint patch /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -876,7 +871,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for CRUD operations on AssetType objects.
+     * Shared configuration for name-based lookup-table ViewSets.
      * @endpoint get /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -884,7 +879,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * ViewSet for CRUD operations on AssetType objects.
+     * Shared configuration for name-based lookup-table ViewSets.
      * @endpoint put /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -897,21 +892,6 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetAssetUpdate(requestParameters: AssetAssetUpdateRequestParams, extraHttpRequestParams?: any): Observable<Asset>;
-
-    /**
-     * Export catalog as JSON
-     * GET /asset/catalog/export  Returns the full catalog as a JSON object: - &#x60;&#x60;vendors&#x60;&#x60;          – list of vendor names - &#x60;&#x60;asset_types&#x60;&#x60;      – list of asset-type names - &#x60;&#x60;asset_models&#x60;&#x60;     – list of models with vendor/type resolved to names                          and images encoded as base64 Data URLs - &#x60;&#x60;generic_components&#x60;&#x60; – list of generic / consumable components
-     * @endpoint get /asset/catalog/export
-*/
-    assetCatalogExportRetrieve(extraHttpRequestParams?: any): Observable<{}>;
-
-    /**
-     * Import full catalog from JSON
-     * POST /asset/catalog/import — bulk-import a full catalog JSON.
-     * @endpoint post /asset/catalog/import
-* @param requestParameters
-     */
-    assetCatalogImportCreate(requestParameters: AssetCatalogImportCreateRequestParams, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 

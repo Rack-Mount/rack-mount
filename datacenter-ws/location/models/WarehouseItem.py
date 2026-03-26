@@ -43,7 +43,7 @@ class WarehouseItem(models.Model):
         related_name='warehouse_items',
     )
     compatible_models = models.ManyToManyField(
-        'asset.AssetModel',
+        'catalog.AssetModel',
         blank=True,
         related_name='compatible_warehouse_items',
     )

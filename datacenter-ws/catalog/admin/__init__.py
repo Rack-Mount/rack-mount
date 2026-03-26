@@ -1,0 +1,5 @@
+from .VendorAdmin import VendorAdmin
+from .AssetTypeAdmin import AssetTypeAdmin
+from .CustomFieldNameAdmin import CustomFieldNameAdmin
+from .AssetModelAdmin import AssetModelAdmin
+from .NetworkSwitchAssetModelAdmin import NetworkSwitchAssetModelAdmin

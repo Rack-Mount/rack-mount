@@ -11,23 +11,11 @@
 
 export interface AssetAssetModelImportCreateRequest { 
     name: string;
-    /**
-     * Vendor name (created if missing)
-     */
     vendor: string;
-    /**
-     * AssetType name (created if missing)
-     */
     type: string;
     rack_units?: number;
     note?: string;
-    /**
-     * Data URL (base64) — optional
-     */
     front_image?: string;
-    /**
-     * Data URL (base64) — optional
-     */
     rear_image?: string;
 }
 

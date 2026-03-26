@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from asset.models import CustomFieldName
+from catalog.models import CustomFieldName
 from location.models import LocationCustomField
 
 

@@ -19,6 +19,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from location import urls as location_urls
 from asset import urls as asset_urls
+from catalog import urls as catalog_urls
 from django.urls import path, include
 import accounts.urls as accounts_urls
 from django.contrib import admin
@@ -33,6 +34,7 @@ admin.site.index_title = "Welcome to Rack-Mount Data Center Portal"
 urlpatterns = [
     path('location/', include(location_urls.urlpatterns)),
     path('asset/', include(asset_urls.urlpatterns)),
+    path('asset/', include(catalog_urls.urlpatterns)),
     path('admin/', admin.site.urls),
     path('auth/me/', MeView.as_view(), name='auth-me'),
     path('auth/', include(accounts_urls.urlpatterns)),
