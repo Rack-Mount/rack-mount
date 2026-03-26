@@ -4,6 +4,14 @@
   <div class="req-toolbar">
     <h2 class="req-title">{{ 'requests.title' | translate }}</h2>
     <div class="req-filters">
+      @if (role.canCreateRequests()) {
+        <button class="btn-new-request" (click)="openCreateForm()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {{ 'requests.create_btn' | translate }}
+        </button>
+      }
       <select class="req-filter-select"
         [value]="filterStatus()"
         (change)="filterStatus.set($any($event.target).value); applyFilters()">
@@ -25,6 +33,114 @@
       </select>
     </div>
   </div>
+
+  <!-- ── Create drawer ───────────────────────────────────────────────────── -->
+  @if (showCreateForm()) {
+    <div class="drawer-backdrop" (click)="closeCreateForm()"></div>
+    <div class="create-drawer">
+      <div class="drawer-header">
+        <h3>{{ 'requests.create_title' | translate }}</h3>
+        <button class="drawer-close" (click)="closeCreateForm()" [title]="'common.close' | translate">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+
+        <!-- Asset search -->
+        <div class="form-group">
+          <label>{{ 'requests.create_asset' | translate }} <span class="required">*</span></label>
+          <div class="autocomplete-wrap">
+            <input class="form-input"
+              type="text"
+              autocomplete="off"
+              [value]="createAssetSearch()"
+              (input)="onAssetSearchInput($any($event.target).value)"
+              [placeholder]="'requests.create_asset_placeholder' | translate" />
+            @if (createAssetSearching()) {
+              <span class="ac-searching">…</span>
+            }
+            @if (createAssetResults().length > 0) {
+              <div class="autocomplete-dropdown">
+                @for (a of createAssetResults(); track a.id) {
+                  <button class="autocomplete-option" type="button"
+                    (mousedown)="$event.preventDefault(); selectCreateAsset(a)">
+                    <span class="ac-model-name">{{ a.hostname || ('requests.no_hostname' | translate) }}</span>
+                    <span class="ac-vendor-name">{{ a.model.name }} · {{ a.state.name }}</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Request type -->
+        <div class="form-group">
+          <label>{{ 'requests.col_type' | translate }} <span class="required">*</span></label>
+          <select class="form-select"
+            [ngModel]="createRequestType()"
+            (ngModelChange)="createRequestType.set($event)">
+            <option value="registrazione">{{ 'requests.type.registrazione' | translate }}</option>
+            <option value="spostamento">{{ 'requests.type.spostamento' | translate }}</option>
+            <option value="manutenzione">{{ 'requests.type.manutenzione' | translate }}</option>
+            <option value="dismissione">{{ 'requests.type.dismissione' | translate }}</option>
+          </select>
+        </div>
+
+        <!-- To state -->
+        <div class="form-group">
+          <label>{{ 'requests.col_to_state' | translate }} <span class="required">*</span></label>
+          <select class="form-select"
+            [ngModel]="createToState()"
+            (ngModelChange)="createToState.set($event ? +$event : null)">
+            <option [value]="null">{{ 'requests.select_state' | translate }}</option>
+            @for (s of availableStates(); track s.id) {
+              <option [value]="s.id">{{ s.name }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- To room (optional) -->
+        <div class="form-group">
+          <label>{{ 'requests.to_room' | translate }}</label>
+          <select class="form-select"
+            [ngModel]="createToRoom()"
+            (ngModelChange)="createToRoom.set($event ? +$event : null)">
+            <option [value]="null">— {{ 'requests.no_room' | translate }} —</option>
+            @for (r of availableRooms(); track r.id) {
+              <option [value]="r.id">{{ r.name }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>{{ 'requests.notes' | translate }}</label>
+          <textarea class="form-textarea" rows="3"
+            [ngModel]="createNotes()"
+            (ngModelChange)="createNotes.set($event)"
+            [placeholder]="'requests.notes_placeholder' | translate">
+          </textarea>
+        </div>
+
+        @if (createError()) {
+          <p class="form-error">{{ createError() }}</p>
+        }
+
+      </div>
+
+      <div class="drawer-footer">
+        <button class="btn-cancel" (click)="closeCreateForm()">{{ 'common.cancel' | translate }}</button>
+        <button class="btn-save"
+          [disabled]="createSaving() || !createSelectedAsset() || !createToState()"
+          (click)="submitCreate()">
+          @if (createSaving()) { … } @else { {{ 'requests.create_submit' | translate }} }
+        </button>
+      </div>
+    </div>
+  }
 
   <!-- ── Main layout ─────────────────────────────────────────────────────── -->
   <div class="req-layout" [class.req-layout--detail]="selectedRequest()">

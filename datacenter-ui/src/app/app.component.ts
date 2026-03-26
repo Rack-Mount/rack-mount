@@ -32,6 +32,7 @@ const STATIC_TAB_PATHS: Record<string, string[]> = {
   models: ['/models'],
   racks: ['/racks'],
   warehouse: ['/warehouse'],
+  requests: ['/requests'],
   admin: ['/admin'],
   options: ['/options'],
   'asset-settings': ['/asset-settings'],
@@ -46,6 +47,7 @@ const STATIC_TABS = new Set([
   'models',
   'racks',
   'warehouse',
+  'requests',
   'admin',
   'options',
   'asset-settings',
@@ -222,6 +224,14 @@ export class AppComponent implements OnInit {
         }
         this.tabService.ensureWarehouseTab();
         this.activeTabId.set('warehouse');
+      },
+      requests: () => {
+        if (!this.role.canViewRequests()) {
+          this.activeTabId.set('home');
+          return;
+        }
+        this.tabService.ensureRequestsTab();
+        this.activeTabId.set('requests');
       },
       admin: () => {
         this.tabService.ensureAdminTab();

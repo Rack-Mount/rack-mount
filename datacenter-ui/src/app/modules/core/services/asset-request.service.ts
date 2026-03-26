@@ -11,7 +11,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AssetRequestService {
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.service_url}/api/asset/asset_request`;
+  private readonly base = `${environment.service_url}/asset/asset_request`;
 
   list(filters: {
     asset?: number;

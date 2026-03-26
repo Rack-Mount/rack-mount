@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   computed,
   DestroyRef,
@@ -7,15 +8,24 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 import { AssetRequestService } from '../../../../core/services/asset-request.service';
 import { RoleService } from '../../../../core/services/role.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { BackendErrorService } from '../../../../core/services/backend-error.service';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
+import { AssetService } from '../../../../core/api/v1/api/asset.service';
+import { LocationService } from '../../../../core/api/v1/api/location.service';
+import { AssetState } from '../../../../core/api/v1/model/assetState';
+import { Asset } from '../../../../core/api/v1/model/asset';
+import { Room } from '../../../../core/api/v1/model/room';
 import {
   AssetRequest,
+  AssetRequestCreate,
   AssetRequestStatus,
+  AssetRequestType,
   isRequestTerminal,
   requestStatusColor,
 } from '../../../../core/models/asset-request.model';
@@ -27,17 +37,20 @@ type ActionSaving = 'plan' | 'execute' | 'reject' | 'clarify' | 'resubmit' | nul
 @Component({
   selector: 'app-requests-list',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, FormsModule],
   templateUrl: './requests-list.component.html',
   styleUrl: './requests-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestsListComponent {
   private readonly svc = inject(AssetRequestService);
+  private readonly assetApi = inject(AssetService);
+  private readonly locationApi = inject(LocationService);
   private readonly toast = inject(ToastService);
   private readonly backendErr = inject(BackendErrorService);
   private readonly confirm = inject(ConfirmDialogService);
   private readonly translate = inject(TranslateService);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly role = inject(RoleService);
 
@@ -77,8 +90,60 @@ export class RequestsListComponent {
     Math.ceil(this.totalCount() / this.pageSize),
   );
 
+  // ── Create form ───────────────────────────────────────────────────────────
+  protected readonly showCreateForm = signal(false);
+  protected readonly createAssetSearch = signal('');
+  protected readonly createAssetResults = signal<Asset[]>([]);
+  protected readonly createAssetSearching = signal(false);
+  protected readonly createSelectedAsset = signal<Asset | null>(null);
+  protected readonly createRequestType = signal<AssetRequestType>('spostamento');
+  protected readonly createToState = signal<number | null>(null);
+  protected readonly createToRoom = signal<number | null>(null);
+  protected readonly createNotes = signal('');
+  protected readonly createSaving = signal(false);
+  protected readonly createError = signal('');
+
+  protected readonly availableStates = signal<AssetState[]>([]);
+  protected readonly availableRooms = signal<Room[]>([]);
+
+  private readonly assetSearch$ = new Subject<string>();
+
   constructor() {
     this.loadRequests();
+    this.loadStatesAndRooms();
+
+    this.assetSearch$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((q) => {
+          if (!q.trim()) { this.createAssetResults.set([]); return of(null); }
+          this.createAssetSearching.set(true);
+          return this.assetApi.assetAssetList({ search: q, pageSize: 10 });
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((res) => {
+        if (res) this.createAssetResults.set(res.results ?? []);
+        this.createAssetSearching.set(false);
+        this.cdr.markForCheck();
+      });
+  }
+
+  private loadStatesAndRooms(): void {
+    this.assetApi.assetAssetStateList({ pageSize: 200 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.availableStates.set(res.results ?? []);
+        this.cdr.markForCheck();
+      });
+
+    this.locationApi.locationRoomList({ pageSize: 200 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.availableRooms.set(res.results ?? []);
+        this.cdr.markForCheck();
+      });
   }
 
   // ── Load ──────────────────────────────────────────────────────────────────
@@ -112,6 +177,69 @@ export class RequestsListComponent {
     if (page < 1 || page > this.totalPages()) return;
     this.currentPage.set(page);
     this.loadRequests();
+  }
+
+  // ── Create form methods ───────────────────────────────────────────────────
+
+  protected openCreateForm(): void {
+    this.showCreateForm.set(true);
+    this.createAssetSearch.set('');
+    this.createAssetResults.set([]);
+    this.createSelectedAsset.set(null);
+    this.createRequestType.set('spostamento');
+    this.createToState.set(null);
+    this.createToRoom.set(null);
+    this.createNotes.set('');
+    this.createError.set('');
+  }
+
+  protected closeCreateForm(): void {
+    this.showCreateForm.set(false);
+  }
+
+  protected onAssetSearchInput(value: string): void {
+    this.createAssetSearch.set(value);
+    this.createSelectedAsset.set(null);
+    this.assetSearch$.next(value);
+  }
+
+  protected selectCreateAsset(asset: Asset): void {
+    this.createSelectedAsset.set(asset);
+    this.createAssetSearch.set(asset.hostname ?? `Asset #${asset.id}`);
+    this.createAssetResults.set([]);
+  }
+
+  protected submitCreate(): void {
+    const asset = this.createSelectedAsset();
+    const toState = this.createToState();
+    if (!asset || !toState) {
+      this.createError.set(this.translate.instant('requests.create_missing_fields'));
+      return;
+    }
+    const body: AssetRequestCreate = {
+      asset: asset.id,
+      request_type: this.createRequestType(),
+      to_state: toState,
+      to_room: this.createToRoom() ?? null,
+      notes: this.createNotes() || undefined,
+    };
+    this.createSaving.set(true);
+    this.createError.set('');
+    this.svc.create(body)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (created) => {
+          this.createSaving.set(false);
+          this.showCreateForm.set(false);
+          this.toast.success(this.translate.instant('requests.create_ok'));
+          this.requests.update((list) => [created, ...list]);
+          this.totalCount.update((n) => n + 1);
+        },
+        error: (err) => {
+          this.createError.set(this.backendErr.parse(err));
+          this.createSaving.set(false);
+        },
+      });
   }
 
   // ── Detail panel ──────────────────────────────────────────────────────────
