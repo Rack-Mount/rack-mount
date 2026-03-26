@@ -474,7 +474,13 @@
     "history_title": "Transition history",
     "history_empty": "No transitions recorded.",
     "compatible_sfps": "Compatible SFPs in stock",
-    "no_sfps": "No compatible SFPs found in stock."
+    "no_sfps": "No compatible SFPs found in stock.",
+    "requests_toggle": "Requests",
+    "requests_empty": "No requests for this asset",
+    "new_request_btn": "New request",
+    "new_request_title": "New state change request",
+    "req_type": "Request type",
+    "request_submit": "Submit request"
   },
   "rack": {
     "error_loading": "Error loading rack units",
@@ -576,7 +582,8 @@
     "rack_models": "Rack Models",
     "locations": "Locations",
     "asset_settings": "Asset Settings",
-    "warehouse": "Warehouse"
+    "warehouse": "Warehouse",
+    "requests": "Requests"
   },
   "asset_row": {
     "section_device": "Device",
@@ -797,5 +804,58 @@
     "col_installed": "Installed",
     "field_compatible_models": "Compatible models",
     "no_models": "No models available."
+  },
+  "requests": {
+    "title": "Asset Requests",
+    "all_statuses": "All statuses",
+    "all_types": "All types",
+    "no_data": "No requests found",
+    "detail_title": "Request",
+    "col_id": "ID",
+    "col_asset": "Asset",
+    "col_type": "Type",
+    "col_from_state": "From state",
+    "col_to_state": "To state",
+    "col_status": "Request status",
+    "col_planned": "Planned date",
+    "col_created_by": "Created by",
+    "col_created_at": "Created at",
+    "from_room": "From location",
+    "to_room": "To location",
+    "assigned_to": "Assigned to",
+    "executed_by": "Executed by",
+    "notes": "Notes",
+    "notes_placeholder": "Reason or details...",
+    "clarification_notes": "Clarification request",
+    "clarification_notes_placeholder": "Specify what needs clarification...",
+    "rejection_notes": "Rejection reason",
+    "rejection_notes_placeholder": "State the reason for rejection...",
+    "planned_date": "Planned date",
+    "status": {
+      "inserita": "Submitted",
+      "pianificata": "Planned",
+      "evasa": "Executed",
+      "rifiutata": "Rejected",
+      "in_chiarimento": "Pending clarification"
+    },
+    "type": {
+      "registrazione": "Registration",
+      "spostamento": "Move",
+      "manutenzione": "Maintenance",
+      "dismissione": "Decommission"
+    },
+    "action": {
+      "plan": "Plan",
+      "execute": "Execute",
+      "reject": "Reject",
+      "clarify": "Request clarification",
+      "resubmit": "Resubmit"
+    },
+    "planned_ok": "Request planned",
+    "executed_ok": "Request executed — asset updated",
+    "rejected_ok": "Request rejected",
+    "clarified_ok": "Sent for clarification",
+    "resubmitted_ok": "Request resubmitted",
+    "execute_confirm": "Confirm execution? The asset state and location will change."
   }
 }

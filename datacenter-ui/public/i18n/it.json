@@ -474,7 +474,13 @@
     "history_title": "Storico transizioni",
     "history_empty": "Nessuna transizione registrata.",
     "compatible_sfps": "SFP compatibili in magazzino",
-    "no_sfps": "Nessun SFP compatibile trovato in magazzino."
+    "no_sfps": "Nessun SFP compatibile trovato in magazzino.",
+    "requests_toggle": "Richieste",
+    "requests_empty": "Nessuna richiesta per questo asset",
+    "new_request_btn": "Nuova richiesta",
+    "new_request_title": "Nuova richiesta di cambio stato",
+    "req_type": "Tipo richiesta",
+    "request_submit": "Inserisci richiesta"
   },
   "rack": {
     "error_loading": "Errore nel caricamento delle unità rack",
@@ -576,7 +582,8 @@
     "rack_models": "Modelli Rack",
     "locations": "Sedi",
     "asset_settings": "Impost. Asset",
-    "warehouse": "Magazzino"
+    "warehouse": "Magazzino",
+    "requests": "Richieste"
   },
   "asset_row": {
     "section_device": "Apparato",
@@ -797,5 +804,58 @@
     "col_installed": "Installati",
     "field_compatible_models": "Modelli compatibili",
     "no_models": "Nessun modello disponibile."
+  },
+  "requests": {
+    "title": "Richieste asset",
+    "all_statuses": "Tutti gli stati",
+    "all_types": "Tutti i tipi",
+    "no_data": "Nessuna richiesta trovata",
+    "detail_title": "Richiesta",
+    "col_id": "ID",
+    "col_asset": "Asset",
+    "col_type": "Tipo",
+    "col_from_state": "Da stato",
+    "col_to_state": "A stato",
+    "col_status": "Stato richiesta",
+    "col_planned": "Data pianificata",
+    "col_created_by": "Richiedente",
+    "col_created_at": "Creata il",
+    "from_room": "Da location",
+    "to_room": "A location",
+    "assigned_to": "Assegnata a",
+    "executed_by": "Evasa da",
+    "notes": "Note",
+    "notes_placeholder": "Motivazione o dettagli...",
+    "clarification_notes": "Richiesta chiarimenti",
+    "clarification_notes_placeholder": "Specificare cosa è necessario chiarire...",
+    "rejection_notes": "Motivo rifiuto",
+    "rejection_notes_placeholder": "Indicare il motivo del rifiuto...",
+    "planned_date": "Data pianificata",
+    "status": {
+      "inserita": "Inserita",
+      "pianificata": "Pianificata",
+      "evasa": "Evasa",
+      "rifiutata": "Rifiutata",
+      "in_chiarimento": "In chiarimento"
+    },
+    "type": {
+      "registrazione": "Registrazione",
+      "spostamento": "Spostamento",
+      "manutenzione": "Manutenzione",
+      "dismissione": "Dismissione"
+    },
+    "action": {
+      "plan": "Pianifica",
+      "execute": "Evadi",
+      "reject": "Rifiuta",
+      "clarify": "Chiarimento",
+      "resubmit": "Reinserisci"
+    },
+    "planned_ok": "Richiesta pianificata",
+    "executed_ok": "Richiesta evasa — asset aggiornato",
+    "rejected_ok": "Richiesta rifiutata",
+    "clarified_ok": "Inviata per chiarimento",
+    "resubmitted_ok": "Richiesta reinserita",
+    "execute_confirm": "Confermi l'evasione? L'asset cambierà stato e posizione."
   }
 }

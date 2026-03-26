@@ -402,3 +402,122 @@ msgstr "房间"
 
 msgid "Rack has associated units — remove them before deleting."
 msgstr "机柜有关联设备 — 请先移除再删除。"
+
+# -- AssetRequest (生命周期) --
+
+msgid "Registrazione"
+msgstr "注册"
+
+msgid "Spostamento"
+msgstr "移动"
+
+msgid "Manutenzione"
+msgstr "维护"
+
+msgid "Dismissione"
+msgstr "报废"
+
+msgid "Inserita"
+msgstr "已提交"
+
+msgid "Pianificata"
+msgstr "已计划"
+
+msgid "Evasa"
+msgstr "已执行"
+
+msgid "Rifiutata"
+msgstr "已拒绝"
+
+msgid "In Chiarimento"
+msgstr "待澄清"
+
+msgid "Tipo richiesta"
+msgstr "请求类型"
+
+msgid "Stato richiesta"
+msgstr "请求状态"
+
+msgid "Stato asset di partenza"
+msgstr "资产原状态"
+
+msgid "Stato asset di destinazione"
+msgstr "资产目标状态"
+
+msgid "Location di partenza"
+msgstr "来源位置"
+
+msgid "Location di destinazione"
+msgstr "目标位置"
+
+msgid "Note"
+msgstr "备注"
+
+msgid "Motivazione o dettagli della richiesta"
+msgstr "请求原因或详情"
+
+msgid "Note di chiarimento"
+msgstr "澄清说明"
+
+msgid "Richiesta di chiarimento inviata al richiedente"
+msgstr "已向申请人发送澄清请求"
+
+msgid "Motivo rifiuto"
+msgstr "拒绝原因"
+
+msgid "Data pianificata"
+msgstr "计划日期"
+
+msgid "Creata da"
+msgstr "创建人"
+
+msgid "Assegnata a"
+msgstr "分配给"
+
+msgid "Evasa da"
+msgstr "执行人"
+
+msgid "Richiesta asset"
+msgstr "资产请求"
+
+msgid "Richieste asset"
+msgstr "资产请求列表"
+
+msgid "Transizione non ammessa"
+msgstr "不允许的状态转换"
+
+msgid "Richiesta non trovata"
+msgstr "请求未找到"
+
+msgid "Utente non trovato"
+msgstr "用户未找到"
+
+msgid "Solo il richiedente originale può reinserire la richiesta"
+msgstr "只有原申请人才能重新提交请求"
+
+msgid "Can view asset requests"
+msgstr "可查看资产请求"
+
+msgid "Can create asset requests"
+msgstr "可创建资产请求"
+
+msgid "Can plan, execute, reject or clarify asset requests"
+msgstr "可计划、执行、拒绝或澄清资产请求"
+
+msgid "Asset request created"
+msgstr "已创建资产请求"
+
+msgid "Asset request planned"
+msgstr "已计划资产请求"
+
+msgid "Asset request executed"
+msgstr "已执行资产请求"
+
+msgid "Asset request rejected"
+msgstr "已拒绝资产请求"
+
+msgid "Asset request sent for clarification"
+msgstr "资产请求已发送待澄清"
+
+msgid "Asset request resubmitted"
+msgstr "资产请求已重新提交"

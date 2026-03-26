@@ -406,3 +406,122 @@ msgstr "Stanze"
 
 msgid "Rack has associated units — remove them before deleting."
 msgstr "Il rack ha unità associate — rimuoverle prima di eliminarlo."
+
+# -- AssetRequest (ciclo di vita) --
+
+msgid "Registrazione"
+msgstr "Registrazione"
+
+msgid "Spostamento"
+msgstr "Spostamento"
+
+msgid "Manutenzione"
+msgstr "Manutenzione"
+
+msgid "Dismissione"
+msgstr "Dismissione"
+
+msgid "Inserita"
+msgstr "Inserita"
+
+msgid "Pianificata"
+msgstr "Pianificata"
+
+msgid "Evasa"
+msgstr "Evasa"
+
+msgid "Rifiutata"
+msgstr "Rifiutata"
+
+msgid "In Chiarimento"
+msgstr "In Chiarimento"
+
+msgid "Tipo richiesta"
+msgstr "Tipo richiesta"
+
+msgid "Stato richiesta"
+msgstr "Stato richiesta"
+
+msgid "Stato asset di partenza"
+msgstr "Stato asset di partenza"
+
+msgid "Stato asset di destinazione"
+msgstr "Stato asset di destinazione"
+
+msgid "Location di partenza"
+msgstr "Location di partenza"
+
+msgid "Location di destinazione"
+msgstr "Location di destinazione"
+
+msgid "Motivazione o dettagli della richiesta"
+msgstr "Motivazione o dettagli della richiesta"
+
+msgid "Note di chiarimento"
+msgstr "Note di chiarimento"
+
+msgid "Richiesta di chiarimento inviata al richiedente"
+msgstr "Richiesta di chiarimento inviata al richiedente"
+
+msgid "Motivo rifiuto"
+msgstr "Motivo rifiuto"
+
+msgid "Data pianificata"
+msgstr "Data pianificata"
+
+msgid "Creata da"
+msgstr "Creata da"
+
+msgid "Assegnata a"
+msgstr "Assegnata a"
+
+msgid "Evasa da"
+msgstr "Evasa da"
+
+msgid "Richiesta asset"
+msgstr "Richiesta asset"
+
+msgid "Richieste asset"
+msgstr "Richieste asset"
+
+msgid "Transizione non ammessa"
+msgstr "Transizione non ammessa"
+
+msgid "Richiesta non trovata"
+msgstr "Richiesta non trovata"
+
+msgid "Utente non trovato"
+msgstr "Utente non trovato"
+
+msgid "Solo il richiedente originale può reinserire la richiesta"
+msgstr "Solo il richiedente originale può reinserire la richiesta"
+
+msgid "Can view asset requests"
+msgstr "Può visualizzare le richieste asset"
+
+msgid "Can create asset requests"
+msgstr "Può creare richieste asset"
+
+msgid "Can plan, execute, reject or clarify asset requests"
+msgstr "Può pianificare, evadere, rifiutare o chiedere chiarimenti sulle richieste asset"
+
+msgid "Asset request created"
+msgstr "Richiesta asset creata"
+
+msgid "Asset request planned"
+msgstr "Richiesta asset pianificata"
+
+msgid "Asset request executed"
+msgstr "Richiesta asset evasa"
+
+msgid "Asset request rejected"
+msgstr "Richiesta asset rifiutata"
+
+msgid "Asset request sent for clarification"
+msgstr "Richiesta asset inviata per chiarimento"
+
+msgid "Asset request resubmitted"
+msgstr "Richiesta asset reinserita"
+
+msgid "Note"
+msgstr "Note"

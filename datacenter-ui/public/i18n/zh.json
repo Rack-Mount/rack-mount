@@ -474,7 +474,13 @@
     "history_title": "状态变更历史",
     "history_empty": "暂无变更记录。",
     "compatible_sfps": "库存中的兼容SFP模块",
-    "no_sfps": "库存中未找到兼容的SFP模块。"
+    "no_sfps": "库存中未找到兼容的SFP模块。",
+    "requests_toggle": "请求",
+    "requests_empty": "该资产暂无请求",
+    "new_request_btn": "新建请求",
+    "new_request_title": "新建状态变更请求",
+    "req_type": "请求类型",
+    "request_submit": "提交请求"
   },
   "rack": {
     "error_loading": "加载机柜单元时出错",
@@ -576,7 +582,8 @@
     "rack_models": "机架型号",
     "locations": "地点",
     "asset_settings": "资产设置",
-    "warehouse": "仓库"
+    "warehouse": "仓库",
+    "requests": "请求"
   },
   "asset_row": {
     "section_device": "设备",
@@ -758,7 +765,7 @@
     "no_match": "没有与搜索匹配的物品。",
     "no_data": "仓库中没有物品。",
     "below_threshold": "低于阈值",
-    "delete_confirm": "删除"{{name}}"？",
+    "delete_confirm": "删除{{name}}？",
     "btn_adjust": "调整数量",
     "drawer_create_title": "新建物品",
     "drawer_edit_title": "编辑物品",
@@ -797,5 +804,58 @@
     "col_installed": "已安装",
     "field_compatible_models": "兼容型号",
     "no_models": "暂无可用型号。"
+  },
+  "requests": {
+    "title": "资产请求",
+    "all_statuses": "所有状态",
+    "all_types": "所有类型",
+    "no_data": "未找到请求",
+    "detail_title": "请求",
+    "col_id": "编号",
+    "col_asset": "资产",
+    "col_type": "类型",
+    "col_from_state": "原状态",
+    "col_to_state": "目标状态",
+    "col_status": "请求状态",
+    "col_planned": "计划日期",
+    "col_created_by": "创建人",
+    "col_created_at": "创建时间",
+    "from_room": "来源位置",
+    "to_room": "目标位置",
+    "assigned_to": "分配给",
+    "executed_by": "执行人",
+    "notes": "备注",
+    "notes_placeholder": "原因或详情...",
+    "clarification_notes": "待澄清说明",
+    "clarification_notes_placeholder": "请说明需要澄清的内容...",
+    "rejection_notes": "拒绝原因",
+    "rejection_notes_placeholder": "请说明拒绝原因...",
+    "planned_date": "计划日期",
+    "status": {
+      "inserita": "已提交",
+      "pianificata": "已计划",
+      "evasa": "已执行",
+      "rifiutata": "已拒绝",
+      "in_chiarimento": "待澄清"
+    },
+    "type": {
+      "registrazione": "注册",
+      "spostamento": "移动",
+      "manutenzione": "维护",
+      "dismissione": "报废"
+    },
+    "action": {
+      "plan": "计划",
+      "execute": "执行",
+      "reject": "拒绝",
+      "clarify": "请求澄清",
+      "resubmit": "重新提交"
+    },
+    "planned_ok": "请求已计划",
+    "executed_ok": "请求已执行 — 资产已更新",
+    "rejected_ok": "请求已拒绝",
+    "clarified_ok": "已发送澄清请求",
+    "resubmitted_ok": "请求已重新提交",
+    "execute_confirm": "确认执行？资产状态和位置将会更改。"
   }
 }
