@@ -55,6 +55,8 @@
     "rack_models_desc": "Configura le dimensioni e le taglie dei rack",
     "locations_title": "Sedi e Sale",
     "locations_desc": "Gestisci le sedi fisiche e le sale",
+    "requests_title": "Richieste",
+    "requests_desc": "Gestisci le richieste di materiali e apparati",
     "application_settings_title": "Impostazioni",
     "application_settings_desc": "Configura le impostazioni dell'applicazione"
   },
@@ -856,6 +858,16 @@
     "rejected_ok": "Richiesta rifiutata",
     "clarified_ok": "Inviata per chiarimento",
     "resubmitted_ok": "Richiesta reinserita",
-    "execute_confirm": "Confermi l'evasione? L'asset cambierà stato e posizione."
+    "execute_confirm": "Confermi l'evasione? L'asset cambierà stato e posizione.",
+    "create_btn": "Nuova richiesta",
+    "create_title": "Nuova richiesta",
+    "create_asset": "Asset",
+    "create_asset_placeholder": "Cerca per hostname…",
+    "no_hostname": "(senza hostname)",
+    "select_state": "— Seleziona stato —",
+    "no_room": "Nessuna location",
+    "create_submit": "Crea richiesta",
+    "create_ok": "Richiesta creata",
+    "create_missing_fields": "Seleziona asset e stato destinazione"
   }
 }

@@ -55,6 +55,8 @@
     "rack_models_desc": "Configurer les tailles et dimensions des racks",
     "locations_title": "Sites & Salles",
     "locations_desc": "Gérer les sites physiques et les salles",
+    "requests_title": "Demandes",
+    "requests_desc": "Gérer les demandes de matériel et d'équipements",
     "application_settings_title": "Paramètres",
     "application_settings_desc": "Configurer les paramètres de l'application"
   },
@@ -856,6 +858,16 @@
     "rejected_ok": "Request rejected",
     "clarified_ok": "Sent for clarification",
     "resubmitted_ok": "Request resubmitted",
-    "execute_confirm": "Confirm execution? The asset state and location will change."
+    "execute_confirm": "Confirmer l'exécution ? L'état et la localisation de l'équipement seront modifiés.",
+    "create_btn": "Nouvelle demande",
+    "create_title": "Nouvelle demande",
+    "create_asset": "Équipement",
+    "create_asset_placeholder": "Rechercher par hostname…",
+    "no_hostname": "(sans hostname)",
+    "select_state": "— Sélectionner un état —",
+    "no_room": "Aucune salle",
+    "create_submit": "Créer la demande",
+    "create_ok": "Demande créée",
+    "create_missing_fields": "Sélectionner l'équipement et l'état cible"
   }
 }

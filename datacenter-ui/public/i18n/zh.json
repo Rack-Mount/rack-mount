@@ -55,6 +55,8 @@
     "rack_models_desc": "配置机架尺寸和规格",
     "locations_title": "地点与机房",
     "locations_desc": "管理物理地点和机房",
+    "requests_title": "申请",
+    "requests_desc": "管理材料和设备申请",
     "application_settings_title": "设置",
     "application_settings_desc": "配置应用程序设置"
   },
@@ -856,6 +858,16 @@
     "rejected_ok": "请求已拒绝",
     "clarified_ok": "已发送澄清请求",
     "resubmitted_ok": "请求已重新提交",
-    "execute_confirm": "确认执行？资产状态和位置将会更改。"
+    "execute_confirm": "确认执行？资产状态和位置将会更改。",
+    "create_btn": "新建申请",
+    "create_title": "新建申请",
+    "create_asset": "设备",
+    "create_asset_placeholder": "按主机名搜索…",
+    "no_hostname": "（无主机名）",
+    "select_state": "— 选择状态 —",
+    "no_room": "无机房",
+    "create_submit": "创建申请",
+    "create_ok": "申请已创建",
+    "create_missing_fields": "请选择设备和目标状态"
   }
 }

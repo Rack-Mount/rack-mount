@@ -55,6 +55,8 @@
     "rack_models_desc": "Configure rack sizes and dimensions",
     "locations_title": "Locations & Rooms",
     "locations_desc": "Manage physical sites and rooms",
+    "requests_title": "Requests",
+    "requests_desc": "Manage material and device requests",
     "application_settings_title": "Settings",
     "application_settings_desc": "Configure application settings"
   },
@@ -856,6 +858,16 @@
     "rejected_ok": "Request rejected",
     "clarified_ok": "Sent for clarification",
     "resubmitted_ok": "Request resubmitted",
-    "execute_confirm": "Confirm execution? The asset state and location will change."
+    "execute_confirm": "Confirm execution? The asset state and location will change.",
+    "create_btn": "New request",
+    "create_title": "New request",
+    "create_asset": "Asset",
+    "create_asset_placeholder": "Search by hostname…",
+    "no_hostname": "(no hostname)",
+    "select_state": "— Select state —",
+    "no_room": "No location",
+    "create_submit": "Create request",
+    "create_ok": "Request created",
+    "create_missing_fields": "Select asset and target state"
   }
 }

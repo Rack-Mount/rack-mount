@@ -55,6 +55,8 @@
     "rack_models_desc": "Rack-Größen und -Abmessungen konfigurieren",
     "locations_title": "Standorte & Räume",
     "locations_desc": "Physische Standorte und Räume verwalten",
+    "requests_title": "Anfragen",
+    "requests_desc": "Material- und Geräteanfragen verwalten",
     "application_settings_title": "Einstellungen",
     "application_settings_desc": "Anwendungseinstellungen konfigurieren"
   },
@@ -856,6 +858,16 @@
     "rejected_ok": "Request rejected",
     "clarified_ok": "Sent for clarification",
     "resubmitted_ok": "Request resubmitted",
-    "execute_confirm": "Confirm execution? The asset state and location will change."
+    "execute_confirm": "Ausführung bestätigen? Status und Standort des Assets werden geändert.",
+    "create_btn": "Neue Anfrage",
+    "create_title": "Neue Anfrage",
+    "create_asset": "Asset",
+    "create_asset_placeholder": "Nach Hostname suchen…",
+    "no_hostname": "(kein Hostname)",
+    "select_state": "— Status auswählen —",
+    "no_room": "Kein Standort",
+    "create_submit": "Anfrage erstellen",
+    "create_ok": "Anfrage erstellt",
+    "create_missing_fields": "Asset und Zielstatus auswählen"
   }
 }
