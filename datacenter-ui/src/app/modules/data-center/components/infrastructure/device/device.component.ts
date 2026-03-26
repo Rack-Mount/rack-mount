@@ -101,9 +101,7 @@ export class DeviceComponent {
   protected showTooltip(): void {
     const rect = this.el.nativeElement.getBoundingClientRect();
     const tooltipW = 260; // max-width from CSS
-    const tooltipH = 160; // conservative estimate
     const vw = window.innerWidth;
-    const vh = window.innerHeight;
 
     // Horizontal: prefer right side, flip left if it would overflow
     if (rect.right + 8 + tooltipW <= vw - 4) {
@@ -114,15 +112,25 @@ export class DeviceComponent {
       this.tooltipFlipped = true;
     }
 
-    // Vertical: centre on element, clamp to viewport
-    const ideal = rect.top + rect.height / 2;
-    this.tooltipTop = Math.max(
-      tooltipH / 2 + 4,
-      Math.min(ideal, vh - tooltipH / 2 - 4),
-    );
-
+    // Render off-screen first, then measure actual height and reposition
+    this.tooltipTop = -9999;
     this.tooltipVisible = true;
     this.cdr.markForCheck();
+
+    setTimeout(() => {
+      if (!this.tooltipVisible) return;
+      const tooltipEl = this.el.nativeElement.querySelector(
+        '.device__tooltip',
+      ) as HTMLElement | null;
+      const tooltipH = tooltipEl?.offsetHeight ?? 160;
+      const vh = window.innerHeight;
+      const ideal = rect.top + rect.height / 2;
+      this.tooltipTop = Math.max(
+        tooltipH / 2 + 4,
+        Math.min(ideal, vh - tooltipH / 2 - 4),
+      );
+      this.cdr.markForCheck();
+    });
   }
 
   protected hideTooltip(): void {
