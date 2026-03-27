@@ -1,4 +1,6 @@
 asgiref==3.11.1
+celery==5.4.0
+kombu==5.4.2
 asitop==0.0.24
 attrs==26.1.0
 blessed==1.34.0
