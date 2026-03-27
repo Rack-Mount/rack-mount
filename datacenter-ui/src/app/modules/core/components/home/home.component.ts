@@ -1,10 +1,11 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  computed,
   DestroyRef,
   effect,
   inject,
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocationService } from '../../api/v1/api/location.service';
@@ -32,21 +33,20 @@ export class HomeComponent {
   protected readonly role = inject(RoleService);
   private readonly locationService = inject(LocationService);
   protected readonly warehouseAlerts = inject(WarehouseAlertService);
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
 
-  locations: DjLocation[] = [];
-  totalRooms = 0;
-  loading = true;
+  protected readonly locations = signal<DjLocation[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly totalRooms = computed(() =>
+    this.locations().reduce((sum, loc) => sum + (loc.rooms?.length ?? 0), 0),
+  );
 
   constructor() {
     // Re-run when auth role is loaded after login so Home updates without refresh.
     effect(() => {
       if (!this.role.canViewInfrastructure()) {
-        this.locations = [];
-        this.totalRooms = 0;
-        this.loading = false;
-        this.cdr.markForCheck();
+        this.locations.set([]);
+        this.loading.set(false);
         return;
       }
 
@@ -56,23 +56,17 @@ export class HomeComponent {
   }
 
   private loadLocations(): void {
-    this.loading = true;
+    this.loading.set(true);
     this.locationService
       .locationLocationList({})
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
-          this.locations = data.results ?? [];
-          this.totalRooms = this.locations.reduce(
-            (sum, loc) => sum + (loc.rooms?.length ?? 0),
-            0,
-          );
-          this.loading = false;
-          this.cdr.markForCheck();
+          this.locations.set(data.results ?? []);
+          this.loading.set(false);
         },
         error: () => {
-          this.loading = false;
-          this.cdr.markForCheck();
+          this.loading.set(false);
         },
       });
   }

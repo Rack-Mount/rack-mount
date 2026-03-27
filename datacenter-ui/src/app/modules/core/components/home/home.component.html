@@ -1,16 +1,16 @@
 <div class="home">
   <app-home-hero />
 
-  @if (!loading && locations.length > 0) {
+  @if (!loading() && locations().length > 0) {
     <app-home-stats
-      [locationCount]="locations.length"
-      [totalRooms]="totalRooms"
+      [locationCount]="locations().length"
+      [totalRooms]="totalRooms()"
     />
   }
 
   <app-home-locations
-    [loading]="loading"
-    [locations]="locations"
+    [loading]="loading()"
+    [locations]="locations()"
     [canViewAssets]="role.canViewAssets()"
     [canViewCatalog]="role.canViewCatalog()"
     [canViewInfrastructure]="role.canViewInfrastructure()"
