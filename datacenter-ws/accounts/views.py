@@ -147,7 +147,7 @@ class LogoutView(APIView):
             {'detail': _('Logout successful. Token blacklisted.')},
             status=status.HTTP_200_OK,
         )
-        response.delete_cookie('refresh_token', path='/api/auth/')
+        response.delete_cookie('refresh_token', path='/')
         if not refresh_token:
             return Response(
                 {'detail': _('Refresh token required.')},
@@ -255,7 +255,7 @@ class CookieTokenObtainView(APIView):
             secure=not django_settings.DEBUG,
             samesite='Lax',
             max_age=int(django_settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()),
-            path='/api/auth/',
+            path='/',
         )
         return response
 
@@ -333,7 +333,7 @@ class CookieTokenRefreshView(APIView):
                 secure=not django_settings.DEBUG,
                 samesite='Lax',
                 max_age=int(django_settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()),
-                path='/api/auth/',
+                path='/',
             )
         return response
 
@@ -361,7 +361,7 @@ class CookieTokenBlacklistView(APIView):
             status=status.HTTP_200_OK,
         )
         # Always clear the cookie regardless of whether blacklisting succeeds.
-        response.delete_cookie('refresh_token', path='/api/auth/')
+        response.delete_cookie('refresh_token', path='/')
         if not refresh_token:
             return response
         try:
