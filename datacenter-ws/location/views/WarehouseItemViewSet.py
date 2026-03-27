@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from accounts.permissions import RackResourcePermission
+from accounts.audit import AuditLogMixin
+from accounts.models import SecurityAuditLog
 from location.models import WarehouseItem
 from location.serializers import WarehouseItemSerializer
 from shared.mixins import StandardFilterMixin
@@ -39,7 +41,11 @@ class WarehouseItemFilter(df_filters.FilterSet):
         fields = ['warehouse', 'category', 'below_threshold', 'compatible_model']
 
 
-class WarehouseItemViewSet(StandardFilterMixin, viewsets.ModelViewSet):
+class WarehouseItemViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
+    audit_resource_type = 'warehouse_item'
+    audit_action_create = SecurityAuditLog.Action.INFRA_CREATE
+    audit_action_update = SecurityAuditLog.Action.INFRA_UPDATE
+    audit_action_delete = SecurityAuditLog.Action.INFRA_DELETE
     permission_classes = [IsAuthenticated, RackResourcePermission]
     queryset = WarehouseItem.objects.select_related('warehouse').prefetch_related('compatible_models__vendor').all()
     serializer_class = WarehouseItemSerializer
