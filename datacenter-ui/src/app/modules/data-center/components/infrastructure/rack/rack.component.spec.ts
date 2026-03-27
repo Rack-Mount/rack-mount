@@ -10,8 +10,7 @@ describe('RackComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RackComponent, TranslateModule.forRoot()],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RackComponent);
     component = fixture.componentInstance;
