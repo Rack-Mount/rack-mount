@@ -1,5 +1,6 @@
 from accounts.serializers import RoleSerializer
 from drf_spectacular.utils import extend_schema, inline_serializer
+from django.core.cache import cache
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -23,11 +24,16 @@ from rest_framework.views import APIView
     description='Returns basic info, role permissions, and user preferences for the currently authenticated user.',
 )
 class MeView(APIView):
-    """GET /auth/me/ — available to any authenticated user."""
+    """GET /auth/me/ — available to any authenticated user. Cached per user for 5 minutes."""
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        cache_key = f"auth:me:user:{request.user.id}"
+        cached_payload = cache.get(cache_key)
+        if cached_payload is not None:
+            return Response(cached_payload)
+
         user = request.user
         role_data = None
         measurement_system = 'auto'
@@ -37,10 +43,12 @@ class MeView(APIView):
         except Exception:  # noqa: BLE001 — catches RelatedObjectDoesNotExist and any profile misconfiguration
             pass
 
-        return Response({
+        payload = {
             'id': user.id,
             'username': user.username,
             'email': user.email,
             'role': role_data,
             'measurement_system': measurement_system,
-        })
+        }
+        cache.set(cache_key, payload, 300)
+        return Response(payload)

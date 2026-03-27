@@ -1,6 +1,9 @@
 import logging
 
 from django.contrib.auth.models import User
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 from accounts.audit import log_action
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics, viewsets, mixins, status
@@ -31,8 +34,6 @@ from accounts.serializers import (
 
 
 logger = logging.getLogger(__name__)
-
-
 
 
 class UserManagementViewSet(
@@ -73,11 +74,15 @@ class UserManagementViewSet(
 
 
 class RoleListView(generics.ListAPIView):
-    """Read-only list of all available roles. Accessible only by Admin role."""
+    """Read-only list of all available roles. Accessible only by Admin role. Cached for 5 minutes."""
     queryset = Role.objects.order_by('id')
     serializer_class = RoleSerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
     pagination_class = None
+
+    @method_decorator(cache_page(60 * 5))  # Cache for 5 minutes
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 class ChangePasswordView(generics.GenericAPIView):
@@ -115,6 +120,7 @@ class UserPreferencesView(generics.GenericAPIView):
         serializer = UserPreferencesSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.update(request.user, serializer.validated_data)
+        cache.delete(f"auth:me:user:{request.user.id}")
         return Response(serializer.data)
 
 
@@ -152,7 +158,8 @@ class LogoutView(APIView):
                            'token_user_id': token_user_id},
                 )
                 return Response(
-                    {'detail': _('Refresh token does not belong to the authenticated user.')},
+                    {'detail': _(
+                        'Refresh token does not belong to the authenticated user.')},
                     status=status.HTTP_403_FORBIDDEN,
                 )
             token.blacklist()
@@ -163,7 +170,8 @@ class LogoutView(APIView):
         except Exception:
             logger.exception('Logout failed while blacklisting refresh token')
             return Response(
-                {'detail': _('Unable to logout with the provided refresh token.')},
+                {'detail': _(
+                    'Unable to logout with the provided refresh token.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -338,7 +346,8 @@ class CookieTokenBlacklistView(APIView):
                            'token_user_id': token_user_id},
                 )
                 return Response(
-                    {'detail': _('Refresh token does not belong to the authenticated user.')},
+                    {'detail': _(
+                        'Refresh token does not belong to the authenticated user.')},
                     status=status.HTTP_403_FORBIDDEN,
                 )
             token.blacklist()
