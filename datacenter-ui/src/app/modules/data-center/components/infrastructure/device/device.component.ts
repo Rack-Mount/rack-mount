@@ -1,11 +1,11 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   computed,
   ElementRef,
   inject,
   input,
+  signal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of, switchMap } from 'rxjs';
@@ -55,16 +55,15 @@ export class DeviceComponent {
   /** True when the rack is shown from the rear face. */
   readonly rearView = input<boolean>(false);
 
-  protected tooltipVisible = false;
+  protected readonly tooltipVisible = signal(false);
   /** Fixed-position coords for the tooltip (avoids overflow clipping). */
-  protected tooltipTop = 0;
-  protected tooltipLeft = 0;
+  protected readonly tooltipTop = signal(0);
+  protected readonly tooltipLeft = signal(0);
   /** True when the tooltip is flipped to the left side of the device. */
-  protected tooltipFlipped = false;
+  protected readonly tooltipFlipped = signal(false);
   protected readonly serviceUrl = environment.service_url;
 
   private readonly el = inject(ElementRef<HTMLElement>);
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly mediaUrlService = inject(MediaUrlService);
 
   /** CSS modifier class derived from device_type (e.g. 'server', 'switch'). */
@@ -105,36 +104,32 @@ export class DeviceComponent {
 
     // Horizontal: prefer right side, flip left if it would overflow
     if (rect.right + 8 + tooltipW <= vw - 4) {
-      this.tooltipLeft = rect.right + 8;
-      this.tooltipFlipped = false;
+      this.tooltipLeft.set(rect.right + 8);
+      this.tooltipFlipped.set(false);
     } else {
-      this.tooltipLeft = Math.max(4, rect.left - 8 - tooltipW);
-      this.tooltipFlipped = true;
+      this.tooltipLeft.set(Math.max(4, rect.left - 8 - tooltipW));
+      this.tooltipFlipped.set(true);
     }
 
     // Render off-screen first, then measure actual height and reposition
-    this.tooltipTop = -9999;
-    this.tooltipVisible = true;
-    this.cdr.markForCheck();
+    this.tooltipTop.set(-9999);
+    this.tooltipVisible.set(true);
 
     setTimeout(() => {
-      if (!this.tooltipVisible) return;
+      if (!this.tooltipVisible()) return;
       const tooltipEl = this.el.nativeElement.querySelector(
         '.device__tooltip',
       ) as HTMLElement | null;
       const tooltipH = tooltipEl?.offsetHeight ?? 160;
       const vh = window.innerHeight;
       const ideal = rect.top + rect.height / 2;
-      this.tooltipTop = Math.max(
-        tooltipH / 2 + 4,
-        Math.min(ideal, vh - tooltipH / 2 - 4),
+      this.tooltipTop.set(
+        Math.max(tooltipH / 2 + 4, Math.min(ideal, vh - tooltipH / 2 - 4)),
       );
-      this.cdr.markForCheck();
     });
   }
 
   protected hideTooltip(): void {
-    this.tooltipVisible = false;
-    this.cdr.markForCheck();
+    this.tooltipVisible.set(false);
   }
 }

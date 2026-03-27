@@ -39,15 +39,15 @@
     }
 
     <!-- Hover tooltip (shown for both modes) -->
-    @if (tooltipVisible) {
+    @if (tooltipVisible()) {
       <div
         [class]="
           'device__tooltip' +
-          (tooltipFlipped ? ' device__tooltip--flipped' : '')
+          (tooltipFlipped() ? ' device__tooltip--flipped' : '')
         "
         role="tooltip"
-        [style.top.px]="tooltipTop"
-        [style.left.px]="tooltipLeft"
+        [style.top.px]="tooltipTop()"
+        [style.left.px]="tooltipLeft()"
       >
         @if (dev.device_hostname) {
           <div class="device__tooltip-row">
