@@ -105,36 +105,47 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD', default=''),
         'HOST': config('DB_HOST', default='127.0.0.1'),
         'PORT': config('DB_PORT', default='3306'),
+        # Keep DB connections open for a short period to reduce reconnect overhead.
+        'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=60, cast=int),
     }
 }
 
 # ── Redis Caching (Django 6.0 optimization) ───────────────────────────────────
 # Caches frequently-accessed data (auth/me, roles, catalog) to reduce database hits.
-# Falls back to in-memory LocMemCache if Redis is unavailable (dev/test only).
+# Use Redis only when explicitly enabled via USE_REDIS_CACHE.
 REDIS_HOST = config('REDIS_HOST', default='127.0.0.1')
 REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
 REDIS_DB = config('REDIS_DB', default=1, cast=int)
 REDIS_PASSWORD = config('REDIS_PASSWORD', default='')
+USE_REDIS_CACHE = config('USE_REDIS_CACHE', default=False, cast=bool)
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}' if REDIS_PASSWORD else f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'redis.Redis',
-            'CONNECTION_POOL_KWARGS': {
-                'max_connections': 50,
-                'decode_responses': False,
-                'retry_on_timeout': True,
-            },
-            'SOCKET_CONNECT_TIMEOUT': 5,
-            'SOCKET_TIMEOUT': 5,
-            'SOCKET_KEEPALIVE': True,
-        },
-        'KEY_PREFIX': 'datacenter',
-        'TIMEOUT': 300,  # 5-minute default cache TTL
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'datacenter-local-cache',
+        'TIMEOUT': 300,
     }
 }
+
+if USE_REDIS_CACHE:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}' if REDIS_PASSWORD else f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
+            'OPTIONS': {
+                'CONNECTION_POOL_KWARGS': {
+                    'max_connections': 50,
+                    'decode_responses': False,
+                    'retry_on_timeout': True,
+                },
+                'socket_connect_timeout': 5,
+                'socket_timeout': 5,
+                'socket_keepalive': True,
+            },
+            'KEY_PREFIX': 'datacenter',
+            'TIMEOUT': 300,  # 5-minute default cache TTL
+        }
+    }
 
 
 # Password validation
@@ -212,8 +223,10 @@ REST_FRAMEWORK = {
         'anon': '60/hour',
         'user': '1000/hour',
         # ─── Auth-specific scopes (login / token endpoints) ───────────────────
-        'login_anon': '20/hour',             # Username+password login attempts (brute-force protection)
-        'token_refresh': '300/hour',         # Token refresh calls (automatic every 15 min + F5)
+        # Username+password login attempts (brute-force protection)
+        'login_anon': '20/hour',
+        # Token refresh calls (automatic every 15 min + F5)
+        'token_refresh': '300/hour',
         'media_file': '600/hour',          # Image/file serving requests
         # ─── YOLO-specific throttle scopes ────────────────────────────────────
         'port_training': '10/hour',              # Annotation submissions
