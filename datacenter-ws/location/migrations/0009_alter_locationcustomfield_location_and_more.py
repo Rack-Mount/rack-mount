@@ -4,6 +4,20 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 
+def _rename_location_table_if_needed(apps, schema_editor):
+    """
+    On production the table is already named 'datacenter_location'.
+    On a freshly-created test database the table is 'location_location'
+    (Django's default naming from migration 0001 which lacked db_table).
+    Rename it only when the default-named table exists.
+    """
+    tables = schema_editor.connection.introspection.table_names()
+    if 'location_location' in tables:
+        schema_editor.execute(
+            'ALTER TABLE "location_location" RENAME TO "datacenter_location"'
+        )
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -11,7 +25,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # Pin the Location table name to the existing physical table (no DB op needed).
+        # Pin the Location table name to the existing physical table.
+        # On production the table is already 'datacenter_location'; for fresh DBs
+        # (e.g. test runs) the RunPython below renames it first.
         migrations.SeparateDatabaseAndState(
             state_operations=[
                 migrations.AlterModelTable(
@@ -19,7 +35,12 @@ class Migration(migrations.Migration):
                     table='datacenter_location',
                 ),
             ],
-            database_operations=[],
+            database_operations=[
+                migrations.RunPython(
+                    _rename_location_table_if_needed,
+                    reverse_code=migrations.RunPython.noop,
+                ),
+            ],
         ),
         migrations.AlterField(
             model_name='locationcustomfield',

@@ -74,13 +74,16 @@ class SignedURLTestCase(TestCase):
         """Test that expired signatures are rejected."""
         filename = 'training/sample.jpg'
 
-        # Generate a signature that expired 1 second ago
-        expire_ts = int(time.time()) - 1
+        # Build a correctly signed URL that is already expired beyond
+        # the built-in 60s clock-skew tolerance.
+        url = generate_signed_url(filename, expiry_seconds=-120)
+        query_string = url.split('?')[1]
+        params = dict(p.split('=') for p in query_string.split('&'))
 
         is_valid, error = verify_signed_url(
             filename,
-            'dummy_sig',
-            str(expire_ts)
+            params['sign'],
+            params['expire']
         )
 
         self.assertFalse(is_valid)

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+import sys
 from import_export.formats.base_formats import CSV, XLSX
 from datetime import timedelta
 from pathlib import Path
@@ -109,6 +110,22 @@ DATABASES = {
         'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=60, cast=int),
     }
 }
+
+# Use an in-memory SQLite DB for test runs so `./manage.py test` works on a
+# fresh checkout without needing a pre-built test database.  MIGRATE=False
+# builds tables from the current model state instead of replaying migrations,
+# which avoids failures in SeparateDatabaseAndState migrations that assume
+# production columns already exist.
+RUNNING_TESTS = 'test' in sys.argv
+if RUNNING_TESTS:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+        'TEST': {
+            'NAME': ':memory:',
+            'MIGRATE': False,
+        },
+    }
 
 # ── Redis Caching (Django 6.0 optimization) ───────────────────────────────────
 # Caches frequently-accessed data (auth/me, roles, catalog) to reduce database hits.
