@@ -3,7 +3,7 @@
   <div class="editor-tabs">
     <button
       class="tab"
-      [class.tab--active]="mode === 'perspective'"
+      [class.tab--active]="mode() === 'perspective'"
       (click)="setMode('perspective')"
     >
       <svg viewBox="0 0 16 16" fill="none">
@@ -18,7 +18,7 @@
     </button>
     <button
       class="tab"
-      [class.tab--active]="mode === 'crop'"
+      [class.tab--active]="mode() === 'crop'"
       (click)="setMode('crop')"
     >
       <svg viewBox="0 0 16 16" fill="none">
@@ -41,7 +41,7 @@
     </button>
     <button
       class="tab"
-      [class.tab--active]="mode === 'transform'"
+      [class.tab--active]="mode() === 'transform'"
       (click)="setMode('transform')"
     >
       <svg viewBox="0 0 16 16" fill="none">
@@ -65,9 +65,9 @@
 
   <!-- ── Hint strip ─────────────────────────────────────────────────── -->
   <div class="editor-hint">
-    @if (mode === "perspective") {
+    @if (mode() === "perspective") {
       <span>{{ "models.editor_hint_persp" | translate }}</span>
-    } @else if (mode === "crop") {
+    } @else if (mode() === "crop") {
       <span>{{ "models.editor_hint_crop" | translate }}</span>
     } @else {
       <span>{{ "models.editor_hint_transform" | translate }}</span>
@@ -80,14 +80,14 @@
     <canvas
       #editorCanvas
       class="editor-canvas"
-      [style.display]="imgLoaded ? 'block' : 'none'"
+      [style.display]="imgLoaded() ? 'block' : 'none'"
     ></canvas>
-    @if (!imgLoaded && !imgError) {
+    @if (!imgLoaded() && !imgError()) {
       <div class="canvas-placeholder canvas-overlay">
         <div class="spinner"></div>
       </div>
     }
-    @if (imgError) {
+    @if (imgError()) {
       <div class="canvas-placeholder canvas-placeholder--error canvas-overlay">
         {{ "models.editor_load_error" | translate }}
       </div>
@@ -95,7 +95,7 @@
   </div>
 
   <!-- ── Transform controls (only visible in transform mode) ──────── -->
-  @if (mode === "transform") {
+  @if (mode() === "transform") {
     <div class="transform-controls">
       <div class="transform-group">
         <span class="transform-label">{{
@@ -145,7 +145,7 @@
           </svg>
           {{ "models.editor_rotate_cw" | translate }}
         </button>
-        <span class="rotation-badge">{{ rotationLabel }}</span>
+        <span class="rotation-badge">{{ rotationLabel() }}</span>
       </div>
 
       <div class="transform-group">
@@ -154,7 +154,7 @@
         }}</span>
         <button
           class="ctrl-btn"
-          [class.ctrl-btn--active]="flipH"
+          [class.ctrl-btn--active]="flipH()"
           (click)="toggleFlipH()"
         >
           <svg viewBox="0 0 16 16" fill="none">
@@ -175,7 +175,7 @@
         </button>
         <button
           class="ctrl-btn"
-          [class.ctrl-btn--active]="flipV"
+          [class.ctrl-btn--active]="flipV()"
           (click)="toggleFlipV()"
         >
           <svg viewBox="0 0 16 16" fill="none">
@@ -208,7 +208,7 @@
       <button class="btn-cancel" (click)="cancel()">
         {{ "common.cancel" | translate }}
       </button>
-      <button class="btn-apply" [disabled]="!imgLoaded" (click)="apply()">
+      <button class="btn-apply" [disabled]="!imgLoaded()" (click)="apply()">
         {{ "models.editor_apply" | translate }}
       </button>
     </div>

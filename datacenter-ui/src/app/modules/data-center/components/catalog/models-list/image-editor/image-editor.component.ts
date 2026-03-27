@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  computed,
   effect,
   ElementRef,
   inject,
@@ -9,6 +9,7 @@ import {
   OnDestroy,
   OnInit,
   output,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -163,11 +164,11 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   @ViewChild('wrap', { static: true }) wrapRef!: ElementRef<HTMLDivElement>;
 
   // ── Mode ────────────────────────────────────────────────────────────────
-  protected mode: EditorMode = 'perspective';
+  protected readonly mode = signal<EditorMode>('perspective');
 
   // ── Image state ──────────────────────────────────────────────────────────
-  protected imgLoaded = false;
-  protected imgError = false;
+  protected readonly imgLoaded = signal(false);
+  protected readonly imgError = signal(false);
 
   private img = new Image();
   private blobUrl: string | null = null;
@@ -189,9 +190,9 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   private cropH = 1;
 
   // ── Transform ────────────────────────────────────────────────────────────
-  protected rotation: 0 | 90 | 180 | 270 = 0;
-  protected flipH = false;
-  protected flipV = false;
+  protected readonly rotation = signal<0 | 90 | 180 | 270>(0);
+  protected readonly flipH = signal(false);
+  protected readonly flipV = signal(false);
 
   // ── Canvas layout cache ───────────────────────────────────────────────────
   private canvasScale = 1;
@@ -208,7 +209,6 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   // ── RAF ───────────────────────────────────────────────────────────────────
   private raf = 0;
   private resizeObs?: ResizeObserver;
-  private cdr = inject(ChangeDetectorRef);
 
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -248,8 +248,8 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   // ─────────────────────────────────────────────────────────────────────────
 
   private async loadImage(): Promise<void> {
-    this.imgLoaded = false;
-    this.imgError = false;
+    this.imgLoaded.set(false);
+    this.imgError.set(false);
 
     if (this.blobUrl) {
       URL.revokeObjectURL(this.blobUrl);
@@ -269,8 +269,7 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
         src = URL.createObjectURL(blob);
         this.blobUrl = src;
       } catch {
-        this.imgError = true;
-        this.cdr.markForCheck();
+        this.imgError.set(true);
         return;
       }
     }
@@ -279,14 +278,12 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
 
     this.img = new Image();
     this.img.onload = () => {
-      this.imgLoaded = true;
-      this.cdr.markForCheck();
+      this.imgLoaded.set(true);
       this.resetParams();
       this.onResize();
     };
     this.img.onerror = () => {
-      this.imgError = true;
-      this.cdr.markForCheck();
+      this.imgError.set(true);
     };
     this.img.src = src;
   }
@@ -304,9 +301,9 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
     this.cropY = 0;
     this.cropW = w;
     this.cropH = h;
-    this.rotation = 0;
-    this.flipH = false;
-    this.flipV = false;
+    this.rotation.set(0);
+    this.flipH.set(false);
+    this.flipV.set(false);
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -314,7 +311,7 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   // ─────────────────────────────────────────────────────────────────────────
 
   private onResize(): void {
-    if (!this.imgLoaded) return;
+    if (!this.imgLoaded()) return;
     const wrap = this.wrapRef.nativeElement;
     const canvas = this.canvasRef.nativeElement;
     const pad = 16;
@@ -414,11 +411,11 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
 
     ctx.clearRect(0, 0, cw, ch);
 
-    if (!this.imgLoaded) return;
+    if (!this.imgLoaded()) return;
 
-    if (this.mode === 'perspective') {
+    if (this.mode() === 'perspective') {
       this.drawPerspMode(ctx, cw, ch);
-    } else if (this.mode === 'crop') {
+    } else if (this.mode() === 'crop') {
       this.drawCropMode(ctx, cw, ch);
     } else {
       this.drawTransformMode(ctx, cw, ch);
@@ -671,15 +668,18 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
     const sc = this.canvasScale;
     const iw = this.imgW * sc;
     const ih = this.imgH * sc;
+    const rotation = this.rotation();
+    const flipH = this.flipH();
+    const flipV = this.flipV();
 
-    const rad = (this.rotation * Math.PI) / 180;
+    const rad = (rotation * Math.PI) / 180;
     ctx.rotate(-rad);
-    if (this.flipH) ctx.scale(-1, 1);
-    if (this.flipV) ctx.scale(1, -1);
+    if (flipH) ctx.scale(-1, 1);
+    if (flipV) ctx.scale(1, -1);
 
     // After rotation 90/270, swap width/height for centering
-    const ew = this.rotation % 180 === 0 ? iw : ih;
-    const eh = this.rotation % 180 === 0 ? ih : iw;
+    const ew = rotation % 180 === 0 ? iw : ih;
+    const eh = rotation % 180 === 0 ? ih : iw;
 
     ctx.drawImage(this.img, -ew / 2, -eh / 2, ew, eh);
     ctx.restore();
@@ -711,14 +711,14 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   // ─────────────────────────────────────────────────────────────────────────
 
   private readonly onMouseDown = (e: MouseEvent): void => {
-    if (!this.imgLoaded) return;
+    if (!this.imgLoaded()) return;
     e.preventDefault();
     const [mx, my] = this.canvasXY(e);
     this.startDrag(mx, my);
   };
 
   private readonly onMouseMove = (e: MouseEvent): void => {
-    if (!this.imgLoaded) return;
+    if (!this.imgLoaded()) return;
     const [mx, my] = this.canvasXY(e);
     this.updateDrag(mx, my);
   };
@@ -728,7 +728,7 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   };
 
   private readonly onTouchStart = (e: TouchEvent): void => {
-    if (!this.imgLoaded) return;
+    if (!this.imgLoaded()) return;
     e.preventDefault();
     const t = e.touches[0];
     const [mx, my] = this.canvasXY(t);
@@ -736,7 +736,7 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   };
 
   private readonly onTouchMove = (e: TouchEvent): void => {
-    if (!this.imgLoaded) return;
+    if (!this.imgLoaded()) return;
     e.preventDefault();
     const t = e.touches[0];
     const [mx, my] = this.canvasXY(t);
@@ -746,18 +746,18 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   // ─────────────────────────────────────────────────────────────────────────
 
   private startDrag(mx: number, my: number): void {
-    if (this.mode === 'perspective') {
+    if (this.mode() === 'perspective') {
       this.startPerspDrag(mx, my);
-    } else if (this.mode === 'crop') {
+    } else if (this.mode() === 'crop') {
       this.startCropDrag(mx, my);
     }
   }
 
   private updateDrag(mx: number, my: number): void {
     if (this.activeHandle === -1) return;
-    if (this.mode === 'perspective') {
+    if (this.mode() === 'perspective') {
       this.updatePerspDrag(mx, my);
-    } else if (this.mode === 'crop') {
+    } else if (this.mode() === 'crop') {
       this.updateCropDrag(mx, my);
     }
     this.scheduleRedraw();
@@ -934,7 +934,7 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   // ─────────────────────────────────────────────────────────────────────────
 
   protected setMode(m: EditorMode): void {
-    this.mode = m;
+    this.mode.set(m);
     if (m === 'crop') {
       // Sync crop to persp output size if it was never cropped
       const { w, h } = this.getPerspOutSize();
@@ -949,24 +949,24 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   }
 
   protected rotateCW(): void {
-    this.rotation = ((this.rotation + 90) % 360) as 0 | 90 | 180 | 270;
+    this.rotation.set(((this.rotation() + 90) % 360) as 0 | 90 | 180 | 270);
     this.scheduleRedraw();
   }
   protected rotateCCW(): void {
-    this.rotation = ((this.rotation + 270) % 360) as 0 | 90 | 180 | 270;
+    this.rotation.set(((this.rotation() + 270) % 360) as 0 | 90 | 180 | 270);
     this.scheduleRedraw();
   }
   protected toggleFlipH(): void {
-    this.flipH = !this.flipH;
+    this.flipH.update((value) => !value);
     this.scheduleRedraw();
   }
   protected toggleFlipV(): void {
-    this.flipV = !this.flipV;
+    this.flipV.update((value) => !value);
     this.scheduleRedraw();
   }
 
   protected reset(): void {
-    if (this.imgLoaded) {
+    if (this.imgLoaded()) {
       this.resetParams();
       this.onResize();
     }
@@ -977,7 +977,7 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   }
 
   protected apply(): void {
-    if (!this.imgLoaded) return;
+    if (!this.imgLoaded()) return;
 
     const [tl, tr, br, bl] = this.perspPts as [
       [number, number],
@@ -1030,9 +1030,9 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
             w: Math.round(this.cropW),
             h: Math.round(this.cropH),
           },
-      rotation: this.rotation,
-      flipH: this.flipH,
-      flipV: this.flipV,
+      rotation: this.rotation(),
+      flipH: this.flipH(),
+      flipV: this.flipV(),
     };
 
     this.confirmed.emit({ params, previewDataUrl: this.getPreviewDataUrl() });
@@ -1120,7 +1120,7 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
     cropC.getContext('2d')!.drawImage(perspC, cx, cy, cw, ch, 0, 0, cw, ch);
 
     // Step 3 – rotation + flip  (matches Pillow's CCW convention)
-    const rot = this.rotation;
+    const rot = this.rotation();
     const outW = rot % 180 === 0 ? cw : ch;
     const outH = rot % 180 === 0 ? ch : cw;
     const finalC = document.createElement('canvas');
@@ -1129,8 +1129,8 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
     const fCtx = finalC.getContext('2d')!;
     fCtx.translate(outW / 2, outH / 2);
     fCtx.rotate(-((rot * Math.PI) / 180));
-    if (this.flipH) fCtx.scale(-1, 1);
-    if (this.flipV) fCtx.scale(1, -1);
+    if (this.flipH()) fCtx.scale(-1, 1);
+    if (this.flipV()) fCtx.scale(1, -1);
     fCtx.drawImage(cropC, -cw / 2, -ch / 2);
 
     return finalC.toDataURL('image/jpeg', 0.85);
@@ -1140,7 +1140,5 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
   // Template helpers
   // ─────────────────────────────────────────────────────────────────────────
 
-  protected get rotationLabel(): string {
-    return `${this.rotation}°`;
-  }
+  protected readonly rotationLabel = computed(() => `${this.rotation()}°`);
 }
