@@ -108,6 +108,34 @@ DATABASES = {
     }
 }
 
+# ── Redis Caching (Django 6.0 optimization) ───────────────────────────────────
+# Caches frequently-accessed data (auth/me, roles, catalog) to reduce database hits.
+# Falls back to in-memory LocMemCache if Redis is unavailable (dev/test only).
+REDIS_HOST = config('REDIS_HOST', default='127.0.0.1')
+REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
+REDIS_DB = config('REDIS_DB', default=1, cast=int)
+REDIS_PASSWORD = config('REDIS_PASSWORD', default='')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}' if REDIS_PASSWORD else f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'redis.Redis',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 50,
+                'decode_responses': False,
+                'retry_on_timeout': True,
+            },
+            'SOCKET_CONNECT_TIMEOUT': 5,
+            'SOCKET_TIMEOUT': 5,
+            'SOCKET_KEEPALIVE': True,
+        },
+        'KEY_PREFIX': 'datacenter',
+        'TIMEOUT': 300,  # 5-minute default cache TTL
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
