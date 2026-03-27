@@ -136,6 +136,25 @@ class UserManagementViewSetTests(BaseAccountsTestCase):
         self.viewer_user.refresh_from_db()
         self.assertEqual(self.viewer_user.email, 'updated@example.com')
 
+    def test_admin_can_full_update_user_with_put(self):
+        self.client.force_authenticate(user=self.admin_user)
+        url = f'{self.url}{self.viewer_user.id}/'
+        payload = {
+            'username': 'viewer-updated',
+            'email': 'viewer-updated@example.com',
+            'is_active': False,
+            'role_id': self.admin_role.id,
+        }
+
+        response = self.client.put(url, payload, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.viewer_user.refresh_from_db()
+        self.assertEqual(self.viewer_user.username, 'viewer-updated')
+        self.assertEqual(self.viewer_user.email, 'viewer-updated@example.com')
+        self.assertFalse(self.viewer_user.is_active)
+        self.assertEqual(self.viewer_user.profile.role_id, self.admin_role.id)
+
     def test_update_user_with_duplicate_username_returns_400(self):
         self.client.force_authenticate(user=self.admin_user)
         url = f'{self.url}{self.viewer_user.id}/'
@@ -163,6 +182,21 @@ class UserManagementViewSetTests(BaseAccountsTestCase):
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_non_admin_cannot_access_user_detail(self):
+        self.client.force_authenticate(user=self.viewer_user)
+        url = f'{self.url}{self.admin_user.id}/'
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_unauthenticated_cannot_access_user_detail(self):
+        url = f'{self.url}{self.viewer_user.id}/'
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class JwtFlowTests(BaseAccountsTestCase):
@@ -214,6 +248,20 @@ class JwtFlowTests(BaseAccountsTestCase):
         self.assertIn('access', response.data)
         self.assertEqual(response.data['username'], self.user.username)
 
+    def test_token_refresh_without_refresh_token_returns_401(self):
+        response = self.client.post(self.refresh_url, {}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_token_refresh_with_invalid_token_returns_401(self):
+        response = self.client.post(
+            self.refresh_url,
+            {'refresh': 'not-a-valid-jwt'},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_blacklisted_refresh_token_cannot_be_used_again(self):
         login_response = self._login()
         access_token = login_response.data['access']
@@ -235,6 +283,28 @@ class JwtFlowTests(BaseAccountsTestCase):
         )
         self.assertEqual(refresh_response.status_code,
                          status.HTTP_401_UNAUTHORIZED)
+
+    def test_token_blacklist_without_refresh_token_returns_200(self):
+        login_response = self._login()
+        access_token = login_response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
+
+        response = self.client.post(self.blacklist_url, {}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_token_blacklist_with_invalid_token_returns_400(self):
+        login_response = self._login()
+        access_token = login_response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
+
+        response = self.client.post(
+            self.blacklist_url,
+            {'refresh': 'not-a-valid-jwt'},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_logout_blacklists_refresh_and_blocks_future_refresh(self):
         login_response = self._login()
