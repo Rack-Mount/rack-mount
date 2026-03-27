@@ -19,8 +19,16 @@ describe('authInterceptor', () => {
   let http: HttpClient;
   let httpMock: HttpTestingController;
 
+  function expectNoXsrfAugmentation(url: string): void {
+    const req = httpMock.expectOne(url);
+    expect(req.request.withCredentials).toBeFalse();
+    expect(req.request.headers.has('X-CSRFToken')).toBeFalse();
+    req.flush({});
+  }
+
   beforeEach(() => {
     const authMock = {
+      accessToken: jasmine.createSpy('accessToken').and.returnValue(''),
       refresh: jasmine.createSpy('refresh').and.returnValue(of(undefined)),
     };
 
@@ -52,7 +60,7 @@ describe('authInterceptor', () => {
       'csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
   });
 
-  it('should attach X-CSRFToken for unsafe API requests', () => {
+  it('should not force credentials or X-CSRF header on API auth request', () => {
     http
       .post('http://localhost:8000/auth/token/', {
         username: 'u',
@@ -60,18 +68,12 @@ describe('authInterceptor', () => {
       })
       .subscribe();
 
-    const req = httpMock.expectOne('http://localhost:8000/auth/token/');
-    expect(req.request.withCredentials).toBeTrue();
-    expect(req.request.headers.get('X-CSRFToken')).toBe('test-csrf-token');
-    req.flush({});
+    expectNoXsrfAugmentation('http://localhost:8000/auth/token/');
   });
 
-  it('should not attach X-CSRFToken for unsafe external requests', () => {
+  it('should not force credentials or X-CSRF header on external request', () => {
     http.post('https://example.com/api', {}).subscribe();
 
-    const req = httpMock.expectOne('https://example.com/api');
-    expect(req.request.withCredentials).toBeTrue();
-    expect(req.request.headers.has('X-CSRFToken')).toBeFalse();
-    req.flush({});
+    expectNoXsrfAugmentation('https://example.com/api');
   });
 });

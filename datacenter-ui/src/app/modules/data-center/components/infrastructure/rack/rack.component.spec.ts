@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { RackComponent } from './rack.component';
 
@@ -8,7 +9,7 @@ describe('RackComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RackComponent]
+      imports: [RackComponent, TranslateModule.forRoot()],
     })
     .compileComponents();
 
@@ -17,7 +18,7 @@ describe('RackComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create with translation providers', () => {
     expect(component).toBeTruthy();
   });
 });

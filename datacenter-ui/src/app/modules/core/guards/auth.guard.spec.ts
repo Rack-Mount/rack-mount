@@ -5,7 +5,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
-import { firstValueFrom, Observable, of, throwError } from 'rxjs';
+import { firstValueFrom, isObservable, of, throwError } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 import { authGuard } from './auth.guard';
@@ -15,6 +15,8 @@ describe('authGuard', () => {
 
   let authMock: {
     isAuthenticated: jasmine.Spy;
+    hasRefreshToken: jasmine.Spy;
+    refresh: jasmine.Spy;
     fetchAndLoadRole: jasmine.Spy;
     logout: jasmine.Spy;
   };
@@ -22,6 +24,8 @@ describe('authGuard', () => {
   beforeEach(() => {
     authMock = {
       isAuthenticated: jasmine.createSpy('isAuthenticated'),
+      hasRefreshToken: jasmine.createSpy('hasRefreshToken'),
+      refresh: jasmine.createSpy('refresh').and.returnValue(of(undefined)),
       fetchAndLoadRole: jasmine.createSpy('fetchAndLoadRole'),
       logout: jasmine.createSpy('logout').and.returnValue(of(undefined)),
     };
@@ -50,8 +54,14 @@ describe('authGuard', () => {
     );
   }
 
+  async function resolveGuardResult(): Promise<unknown> {
+    const result = runGuard();
+    return isObservable(result) ? firstValueFrom(result) : result;
+  }
+
   it('should redirect to login when not authenticated locally', () => {
     authMock.isAuthenticated.and.returnValue(false);
+    authMock.hasRefreshToken.and.returnValue(false);
 
     const result = runGuard();
 
@@ -63,27 +73,21 @@ describe('authGuard', () => {
     authMock.isAuthenticated.and.returnValue(true);
     authMock.fetchAndLoadRole.and.returnValue(of(undefined));
 
-    const result = runGuard();
-    const resolved = await firstValueFrom(
-      result as Observable<boolean | UrlTree>,
-    );
+    const resolved = await resolveGuardResult();
 
     expect(resolved).toBeTrue();
     expect(authMock.logout).not.toHaveBeenCalled();
   });
 
-  it('should logout and redirect when server-side validation fails', async () => {
+  it('should redirect to login when server-side role fetch fails', async () => {
     authMock.isAuthenticated.and.returnValue(true);
     authMock.fetchAndLoadRole.and.returnValue(
       throwError(() => new Error('unauthorized')),
     );
 
-    const result = runGuard();
-    const resolved = await firstValueFrom(
-      result as Observable<boolean | UrlTree>,
-    );
+    const resolved = await resolveGuardResult();
 
-    expect(authMock.logout).toHaveBeenCalled();
+    expect(authMock.logout).not.toHaveBeenCalled();
     expect(resolved).toBe(loginTree);
   });
 });
