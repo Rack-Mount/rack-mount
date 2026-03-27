@@ -6,6 +6,7 @@ import {
   filter,
   map,
   Observable,
+  shareReplay,
   take,
   tap,
   throwError,
@@ -45,6 +46,12 @@ export class AuthService {
   // ── Token refresh ─────────────────────────────────────────────────────────
   private _isRefreshing = false;
   private readonly _refreshSubject = new BehaviorSubject<void | null>(null);
+  /** Cached response from /auth/me/ — shared across concurrent calls via shareReplay(1). */
+  private _roleResponseCache$: Observable<{
+    username: string;
+    role: RoleData;
+    measurement_system?: string;
+  }> | null = null;
 
   login(username: string, credentials?: LoginCredentials): Observable<void> {
     // If credentials provided, validate credentials first
@@ -90,6 +97,7 @@ export class AuthService {
     this._setRefreshToken('');
     this._isRefreshing = false;
     this._refreshSubject.next(null);
+    this._roleResponseCache$ = null; // Invalidate cache on logout
     this.roleService.clear();
 
     return this.http
@@ -106,25 +114,31 @@ export class AuthService {
       );
   }
 
-  /** Fetches /auth/me/ and stores the returned username, role and preferences in memory. */
+  /** Fetches /auth/me/ and stores the returned username, role and preferences in memory.
+   * Response is cached via shareReplay(1) so concurrent calls share the same request. */
   fetchAndLoadRole(): Observable<void> {
-    return this.http
-      .get<{
-        username: string;
-        role: RoleData;
-        measurement_system?: string;
-      }>(`${environment.service_url}/auth/me/`)
-      .pipe(
-        map(({ username, role, measurement_system }) => {
-          if (username) this._username.set(username);
-          if (role) this.roleService.load(role);
-          if (measurement_system) {
-            this.settingsService.loadFromServer(
-              measurement_system as MeasurementSystemSetting,
-            );
-          }
-        }),
-      );
+    // Return cached response if available; otherwise, create new request and cache it
+    if (!this._roleResponseCache$) {
+      this._roleResponseCache$ = this.http
+        .get<{
+          username: string;
+          role: RoleData;
+          measurement_system?: string;
+        }>(`${environment.service_url}/auth/me/`)
+        .pipe(shareReplay(1));
+    }
+
+    return this._roleResponseCache$.pipe(
+      map(({ username, role, measurement_system }) => {
+        if (username) this._username.set(username);
+        if (role) this.roleService.load(role);
+        if (measurement_system) {
+          this.settingsService.loadFromServer(
+            measurement_system as MeasurementSystemSetting,
+          );
+        }
+      }),
+    );
   }
 
   /**
