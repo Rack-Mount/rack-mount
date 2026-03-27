@@ -1,11 +1,26 @@
+# Database
 db.sqlite3
+
+# Python
 venv
 __pycache__
 *.pyc
+.pytest_cache/
+
+# Django logs
+datacenter-ws/logs/
+
+# Frontend environments (contain secrets/urls)
 datacenter-ui/src/environments/environment.development.ts
 datacenter-ui/src/environments/environment.ts
+
+# Media files and ML model
 datacenter-ws/files
-.Ds_Store
-.idea
 datacenter-ws/yolov8n.pt
+
+# Documentation (generated)
 docs/*
+
+# OS / Editor
+.DS_Store
+.idea
