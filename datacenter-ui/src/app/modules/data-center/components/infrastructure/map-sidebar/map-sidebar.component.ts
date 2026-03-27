@@ -11,7 +11,7 @@ import { RoleService } from '../../../../core/services/role.service';
 @Component({
   selector: 'app-map-sidebar',
   templateUrl: './map-sidebar.component.html',
-  styleUrls: ['./map-sidebar.component.scss'],
+  styleUrl: './map-sidebar.component.scss',
   standalone: true,
   imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
