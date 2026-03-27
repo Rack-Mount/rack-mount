@@ -1,10 +1,11 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Input,
-  OnInit,
-  ViewChild,
+  input,
+  output,
+  viewChild,
 } from '@angular/core';
 
 @Component({
@@ -14,34 +15,34 @@ import {
   styleUrl: './confirm-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ConfirmDialogComponent implements OnInit {
-  @Input() title = 'Conferma';
-  @Input() message = '';
-  @Input() confirmLabel = 'Conferma';
-  @Input() confirmDanger = false;
-  @Input() cancelLabel = 'Annulla';
+export class ConfirmDialogComponent {
+  readonly title = input('Conferma');
+  readonly message = input('');
+  readonly confirmLabel = input('Conferma');
+  readonly confirmDanger = input(false);
+  readonly cancelLabel = input('Annulla');
 
-  @ViewChild('confirmBtn') confirmBtnRef!: ElementRef<HTMLButtonElement>;
+  readonly confirm = output<boolean>();
+  readonly cancel = output<boolean>();
 
-  /** Resolved by the service when the user makes a choice */
-  resolve!: (value: boolean) => void;
+  private readonly confirmBtnRef =
+    viewChild<ElementRef<HTMLButtonElement>>('confirmBtn');
 
-  ngOnInit(): void {
-    // Autofocus the confirm button after render
-    setTimeout(() => this.confirmBtnRef?.nativeElement?.focus());
+  constructor() {
+    afterNextRender(() => this.confirmBtnRef()?.nativeElement.focus());
   }
 
   onConfirm(): void {
-    this.resolve(true);
+    this.confirm.emit(true);
   }
 
   onCancel(): void {
-    this.resolve(false);
+    this.cancel.emit(false);
   }
 
   onOverlayClick(event: MouseEvent): void {
     if ((event.target as HTMLElement).classList.contains('cd-overlay')) {
-      this.resolve(false);
+      this.cancel.emit(false);
     }
   }
 }

@@ -1,0 +1,11 @@
+@if (confirmDialog.activeDialog(); as dialog) {
+  <app-confirm-dialog
+    [title]="dialog.title"
+    [message]="dialog.message"
+    [confirmLabel]="dialog.confirmLabel"
+    [confirmDanger]="dialog.confirmDanger"
+    [cancelLabel]="dialog.cancelLabel"
+    (confirm)="confirmDialog.resolveCurrent(true)"
+    (cancel)="confirmDialog.resolveCurrent(false)"
+  />
+}

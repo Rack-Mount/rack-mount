@@ -1,11 +1,4 @@
-import {
-  ApplicationRef,
-  createComponent,
-  EnvironmentInjector,
-  inject,
-  Injectable,
-} from '@angular/core';
-import { ConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
+import { Injectable, signal } from '@angular/core';
 
 export interface ConfirmOptions {
   title?: string;
@@ -15,10 +8,21 @@ export interface ConfirmOptions {
   cancelLabel?: string;
 }
 
+interface ConfirmDialogState {
+  title: string;
+  message: string;
+  confirmLabel: string;
+  confirmDanger: boolean;
+  cancelLabel: string;
+  resolve: (value: boolean) => void;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ConfirmDialogService {
-  private readonly appRef = inject(ApplicationRef);
-  private readonly injector = inject(EnvironmentInjector);
+  private readonly queue: ConfirmDialogState[] = [];
+  private readonly _activeDialog = signal<ConfirmDialogState | null>(null);
+
+  readonly activeDialog = this._activeDialog.asReadonly();
 
   /**
    * Opens a confirmation dialog and resolves to `true` when the user
@@ -26,30 +30,31 @@ export class ConfirmDialogService {
    */
   confirm(message: string, options: ConfirmOptions = {}): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
-      const componentRef = createComponent(ConfirmDialogComponent, {
-        environmentInjector: this.injector,
+      this.queue.push({
+        message,
+        title: options.title ?? 'Conferma',
+        confirmLabel: options.confirmLabel ?? 'Conferma',
+        confirmDanger: options.danger ?? false,
+        cancelLabel: options.cancelLabel ?? 'Annulla',
+        resolve,
       });
 
-      const instance = componentRef.instance;
-      instance.message = message;
-      instance.title = options.title ?? 'Conferma';
-      instance.confirmLabel = options.confirmLabel ?? 'Conferma';
-      instance.confirmDanger = options.danger ?? false;
-      instance.cancelLabel = options.cancelLabel ?? 'Annulla';
-      instance.resolve = (value: boolean) => {
-        resolve(value);
-        this.appRef.detachView(componentRef.hostView);
-        componentRef.destroy();
-      };
-
-      this.appRef.attachView(componentRef.hostView);
-      const domElem = (componentRef.hostView as any)
-        .rootNodes[0] as HTMLElement;
-      document.body.appendChild(domElem);
-
-      // Trigger initial change detection
-      componentRef.changeDetectorRef.detectChanges();
+      this.flushQueue();
     });
+  }
+
+  resolveCurrent(value: boolean): void {
+    const active = this._activeDialog();
+    if (!active) return;
+
+    this._activeDialog.set(null);
+    active.resolve(value);
+    this.flushQueue();
+  }
+
+  private flushQueue(): void {
+    if (this._activeDialog() || this.queue.length === 0) return;
+    this._activeDialog.set(this.queue.shift() ?? null);
   }
 
   /**

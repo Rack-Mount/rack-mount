@@ -12,6 +12,7 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { merge } from 'rxjs';
 import { filter, startWith } from 'rxjs/operators';
+import { ConfirmDialogHostComponent } from './modules/core/components/confirm-dialog-host/confirm-dialog-host.component';
 import { HeaderComponent } from './modules/core/components/header/header.component';
 import { HomeComponent } from './modules/core/components/home/home.component';
 import { TabBarComponent } from './modules/core/components/tab-bar/tab-bar.component';
@@ -70,6 +71,7 @@ const STATIC_TABS = new Set([
     RackComponent,
     AssetDeviceViewComponent,
     ToastComponent,
+    ConfirmDialogHostComponent,
     TranslatePipe,
   ],
   templateUrl: './app.component.html',
