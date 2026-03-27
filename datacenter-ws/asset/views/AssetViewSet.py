@@ -311,12 +311,18 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
     def history(self, request, pk=None):
         """
         GET /asset/asset/{id}/history
-        Returns the ordered transition log for this asset.
+        Returns the ordered transition log for this asset (paginated).
         """
         asset = self.get_object()
         qs = AssetTransitionLog.objects.filter(asset=asset).select_related(
             'from_state', 'to_state', 'from_room', 'to_room', 'user'
-        )
+        ).order_by('-timestamp')
+
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = AssetTransitionLogSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = AssetTransitionLogSerializer(qs, many=True)
         return Response(serializer.data)
 

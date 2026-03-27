@@ -1,4 +1,5 @@
 import os
+import threading
 
 from django.conf import settings
 from drf_spectacular.utils import extend_schema, inline_serializer
@@ -52,6 +53,29 @@ _YOLO_ID_TO_TYPE = {
     4: 'SERIAL',
     5: 'LC',
 }
+
+
+# ── YOLO model cache (singleton, reloaded only when model file changes) ────────
+_yolo_model = None
+_yolo_model_path: str | None = None
+_yolo_model_mtime: float | None = None
+_yolo_model_lock = threading.Lock()
+
+
+def _get_yolo_model(model_path: str):
+    """Return a cached YOLO instance, reloading only when the file is updated."""
+    global _yolo_model, _yolo_model_path, _yolo_model_mtime
+    try:
+        mtime = os.path.getmtime(model_path)
+    except OSError:
+        return None
+    with _yolo_model_lock:
+        if _yolo_model is None or _yolo_model_path != model_path or _yolo_model_mtime != mtime:
+            from ultralytics import YOLO
+            _yolo_model = YOLO(model_path)
+            _yolo_model_path = model_path
+            _yolo_model_mtime = mtime
+        return _yolo_model
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -726,9 +750,10 @@ def _detect_with_yolo(image_path: str, model_path: str) -> list:
     5. _reclassify_by_cluster → row-majority-vote type correction.
     """
     import tempfile
-    from ultralytics import YOLO
 
-    model = YOLO(model_path)
+    model = _get_yolo_model(model_path)
+    if model is None:
+        return []
 
     # ── Load & preprocess ─────────────────────────────────────────────────────
     img_orig = None

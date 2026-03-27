@@ -28,6 +28,7 @@ un riavvio del server.
 """
 import hashlib
 import json
+import logging
 import os
 import shutil
 import threading
@@ -43,6 +44,8 @@ from rest_framework.views import APIView
 from accounts.permissions import PortCorrectionPermission
 from accounts.throttles import PortCorrectionThrottle
 from accounts.models import SecurityAuditLog
+
+logger = logging.getLogger(__name__)
 
 # ── Soglie configurabili ────────────────────────────────────────────────────────
 MIN_CORRECTIONS = int(getattr(settings, 'PORT_CORRECTION_MIN_CORRECTIONS', 10))
@@ -365,11 +368,22 @@ class PortCorrectionView(APIView):
             _save_state(state)
 
         if should_train:
-            threading.Thread(
-                target=_background_train,
-                args=(data_yaml, models_dir),
-                daemon=True,
-            ).start()
+            try:
+                from catalog.tasks import retrain_yolo
+                retrain_yolo.delay(data_yaml, models_dir)
+            except Exception:
+                # Celery worker not available — fall back to background thread
+                # so corrections are never silently dropped.
+                logger.warning(
+                    'Celery unavailable, falling back to threading for YOLO retraining',
+                    exc_info=True,
+                )
+                threading.Thread(
+                    target=_background_train,
+                    args=(data_yaml, models_dir),
+                    daemon=False,
+                    name='yolo-retrain',
+                ).start()
 
         with _state_lock:
             state = _load_state()
