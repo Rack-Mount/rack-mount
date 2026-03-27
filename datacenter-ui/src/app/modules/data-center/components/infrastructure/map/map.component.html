@@ -1,6 +1,6 @@
 <div class="map-container">
   <app-map-sidebar
-    [activeTool]="selectedTool"
+    [activeTool]="selectedTool()"
     [disabled]="!selectedRoomId"
     (toolChange)="onToolChange($event)"
   >
@@ -15,16 +15,16 @@
       [selectedRoomId]="selectedRoomId"
       [saveStatus]="saveStatus"
       [autosave]="autosave"
-      [activeTool]="selectedTool"
+      [activeTool]="selectedTool()"
       [rackTypes]="availableRackTypes"
       [selectedRackType]="selectedRackType"
       [doorWidth]="doorWidth"
-      [showTextOptions]="selectedTool === 'text' || !!selectedTextElement"
-      [textFontSize]="currentTextFontSize"
-      [textFill]="currentTextFill"
-      [textBold]="currentTextBold"
-      [textItalic]="currentTextItalic"
-      [textUnderline]="currentTextUnderline"
+      [showTextOptions]="editingTextId() !== null || !!selectedTextElement()"
+      [textFontSize]="currentTextFontSize()"
+      [textFill]="currentTextFill()"
+      [textBold]="currentTextBold()"
+      [textItalic]="currentTextItalic()"
+      [textUnderline]="currentTextUnderline()"
       (locationChange)="onLocationSelect($event)"
       (roomChange)="onRoomSelect($event)"
       (save)="saveFloorPlan()"
@@ -40,14 +40,14 @@
     <svg
       #svgContainer
       class="drawing-area"
-      [class.tool-select]="selectedTool === 'select'"
-      [class.tool-edit]="selectedTool === 'edit'"
+      [class.tool-select]="selectedTool() === 'select'"
+      [class.tool-edit]="selectedTool() === 'edit'"
       [style.cursor]="
         !selectedRoomId
           ? 'not-allowed'
           : isPanning
             ? 'grabbing'
-            : selectedTool === 'select'
+            : selectedTool() === 'select'
               ? 'grab'
               : ''
       "
@@ -75,13 +75,13 @@
       />
 
       <g [attr.transform]="svgTransform">
-        @for (el of elements; track el.id) {
+        @for (el of elements(); track el.id) {
           <ng-container>
             <!-- Wall (Polyline) -->
             @if (el.type === "wall" && el.points) {
               <ng-container>
                 <!-- Per-segment transparent hit zones in move mode -->
-                @if (selectedTool === "edit") {
+                @if (selectedTool() === "edit") {
                   @for (
                     _ of el.points.slice(0, el.points.length - 1);
                     track $index;
@@ -109,12 +109,12 @@
                   pointer-events="none"
                 />
                 <!-- Selected segment highlight -->
-                @if (selectedSegment?.elementId === el.id) {
+                @if (selectedSegment()?.elementId === el.id) {
                   <line
-                    [attr.x1]="el.points[selectedSegment!.segIndex].x"
-                    [attr.y1]="el.points[selectedSegment!.segIndex].y"
-                    [attr.x2]="el.points[selectedSegment!.segIndex + 1].x"
-                    [attr.y2]="el.points[selectedSegment!.segIndex + 1].y"
+                    [attr.x1]="el.points[selectedSegment()!.segIndex].x"
+                    [attr.y1]="el.points[selectedSegment()!.segIndex].y"
+                    [attr.x2]="el.points[selectedSegment()!.segIndex + 1].x"
+                    [attr.y2]="el.points[selectedSegment()!.segIndex + 1].y"
                     stroke="#007bff"
                     [attr.stroke-width]="6 / zoom"
                     stroke-linecap="round"
@@ -185,7 +185,9 @@
             <!-- Varco (door) -->
             @if (el.type === "door") {
               <g
-                [style.cursor]="selectedTool === 'edit' ? 'pointer' : 'default'"
+                [style.cursor]="
+                  selectedTool() === 'edit' ? 'pointer' : 'default'
+                "
                 (click)="onElementClick($event, el)"
               >
                 <!-- White gap to visually cut-through the wall -->
@@ -212,10 +214,10 @@
                 <path
                   [attr.d]="getDoorPath(el)"
                   [attr.stroke]="
-                    selectedElementId === el.id ? '#007bff' : '#8B4513'
+                    selectedElementId() === el.id ? '#007bff' : '#8B4513'
                   "
                   [attr.stroke-width]="
-                    (selectedElementId === el.id ? 3 : 2.5) / zoom
+                    (selectedElementId() === el.id ? 3 : 2.5) / zoom
                   "
                   fill="none"
                   pointer-events="none"
@@ -228,24 +230,19 @@
                   text-anchor="middle"
                   font-family="sans-serif"
                   [attr.fill]="
-                    selectedElementId === el.id ? '#007bff' : '#8B4513'
+                    selectedElementId() === el.id ? '#007bff' : '#8B4513'
                   "
                   pointer-events="none"
                 >
                   {{ getDoorLength(el) }} cm
                 </text>
                 <!-- Endpoint handles (visible only when selected in move mode) -->
-                @if (selectedElementId === el.id && selectedTool === "edit") {
-                  <circle
-                    [attr.cx]="el.x"
-                    [attr.cy]="el.y"
-                    [attr.r]="6 / zoom"
-                    fill="#007bff"
-                    stroke="white"
-                    [attr.stroke-width]="1.5 / zoom"
-                    style="cursor: move"
-                    pointer-events="all"
-                  />
+                @if (
+                  selectedElementId() === el.id && selectedTool() === "edit"
+                ) {
+                  [attr.cx]="el.x" [attr.cy]="el.y" [attr.r]="6 / zoom"
+                  fill="#007bff" stroke="white" [attr.stroke-width]="1.5 / zoom"
+                  style="cursor: move" pointer-events="all" />
                   <circle
                     [attr.cx]="el.x2"
                     [attr.cy]="el.y2"
@@ -265,7 +262,7 @@
                 (click)="onElementClick($event, el)"
                 (dblclick)="onRackDblClick($event, el)"
                 class="rack-group"
-                [class.selected]="selectedElementId === el.id"
+                [class.selected]="selectedElementId() === el.id"
                 [class.moving-snap]="
                   movingElementId === el.id && rackSnapActive
                 "
@@ -319,7 +316,9 @@
                   [attr.stroke-width]="0.5 / zoom"
                 />
                 <!-- Rotation handle (drag to rotate freely; Shift snaps to 15°) -->
-                @if (selectedElementId === el.id && selectedTool === "edit") {
+                @if (
+                  selectedElementId() === el.id && selectedTool() === "edit"
+                ) {
                   <line
                     [attr.x1]="el.x + (el.width || 0) / 2"
                     [attr.y1]="el.y"
@@ -343,7 +342,7 @@
                 }
                 <!-- Rack name label -->
                 @if (el.rackName) {
-                  @if (editingRackId !== el.id) {
+                  @if (editingRackId() !== el.id) {
                     <text
                       [attr.x]="el.x + (el.width || 0) / 2"
                       [attr.y]="el.y + (el.height || 0) / 2"
@@ -354,10 +353,10 @@
                       font-weight="bold"
                       style="user-select: none"
                       [attr.pointer-events]="
-                        selectedTool === 'edit' ? 'all' : 'none'
+                        selectedTool() === 'edit' ? 'all' : 'none'
                       "
                       [style.cursor]="
-                        selectedTool === 'edit' ? 'text' : 'default'
+                        selectedTool() === 'edit' ? 'text' : 'default'
                       "
                       (click)="startEditRack(el, $event)"
                     >
@@ -382,8 +381,8 @@
                         <input
                           #activeRackInput
                           type="text"
-                          [value]="editingRackName"
-                          (input)="editingRackName = $any($event.target).value"
+                          [value]="editingRackName()"
+                          (input)="onRackNameInput($event)"
                           (keydown.enter)="confirmEditRack()"
                           (keydown.escape)="cancelEditRack()"
                           (blur)="confirmEditRack()"
@@ -416,15 +415,15 @@
                 (click)="onElementClick($event, el)"
                 (dblclick)="startEditText(el, $event)"
                 [style.cursor]="
-                  selectedTool === 'edit'
+                  selectedTool() === 'edit'
                     ? 'move'
-                    : selectedTool === 'text'
+                    : selectedTool() === 'text'
                       ? 'text'
                       : 'default'
                 "
               >
                 <!-- Selection highlightBox (approx) -->
-                @if (selectedElementId === el.id) {
+                @if (selectedElementId() === el.id) {
                   <rect
                     [attr.x]="-4 / zoom"
                     [attr.y]="-(el.fontSize || 14) / zoom"
@@ -441,7 +440,7 @@
                   />
                 }
 
-                @if (editingTextId !== el.id) {
+                @if (editingTextId() !== el.id) {
                   <text
                     [attr.x]="0"
                     [attr.y]="0"
@@ -467,8 +466,8 @@
                       #activeTextInput
                       xmlns="http://www.w3.org/1999/xhtml"
                       type="text"
-                      [value]="editingTextValue"
-                      (input)="editingTextValue = $any($event.target).value"
+                      [value]="editingTextValue()"
+                      (input)="onTextValueInput($event)"
                       (keydown.enter)="confirmEditText()"
                       (keydown.escape)="cancelEditText()"
                       (blur)="confirmEditText()"
@@ -496,8 +495,8 @@
         }
 
         <!-- Room area labels (planar face detection) -->
-        @for (room of rooms; track $index) {
-          <g [style.cursor]="selectedTool === 'edit' ? 'pointer' : 'default'">
+        @for (room of rooms(); track $index) {
+          <g [style.cursor]="selectedTool() === 'edit' ? 'pointer' : 'default'">
             <!-- Engraved area (always visible): white highlight + main text -->
             <text
               [attr.x]="room.cx + 0.8 / zoom"
@@ -533,9 +532,9 @@
         }
 
         <!-- Move Tool Indicators: Show all vertices as manipulatable dots when tool is active -->
-        @if (selectedTool === "edit") {
+        @if (selectedTool() === "edit") {
           <ng-container>
-            @for (el of elements; track el.id) {
+            @for (el of elements(); track el.id) {
               <ng-container>
                 @if (el.type === "wall" && el.points) {
                   <ng-container>
@@ -596,10 +595,10 @@
         }
 
         <!-- Vertex Snap Indicator (Blue Dot) — visible also before drawing starts -->
-        @if (selectedTool === "wall" && vertexSnapPoint) {
+        @if (selectedTool() === "wall" && vertexSnapPoint()) {
           <circle
-            [attr.cx]="vertexSnapPoint.x"
-            [attr.cy]="vertexSnapPoint.y"
+            [attr.cx]="vertexSnapPoint()?.x"
+            [attr.cy]="vertexSnapPoint()?.y"
             [attr.r]="8 / zoom"
             fill="#007bff"
             stroke="white"
@@ -608,7 +607,7 @@
           />
         }
         <!-- Edge Snap Indicator (Orange ring + dot) — visible also before drawing starts -->
-        @if (selectedTool === "wall" && edgeSnapPoint) {
+        @if (selectedTool() === "wall" && edgeSnapPoint) {
           <circle
             [attr.cx]="edgeSnapPoint.x"
             [attr.cy]="edgeSnapPoint.y"
@@ -628,10 +627,12 @@
         }
 
         <!-- Current drawing element preview -->
-        @if (isDrawing) {
+        @if (isDrawing()) {
           <ng-container>
             <!-- Polyline Preview -->
-            @if (selectedTool === "wall" && activePolylinePoints.length > 0) {
+            @if (
+              selectedTool() === "wall" && activePolylinePoints().length > 0
+            ) {
               <ng-container>
                 <polyline
                   [attr.points]="polylinePreviewPoints"
@@ -642,10 +643,10 @@
                   pointer-events="none"
                 />
                 <!-- Dimension Line and Text -->
-                @if (activePolylinePoints.length > 0) {
+                @if (activePolylinePoints().length > 0) {
                   <g pointer-events="none">
                     <!-- Dimensions for already drawn segments of the current polyline -->
-                    @for (segment of activeWallSegments; track $index) {
+                    @for (segment of activeWallSegments(); track $index) {
                       <g
                         [attr.transform]="
                           'rotate(' +
@@ -682,13 +683,17 @@
                     <!-- Dashed line for current segment (cursor) -->
                     <line
                       [attr.x1]="
-                        activePolylinePoints[activePolylinePoints.length - 1].x
+                        activePolylinePoints()[
+                          activePolylinePoints().length - 1
+                        ].x
                       "
                       [attr.y1]="
-                        activePolylinePoints[activePolylinePoints.length - 1].y
+                        activePolylinePoints()[
+                          activePolylinePoints().length - 1
+                        ].y
                       "
-                      [attr.x2]="cursorPosition.x"
-                      [attr.y2]="cursorPosition.y"
+                      [attr.x2]="cursorPosition().x"
+                      [attr.y2]="cursorPosition().y"
                       stroke="#666"
                       [attr.stroke-width]="1 / zoom"
                       stroke-dasharray="4,4"
@@ -696,16 +701,18 @@
                     <!-- Length Text Background -->
                     <rect
                       [attr.x]="
-                        (activePolylinePoints[activePolylinePoints.length - 1]
-                          .x +
-                          cursorPosition.x) /
+                        (activePolylinePoints()[
+                          activePolylinePoints().length - 1
+                        ].x +
+                          cursorPosition().x) /
                           2 -
                         20 / zoom
                       "
                       [attr.y]="
-                        (activePolylinePoints[activePolylinePoints.length - 1]
-                          .y +
-                          cursorPosition.y) /
+                        (activePolylinePoints()[
+                          activePolylinePoints().length - 1
+                        ].y +
+                          cursorPosition().y) /
                           2 -
                         10 / zoom
                       "
@@ -718,15 +725,17 @@
                     <!-- Length Text -->
                     <text
                       [attr.x]="
-                        (activePolylinePoints[activePolylinePoints.length - 1]
-                          .x +
-                          cursorPosition.x) /
+                        (activePolylinePoints()[
+                          activePolylinePoints().length - 1
+                        ].x +
+                          cursorPosition().x) /
                         2
                       "
                       [attr.y]="
-                        (activePolylinePoints[activePolylinePoints.length - 1]
-                          .y +
-                          cursorPosition.y) /
+                        (activePolylinePoints()[
+                          activePolylinePoints().length - 1
+                        ].y +
+                          cursorPosition().y) /
                           2 +
                         4 / zoom
                       "
@@ -735,10 +744,10 @@
                       [attr.font-size]="12 / zoom + 'px'"
                       font-weight="bold"
                     >
-                      {{ currentSegmentLength / 100 | unitFmt: "distance" }}
+                      {{ currentSegmentLength() / 100 | unitFmt: "distance" }}
                     </text>
                     <!-- Angle Text at Vertices -->
-                    @for (angleData of previewAngles; track $index) {
+                    @for (angleData of previewAngles(); track $index) {
                       <ng-container>
                         <text
                           [attr.x]="angleData.labelX"
@@ -767,10 +776,10 @@
                   </g>
                 }
                 <!-- Intersection Indicator (Red Dot) -->
-                @if (intersectionPoint) {
+                @if (intersectionPoint()) {
                   <circle
-                    [attr.cx]="intersectionPoint.x"
-                    [attr.cy]="intersectionPoint.y"
+                    [attr.cx]="intersectionPoint()?.x"
+                    [attr.cy]="intersectionPoint()?.y"
                     [attr.r]="6 / zoom"
                     fill="red"
                     stroke="white"
@@ -780,8 +789,8 @@
                 }
                 <!-- Start point indicator for closing -->
                 <circle
-                  [attr.cx]="activePolylinePoints[0].x"
-                  [attr.cy]="activePolylinePoints[0].y"
+                  [attr.cx]="activePolylinePoints()[0].x"
+                  [attr.cy]="activePolylinePoints()[0].y"
                   [attr.r]="5 / zoom"
                   fill="green"
                   opacity="0.5"
@@ -789,41 +798,43 @@
                 />
               </ng-container>
             }
-            @if (currentElement && currentElement.type !== "wall") {
+            @if (previewDoorElement || previewRackElement) {
               <ng-container>
-                @if (currentElement.type === "door") {
+                @if (previewDoorElement) {
                   <g opacity="0.65">
                     <!-- White gap preview -->
                     <line
-                      [attr.x1]="currentElement.x"
-                      [attr.y1]="currentElement.y"
-                      [attr.x2]="currentElement.x2"
-                      [attr.y2]="currentElement.y2"
+                      [attr.x1]="previewDoorElement.x"
+                      [attr.y1]="previewDoorElement.y"
+                      [attr.x2]="previewDoorElement.x2"
+                      [attr.y2]="previewDoorElement.y2"
                       stroke="white"
                       [attr.stroke-width]="6 / zoom"
                     />
                     <!-- Door line + end caps preview -->
                     <path
-                      [attr.d]="getDoorPath(currentElement)"
+                      [attr.d]="getDoorPath(previewDoorElement)"
                       stroke="#8B4513"
                       [attr.stroke-width]="2.5 / zoom"
                       fill="none"
                     />
                     <!-- Dimension label preview -->
                     <text
-                      [attr.x]="getDoorMidpoint(currentElement).x"
-                      [attr.y]="getDoorMidpoint(currentElement).y - 10 / zoom"
+                      [attr.x]="getDoorMidpoint(previewDoorElement).x"
+                      [attr.y]="
+                        getDoorMidpoint(previewDoorElement).y - 10 / zoom
+                      "
                       [attr.font-size]="11 / zoom"
                       text-anchor="middle"
                       font-family="sans-serif"
                       fill="#8B4513"
                     >
-                      {{ getDoorLength(currentElement) }} cm
+                      {{ getDoorLength(previewDoorElement) }} cm
                     </text>
                     <!-- Start-point position indicator -->
                     <circle
-                      [attr.cx]="currentElement.x"
-                      [attr.cy]="currentElement.y"
+                      [attr.cx]="previewDoorElement.x"
+                      [attr.cy]="previewDoorElement.y"
                       [attr.r]="5 / zoom"
                       fill="#8B4513"
                       stroke="white"
@@ -831,25 +842,25 @@
                     />
                   </g>
                 }
-                @if (currentElement.type === "rack") {
+                @if (previewRackElement) {
                   <rect
-                    [attr.x]="currentElement.x"
-                    [attr.y]="currentElement.y"
-                    [attr.width]="currentElement.width"
-                    [attr.height]="currentElement.height"
-                    [attr.fill]="rackCreationBlocked ? '#ffcccc' : '#e0e0e0'"
+                    [attr.x]="previewRackElement.x"
+                    [attr.y]="previewRackElement.y"
+                    [attr.width]="previewRackElement.width"
+                    [attr.height]="previewRackElement.height"
+                    [attr.fill]="rackCreationBlocked() ? '#ffcccc' : '#e0e0e0'"
                     [attr.stroke]="
-                      rackCreationBlocked
+                      rackCreationBlocked()
                         ? '#cc0000'
-                        : rackSnapActive
+                        : rackSnapActive()
                           ? '#00aacc'
                           : '#333'
                     "
                     [attr.stroke-width]="
-                      (rackCreationBlocked || rackSnapActive ? 2 : 1) / zoom
+                      (rackCreationBlocked() || rackSnapActive() ? 2 : 1) / zoom
                     "
                     [attr.stroke-dasharray]="
-                      rackCreationBlocked ? 4 / zoom + ',' + 3 / zoom : 'none'
+                      rackCreationBlocked() ? 4 / zoom + ',' + 3 / zoom : 'none'
                     "
                     opacity="0.6"
                   />

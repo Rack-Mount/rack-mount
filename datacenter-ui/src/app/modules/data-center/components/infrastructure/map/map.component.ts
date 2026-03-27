@@ -4,11 +4,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ElementRef,
   HostListener,
   inject,
   input,
   OnDestroy,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -90,10 +92,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   readonly role = inject(RoleService);
   protected readonly fpService = inject(MapFloorPlanService);
   readonly viewport = inject(MapViewportService);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly tabService = inject(TabService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly translate = inject(TranslateService);
-  private readonly cdr = inject(ChangeDetectorRef);
 
   // ── Component input ───────────────────────────────────────────────────────
   /** When provided, the map is pre-loaded to this room (tab mode). */
@@ -168,23 +170,23 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   // ── Canvas drawing state ──────────────────────────────────────────────────
-  selectedTool: string = 'select';
-  elements: MapElement[] = [];
+  protected readonly selectedTool = signal<string>('select');
+  protected readonly elements = signal<MapElement[]>([]);
 
   // Rack snap / collision feedback
-  rackCreationBlocked = false;
-  rackSnapActive = false;
+  protected readonly rackCreationBlocked = signal(false);
+  protected readonly rackSnapActive = signal(false);
   private readonly RACK_SNAP_RADIUS = 20;
   private lastValidRackPos: { x: number; y: number } = { x: 0, y: 0 };
   private roomFaces: RoomFace[] = [];
 
   /** Wall direction while drawing a varco — set on mousedown, cleared on mouseup */
   private doorSnapDir: { dx: number; dy: number } | null = null;
-  doorDragEndpoint: 'start' | 'end' | null = null;
+  protected readonly doorDragEndpoint = signal<'start' | 'end' | null>(null);
   private doorBodyDragOffset = 0;
 
   // Free-rotation drag state
-  rotatingElementId: string | null = null;
+  protected readonly rotatingElementId = signal<string | null>(null);
   private rotateDragStartAngle = 0;
   private rotateDragStartRot = 0;
   private rotateDragCenter: { x: number; y: number } | null = null;
@@ -193,27 +195,30 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   // ── Subscription cleanup ──────────────────────────────────────────────────
   private readonly destroy$ = new Subject<void>();
 
-  isDrawing = false;
-  currentElement: MapElement | null = null;
-  startPoint: { x: number; y: number } | null = null;
-  selectedElementId: string | null = null;
-  selectedSegment: { elementId: string; segIndex: number } | null = null;
+  protected readonly isDrawing = signal(false);
+  protected readonly currentElement = signal<MapElement | null>(null);
+  protected readonly startPoint = signal<{ x: number; y: number } | null>(null);
+  protected readonly selectedElementId = signal<string | null>(null);
+  protected readonly selectedSegment = signal<{
+    elementId: string;
+    segIndex: number;
+  } | null>(null);
 
   // Polyline drawing state
-  activePolylinePoints: Point[] = [];
-  activeWallSegments: WallSegment[] = [];
-  previewAngles: AngleLabel[] = [];
-  cursorPosition: Point = { x: 0, y: 0 };
-  currentSegmentLength = 0;
-  intersectionPoint: Point | null = null;
-  vertexSnapPoint: Point | null = null;
+  protected readonly activePolylinePoints = signal<Point[]>([]);
+  protected readonly activeWallSegments = signal<WallSegment[]>([]);
+  protected readonly previewAngles = signal<AngleLabel[]>([]);
+  protected readonly cursorPosition = signal<Point>({ x: 0, y: 0 });
+  protected readonly currentSegmentLength = signal(0);
+  protected readonly intersectionPoint = signal<Point | null>(null);
+  protected readonly vertexSnapPoint = signal<Point | null>(null);
 
   // Detected rooms (enclosed faces in the wall planar graph)
-  rooms: Room[] = [];
+  protected readonly rooms = signal<Room[]>([]);
 
   // Rack name inline editing
-  editingRackId: string | null = null;
-  editingRackName = '';
+  protected readonly editingRackId = signal<string | null>(null);
+  protected readonly editingRackName = signal('');
 
   private readonly resizeListener = (): void =>
     this.viewport.scheduleUpdateGrid();
@@ -226,67 +231,66 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   activeTextInputRef?: ElementRef<HTMLInputElement>;
 
   // Text element editing
-  editingTextId: string | null = null;
-  editingTextValue = '';
+  protected readonly editingTextId = signal<string | null>(null);
+  protected readonly editingTextValue = signal('');
   // Default / Current text styles
-  currentTextFontSize = 14;
-  currentTextFill = '#333333';
-  currentTextBold = false;
-  currentTextItalic = false;
-  currentTextUnderline = false;
+  protected readonly currentTextFontSize = signal(14);
+  protected readonly currentTextFill = signal('#333333');
+  protected readonly currentTextBold = signal(false);
+  protected readonly currentTextItalic = signal(false);
+  protected readonly currentTextUnderline = signal(false);
 
-  get selectedTextElement(): TextElement | null {
-    if (!this.selectedElementId) return null;
-    const el = this.elements.find(
-      (e): e is TextElement =>
-        e.id === this.selectedElementId && e.type === 'text',
+  protected readonly selectedTextElement = computed(() => {
+    const selectedId = this.selectedElementId();
+    if (!selectedId) return null;
+    const el = this.elements().find(
+      (e): e is TextElement => e.id === selectedId && e.type === 'text',
     );
     return el ?? null;
-  }
+  });
 
   // Update logic to sync toolbar with selection
   updateToolbarFromSelection() {
-    const el = this.selectedTextElement;
+    const el = this.selectedTextElement();
     if (el) {
-      this.currentTextFontSize = el.fontSize ?? 14;
-      this.currentTextFill = el.fill ?? '#333333';
-      this.currentTextBold = el.fontWeight === 'bold';
-      this.currentTextItalic = el.fontStyle === 'italic';
-      this.currentTextUnderline = el.textDecoration === 'underline';
+      this.currentTextFontSize.set(el.fontSize ?? 14);
+      this.currentTextFill.set(el.fill ?? '#333333');
+      this.currentTextBold.set(el.fontWeight === 'bold');
+      this.currentTextItalic.set(el.fontStyle === 'italic');
+      this.currentTextUnderline.set(el.textDecoration === 'underline');
     }
   }
 
   onTextFontSizeChange(val: number) {
-    this.currentTextFontSize = val;
+    this.currentTextFontSize.set(val);
     this.applyTextStyleChange({ fontSize: val });
   }
 
   onTextFillChange(val: string) {
-    this.currentTextFill = val;
+    this.currentTextFill.set(val);
     this.applyTextStyleChange({ fill: val });
   }
 
   onTextBoldChange(val: boolean) {
-    this.currentTextBold = val;
+    this.currentTextBold.set(val);
     this.applyTextStyleChange({ fontWeight: val ? 'bold' : 'normal' });
   }
 
   onTextItalicChange(val: boolean) {
-    this.currentTextItalic = val;
+    this.currentTextItalic.set(val);
     this.applyTextStyleChange({ fontStyle: val ? 'italic' : 'normal' });
   }
 
   onTextUnderlineChange(val: boolean) {
-    this.currentTextUnderline = val;
+    this.currentTextUnderline.set(val);
     this.applyTextStyleChange({ textDecoration: val ? 'underline' : 'none' });
   }
 
   private applyTextStyleChange(changes: Partial<TextElement>) {
-    const el = this.selectedTextElement;
+    const el = this.selectedTextElement();
     if (el) {
       Object.assign(el, changes);
       this.scheduleAutosave();
-      this.cdr.markForCheck();
     }
   }
 
@@ -331,7 +335,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((roomId) => {
         if (roomId != null) this.onRoomSelect(roomId);
-        this.cdr.markForCheck();
       });
 
     // Load available locations (triggers locationsLoaded$ when done)
@@ -346,15 +349,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   onLocationSelect(id: number | null): void {
     this.fpService.selectLocation(id ?? null);
-    this.elements = [];
+    this.elements.set([]);
     this.rederiveAllWalls();
-    this.cdr.markForCheck();
   }
 
   onRoomSelect(id: number | null): void {
     if (!id) {
       this.fpService.clearRoom();
-      this.elements = [];
+      this.elements.set([]);
       this.rederiveAllWalls();
       return;
     }
@@ -363,17 +365,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const { elements, savedRoomLabels } = this.fpService.parseRoomData(
           room.floor_plan_data,
         );
-        this.rooms = [];
-        this.elements = this.fpService.injectUnplacedRacks(
-          elements,
-          racks.results ?? [],
+        this.rooms.set([]);
+        this.elements.set(
+          this.fpService.injectUnplacedRacks(elements, racks.results ?? []),
         );
         this.rederiveAllWalls();
         // Restore named room labels by nearest-centroid match
+        const currentRooms = this.rooms();
         for (const saved of savedRoomLabels) {
           let bestDist = Infinity;
           let bestRoom: Room | null = null;
-          for (const r of this.rooms) {
+          for (const r of currentRooms) {
             const d = Math.hypot(r.cx - saved.cx, r.cy - saved.cy);
             if (d < bestDist) {
               bestDist = d;
@@ -382,7 +384,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           }
           if (bestRoom) bestRoom.name = saved.name;
         }
-        this.cdr.markForCheck();
         setTimeout(() => this.fitToView());
       },
       error: (err) => {
@@ -398,9 +399,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (this.fpService.selectedRoomId() == null) return;
     this.fpService.saveFloorPlan(
       this.fpService.selectedRoomId()!,
-      this.elements,
-      this.rooms,
-      () => this.cdr.markForCheck(),
+      this.elements(),
+      this.rooms(),
+      () => {},
     );
   }
 
@@ -409,9 +410,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   get polylinePreviewPoints(): string {
-    if (this.activePolylinePoints.length === 0) return '';
+    if (this.activePolylinePoints().length === 0) return '';
     // Current confirmed points
-    return this.activePolylinePoints.map((p) => `${p.x},${p.y}`).join(' ');
+    return this.activePolylinePoints()
+      .map((p) => `${p.x},${p.y}`)
+      .join(' ');
   }
 
   // Delegate to util (note: param order differs — cursor was 2nd here, last in util)
@@ -441,7 +444,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     elB: WallElement,
     idxB: number,
   ): void {
-    this.elements = _mergeWalls(this.elements, elA, idxA, elB, idxB);
+    const updatedElements = _mergeWalls(this.elements(), elA, idxA, elB, idxB);
+    this.elements.set(updatedElements);
     this.updateWallDerived(elA);
   }
 
@@ -465,7 +469,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   fitToView(): void {
-    this.viewport.fitToView(this.elements, this.svgContainer.nativeElement);
+    this.viewport.fitToView(this.elements(), this.svgContainer.nativeElement);
     this.rederiveAllWalls();
   }
 
@@ -475,16 +479,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
    * level (no zoom change).
    */
   centerAndSnapFloorPlan(): void {
-    if (this.elements.length === 0) return;
+    const currentElements = this.elements();
+    if (currentElements.length === 0) return;
 
-    const bbox = getBoundingBox(this.elements);
+    const bbox = getBoundingBox(currentElements);
     if (!bbox) return;
 
     const { minX, minY, maxX, maxY } = bbox;
     const dx = -minX;
     const dy = -minY;
 
-    for (const el of this.elements) {
+    const updatedElements = [...currentElements];
+    for (const el of updatedElements) {
       if (el.type === 'wall') {
         el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
         this.updateWallDerived(el);
@@ -497,7 +503,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
     }
-    this.elements = [...this.elements];
+    this.elements.set(updatedElements);
     this.rederiveAllWalls();
 
     // Re-centre viewport (no zoom change)
@@ -516,20 +522,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private rederiveAllWalls(): void {
-    for (const el of this.elements) {
+    for (const el of this.elements()) {
       if (el.type === 'wall') this.updateWallDerived(el);
     }
-    computeJunctionAngles(this.elements, this.zoom);
-    this.roomFaces = computeRoomFaces(this.elements);
-    this.rooms = restoreRoomNames(_computeRooms(this.elements), this.rooms);
+    computeJunctionAngles(this.elements(), this.zoom);
+    this.roomFaces = computeRoomFaces(this.elements());
+    this.rooms.set(
+      restoreRoomNames(_computeRooms(this.elements()), this.rooms()),
+    );
     this.viewport.scheduleUpdateGrid();
   }
 
   startEditRack(el: RackElement, event: MouseEvent): void {
     event.stopPropagation();
     event.preventDefault();
-    this.editingRackId = el.id;
-    this.editingRackName = el.rackName ?? '';
+    this.editingRackId.set(el.id);
+    this.editingRackName.set(el.rackName ?? '');
     setTimeout(() => {
       this.activeRackInputRef?.nativeElement.focus();
       this.activeRackInputRef?.nativeElement.select();
@@ -537,11 +545,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   confirmEditRack(): void {
-    if (!this.editingRackId) return;
-    const el = this.elements.find(
-      (e): e is RackElement => e.id === this.editingRackId && e.type === 'rack',
+    if (!this.editingRackId()) return;
+    const el = this.elements().find(
+      (e): e is RackElement =>
+        e.id === this.editingRackId() && e.type === 'rack',
     );
-    const newName = this.editingRackName.trim();
+    const newName = this.editingRackName().trim();
     if (el && newName && newName !== el.rackName) {
       const oldName = el.rackName;
       el.rackName = newName;
@@ -555,26 +564,32 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           },
         });
       }
-      this.elements = [...this.elements];
+      this.elements.set([...this.elements()]);
       this.scheduleAutosave();
     }
-    this.editingRackId = null;
-    this.editingRackName = '';
+    this.editingRackId.set(null);
+    this.editingRackName.set('');
   }
 
   cancelEditRack(): void {
-    this.editingRackId = null;
-    this.editingRackName = '';
+    this.editingRackId.set(null);
+    this.editingRackName.set('');
+  }
+
+  onRackNameInput(event: Event): void {
+    const target = event.target as HTMLInputElement | null;
+    this.editingRackName.set(target?.value ?? '');
   }
 
   // Text element editing
   startEditText(el: TextElement, event: MouseEvent): void {
     if (!this.role.canEditMap()) return;
-    if (this.selectedTool !== 'edit' && this.selectedTool !== 'text') return;
+    if (this.selectedTool() !== 'edit' && this.selectedTool() !== 'text')
+      return;
     event.stopPropagation();
     event.preventDefault();
-    this.editingTextId = el.id;
-    this.editingTextValue = el.text ?? '';
+    this.editingTextId.set(el.id);
+    this.editingTextValue.set(el.text ?? '');
     setTimeout(() => {
       this.activeTextInputRef?.nativeElement.focus();
       this.activeTextInputRef?.nativeElement.select();
@@ -582,60 +597,67 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   confirmEditText(): void {
-    if (!this.editingTextId) return;
-    const textEl = this.elements.find(
+    if (!this.editingTextId()) return;
+    const textEl = this.elements().find(
       (el): el is TextElement =>
-        el.id === this.editingTextId && el.type === 'text',
+        el.id === this.editingTextId() && el.type === 'text',
     );
     if (textEl) {
-      if (!this.editingTextValue.trim()) {
+      if (!this.editingTextValue().trim()) {
         // Remove empty text elements
-        this.elements = this.elements.filter(
-          (e) => e.id !== this.editingTextId,
+        this.elements.set(
+          this.elements().filter((e) => e.id !== this.editingTextId()),
         );
       } else {
-        textEl.text = this.editingTextValue;
+        textEl.text = this.editingTextValue();
       }
       this.scheduleAutosave();
       this.cdr.markForCheck();
     }
-    this.editingTextId = null;
+    this.editingTextId.set(null);
   }
 
   cancelEditText(): void {
     // If the text was empty (newly created), remove it on cancel
-    const textEl = this.elements.find(
+    const textEl = this.elements().find(
       (el): el is TextElement =>
-        el.id === this.editingTextId && el.type === 'text',
+        el.id === this.editingTextId() && el.type === 'text',
     );
     if (textEl && !textEl.text?.trim()) {
-      this.elements = this.elements.filter((e) => e.id !== this.editingTextId);
+      this.elements.set(
+        this.elements().filter((e) => e.id !== this.editingTextId()),
+      );
     }
-    this.editingTextId = null;
+    this.editingTextId.set(null);
+  }
+
+  onTextValueInput(event: Event): void {
+    const target = event.target as HTMLInputElement | null;
+    this.editingTextValue.set(target?.value ?? '');
   }
 
   onToolChange(toolId: string) {
-    this.selectedTool = toolId;
-    this.selectedElementId = null;
-    this.selectedSegment = null;
+    this.selectedTool.set(toolId);
+    this.selectedElementId.set(null);
+    this.selectedSegment.set(null);
     this.cancelEditRack();
     this.cancelDrawing();
   }
 
   cancelDrawing() {
-    this.isDrawing = false;
-    this.currentElement = null;
-    this.activePolylinePoints = [];
-    this.activeWallSegments = [];
-    this.previewAngles = [];
-    this.currentSegmentLength = 0;
-    this.intersectionPoint = null;
-    this.vertexSnapPoint = null;
+    this.isDrawing.set(false);
+    this.currentElement.set(null);
+    this.activePolylinePoints.set([]);
+    this.activeWallSegments.set([]);
+    this.previewAngles.set([]);
+    this.currentSegmentLength.set(0);
+    this.intersectionPoint.set(null);
+    this.vertexSnapPoint.set(null);
     this.edgeSnapPoint = null;
     this.hoveredVertex = null;
-    this.rackCreationBlocked = false;
-    this.rackSnapActive = false;
-    this.rotatingElementId = null;
+    this.rackCreationBlocked.set(false);
+    this.rackSnapActive.set(false);
+    this.rotatingElementId.set(null);
     this.rotateDragCenter = null;
   }
 
@@ -680,7 +702,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     segIndex: number,
     pt: { x: number; y: number },
   ): void {
-    const el = this.elements.find(
+    const el = this.elements().find(
       (e): e is WallElement => e.id === elementId && e.type === 'wall',
     );
     if (!el) return;
@@ -688,9 +710,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     newPoints.splice(segIndex + 1, 0, { x: pt.x, y: pt.y });
     el.points = newPoints;
     this.updateWallDerived(el);
-    this.elements = [...this.elements];
-    this.roomFaces = computeRoomFaces(this.elements);
-    this.rooms = restoreRoomNames(_computeRooms(this.elements), this.rooms);
+    this.elements.set([...this.elements()]);
+    this.roomFaces = computeRoomFaces(this.elements());
+    this.rooms.set(
+      restoreRoomNames(_computeRooms(this.elements()), this.rooms()),
+    );
   }
 
   /** Returns the axis-aligned bounding box of all rack elements, optionally
@@ -698,7 +722,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
    *  AABB formula: ew = |w·cos θ| + |h·sin θ|, eh = |w·sin θ| + |h·cos θ|.
    */
   private getRackRects(excludeId?: string): RackRect[] {
-    return this.elements
+    return this.elements()
       .filter(
         (el): el is RackElement => el.type === 'rack' && el.id !== excludeId,
       )
@@ -734,6 +758,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     return getDoorPath(el, this.zoom);
   }
 
+  // Typed preview helpers for template bindings
+  get previewDoorElement(): DoorElement | null {
+    const el = this.currentElement();
+    return el?.type === 'door' ? el : null;
+  }
+
+  get previewRackElement(): RackElement | null {
+    const el = this.currentElement();
+    return el?.type === 'rack' ? el : null;
+  }
+
   /**
    * Finds the closest point on any wall segment to `point`.
    * Always returns the nearest wall point (no distance limit).
@@ -749,7 +784,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       dist: number;
     } | null = null;
 
-    for (const el of this.elements) {
+    for (const el of this.elements()) {
       if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
       for (let i = 0; i < el.points.length - 1; i++) {
         const p1 = el.points[i];
@@ -793,7 +828,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const point = this.getSvgPoint(event);
     const cx = el.x + el.width / 2;
     const cy = el.y + el.height / 2;
-    this.rotatingElementId = el.id;
+    this.rotatingElementId.set(el.id);
     this.rotateDragStartAngle = Math.atan2(point.y - cy, point.x - cx);
     this.rotateDragStartRot = el.rotation ?? 0;
     this.lastValidRackRot = el.rotation ?? 0;
@@ -813,7 +848,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (!isObbBlocked(proposed, this.getRackObbs(el.id))) {
       el.rotation = newRot;
     }
-    this.elements = [...this.elements];
+    this.elements.set([...this.elements()]);
     this.rederiveAllWalls();
     this.scheduleAutosave();
     this.cdr.markForCheck();
@@ -821,7 +856,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   /** Returns the true OBB (oriented bounding box) of all racks, optionally excluding one by id. */
   private getRackObbs(excludeId?: string): ObbRect[] {
-    return this.elements
+    return this.elements()
       .filter(
         (el): el is RackElement => el.type === 'rack' && el.id !== excludeId,
       )
@@ -839,7 +874,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const isMiddle = event.button === 1;
     const isSelectBackground =
       event.button === 0 &&
-      this.selectedTool === 'select' &&
+      this.selectedTool() === 'select' &&
       event.target === event.currentTarget;
     if (isMiddle || isSelectBackground) {
       event.preventDefault();
@@ -849,11 +884,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     if (this.selectedRoomId == null) return;
 
-    if (this.selectedTool === 'edit') {
+    if (this.selectedTool() === 'edit') {
       const point = this.getSvgPoint(event);
 
       // 1. Check Vertex Click (High Priority)
-      for (const el of this.elements) {
+      for (const el of this.elements()) {
         if (el.type === 'wall' && el.points) {
           for (let i = 0; i < el.points.length; i++) {
             if (dist(point, el.points[i]) < 10) {
@@ -862,7 +897,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
               // Find all junction peers: other walls with a vertex at the same position
               const clickedPt = el.points[i];
               this.selectedVertexPeers = [];
-              for (const other of this.elements) {
+              for (const other of this.elements()) {
                 if (other.type !== 'wall' || !other.points) continue;
                 for (let j = 0; j < other.points.length; j++) {
                   if (other.id === el.id && j === i) continue;
@@ -874,7 +909,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                   }
                 }
               }
-              this.isDrawing = true;
+              this.isDrawing.set(true);
               return;
             }
           }
@@ -883,15 +918,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       // 1b. Check Door Endpoint Click → drag that endpoint
       const DOOR_HANDLE_RADIUS = 12 / this.zoom;
-      for (const el of this.elements) {
+      for (const el of this.elements()) {
         if (el.type === 'door') {
           const dx1 = dist(point, { x: el.x, y: el.y });
           const dx2 = dist(point, { x: el.x2 ?? el.x, y: el.y2 ?? el.y });
           if (dx1 < DOOR_HANDLE_RADIUS || dx2 < DOOR_HANDLE_RADIUS) {
-            this.doorDragEndpoint = dx1 <= dx2 ? 'start' : 'end';
+            this.doorDragEndpoint.set(dx1 <= dx2 ? 'start' : 'end');
             this.movingElementId = el.id;
-            this.selectedElementId = el.id;
-            this.isDrawing = true;
+            this.selectedElementId.set(el.id);
+            this.isDrawing.set(true);
             return;
           }
         }
@@ -899,7 +934,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       // 1c. Check Door Body Click → slide whole door along wall
       const DOOR_BODY_RADIUS = 12 / this.zoom;
-      for (const el of this.elements) {
+      for (const el of this.elements()) {
         if (el.type === 'door') {
           const x2 = el.x2 ?? el.x;
           const y2 = el.y2 ?? el.y;
@@ -914,16 +949,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             this.doorBodyDragOffset =
               ((point.x - el.x) * ddx + (point.y - el.y) * ddy) / dlen;
             this.movingElementId = el.id;
-            this.selectedElementId = el.id;
+            this.selectedElementId.set(el.id);
             this.lastMousePosition = point;
-            this.isDrawing = true;
+            this.isDrawing.set(true);
             return;
           }
         }
       }
 
       // 2a. Check Text Body Click → move just that text
-      for (const el of this.elements) {
+      for (const el of this.elements()) {
         if (el.type === 'text') {
           const fontSize = el.fontSize || 14;
           // Approximate width (chars * ~0.6em + padding)
@@ -935,16 +970,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             point.y <= el.y + fontSize
           ) {
             this.movingElementId = el.id;
-            this.selectedElementId = el.id;
+            this.selectedElementId.set(el.id);
             this.lastMousePosition = point;
-            this.isDrawing = true;
+            this.isDrawing.set(true);
             return;
           }
         }
       }
 
       // 2. Check Rack Body Click → move just that rack
-      for (const el of this.elements) {
+      for (const el of this.elements()) {
         if (el.type === 'rack') {
           const rx = el.x;
           const ry = el.y;
@@ -959,15 +994,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             this.movingElementId = el.id;
             this.lastMousePosition = point;
             this.lastValidRackPos = { x: el.x, y: el.y };
-            this.rackSnapActive = false;
-            this.isDrawing = true;
+            this.rackSnapActive.set(false);
+            this.isDrawing.set(true);
             return;
           }
         }
       }
 
       // 3. Check Wall Body Click (Lower Priority) → move ALL elements together
-      for (const el of this.elements) {
+      for (const el of this.elements()) {
         if (el.type === 'wall' && el.points && el.points.length > 1) {
           for (let i = 0; i < el.points.length - 1; i++) {
             const p1 = el.points[i];
@@ -975,7 +1010,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             if (distToSegment(point, p1, p2) < 10) {
               this.movingElementId = '__ALL__';
               this.lastMousePosition = point;
-              this.isDrawing = true;
+              this.isDrawing.set(true);
               return;
             }
           }
@@ -983,35 +1018,35 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       }
 
       // Nothing hit → deselect
-      this.selectedSegment = null;
-      this.selectedElementId = null;
+      this.selectedSegment.set(null);
+      this.selectedElementId.set(null);
     }
 
-    if (this.selectedTool === 'select') {
+    if (this.selectedTool() === 'select') {
       if (event.target === event.currentTarget) {
-        this.selectedElementId = null;
-        this.selectedSegment = null;
+        this.selectedElementId.set(null);
+        this.selectedSegment.set(null);
       }
       return;
     }
 
     // Polyline logic for walls
-    if (this.selectedTool === 'wall') {
+    if (this.selectedTool() === 'wall') {
       let point = this.getSvgPoint(event);
 
       // If drawing hasn't started, start it
-      if (this.activePolylinePoints.length === 0) {
+      if (this.activePolylinePoints().length === 0) {
         // Snap start point to edge if applicable
         const startVert = getClosestVertex(
           point,
           20,
-          this.elements,
-          this.activePolylinePoints,
+          this.elements(),
+          this.activePolylinePoints(),
         );
         if (startVert) {
           point = startVert;
         } else {
-          const startEdge = getClosestEdgeSnap(point, 15, this.elements);
+          const startEdge = getClosestEdgeSnap(point, 15, this.elements());
           if (startEdge) {
             point = { x: startEdge.x, y: startEdge.y };
             this.splitWallAtPoint(
@@ -1021,14 +1056,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             );
           }
         }
-        this.isDrawing = true;
-        this.activePolylinePoints = [point];
-        this.activeWallSegments = [];
-        this.cursorPosition = { ...point };
+        this.isDrawing.set(true);
+        this.activePolylinePoints.set([point]);
+        this.activeWallSegments.set([]);
+        this.cursorPosition.set({ ...point });
       } else {
-        const startPoint = this.activePolylinePoints[0];
+        const startPoint = this.activePolylinePoints()[0];
         const lastPoint =
-          this.activePolylinePoints[this.activePolylinePoints.length - 1];
+          this.activePolylinePoints()[this.activePolylinePoints().length - 1];
 
         // Apply orthogonal constraint on click if Shift is held
         if (event.shiftKey) {
@@ -1045,33 +1080,36 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const distToStart = dist(point, startPoint);
 
         // Allow closing the loop if we have enough points (triangle at least)
-        if (this.activePolylinePoints.length > 2 && distToStart < 15) {
+        if (this.activePolylinePoints().length > 2 && distToStart < 15) {
           // Snapping tolerance
           // Close the loop
-          this.finishPolyline([...this.activePolylinePoints, startPoint]);
+          this.finishPolyline([...this.activePolylinePoints(), startPoint]);
           return;
         } else {
           // Snap to vertex or edge before adding point
           const addVert = getClosestVertex(
             point,
             20,
-            this.elements,
-            this.activePolylinePoints,
+            this.elements(),
+            this.activePolylinePoints(),
           );
           if (addVert) {
             point = addVert;
           } else {
-            const addEdge = getClosestEdgeSnap(point, 15, this.elements);
+            const addEdge = getClosestEdgeSnap(point, 15, this.elements());
             if (addEdge) {
               point = { x: addEdge.x, y: addEdge.y };
               this.splitWallAtPoint(addEdge.elementId, addEdge.segIndex, point);
             }
           }
           // Add point (new array ref to trigger change detection if needed)
-          this.activePolylinePoints = [...this.activePolylinePoints, point];
+          this.activePolylinePoints.set([
+            ...this.activePolylinePoints(),
+            point,
+          ]);
           // Update segments
-          this.activeWallSegments = this.getWallSegments(
-            this.activePolylinePoints,
+          this.activeWallSegments.set(
+            this.getWallSegments(this.activePolylinePoints()),
           );
         }
       }
@@ -1080,10 +1118,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // Other tools (Drag-based)
     const point = this.getSvgPoint(event);
-    this.isDrawing = true;
-    this.startPoint = point;
+    this.isDrawing.set(true);
+    this.startPoint.set(point);
 
-    if (this.selectedTool === 'door') {
+    if (this.selectedTool() === 'door') {
       // Snap start point to the nearest wall
       const wallSnap = this.getDoorWallSnap(point);
       const start = wallSnap ? wallSnap.snapped : point;
@@ -1094,44 +1132,44 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const y2 = this.doorSnapDir
         ? start.y + this.doorSnapDir.dy * this.fpService.doorWidth()
         : start.y;
-      this.currentElement = {
+      this.currentElement.set({
         id: Date.now().toString(),
         type: 'door',
         x: start.x,
         y: start.y,
         x2,
         y2,
-      };
-    } else if (this.selectedTool === 'rack') {
+      });
+    } else if (this.selectedTool() === 'rack') {
       const dims = this.fpService.getSelectedRackDimensions();
-      this.currentElement = {
+      this.currentElement.set({
         id: Date.now().toString(),
         type: 'rack',
         x: point.x - dims.w / 2,
         y: point.y - dims.h / 2,
         width: dims.w,
         height: dims.h,
-      };
-    } else if (this.selectedTool === 'text') {
+      });
+    } else if (this.selectedTool() === 'text') {
       const newText: MapElement = {
         id: Date.now().toString(),
         type: 'text',
         x: point.x,
         y: point.y,
         text: 'Text',
-        fontSize: this.currentTextFontSize,
-        fill: this.currentTextFill,
-        fontWeight: this.currentTextBold ? 'bold' : 'normal',
-        fontStyle: this.currentTextItalic ? 'italic' : 'normal',
-        textDecoration: this.currentTextUnderline ? 'underline' : 'none',
+        fontSize: this.currentTextFontSize(),
+        fill: this.currentTextFill(),
+        fontWeight: this.currentTextBold() ? 'bold' : 'normal',
+        fontStyle: this.currentTextItalic() ? 'italic' : 'normal',
+        textDecoration: this.currentTextUnderline() ? 'underline' : 'none',
       };
-      this.elements = [...this.elements, newText];
+      this.elements.set([...this.elements(), newText]);
       this.startEditText(newText, event);
       // Determine if we need to set isDrawing to true?
       // For text, we place and edit immediately, no drag creation step.
-      this.isDrawing = false;
-      this.currentElement = null;
-      this.selectedTool = 'edit';
+      this.isDrawing.set(false);
+      this.currentElement.set(null);
+      this.selectedTool.set('edit');
     }
   }
 
@@ -1145,10 +1183,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     let point = this.getSvgPoint(event);
 
     // Free rotation drag
-    if (this.rotatingElementId && this.rotateDragCenter) {
-      const el = this.elements.find(
+    if (this.rotatingElementId() && this.rotateDragCenter) {
+      const el = this.elements().find(
         (e): e is RackElement =>
-          e.id === this.rotatingElementId && e.type === 'rack',
+          e.id === this.rotatingElementId() && e.type === 'rack',
       );
       if (el) {
         const currentAngle = Math.atan2(
@@ -1184,20 +1222,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // Clear snap indicator when not dragging a vertex
     if (
-      !(this.selectedTool === 'edit' && this.isDrawing && this.selectedVertex)
+      !(
+        this.selectedTool() === 'edit' &&
+        this.isDrawing() &&
+        this.selectedVertex
+      )
     ) {
       this.snapTargetVertex = null;
     }
 
     // Hover detection in move mode (when not dragging)
-    if (this.selectedTool === 'edit' && !this.isDrawing) {
+    if (this.selectedTool() === 'edit' && !this.isDrawing()) {
       let found: {
         elementId: string;
         pointIndex: number;
         x: number;
         y: number;
       } | null = null;
-      outer: for (const el of this.elements) {
+      outer: for (const el of this.elements()) {
         if (el.type === 'wall' && el.points) {
           for (let i = 0; i < el.points.length; i++) {
             if (dist(point, el.points[i]) < 10) {
@@ -1217,8 +1259,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // Whole Wall Moving Logic
     if (
-      this.selectedTool === 'edit' &&
-      this.isDrawing &&
+      this.selectedTool() === 'edit' &&
+      this.isDrawing() &&
       this.movingElementId &&
       this.lastMousePosition
     ) {
@@ -1229,7 +1271,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         // Find first wall vertex as grid-snap reference
         let refPoint: { x: number; y: number } | null = null;
         if (event.altKey) {
-          for (const el of this.elements) {
+          for (const el of this.elements()) {
             if (el.type === 'wall' && el.points && el.points.length > 0) {
               refPoint = el.points[0];
               break;
@@ -1248,7 +1290,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
 
         // Translate every element together
-        for (const el of this.elements) {
+        for (const el of this.elements()) {
           if (el.type === 'wall') {
             el.points = el.points.map((p) => ({
               x: p.x + actualDx,
@@ -1265,7 +1307,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           }
         }
       } else {
-        const el = this.elements.find((e) => e.id === this.movingElementId);
+        const el = this.elements().find((e) => e.id === this.movingElementId);
         if (el && el.type === 'wall') {
           el.points = el.points.map((p) => ({ x: p.x + dx, y: p.y + dy }));
           this.updateWallDerived(el);
@@ -1319,7 +1361,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           if (!isObbBlocked(moveObb, this.getRackObbs(el.id))) {
             el.x = result.x;
             el.y = result.y;
-            this.rackSnapActive = result.snapped;
+            this.rackSnapActive.set(result.snapped);
           }
           // If blocked by another rack, keep current position (no-op)
         } else if (el && el.type === 'text') {
@@ -1332,8 +1374,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Vertex Moving Logic
-    if (this.selectedTool === 'edit' && this.isDrawing && this.selectedVertex) {
-      const el = this.elements.find(
+    if (
+      this.selectedTool() === 'edit' &&
+      this.isDrawing() &&
+      this.selectedVertex
+    ) {
+      const el = this.elements().find(
         (e): e is WallElement =>
           e.id === this.selectedVertex!.elementId && e.type === 'wall',
       );
@@ -1385,7 +1431,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         // Snap to vertices of other walls
         this.snapTargetVertex = null;
         const SNAP_RADIUS = 15 / this.zoom;
-        outer: for (const other of this.elements) {
+        outer: for (const other of this.elements()) {
           if (other.id === el.id || other.type !== 'wall') continue;
           // Skip junction peers — they move with us, not snap targets
           if (this.selectedVertexPeers.some((p) => p.elementId === other.id))
@@ -1426,7 +1472,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         // Move all junction peers to the same final position
         for (const peer of this.selectedVertexPeers) {
-          const peerEl = this.elements.find(
+          const peerEl = this.elements().find(
             (e): e is WallElement =>
               e.id === peer.elementId && e.type === 'wall',
           );
@@ -1452,19 +1498,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Snap preview when wall tool is selected but drawing hasn't started yet
-    if (this.selectedTool === 'wall' && !this.isDrawing) {
-      this.vertexSnapPoint = null;
+    if (this.selectedTool() === 'wall' && !this.isDrawing()) {
+      this.vertexSnapPoint.set(null);
       this.edgeSnapPoint = null;
       const vertex = getClosestVertex(
         point,
         20,
-        this.elements,
-        this.activePolylinePoints,
+        this.elements(),
+        this.activePolylinePoints(),
       );
       if (vertex) {
-        this.vertexSnapPoint = vertex;
+        this.vertexSnapPoint.set(vertex);
       } else {
-        const edge = getClosestEdgeSnap(point, 15, this.elements);
+        const edge = getClosestEdgeSnap(point, 15, this.elements());
         if (edge) {
           this.edgeSnapPoint = edge;
         }
@@ -1473,12 +1519,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // Polyline preview logic
     if (
-      this.selectedTool === 'wall' &&
-      this.isDrawing &&
-      this.activePolylinePoints.length > 0
+      this.selectedTool() === 'wall' &&
+      this.isDrawing() &&
+      this.activePolylinePoints().length > 0
     ) {
       const lastPoint =
-        this.activePolylinePoints[this.activePolylinePoints.length - 1];
+        this.activePolylinePoints()[this.activePolylinePoints().length - 1];
 
       // Orthogonal constraint (Shift key)
       if (event.shiftKey) {
@@ -1491,95 +1537,96 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
 
-      this.intersectionPoint = null;
-      this.vertexSnapPoint = null;
+      this.intersectionPoint.set(null);
+      this.vertexSnapPoint.set(null);
       this.edgeSnapPoint = null;
 
       // First find if there IS an intersection up to the current mouse point
       const intersection = checkIntersections(
         point,
-        this.activePolylinePoints,
-        this.elements,
+        this.activePolylinePoints(),
+        this.elements(),
       );
       const vertex = getClosestVertex(
         point,
         20,
-        this.elements,
-        this.activePolylinePoints,
+        this.elements(),
+        this.activePolylinePoints(),
       ); // 20px snap radius
 
       if (intersection) {
-        this.intersectionPoint = intersection;
+        this.intersectionPoint.set(intersection);
         point = intersection;
         if (vertex && dist(vertex, intersection) < 10) {
-          this.vertexSnapPoint = vertex;
+          this.vertexSnapPoint.set(vertex);
           point = vertex;
         }
       } else if (vertex) {
-        this.vertexSnapPoint = vertex;
-        point = this.vertexSnapPoint;
+        this.vertexSnapPoint.set(vertex);
+        point = vertex;
       } else {
         // No vertex snap: try edge snap
-        const edge = getClosestEdgeSnap(point, 15, this.elements);
+        const edge = getClosestEdgeSnap(point, 15, this.elements());
         if (edge) {
           this.edgeSnapPoint = edge;
           point = { x: edge.x, y: edge.y };
         }
       }
 
-      this.cursorPosition = point;
-      this.previewAngles = this.getWallAngles(
-        this.activePolylinePoints,
-        this.cursorPosition,
+      this.cursorPosition.set(point);
+      this.previewAngles.set(
+        this.getWallAngles(this.activePolylinePoints(), this.cursorPosition()),
       );
 
       // Calculate length of current segment (from last point to cursor)
-      this.currentSegmentLength = dist(lastPoint, this.cursorPosition);
+      this.currentSegmentLength.set(dist(lastPoint, this.cursorPosition()));
       return;
     }
 
     // Allow dragging for other tools
     // Door endpoint drag in move mode (no currentElement needed)
-    if (this.doorDragEndpoint && this.movingElementId && this.isDrawing) {
-      const el = this.elements.find((e) => e.id === this.movingElementId);
+    if (this.doorDragEndpoint() && this.movingElementId && this.isDrawing()) {
+      const el = this.elements().find((e) => e.id === this.movingElementId);
       if (el && el.type === 'door') {
         const wallSnap = this.getDoorWallSnap(point);
         const snapped = wallSnap ? wallSnap.snapped : point;
-        if (this.doorDragEndpoint === 'start') {
+        if (this.doorDragEndpoint() === 'start') {
           el.x = snapped.x;
           el.y = snapped.y;
         } else {
           el.x2 = snapped.x;
           el.y2 = snapped.y;
         }
-        this.elements = [...this.elements];
+        this.elements.set([...this.elements()]);
       }
       return;
     }
 
-    if (!this.isDrawing || !this.currentElement || !this.startPoint) return;
+    if (!this.isDrawing() || !this.currentElement() || !this.startPoint())
+      return;
 
-    if (this.currentElement.type === 'door') {
+    const currentElement = this.currentElement();
+    if (!currentElement) return;
+
+    if (currentElement.type === 'door') {
       if (this.doorSnapDir) {
         // Project cursor onto wall direction from the start point
-        const ddx = point.x - this.currentElement.x;
-        const ddy = point.y - this.currentElement.y;
+        const ddx = point.x - currentElement.x;
+        const ddy = point.y - currentElement.y;
         const t = Math.max(
           0,
           ddx * this.doorSnapDir.dx + ddy * this.doorSnapDir.dy,
         );
-        this.currentElement.x2 =
-          this.currentElement.x + this.doorSnapDir.dx * t;
-        this.currentElement.y2 =
-          this.currentElement.y + this.doorSnapDir.dy * t;
+        currentElement.x2 = currentElement.x + this.doorSnapDir.dx * t;
+        currentElement.y2 = currentElement.y + this.doorSnapDir.dy * t;
       } else {
-        this.currentElement.x2 = point.x;
-        this.currentElement.y2 = point.y;
+        currentElement.x2 = point.x;
+        currentElement.y2 = point.y;
       }
-    } else if (this.currentElement.type === 'rack') {
+    } else if (currentElement.type === 'rack') {
       // Translate rack centered on cursor (dimensions are preset; no drag-resize)
-      const w = this.currentElement.width ?? 0;
-      const h = this.currentElement.height ?? 0;
+      const w = currentElement.width ?? 0;
+      const h = currentElement.height ?? 0;
       // Alt: snap top-left corner to grid; otherwise centre on cursor
       const rawX = event.altKey ? gridSnap(point.x - w / 2) : point.x - w / 2;
       const rawY = event.altKey ? gridSnap(point.y - h / 2) : point.y - h / 2;
@@ -1592,27 +1639,28 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         others,
         snapRadius,
       );
-      this.currentElement.x = snapResult.x;
-      this.currentElement.y = snapResult.y;
-      this.rackSnapActive = snapResult.snapped;
+      currentElement.x = snapResult.x;
+      currentElement.y = snapResult.y;
+      this.rackSnapActive.set(snapResult.snapped);
       const creationObb: ObbRect = {
         x: snapResult.x,
         y: snapResult.y,
         width: w,
         height: h,
-        rotation: this.currentElement.rotation ?? 0,
+        rotation: currentElement.rotation ?? 0,
       };
-      this.rackCreationBlocked =
+      this.rackCreationBlocked.set(
         isObbBlocked(creationObb, this.getRackObbs()) ||
-        !isRackPlacementValid(
-          snapResult.x,
-          snapResult.y,
-          w,
-          h,
-          this.currentElement.rotation ?? 0,
-          this.roomFaces,
-          this.elements,
-        );
+          !isRackPlacementValid(
+            snapResult.x,
+            snapResult.y,
+            w,
+            h,
+            currentElement.rotation ?? 0,
+            this.roomFaces,
+            this.elements(),
+          ),
+      );
     }
   }
 
@@ -1623,23 +1671,23 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     // Finish free rotation drag
-    if (this.rotatingElementId) {
-      this.rotatingElementId = null;
+    if (this.rotatingElementId()) {
+      this.rotatingElementId.set(null);
       this.rotateDragCenter = null;
-      this.elements = [...this.elements];
+      this.elements.set([...this.elements()]);
       this.rederiveAllWalls();
       this.scheduleAutosave();
       return;
     }
 
-    if (this.selectedTool === 'edit') {
+    if (this.selectedTool() === 'edit') {
       // Attempt merge if vertex was snapped onto another wall
       if (this.selectedVertex && this.snapTargetVertex) {
-        const elA = this.elements.find(
+        const elA = this.elements().find(
           (e): e is WallElement =>
             e.id === this.selectedVertex!.elementId && e.type === 'wall',
         );
-        const elB = this.elements.find(
+        const elB = this.elements().find(
           (e): e is WallElement =>
             e.id === this.snapTargetVertex!.elementId && e.type === 'wall',
         );
@@ -1655,7 +1703,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       // Validate final rack position: revert if dropped outside any room or on a wall
       if (this.movingElementId && this.movingElementId !== '__ALL__') {
-        const movedRack = this.elements.find(
+        const movedRack = this.elements().find(
           (e): e is RackElement =>
             e.id === this.movingElementId && e.type === 'rack',
         );
@@ -1668,7 +1716,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             movedRack.height,
             movedRack.rotation ?? 0,
             this.roomFaces,
-            this.elements,
+            this.elements(),
           )
         ) {
           movedRack.x = this.lastValidRackPos.x;
@@ -1678,22 +1726,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
 
-      if (this.doorDragEndpoint) {
-        this.doorDragEndpoint = null;
+      if (this.doorDragEndpoint()) {
+        this.doorDragEndpoint.set(null);
         this.movingElementId = null;
-        this.isDrawing = false;
+        this.isDrawing.set(false);
         this.rederiveAllWalls();
         this.scheduleAutosave();
         return;
       }
 
-      this.isDrawing = false;
+      this.isDrawing.set(false);
       this.selectedVertex = null;
       this.selectedVertexPeers = [];
       this.movingElementId = null;
       this.lastMousePosition = null;
       this.snapTargetVertex = null;
-      this.rackSnapActive = false;
+      this.rackSnapActive.set(false);
       this.rederiveAllWalls();
       this.scheduleAutosave();
       return;
@@ -1701,45 +1749,46 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // For walls, drawing continues until explicitly finished or closed,
     // so we don't handle mouseUp (unless we wanted drag-segment, but AutoCad is point-to-point clicks usually)
-    if (this.selectedTool === 'wall') return;
+    if (this.selectedTool() === 'wall') return;
 
-    if (!this.isDrawing) return;
+    if (!this.isDrawing()) return;
 
     // For other tools (drag to create)
-    if (this.currentElement) {
-      if (this.currentElement.type === 'rack') {
+    if (this.currentElement()) {
+      const currentElement = this.currentElement();
+      if (currentElement?.type === 'rack') {
         // Evaluate collision one last time (onMouseMove might not have run)
         const creationObb: ObbRect = {
-          x: this.currentElement.x,
-          y: this.currentElement.y,
-          width: this.currentElement.width ?? 0,
-          height: this.currentElement.height ?? 0,
-          rotation: this.currentElement.rotation ?? 0,
+          x: currentElement.x,
+          y: currentElement.y,
+          width: currentElement.width ?? 0,
+          height: currentElement.height ?? 0,
+          rotation: currentElement.rotation ?? 0,
         };
         const blocked =
           isObbBlocked(creationObb, this.getRackObbs()) ||
           !isRackPlacementValid(
-            this.currentElement.x,
-            this.currentElement.y,
-            this.currentElement.width ?? 0,
-            this.currentElement.height ?? 0,
-            this.currentElement.rotation ?? 0,
+            currentElement.x,
+            currentElement.y,
+            currentElement.width ?? 0,
+            currentElement.height ?? 0,
+            currentElement.rotation ?? 0,
             this.roomFaces,
-            this.elements,
+            this.elements(),
           );
 
         // Abort placement if overlapping another rack
-        if (this.rackCreationBlocked || blocked) {
-          this.isDrawing = false;
-          this.currentElement = null;
-          this.startPoint = null;
-          this.rackCreationBlocked = false;
-          this.rackSnapActive = false;
+        if (this.rackCreationBlocked() || blocked) {
+          this.isDrawing.set(false);
+          this.currentElement.set(null);
+          this.startPoint.set(null);
+          this.rackCreationBlocked.set(false);
+          this.rackSnapActive.set(false);
           return;
         }
         // Assign a unique name and create rack entry in backend
-        const rackName = this.fpService.generateRackName(this.elements);
-        this.currentElement.rackName = rackName;
+        const rackName = this.fpService.generateRackName(this.elements());
+        currentElement.rackName = rackName;
         if (
           this.fpService.selectedRackType() &&
           this.fpService.selectedRoomId() != null
@@ -1757,15 +1806,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             });
         }
       }
-      this.elements.push(this.currentElement);
-      this.selectedTool = 'edit';
+      this.elements.set([...this.elements(), currentElement!]);
+      this.selectedTool.set('edit');
     }
 
-    this.isDrawing = false;
-    this.currentElement = null;
-    this.startPoint = null;
-    this.rackCreationBlocked = false;
-    this.rackSnapActive = false;
+    this.isDrawing.set(false);
+    this.currentElement.set(null);
+    this.startPoint.set(null);
+    this.rackCreationBlocked.set(false);
+    this.rackSnapActive.set(false);
     this.doorSnapDir = null;
     this.rederiveAllWalls();
     this.scheduleAutosave();
@@ -1773,7 +1822,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   // Explicitly finish polyline (e.g. invalid double click, or ESC key)
   finishPolyline(points?: { x: number; y: number }[]) {
-    const finalPoints = points || this.activePolylinePoints;
+    const finalPoints = points || this.activePolylinePoints();
     if (finalPoints.length > 1) {
       const newEl: WallElement = {
         id: Date.now().toString(),
@@ -1783,7 +1832,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         points: [...finalPoints],
       };
       this.updateWallDerived(newEl);
-      this.elements.push(newEl);
+      this.elements.set([...this.elements(), newEl]);
     }
     this.rederiveAllWalls();
     this.scheduleAutosave();
@@ -1791,13 +1840,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onDoubleClick(event: MouseEvent) {
-    if (this.selectedTool !== 'edit') return;
+    if (this.selectedTool() !== 'edit') return;
     if (this.selectedRoomId == null) return;
     const point = this.getSvgPoint(event);
     const SNAP = 10 / this.zoom;
 
     // ── Priority 1: double-click on an EXISTING VERTEX → split polyline ──
-    for (const el of this.elements) {
+    for (const el of this.elements()) {
       if (el.type !== 'wall' || !el.points || el.points.length < 2) continue;
       const pts = el.points;
       for (let i = 0; i < pts.length; i++) {
@@ -1828,7 +1877,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             points: partB,
           };
           this.updateWallDerived(newEl);
-          this.elements = [...this.elements, newEl];
+          this.elements.set([...this.elements(), newEl]);
           this.rederiveAllWalls();
           this.scheduleAutosave();
           event.stopPropagation();
@@ -1836,7 +1885,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
 
         this.updateWallDerived(el);
-        this.elements = [...this.elements];
+        this.elements.set([...this.elements()]);
         this.rederiveAllWalls();
         this.scheduleAutosave();
         event.stopPropagation();
@@ -1845,7 +1894,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     // ── Priority 2: double-click on a SEGMENT → insert new vertex ──
-    for (const el of this.elements) {
+    for (const el of this.elements()) {
       if (el.type === 'wall' && el.points && el.points.length > 1) {
         for (let i = 0; i < el.points.length - 1; i++) {
           const p1 = el.points[i];
@@ -1866,7 +1915,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             newPoints.splice(i + 1, 0, projected);
             el.points = newPoints;
             this.updateWallDerived(el);
-            this.elements = [...this.elements];
+            this.elements.set([...this.elements()]);
             this.scheduleAutosave();
             event.stopPropagation();
             return;
@@ -1877,10 +1926,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onElementClick(event: MouseEvent, element: MapElement) {
-    if (this.selectedTool === 'edit') {
+    if (this.selectedTool() === 'edit') {
       event.stopPropagation();
-      this.selectedSegment = null;
-      this.selectedElementId = element.id;
+      this.selectedSegment.set(null);
+      this.selectedElementId.set(element.id);
       if (element.type === 'text') {
         this.updateToolbarFromSelection();
       }
@@ -1888,30 +1937,30 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onSegmentClick(event: MouseEvent, el: MapElement, segIndex: number) {
-    if (this.selectedTool === 'edit') {
+    if (this.selectedTool() === 'edit') {
       event.stopPropagation();
-      this.selectedElementId = null;
-      this.selectedSegment = { elementId: el.id, segIndex };
+      this.selectedElementId.set(null);
+      this.selectedSegment.set({ elementId: el.id, segIndex });
     }
   }
 
   @HostListener('document:keydown', ['$event'])
   async handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      if (this.selectedTool === 'wall' && this.isDrawing) {
+      if (this.selectedTool() === 'wall' && this.isDrawing()) {
         // Finish polyline on Escape if we have points
         this.finishPolyline();
       } else {
         this.cancelDrawing();
-        this.selectedElementId = null;
-        this.selectedSegment = null;
+        this.selectedElementId.set(null);
+        this.selectedSegment.set(null);
       }
     }
 
     if (event.key === 'Delete' || event.key === 'Backspace') {
       // Delete hovered vertex in move mode
-      if (this.selectedTool === 'edit' && this.hoveredVertex) {
-        const el = this.elements.find(
+      if (this.selectedTool() === 'edit' && this.hoveredVertex) {
+        const el = this.elements().find(
           (e): e is WallElement =>
             e.id === this.hoveredVertex!.elementId && e.type === 'wall',
         );
@@ -1922,7 +1971,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           );
           el.points = newPoints;
           this.updateWallDerived(el);
-          this.elements = [...this.elements];
+          this.elements.set([...this.elements()]);
           this.rederiveAllWalls();
           this.scheduleAutosave();
           this.hoveredVertex = null;
@@ -1930,23 +1979,26 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         return;
       }
       // Delete selected segment in move mode
-      if (this.selectedTool === 'edit' && this.selectedSegment) {
-        const { elementId, segIndex } = this.selectedSegment;
-        const el = this.elements.find(
+      const selectedSegment = this.selectedSegment();
+      if (this.selectedTool() === 'edit' && selectedSegment) {
+        const { elementId, segIndex } = selectedSegment;
+        const el = this.elements().find(
           (e): e is WallElement => e.id === elementId && e.type === 'wall',
         );
         if (el) {
           if (el.points.length <= 2) {
             // Single segment: remove whole element
-            this.elements = this.elements.filter((e) => e.id !== elementId);
+            this.elements.set(
+              this.elements().filter((e) => e.id !== elementId),
+            );
           } else if (segIndex === 0) {
             el.points = el.points.slice(1);
             this.updateWallDerived(el);
-            this.elements = [...this.elements];
+            this.elements.set([...this.elements()]);
           } else if (segIndex === el.points.length - 2) {
             el.points = el.points.slice(0, -1);
             this.updateWallDerived(el);
-            this.elements = [...this.elements];
+            this.elements.set([...this.elements()]);
           } else {
             // Middle segment: split into two walls
             const pointsA = el.points.slice(0, segIndex + 1);
@@ -1961,20 +2013,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
               points: pointsB,
             };
             this.updateWallDerived(newEl);
-            this.elements = [...this.elements, newEl];
+            this.elements.set([...this.elements(), newEl]);
           }
           this.rederiveAllWalls();
-          this.selectedSegment = null;
+          this.selectedSegment.set(null);
           this.scheduleAutosave();
         }
         return;
       }
       // Delete whole element (walls / racks only in move mode; doors in any mode)
-      if (this.selectedElementId) {
-        const el = this.elements.find((e) => e.id === this.selectedElementId);
-        if (el?.type === 'wall' && this.selectedTool !== 'edit') return;
-        if (el?.type === 'rack' && this.selectedTool !== 'edit') return;
-        if (el?.type === 'door' && this.selectedTool !== 'edit') return;
+      if (this.selectedElementId()) {
+        const el = this.elements().find(
+          (e) => e.id === this.selectedElementId(),
+        );
+        if (el?.type === 'wall' && this.selectedTool() !== 'edit') return;
+        if (el?.type === 'rack' && this.selectedTool() !== 'edit') return;
+        if (el?.type === 'door' && this.selectedTool() !== 'edit') return;
         if (el?.type === 'rack') {
           const rackName = el.rackName ?? el.id;
           const confirmed = await this.confirmDialog.confirm(
@@ -1988,16 +2042,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             },
           );
           if (!confirmed) return;
-          const deletedId = this.selectedElementId;
+          const deletedId = this.selectedElementId();
           this.fpService.deleteRack(rackName).subscribe({
             next: () => {
-              this.elements = this.elements.filter((e) => e.id !== deletedId);
-              if (this.selectedElementId === deletedId) {
-                this.selectedElementId = null;
+              const filtered = this.elements().filter(
+                (e) => e.id !== deletedId,
+              );
+              this.elements.set(filtered);
+              if (this.selectedElementId() === deletedId) {
+                this.selectedElementId.set(null);
               }
               this.rederiveAllWalls();
               this.scheduleAutosave();
-              this.cdr.markForCheck();
             },
             error: (err: HttpErrorResponse) => {
               const msg =
@@ -2016,10 +2072,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           });
           return;
         }
-        this.elements = this.elements.filter(
-          (e) => e.id !== this.selectedElementId,
+        const filtered = this.elements().filter(
+          (e) => e.id !== this.selectedElementId(),
         );
-        this.selectedElementId = null;
+        this.elements.set(filtered);
+        this.selectedElementId.set(null);
         this.rederiveAllWalls();
         this.scheduleAutosave();
       }
@@ -2028,8 +2085,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // Enter to finish polyline
     if (
       event.key === 'Enter' &&
-      this.selectedTool === 'wall' &&
-      this.isDrawing
+      this.selectedTool() === 'wall' &&
+      this.isDrawing()
     ) {
       this.finishPolyline();
     }
@@ -2039,12 +2096,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       if (
         !event.ctrlKey &&
         !event.metaKey &&
-        this.selectedElementId &&
-        this.selectedTool === 'edit'
+        this.selectedElementId() &&
+        this.selectedTool() === 'edit'
       ) {
-        const el = this.elements.find(
+        const el = this.elements().find(
           (e): e is RackElement =>
-            e.id === this.selectedElementId && e.type === 'rack',
+            e.id === this.selectedElementId() && e.type === 'rack',
         );
         if (el) {
           event.preventDefault();
@@ -2055,7 +2112,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   onRackDblClick(event: MouseEvent, el: RackElement): void {
-    if (this.selectedTool !== 'select') return;
+    if (this.selectedTool() !== 'select') return;
     event.stopPropagation();
     if (el.rackName) {
       this.tabService.openRack(el.rackName);
