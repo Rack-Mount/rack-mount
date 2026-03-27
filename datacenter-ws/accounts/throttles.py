@@ -130,3 +130,37 @@ class AnonPortCorrectionBlocker(AnonRateThrottle):
     """Block anonymous users from correction endpoints (requires permission)."""
     scope = 'anon_port_correction'
     rate = '0/h'
+
+
+# ── Import / Export throttles ──────────────────────────────────────────────────
+
+class AssetImportThrottle(UserRateThrottle):
+    """
+    Rate limit for asset CSV import (bulk DB writes).
+    10 imports/hour per user — each import can insert thousands of rows.
+    """
+    scope = 'asset_import'
+
+
+class AssetExportThrottle(UserRateThrottle):
+    """
+    Rate limit for asset export (full-table reads + XLSX generation).
+    30 exports/hour per user.
+    """
+    scope = 'asset_export'
+
+
+class CatalogImportThrottle(UserRateThrottle):
+    """
+    Rate limit for catalog JSON import (bulk model/vendor writes).
+    10 imports/hour per user.
+    """
+    scope = 'catalog_import'
+
+
+class CatalogExportThrottle(UserRateThrottle):
+    """
+    Rate limit for catalog export (reads all models + base64 image encoding).
+    30 exports/hour per user.
+    """
+    scope = 'catalog_export'

@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.permissions import CatalogResourcePermission
+from accounts.throttles import CatalogExportThrottle
 from catalog.models import AssetModel, Vendor
 from catalog.models.AssetType import AssetType
 from asset.models.GenericComponent import GenericComponent
@@ -37,6 +38,7 @@ def _image_to_data_url(image_field) -> str | None:
 
 class CatalogExportView(APIView):
     permission_classes = [IsAuthenticated, CatalogResourcePermission]
+    throttle_classes = [CatalogExportThrottle]
 
     @extend_schema(
         tags=['catalog'],

@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.permissions import ImportCatalogPermission
+from accounts.throttles import CatalogImportThrottle
 from catalog.models import AssetModel, Vendor
 from catalog.models.AssetType import AssetType
 from catalog.views.AssetModelImportView import _decode_image
@@ -27,6 +28,7 @@ def _summary(created: int, skipped: int, errors: list | None = None) -> dict:
 
 class CatalogImportView(APIView):
     permission_classes = [IsAuthenticated, ImportCatalogPermission]
+    throttle_classes = [CatalogImportThrottle]
 
     @extend_schema(
         tags=['catalog'],

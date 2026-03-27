@@ -14,6 +14,7 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse
 from drf_spectacular.types import OpenApiTypes
 
 from accounts.permissions import ExportAssetsPermission
+from accounts.throttles import AssetExportThrottle
 from asset.models import Asset
 from asset.views.AssetViewSet import AssetFilter
 from asset.utils.csv_sanitize import sanitize_cell as _safe_cell
@@ -63,6 +64,7 @@ class AssetExportView(APIView):
     Returns an .xlsx file.
     """
     permission_classes = [IsAuthenticated, ExportAssetsPermission]
+    throttle_classes = [AssetExportThrottle]
     filter_backends = (filters.OrderingFilter,
                        filters.SearchFilter, DjangoFilterBackend)
     search_fields = ['hostname', 'sap_id', 'serial_number', 'order_id',

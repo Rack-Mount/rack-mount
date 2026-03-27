@@ -252,6 +252,11 @@ REST_FRAMEWORK = {
         'model_training_status': '1000/hour',    # Status polling
         'anon_port_training': '0/hour',          # Block anonymous
         'anon_port_correction': '0/hour',        # Block anonymous
+        # ─── Import / Export scopes ────────────────────────────────────────────
+        'asset_import': '10/hour',               # CSV import (bulk DB writes)
+        'asset_export': '30/hour',               # XLSX export (full-table reads)
+        'catalog_import': '10/hour',             # JSON catalog import
+        'catalog_export': '30/hour',             # Catalog export (image encoding)
     },
 }
 
@@ -276,12 +281,11 @@ SPECTACULAR_SETTINGS = {
     'SERVE_PERMISSIONS': ['datacenter-app.permissions.AccessListPermission'],
 }
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:4200",
-    "http://localhost:4200",
-    "http://127.0.0.1:8080",
-    "http://localhost:8080",
-]
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='http://127.0.0.1:4200,http://localhost:4200,http://127.0.0.1:8080,http://localhost:8080',
+    cast=Csv(),
+)
 
 # Never allow all origins — always use explicit CORS_ALLOWED_ORIGINS whitelist
 CORS_ALLOW_ALL_ORIGINS = False
@@ -302,12 +306,11 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:4200",
-    "http://localhost:4200",
-    "http://127.0.0.1:8080",
-    "http://localhost:8080",
-]
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://127.0.0.1:4200,http://localhost:4200,http://127.0.0.1:8080,http://localhost:8080',
+    cast=Csv(),
+)
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -363,6 +366,23 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
 EXPORT_FORMATS = [CSV, XLSX]
+
+# ── Celery ────────────────────────────────────────────────────────────────────
+# Use Redis as broker (same instance as caching when enabled).
+# Worker startup: celery -A datacenter-app worker -l info
+CELERY_BROKER_URL = config(
+    'CELERY_BROKER_URL',
+    default=f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/2' if REDIS_PASSWORD
+    else f'redis://{REDIS_HOST}:{REDIS_PORT}/2',
+)
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TIMEZONE = 'UTC'
+# Tasks are fire-and-forget; state is tracked in training_state.json
+CELERY_TASK_IGNORE_RESULT = True
+# Prevent tasks accumulating if the worker is down for a long time
+CELERY_TASK_SOFT_TIME_LIMIT = 3600   # 1 hour soft limit (signals SIGTERM)
+CELERY_TASK_TIME_LIMIT = 3900        # 1 h 5 min hard limit (signals SIGKILL)
 
 # AUTH_USER_MODEL = "accounts.CustomUser"
 

@@ -39,6 +39,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.http import HttpResponse
 from accounts.permissions import ImportAssetsPermission
+from accounts.throttles import AssetImportThrottle as _AssetImportThrottle
 
 import csv
 import io
@@ -99,6 +100,7 @@ def _int_or_none(value: str, field_name: str) -> int | None:
 class AssetImportCsvView(APIView):
     permission_classes = [IsAuthenticated, ImportAssetsPermission]
     parser_classes = [MultiPartParser]
+    throttle_classes = [_AssetImportThrottle]
 
     @extend_schema(
         summary='Download template CSV for asset import',

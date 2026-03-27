@@ -20,8 +20,15 @@ interface LoginCredentials {
   password: string;
 }
 
-/** sessionStorage key for the refresh token (survives F5, cleared on tab close). */
-const REFRESH_TOKEN_KEY = 'rt';
+/**
+ * sessionStorage key for the session presence flag.
+ * Stores a non-sensitive boolean ("1") to signal that a refresh-token cookie
+ * exists on the browser, allowing the auth guard to attempt session restoration
+ * on cold-start without making a network request when no session is present.
+ * The actual refresh token is held in an HTTP-only Secure cookie set by the
+ * backend and is never accessible from JavaScript.
+ */
+const SESSION_FLAG_KEY = 'has_session';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -31,17 +38,18 @@ export class AuthService {
 
   private readonly _username = signal<string>('');
   private readonly _accessToken = signal<string>('');
-  /** Refresh token — restored from sessionStorage on page load. */
-  private readonly _refreshToken = signal<string>(
-    sessionStorage.getItem(REFRESH_TOKEN_KEY) ?? '',
+
+  /** True when the session-presence flag is set in sessionStorage. */
+  private readonly _hasSession = signal<boolean>(
+    sessionStorage.getItem(SESSION_FLAG_KEY) === '1',
   );
 
   readonly isAuthenticated = computed(() => !!this._username());
   readonly username = computed(() => this._username());
   /** Current access token — read by the auth interceptor. */
   readonly accessToken = computed(() => this._accessToken());
-  /** True when a refresh token is stored — used by the guard to decide whether to attempt session restoration. */
-  readonly hasRefreshToken = computed(() => !!this._refreshToken());
+  /** True when a refresh-token cookie likely exists (based on session flag). */
+  readonly hasRefreshToken = computed(() => this._hasSession());
 
   // ── Token refresh ─────────────────────────────────────────────────────────
   private _isRefreshing = false;
@@ -61,14 +69,15 @@ export class AuthService {
           detail: string;
           username: string;
           access: string;
-          refresh: string;
           role: RoleData;
-        }>(`${environment.service_url}/auth/token/`, credentials)
+        }>(`${environment.service_url}/auth/token/`, credentials, {
+          withCredentials: true,
+        })
         .pipe(
-          tap(({ username: returnedUsername, access, refresh, role }) => {
+          tap(({ username: returnedUsername, access, role }) => {
             this._username.set(returnedUsername);
             this._accessToken.set(access);
-            this._setRefreshToken(refresh);
+            this._setSessionFlag(true);
             if (role) this.roleService.load(role);
           }),
           map(() => undefined),
@@ -84,42 +93,39 @@ export class AuthService {
     });
   }
 
-  private _setRefreshToken(token: string): void {
-    this._refreshToken.set(token);
-    if (token) {
-      sessionStorage.setItem(REFRESH_TOKEN_KEY, token);
+  private _setSessionFlag(active: boolean): void {
+    this._hasSession.set(active);
+    if (active) {
+      sessionStorage.setItem(SESSION_FLAG_KEY, '1');
     } else {
-      sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+      sessionStorage.removeItem(SESSION_FLAG_KEY);
     }
   }
 
   logout(): Observable<void> {
-    const refresh = this._refreshToken();
     this._username.set('');
     this._accessToken.set('');
-    this._setRefreshToken('');
+    this._setSessionFlag(false);
     this._isRefreshing = false;
     this._refreshSubject.next(null);
-    this._roleResponseCache$ = null; // Invalidate cache on logout
+    this._roleResponseCache$ = null;
     this.roleService.clear();
 
     return this.http
-      .post<{
-        detail: string;
-      }>(`${environment.service_url}/auth/token/blacklist/`, { refresh })
+      .post<{ detail: string }>(
+        `${environment.service_url}/auth/token/blacklist/`,
+        {},
+        { withCredentials: true },
+      )
       .pipe(
         map(() => undefined),
-        catchError((error) => {
-          // Even if blacklist fails, considered logged out on client side
-          return throwError(() => error);
-        }),
+        catchError((error) => throwError(() => error)),
       );
   }
 
   /** Fetches /auth/me/ and stores the returned username, role and preferences in memory.
    * Response is cached via shareReplay(1) so concurrent calls share the same request. */
   fetchAndLoadRole(): Observable<void> {
-    // Return cached response if available; otherwise, create new request and cache it
     if (!this._roleResponseCache$) {
       this._roleResponseCache$ = this.http
         .get<{
@@ -144,9 +150,9 @@ export class AuthService {
   }
 
   /**
-   * Tries to obtain a new access token using the refresh token stored in HttpOnly cookies.
+   * Obtains a new access token using the refresh-token HTTP-only cookie.
+   * The cookie is sent automatically by the browser (withCredentials: true).
    * Concurrent callers wait on the same in-flight request.
-   * Cookies are automatically included in the request via withCredentials=true.
    */
   refresh(): Observable<void> {
     if (this._isRefreshing) {
@@ -163,13 +169,12 @@ export class AuthService {
       .post<{
         detail: string;
         access: string;
-        refresh: string | null;
         username: string;
-      }>(`${environment.service_url}/auth/token/refresh/`, {
-        refresh: this._refreshToken(),
+      }>(`${environment.service_url}/auth/token/refresh/`, {}, {
+        withCredentials: true,
       })
       .pipe(
-        tap(({ access, refresh, username }) => {
+        tap(({ access, username }) => {
           // Set state BEFORE notifying waiters: _refreshSubject.next() is
           // synchronous and immediately runs any queued interceptor's switchMap.
           // If accessToken were still '' at that point, the retry would send
@@ -184,7 +189,6 @@ export class AuthService {
           // and redirect to "/" on browser refresh. The authoritative role is
           // always fetched from /auth/me/ via fetchAndLoadRole().
           this._accessToken.set(access);
-          if (refresh) this._setRefreshToken(refresh);
           if (username) this._username.set(username);
           this._isRefreshing = false;
           this._refreshSubject.next(undefined);
