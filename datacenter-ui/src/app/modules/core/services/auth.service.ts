@@ -57,10 +57,13 @@ export class AuthService {
     // If credentials provided, validate credentials first
     if (credentials) {
       return this.http
-        .post<{ detail: string; username: string; access: string; refresh: string; role: RoleData }>(
-          `${environment.service_url}/auth/token/`,
-          credentials,
-        )
+        .post<{
+          detail: string;
+          username: string;
+          access: string;
+          refresh: string;
+          role: RoleData;
+        }>(`${environment.service_url}/auth/token/`, credentials)
         .pipe(
           tap(({ username: returnedUsername, access, refresh, role }) => {
             this._username.set(returnedUsername);
@@ -101,10 +104,9 @@ export class AuthService {
     this.roleService.clear();
 
     return this.http
-      .post<{ detail: string }>(
-        `${environment.service_url}/auth/token/blacklist/`,
-        { refresh },
-      )
+      .post<{
+        detail: string;
+      }>(`${environment.service_url}/auth/token/blacklist/`, { refresh })
       .pipe(
         map(() => undefined),
         catchError((error) => {
@@ -158,10 +160,14 @@ export class AuthService {
     this._refreshSubject.next(null);
 
     return this.http
-      .post<{ detail: string; access: string; refresh: string | null; username: string }>(
-        `${environment.service_url}/auth/token/refresh/`,
-        { refresh: this._refreshToken() },
-      )
+      .post<{
+        detail: string;
+        access: string;
+        refresh: string | null;
+        username: string;
+      }>(`${environment.service_url}/auth/token/refresh/`, {
+        refresh: this._refreshToken(),
+      })
       .pipe(
         tap(({ access, refresh, username }) => {
           // Set state BEFORE notifying waiters: _refreshSubject.next() is
