@@ -40,15 +40,15 @@ class AssetRequestViewSet(
     viewsets.GenericViewSet,
 ):
     """
-    Gestione delle richieste di ciclo di vita degli asset.
+    Lifecycle management for asset requests.
 
-    Ciclo di vita di una richiesta:
-        INSERITA → PIANIFICATA → EVASA  (percorso normale)
-        INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)
-        INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)
+    Request lifecycle:
+        SUBMITTED → PLANNED → EXECUTED  (normal path)
+        SUBMITTED / PLANNED → REJECTED  (rejected)
+        SUBMITTED / PLANNED → NEEDS_CLARIFICATION → SUBMITTED  (clarification)
 
-    Quando una richiesta viene EVASA, l'asset cambia effettivamente stato e
-    location, e viene creato un AssetTransitionLog.
+    When a request is EXECUTED, the asset state and location are effectively
+    updated and an AssetTransitionLog is created.
     """
 
     queryset = AssetRequest.objects.select_related(
@@ -65,7 +65,7 @@ class AssetRequestViewSet(
             return [IsAuthenticated(), CreateRequestPermission()]
         if self.action in ('plan', 'execute', 'reject', 'request_clarification'):
             return [IsAuthenticated(), ManageRequestsPermission()]
-        # resubmit: il richiedente originale può reinserire
+        # resubmit: only the original requester can submit again
         return [IsAuthenticated(), ViewRequestsPermission()]
 
     def get_serializer_class(self):
@@ -104,12 +104,12 @@ class AssetRequestViewSet(
             return None
 
     def _check_transition(self, asset_request, target_status):
-        """Restituisce None se la transizione è valida, Response di errore altrimenti."""
+        """Returns None when transition is valid, error Response otherwise."""
         allowed = ALLOWED_REQUEST_TRANSITIONS.get(asset_request.status, set())
         if target_status not in allowed:
             return Response(
                 {
-                    'error': _('Transizione non ammessa'),
+                    'error': _('Transition not allowed'),
                     'current_status': asset_request.status,
                     'target_status': target_status,
                     'allowed': sorted(allowed),
@@ -126,13 +126,13 @@ class AssetRequestViewSet(
         POST /asset/asset_request/{id}/plan
         Body: { "planned_date": "YYYY-MM-DD", "assigned_to": <int|null>, "notes": "" }
 
-        Transizione INSERITA → PIANIFICATA.
+        Transition SUBMITTED → PLANNED.
         """
         asset_request = self._get_request_or_404(pk)
         if asset_request is None:
-            return Response({'error': _('Richiesta non trovata')}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': _('Request not found')}, status=status.HTTP_404_NOT_FOUND)
 
-        err = self._check_transition(asset_request, AssetRequestStatus.PIANIFICATA)
+        err = self._check_transition(asset_request, AssetRequestStatus.PLANNED)
         if err:
             return err
 
@@ -140,7 +140,7 @@ class AssetRequestViewSet(
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        asset_request.status = AssetRequestStatus.PIANIFICATA
+        asset_request.status = AssetRequestStatus.PLANNED
         if 'planned_date' in data:
             asset_request.planned_date = data['planned_date']
         if 'assigned_to' in data:
@@ -148,7 +148,7 @@ class AssetRequestViewSet(
             try:
                 asset_request.assigned_to = User.objects.get(pk=data['assigned_to']) if data['assigned_to'] else None
             except User.DoesNotExist:
-                return Response({'error': _('Utente non trovato')}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': _('User not found')}, status=status.HTTP_400_BAD_REQUEST)
         if data.get('notes'):
             asset_request.notes = data['notes']
 
@@ -164,22 +164,22 @@ class AssetRequestViewSet(
         """
         POST /asset/asset_request/{id}/execute
 
-        Transizione → EVASA.
-        Esegue effettivamente la transizione di stato e location sull'asset,
-        crea un AssetTransitionLog e aggiorna la richiesta come evasa.
+        Transition → EXECUTED.
+        Applies the requested state/location transition on the asset,
+        creates an AssetTransitionLog and marks the request as executed.
         """
         asset_request = self._get_request_or_404(pk)
         if asset_request is None:
-            return Response({'error': _('Richiesta non trovata')}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': _('Request not found')}, status=status.HTTP_404_NOT_FOUND)
 
-        err = self._check_transition(asset_request, AssetRequestStatus.EVASA)
+        err = self._check_transition(asset_request, AssetRequestStatus.EXECUTED)
         if err:
             return err
 
         asset = asset_request.asset
 
         with transaction.atomic():
-            # Crea il log di transizione (storico ufficiale)
+            # Create transition log (official history)
             AssetTransitionLog.objects.create(
                 asset=asset,
                 from_state=asset.state,
@@ -190,13 +190,13 @@ class AssetRequestViewSet(
                 notes=f'[Richiesta #{asset_request.pk}] {asset_request.notes}',
             )
 
-            # Aggiorna l'asset
+            # Update asset
             asset.state = asset_request.to_state
             asset.room = asset_request.to_room
             asset.save(update_fields=['state', 'room', 'updated_at'])
 
-            # Chiude la richiesta
-            asset_request.status = AssetRequestStatus.EVASA
+            # Close request
+            asset_request.status = AssetRequestStatus.EXECUTED
             asset_request.executed_by = request.user
             asset_request.save()
 
@@ -215,20 +215,20 @@ class AssetRequestViewSet(
         POST /asset/asset_request/{id}/reject
         Body: { "rejection_notes": "..." }
 
-        Transizione → RIFIUTATA (terminale).
+        Transition → REJECTED (terminal).
         """
         asset_request = self._get_request_or_404(pk)
         if asset_request is None:
-            return Response({'error': _('Richiesta non trovata')}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': _('Request not found')}, status=status.HTTP_404_NOT_FOUND)
 
-        err = self._check_transition(asset_request, AssetRequestStatus.RIFIUTATA)
+        err = self._check_transition(asset_request, AssetRequestStatus.REJECTED)
         if err:
             return err
 
         serializer = AssetRequestRejectSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        asset_request.status = AssetRequestStatus.RIFIUTATA
+        asset_request.status = AssetRequestStatus.REJECTED
         asset_request.rejection_notes = serializer.validated_data['rejection_notes']
         asset_request.save()
 
@@ -243,20 +243,20 @@ class AssetRequestViewSet(
         POST /asset/asset_request/{id}/clarify
         Body: { "clarification_notes": "..." }
 
-        Transizione → IN_CHIARIMENTO.
+        Transition → NEEDS_CLARIFICATION.
         """
         asset_request = self._get_request_or_404(pk)
         if asset_request is None:
-            return Response({'error': _('Richiesta non trovata')}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': _('Request not found')}, status=status.HTTP_404_NOT_FOUND)
 
-        err = self._check_transition(asset_request, AssetRequestStatus.IN_CHIARIMENTO)
+        err = self._check_transition(asset_request, AssetRequestStatus.NEEDS_CLARIFICATION)
         if err:
             return err
 
         serializer = AssetRequestClarifySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        asset_request.status = AssetRequestStatus.IN_CHIARIMENTO
+        asset_request.status = AssetRequestStatus.NEEDS_CLARIFICATION
         asset_request.clarification_notes = serializer.validated_data['clarification_notes']
         asset_request.save()
 
@@ -268,29 +268,29 @@ class AssetRequestViewSet(
     def resubmit(self, request, pk=None):
         """
         POST /asset/asset_request/{id}/resubmit
-        Body: { "notes": "..." }  (opzionale)
+        Body: { "notes": "..." }  (optional)
 
-        Transizione IN_CHIARIMENTO → INSERITA.
-        Solo il richiedente originale può reinserire la propria richiesta.
+        Transition NEEDS_CLARIFICATION → SUBMITTED.
+        Only the original requester can resubmit their own request.
         """
         asset_request = self._get_request_or_404(pk)
         if asset_request is None:
-            return Response({'error': _('Richiesta non trovata')}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': _('Request not found')}, status=status.HTTP_404_NOT_FOUND)
 
         if asset_request.created_by != request.user and not request.user.is_staff:
             return Response(
-                {'error': _('Solo il richiedente originale può reinserire la richiesta')},
+                {'error': _('Only the original requester can resubmit the request')},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        err = self._check_transition(asset_request, AssetRequestStatus.INSERITA)
+        err = self._check_transition(asset_request, AssetRequestStatus.SUBMITTED)
         if err:
             return err
 
         serializer = AssetRequestResubmitSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        asset_request.status = AssetRequestStatus.INSERITA
+        asset_request.status = AssetRequestStatus.SUBMITTED
         asset_request.clarification_notes = ''
         if serializer.validated_data.get('notes'):
             asset_request.notes = serializer.validated_data['notes']

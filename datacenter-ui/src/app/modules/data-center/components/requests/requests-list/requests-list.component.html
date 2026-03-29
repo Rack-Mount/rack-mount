@@ -16,20 +16,20 @@
         [value]="filterStatus()"
         (change)="filterStatus.set($any($event.target).value); applyFilters()">
         <option value="">{{ 'requests.all_statuses' | translate }}</option>
-        <option value="inserita">{{ 'requests.status.inserita' | translate }}</option>
-        <option value="pianificata">{{ 'requests.status.pianificata' | translate }}</option>
-        <option value="evasa">{{ 'requests.status.evasa' | translate }}</option>
-        <option value="rifiutata">{{ 'requests.status.rifiutata' | translate }}</option>
-        <option value="in_chiarimento">{{ 'requests.status.in_chiarimento' | translate }}</option>
+        <option value="submitted">{{ 'requests.status.submitted' | translate }}</option>
+        <option value="planned">{{ 'requests.status.planned' | translate }}</option>
+        <option value="executed">{{ 'requests.status.executed' | translate }}</option>
+        <option value="rejected">{{ 'requests.status.rejected' | translate }}</option>
+        <option value="needs_clarification">{{ 'requests.status.needs_clarification' | translate }}</option>
       </select>
       <select class="req-filter-select"
         [value]="filterType()"
         (change)="filterType.set($any($event.target).value); applyFilters()">
         <option value="">{{ 'requests.all_types' | translate }}</option>
-        <option value="registrazione">{{ 'requests.type.registrazione' | translate }}</option>
-        <option value="spostamento">{{ 'requests.type.spostamento' | translate }}</option>
-        <option value="manutenzione">{{ 'requests.type.manutenzione' | translate }}</option>
-        <option value="dismissione">{{ 'requests.type.dismissione' | translate }}</option>
+        <option value="registration">{{ 'requests.type.registration' | translate }}</option>
+        <option value="relocation">{{ 'requests.type.relocation' | translate }}</option>
+        <option value="maintenance">{{ 'requests.type.maintenance' | translate }}</option>
+        <option value="decommissioning">{{ 'requests.type.decommissioning' | translate }}</option>
       </select>
     </div>
   </div>
@@ -82,10 +82,10 @@
           <select class="form-select"
             [ngModel]="createRequestType()"
             (ngModelChange)="createRequestType.set($event)">
-            <option value="registrazione">{{ 'requests.type.registrazione' | translate }}</option>
-            <option value="spostamento">{{ 'requests.type.spostamento' | translate }}</option>
-            <option value="manutenzione">{{ 'requests.type.manutenzione' | translate }}</option>
-            <option value="dismissione">{{ 'requests.type.dismissione' | translate }}</option>
+            <option value="registration">{{ 'requests.type.registration' | translate }}</option>
+            <option value="relocation">{{ 'requests.type.relocation' | translate }}</option>
+            <option value="maintenance">{{ 'requests.type.maintenance' | translate }}</option>
+            <option value="decommissioning">{{ 'requests.type.decommissioning' | translate }}</option>
           </select>
         </div>
 
@@ -284,28 +284,22 @@
 
         <!-- Action error -->
         @if (actionError()) {
-          <p class="req-action-error">{{ actionError() }}</p>
+          <p class="form-error" style="margin:0 0 .75rem">{{ actionError() }}</p>
         }
 
-        <!-- Actions (only for non-terminal) -->
         @if (!isRequestTerminal(req.status)) {
           <div class="req-actions">
-
-            <!-- Manager actions -->
             @if (role.canManageRequests()) {
+              <!-- Execute -->
+              <button class="btn-action btn-action--execute"
+                [disabled]="actionSaving() !== null"
+                (click)="submitExecute()">
+                @if (actionSaving() === 'execute') { … } @else {
+                  ✓ {{ 'requests.action.execute' | translate }}
+                }
+              </button>
 
-              @if (req.status === 'inserita' || req.status === 'pianificata') {
-                <!-- Execute -->
-                <button class="btn-action btn-action--execute"
-                  [disabled]="actionSaving() !== null"
-                  (click)="submitExecute()">
-                  @if (actionSaving() === 'execute') { … } @else {
-                    ✓ {{ 'requests.action.execute' | translate }}
-                  }
-                </button>
-              }
-
-              @if (req.status === 'inserita') {
+              @if (req.status === 'submitted') {
                 <!-- Plan -->
                 <button class="btn-action"
                   [disabled]="actionSaving() !== null"
@@ -329,8 +323,8 @@
               </button>
             }
 
-            <!-- Resubmit (richiedente, dopo chiarimento) -->
-            @if (req.status === 'in_chiarimento' && role.canCreateRequests()) {
+            <!-- Resubmit (requester, after clarification) -->
+            @if (req.status === 'needs_clarification' && role.canCreateRequests()) {
               <button class="btn-action btn-action--save"
                 [disabled]="actionSaving() !== null"
                 (click)="openForm('resubmit')">

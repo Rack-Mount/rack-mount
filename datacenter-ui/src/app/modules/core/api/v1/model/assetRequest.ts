@@ -12,7 +12,7 @@ import { RequestTypeEnum } from './requestTypeEnum';
 
 
 /**
- * Serializer in lettura per una richiesta asset (lista e dettaglio).
+ * Read serializer for an asset request (list and detail).
  */
 export interface AssetRequest { 
     readonly id: number;
@@ -29,11 +29,11 @@ export interface AssetRequest {
     to_room?: number | null;
     readonly to_room_name: string;
     /**
-     * Motivazione o dettagli della richiesta
+     * Request rationale or details
      */
     notes?: string;
     /**
-     * Richiesta di chiarimento inviata al richiedente
+     * Clarification request sent to the requester
      */
     readonly clarification_notes: string;
     readonly rejection_notes: string;

@@ -1,5 +1,5 @@
-export type AssetRequestType = 'registrazione' | 'spostamento' | 'manutenzione' | 'dismissione';
-export type AssetRequestStatus = 'inserita' | 'pianificata' | 'evasa' | 'rifiutata' | 'in_chiarimento';
+export type AssetRequestType = 'registration' | 'relocation' | 'maintenance' | 'decommissioning';
+export type AssetRequestStatus = 'submitted' | 'planned' | 'executed' | 'rejected' | 'needs_clarification';
 
 export interface AssetRequest {
   id: number;
@@ -44,19 +44,19 @@ export interface PaginatedAssetRequests {
   results: AssetRequest[];
 }
 
-/** Terminale o ancora attiva */
+/** Terminal or still active */
 export function isRequestTerminal(status: AssetRequestStatus): boolean {
-  return status === 'evasa' || status === 'rifiutata';
+  return status === 'executed' || status === 'rejected';
 }
 
-/** Colore CSS token per lo stato richiesta */
+/** CSS token color for request status */
 export function requestStatusColor(status: AssetRequestStatus): string {
   switch (status) {
-    case 'evasa':        return 'green';
-    case 'pianificata':  return 'blue';
-    case 'inserita':     return 'gray';
-    case 'in_chiarimento': return 'yellow';
-    case 'rifiutata':    return 'red';
+    case 'executed': return 'green';
+    case 'planned': return 'blue';
+    case 'submitted': return 'gray';
+    case 'needs_clarification': return 'yellow';
+    case 'rejected': return 'red';
     default:             return 'gray';
   }
 }

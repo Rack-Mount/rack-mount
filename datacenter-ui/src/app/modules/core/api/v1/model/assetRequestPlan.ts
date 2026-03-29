@@ -10,7 +10,7 @@
 
 
 /**
- * Body per pianificare una richiesta (INSERITA → PIANIFICATA).
+ * Body to plan a request (INSERITA → PIANIFICATA).
  */
 export interface AssetRequestPlan { 
     planned_date?: string | null;

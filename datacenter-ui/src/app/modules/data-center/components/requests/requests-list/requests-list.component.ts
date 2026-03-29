@@ -109,7 +109,7 @@ export class RequestsListComponent {
   protected readonly createAssetSearching = signal(false);
   protected readonly createSelectedAsset = signal<Asset | null>(null);
   protected readonly createRequestType =
-    signal<AssetRequestType>('spostamento');
+    signal<AssetRequestType>('relocation');
   protected readonly createToState = signal<number | null>(null);
   protected readonly createToRoom = signal<number | null>(null);
   protected readonly createNotes = signal('');
@@ -201,7 +201,7 @@ export class RequestsListComponent {
     this.createAssetSearch.set('');
     this.createAssetResults.set([]);
     this.createSelectedAsset.set(null);
-    this.createRequestType.set('spostamento');
+    this.createRequestType.set('relocation');
     this.createToState.set(null);
     this.createToRoom.set(null);
     this.createNotes.set('');

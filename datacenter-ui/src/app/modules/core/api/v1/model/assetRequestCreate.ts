@@ -11,7 +11,7 @@ import { RequestTypeEnum } from './requestTypeEnum';
 
 
 /**
- * Serializer per la creazione di una nuova richiesta.
+ * Serializer for creating a new request.
  */
 export interface AssetRequestCreate { 
     asset: number;
@@ -19,7 +19,7 @@ export interface AssetRequestCreate {
     to_state: number;
     to_room?: number | null;
     /**
-     * Motivazione o dettagli della richiesta
+     * Request rationale or details
      */
     notes?: string;
     planned_date?: string | null;

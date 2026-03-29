@@ -8,11 +8,11 @@ from asset.models.AssetRequest import AssetRequest, AssetRequestStatus
 
 
 _STATUS_COLORS = {
-    AssetRequestStatus.INSERITA:       ('#3498db', '#fff'),
-    AssetRequestStatus.PIANIFICATA:    ('#8e44ad', '#fff'),
-    AssetRequestStatus.EVASA:          ('#27ae60', '#fff'),
-    AssetRequestStatus.RIFIUTATA:      ('#c0392b', '#fff'),
-    AssetRequestStatus.IN_CHIARIMENTO: ('#e67e22', '#fff'),
+    AssetRequestStatus.SUBMITTED:           ('#3498db', '#fff'),
+    AssetRequestStatus.PLANNED:             ('#8e44ad', '#fff'),
+    AssetRequestStatus.EXECUTED:            ('#27ae60', '#fff'),
+    AssetRequestStatus.REJECTED:            ('#c0392b', '#fff'),
+    AssetRequestStatus.NEEDS_CLARIFICATION: ('#e67e22', '#fff'),
 }
 
 
@@ -56,19 +56,19 @@ class AssetRequestAdmin(admin.ModelAdmin):
 
     actions = ('action_plan', 'action_execute', 'action_reject')
 
-    @admin.action(description=_('Pianifica le richieste selezionate'))
+    @admin.action(description=_('Plan selected requests'))
     def action_plan(self, request, queryset):
         updated = 0
-        for req in queryset.filter(status=AssetRequestStatus.INSERITA):
-            req.status = AssetRequestStatus.PIANIFICATA
+        for req in queryset.filter(status=AssetRequestStatus.SUBMITTED):
+            req.status = AssetRequestStatus.PLANNED
             req.save(update_fields=['status', 'updated_at'])
             updated += 1
-        self.message_user(request, _(f'{updated} richieste pianificate.'))
+        self.message_user(request, _('%d requests planned.') % updated)
 
-    @admin.action(description=_('Evadi le richieste selezionate'))
+    @admin.action(description=_('Execute selected requests'))
     def action_execute(self, request, queryset):
         evadibili = queryset.filter(
-            status__in=[AssetRequestStatus.INSERITA, AssetRequestStatus.PIANIFICATA]
+            status__in=[AssetRequestStatus.SUBMITTED, AssetRequestStatus.PLANNED]
         ).select_related('asset', 'asset__state', 'to_state', 'to_room')
         evase = 0
         for req in evadibili:
@@ -82,37 +82,37 @@ class AssetRequestAdmin(admin.ModelAdmin):
                         from_room=asset.room,
                         to_room=req.to_room,
                         user=request.user,
-                        notes=f'[Admin] Richiesta #{req.pk}',
+                        notes=f'[Admin] Request #{req.pk}',
                     )
                     asset.state = req.to_state
                     asset.room = req.to_room
                     asset.save(update_fields=['state', 'room', 'updated_at'])
-                    req.status = AssetRequestStatus.EVASA
+                    req.status = AssetRequestStatus.EXECUTED
                     req.executed_by = request.user
                     req.save(update_fields=['status', 'executed_by', 'updated_at'])
                 evase += 1
             except Exception as exc:
                 self.message_user(
                     request,
-                    _(f'Errore su richiesta #{req.pk}: {exc}'),
+                    _('Error on request #%(pk)d: %(error)s') % {'pk': req.pk, 'error': exc},
                     level='error',
                 )
         if evase:
-            self.message_user(request, _(f'{evase} richieste evase.'))
+            self.message_user(request, _('%d requests executed.') % evase)
 
-    @admin.action(description=_('Rifiuta le richieste selezionate'))
+    @admin.action(description=_('Reject selected requests'))
     def action_reject(self, request, queryset):
         updated = queryset.filter(
             status__in=[
-                AssetRequestStatus.INSERITA,
-                AssetRequestStatus.PIANIFICATA,
-                AssetRequestStatus.IN_CHIARIMENTO,
+                AssetRequestStatus.SUBMITTED,
+                AssetRequestStatus.PLANNED,
+                AssetRequestStatus.NEEDS_CLARIFICATION,
             ]
         ).update(
-            status=AssetRequestStatus.RIFIUTATA,
-            rejection_notes='[Admin] Rifiutata in massa',
+            status=AssetRequestStatus.REJECTED,
+            rejection_notes='[Admin] Bulk rejected',
         )
-        self.message_user(request, _(f'{updated} richieste rifiutate.'))
+        self.message_user(request, _('%d requests rejected.') % updated)
 
     # ── Form di dettaglio ──────────────────────────────────────────────────────
 
@@ -129,19 +129,19 @@ class AssetRequestAdmin(admin.ModelAdmin):
     )
 
     fieldsets = (
-        (_('Richiesta'), {
+        (_('Request'), {
             'fields': (
                 ('asset', 'request_type'),
                 ('status', 'status_badge'),
             ),
         }),
-        (_('Transizione pianificata'), {
+        (_('Planned transition'), {
             'fields': (
                 ('from_state', 'to_state'),
                 ('from_room',  'to_room'),
             ),
         }),
-        (_('Pianificazione'), {
+        (_('Planning'), {
             'fields': (
                 ('planned_date', 'assigned_to'),
             ),
@@ -153,7 +153,7 @@ class AssetRequestAdmin(admin.ModelAdmin):
                 'rejection_notes',
             ),
         }),
-        (_('Utenti e date'), {
+        (_('Users and dates'), {
             'fields': (
                 ('created_by', 'executed_by'),
                 ('created_at', 'updated_at'),
@@ -164,7 +164,7 @@ class AssetRequestAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         ro = list(self.readonly_fields)
-        if obj and obj.status in (AssetRequestStatus.EVASA, AssetRequestStatus.RIFIUTATA):
+        if obj and obj.status in (AssetRequestStatus.EXECUTED, AssetRequestStatus.REJECTED):
             ro += [
                 'asset', 'request_type', 'status',
                 'to_state', 'to_room',
@@ -184,7 +184,7 @@ class AssetRequestAdmin(admin.ModelAdmin):
 
     # ── Colonne custom ─────────────────────────────────────────────────────────
 
-    @admin.display(description=_('Stato'), ordering='status')
+    @admin.display(description=_('Status'), ordering='status')
     def colored_status(self, obj):
         bg, fg = _STATUS_COLORS.get(obj.status, ('#95a5a6', '#fff'))
         return format_html(
@@ -194,7 +194,7 @@ class AssetRequestAdmin(admin.ModelAdmin):
             bg=bg, fg=fg, label=obj.get_status_display(),
         )
 
-    @admin.display(description=_('Stato (badge)'))
+    @admin.display(description=_('Status (badge)'))
     def status_badge(self, obj):
         return self.colored_status(obj)
 

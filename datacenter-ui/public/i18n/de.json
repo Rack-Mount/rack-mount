@@ -4,7 +4,9 @@
     "error_loading": "Fehler beim Laden.",
     "save": "Speichern",
     "saving": "…",
+    "confirm": "Bestätigen",
     "cancel": "Abbrechen",
+    "notice": "Hinweis",
     "delete": "Löschen",
     "deleting": "Wird gelöscht…",
     "edit": "Bearbeiten",
@@ -834,17 +836,17 @@
     "rejection_notes_placeholder": "State the reason for rejection...",
     "planned_date": "Planned date",
     "status": {
-      "inserita": "Submitted",
-      "pianificata": "Planned",
-      "evasa": "Executed",
-      "rifiutata": "Rejected",
-      "in_chiarimento": "Pending clarification"
+      "submitted": "Eingereicht",
+      "planned": "Geplant",
+      "executed": "Ausgeführt",
+      "rejected": "Abgelehnt",
+      "needs_clarification": "Klärung erforderlich"
     },
     "type": {
-      "registrazione": "Registration",
-      "spostamento": "Move",
-      "manutenzione": "Maintenance",
-      "dismissione": "Decommission"
+      "registration": "Registrierung",
+      "relocation": "Umzug",
+      "maintenance": "Wartung",
+      "decommissioning": "Außerbetriebnahme"
     },
     "action": {
       "plan": "Plan",

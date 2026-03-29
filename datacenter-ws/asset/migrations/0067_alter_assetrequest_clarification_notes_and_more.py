@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='assetrequest',
             name='clarification_notes',
-            field=models.TextField(blank=True, help_text='Richiesta di chiarimento inviata al richiedente', verbose_name='Note di chiarimento'),
+            field=models.TextField(blank=True, help_text='Clarification request sent to the requester', verbose_name='Clarification notes'),
         ),
         migrations.AlterField(
             model_name='assetrequest',
             name='notes',
-            field=models.TextField(blank=True, help_text='Motivazione o dettagli della richiesta', verbose_name='Note'),
+            field=models.TextField(blank=True, help_text='Request rationale or details', verbose_name='Note'),
         ),
     ]

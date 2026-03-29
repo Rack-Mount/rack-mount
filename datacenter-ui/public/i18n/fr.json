@@ -4,7 +4,9 @@
     "error_loading": "Erreur lors du chargement.",
     "save": "Enregistrer",
     "saving": "…",
+    "confirm": "Confirmer",
     "cancel": "Annuler",
+    "notice": "Notification",
     "delete": "Supprimer",
     "deleting": "Suppression…",
     "edit": "Modifier",
@@ -834,17 +836,17 @@
     "rejection_notes_placeholder": "State the reason for rejection...",
     "planned_date": "Planned date",
     "status": {
-      "inserita": "Submitted",
-      "pianificata": "Planned",
-      "evasa": "Executed",
-      "rifiutata": "Rejected",
-      "in_chiarimento": "Pending clarification"
+      "submitted": "Soumis",
+      "planned": "Prévu",
+      "executed": "Exécuté",
+      "rejected": "Rejeté",
+      "needs_clarification": "Clarification nécessaire"
     },
     "type": {
-      "registrazione": "Registration",
-      "spostamento": "Move",
-      "manutenzione": "Maintenance",
-      "dismissione": "Decommission"
+      "registration": "Enregistrement",
+      "relocation": "Relocalisation",
+      "maintenance": "Maintenance",
+      "decommissioning": "Déclassement"
     },
     "action": {
       "plan": "Plan",

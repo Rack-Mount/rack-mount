@@ -4,7 +4,9 @@
     "error_loading": "加载时出错。",
     "save": "保存",
     "saving": "…",
+    "confirm": "确认",
     "cancel": "取消",
+    "notice": "提示",
     "delete": "删除",
     "deleting": "删除中…",
     "edit": "编辑",
@@ -834,17 +836,17 @@
     "rejection_notes_placeholder": "请说明拒绝原因...",
     "planned_date": "计划日期",
     "status": {
-      "inserita": "已提交",
-      "pianificata": "已计划",
-      "evasa": "已执行",
-      "rifiutata": "已拒绝",
-      "in_chiarimento": "待澄清"
+      "submitted": "已提交",
+      "planned": "已计划",
+      "executed": "已执行",
+      "rejected": "已拒绝",
+      "needs_clarification": "待澄清"
     },
     "type": {
-      "registrazione": "注册",
-      "spostamento": "移动",
-      "manutenzione": "维护",
-      "dismissione": "报废"
+      "registration": "注册",
+      "relocation": "搬迁",
+      "maintenance": "维护",
+      "decommissioning": "停用"
     },
     "action": {
       "plan": "计划",

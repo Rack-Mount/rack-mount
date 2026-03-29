@@ -10,14 +10,14 @@
 
 
 /**
- * * `inserita` - Inserita * `pianificata` - Pianificata * `evasa` - Evasa * `rifiutata` - Rifiutata * `in_chiarimento` - In Chiarimento
+ * * `submitted` - Submitted * `planned` - Planned * `executed` - Executed * `rejected` - Rejected * `needs_clarification` - Needs Clarification
  */
 export const StatusEnum = {
-    Inserita: 'inserita',
-    Pianificata: 'pianificata',
-    Evasa: 'evasa',
-    Rifiutata: 'rifiutata',
-    InChiarimento: 'in_chiarimento'
+    Submitted: 'submitted',
+    Planned: 'planned',
+    Executed: 'executed',
+    Rejected: 'rejected',
+    NeedsClarification: 'needs_clarification'
 } as const;
 export type StatusEnum = typeof StatusEnum[keyof typeof StatusEnum];
 

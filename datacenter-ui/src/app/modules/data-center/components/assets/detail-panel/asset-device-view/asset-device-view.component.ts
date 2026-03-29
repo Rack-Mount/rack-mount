@@ -323,7 +323,7 @@ export class AssetDeviceViewComponent {
 
   // ── New request form ───────────────────────────────────────────────────────
   protected readonly newRequestOpen = signal(false);
-  protected readonly newReqType = signal<AssetRequestType>('spostamento');
+  protected readonly newReqType = signal<AssetRequestType>('relocation');
   protected readonly newReqToStateId = signal<number | null>(null);
   protected readonly newReqToRoomId = signal<number | null>(null);
   protected readonly newReqNotes = signal('');

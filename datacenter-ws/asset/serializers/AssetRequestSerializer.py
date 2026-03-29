@@ -1,11 +1,12 @@
 from rest_framework import serializers
+from django.utils.translation import gettext as _
 from asset.models import AssetRequest, AssetState
 from asset.models.AssetRequest import AssetRequestStatus, ALLOWED_REQUEST_TRANSITIONS
 from location.models import Room
 
 
 class AssetRequestSerializer(serializers.ModelSerializer):
-    """Serializer in lettura per una richiesta asset (lista e dettaglio)."""
+    """Read serializer for an asset request (list and detail)."""
 
     asset_hostname = serializers.CharField(source='asset.hostname', read_only=True)
     from_state_name = serializers.CharField(source='from_state.name', read_only=True, default=None)
@@ -47,7 +48,7 @@ class AssetRequestSerializer(serializers.ModelSerializer):
 
 
 class AssetRequestCreateSerializer(serializers.ModelSerializer):
-    """Serializer per la creazione di una nuova richiesta."""
+    """Serializer for creating a new request."""
 
     class Meta:
         model = AssetRequest
@@ -65,17 +66,20 @@ class AssetRequestCreateSerializer(serializers.ModelSerializer):
         asset = attrs['asset']
         to_state = attrs['to_state']
 
-        # Valida la transizione di stato dell'asset
+        # Validate asset state transition
         from asset.models.AssetState import ALLOWED_TRANSITIONS
         from_state = asset.state
         if from_state and from_state.code and to_state.code:
             allowed = ALLOWED_TRANSITIONS.get(from_state.code, set())
             if to_state.code not in allowed:
                 raise serializers.ValidationError({
-                    'to_state': (
-                        f"Transizione non ammessa: {from_state.code} → {to_state.code}. "
-                        f"Permesse: {sorted(allowed)}"
-                    )
+                    'to_state': _(
+                        'Transition not allowed: %(from_state)s → %(to_state)s. Allowed: %(allowed)s'
+                    ) % {
+                        'from_state': from_state.code,
+                        'to_state': to_state.code,
+                        'allowed': sorted(allowed),
+                    }
                 })
         return attrs
 
@@ -88,22 +92,22 @@ class AssetRequestCreateSerializer(serializers.ModelSerializer):
 
 
 class AssetRequestPlanSerializer(serializers.Serializer):
-    """Body per pianificare una richiesta (INSERITA → PIANIFICATA)."""
+    """Body to plan a request (INSERITA → PIANIFICATA)."""
     planned_date = serializers.DateField(required=False, allow_null=True)
     assigned_to = serializers.IntegerField(required=False, allow_null=True)
     notes = serializers.CharField(required=False, allow_blank=True)
 
 
 class AssetRequestClarifySerializer(serializers.Serializer):
-    """Body per richiedere chiarimenti (qualsiasi attivo → IN_CHIARIMENTO)."""
+    """Body to request clarification (any active status → IN_CHIARIMENTO)."""
     clarification_notes = serializers.CharField(required=True)
 
 
 class AssetRequestRejectSerializer(serializers.Serializer):
-    """Body per rifiutare una richiesta."""
+    """Body to reject a request."""
     rejection_notes = serializers.CharField(required=True)
 
 
 class AssetRequestResubmitSerializer(serializers.Serializer):
-    """Body per reinserire una richiesta dopo chiarimento (IN_CHIARIMENTO → INSERITA)."""
+    """Body to resubmit a request after clarification (IN_CHIARIMENTO → INSERITA)."""
     notes = serializers.CharField(required=False, allow_blank=True)

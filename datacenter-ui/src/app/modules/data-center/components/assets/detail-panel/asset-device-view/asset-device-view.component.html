@@ -415,10 +415,10 @@
                     <select class="move-select"
                       [value]="newReqType()"
                       (change)="newReqType.set($any($event.target).value)">
-                      <option value="registrazione">{{ "requests.type.registrazione" | translate }}</option>
-                      <option value="spostamento">{{ "requests.type.spostamento" | translate }}</option>
-                      <option value="manutenzione">{{ "requests.type.manutenzione" | translate }}</option>
-                      <option value="dismissione">{{ "requests.type.dismissione" | translate }}</option>
+                        <option value="registration">{{ "requests.type.registration" | translate }}</option>
+                        <option value="relocation">{{ "requests.type.relocation" | translate }}</option>
+                        <option value="maintenance">{{ "requests.type.maintenance" | translate }}</option>
+                        <option value="decommissioning">{{ "requests.type.decommissioning" | translate }}</option>
                     </select>
                   </label>
 

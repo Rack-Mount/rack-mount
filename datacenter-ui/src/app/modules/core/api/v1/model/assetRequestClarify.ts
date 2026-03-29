@@ -10,7 +10,7 @@
 
 
 /**
- * Body per richiedere chiarimenti (qualsiasi attivo → IN_CHIARIMENTO).
+ * Body to request clarification (any active status → IN_CHIARIMENTO).
  */
 export interface AssetRequestClarify { 
     clarification_notes: string;

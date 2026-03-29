@@ -10,7 +10,7 @@
 
 
 /**
- * Body per reinserire una richiesta dopo chiarimento (IN_CHIARIMENTO → INSERITA).
+ * Body to resubmit a request after clarification (IN_CHIARIMENTO → INSERITA).
  */
 export interface AssetRequestResubmit { 
     notes?: string;

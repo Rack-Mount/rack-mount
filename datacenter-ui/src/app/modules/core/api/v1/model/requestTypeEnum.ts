@@ -10,13 +10,13 @@
 
 
 /**
- * * `registrazione` - Registrazione * `spostamento` - Spostamento * `manutenzione` - Manutenzione * `dismissione` - Dismissione
+ * * `registration` - Registration * `relocation` - Relocation * `maintenance` - Maintenance * `decommissioning` - Decommissioning
  */
 export const RequestTypeEnum = {
-    Registrazione: 'registrazione',
-    Spostamento: 'spostamento',
-    Manutenzione: 'manutenzione',
-    Dismissione: 'dismissione'
+    Registration: 'registration',
+    Relocation: 'relocation',
+    Maintenance: 'maintenance',
+    Decommissioning: 'decommissioning'
 } as const;
 export type RequestTypeEnum = typeof RequestTypeEnum[keyof typeof RequestTypeEnum];
 

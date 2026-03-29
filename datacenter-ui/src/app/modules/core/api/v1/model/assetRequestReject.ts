@@ -10,7 +10,7 @@
 
 
 /**
- * Body per rifiutare una richiesta.
+ * Body to reject a request.
  */
 export interface AssetRequestReject { 
     rejection_notes: string;

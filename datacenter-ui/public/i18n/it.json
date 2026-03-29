@@ -4,7 +4,9 @@
     "error_loading": "Errore durante il caricamento.",
     "save": "Salva",
     "saving": "…",
+    "confirm": "Conferma",
     "cancel": "Annulla",
+    "notice": "Avviso",
     "delete": "Elimina",
     "deleting": "Eliminazione…",
     "edit": "Modifica",
@@ -834,17 +836,17 @@
     "rejection_notes_placeholder": "Indicare il motivo del rifiuto...",
     "planned_date": "Data pianificata",
     "status": {
-      "inserita": "Inserita",
-      "pianificata": "Pianificata",
-      "evasa": "Evasa",
-      "rifiutata": "Rifiutata",
-      "in_chiarimento": "In chiarimento"
+      "submitted": "Inserita",
+      "planned": "Pianificata",
+      "executed": "Evasa",
+      "rejected": "Rifiutata",
+      "needs_clarification": "In chiarimento"
     },
     "type": {
-      "registrazione": "Registrazione",
-      "spostamento": "Spostamento",
-      "manutenzione": "Manutenzione",
-      "dismissione": "Dismissione"
+      "registration": "Registrazione",
+      "relocation": "Spostamento",
+      "maintenance": "Manutenzione",
+      "decommissioning": "Dismissione"
     },
     "action": {
       "plan": "Pianifica",
