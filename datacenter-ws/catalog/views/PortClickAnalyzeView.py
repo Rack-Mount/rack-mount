@@ -56,6 +56,7 @@ _PORT_NAME_RE = re.compile(
 # Singleton: YOLO model e OCR reader (inizializzazione lenta, una volta sola)
 _yolo_model = None
 _yolo_model_path = None
+_yolo_model_mtime = None
 _ocr_reader = None
 
 
@@ -89,15 +90,20 @@ def _can_access_private_media(user) -> bool:
 
 def _get_yolo_model():
     """Carica il modello YOLO una volta sola e lo restituisce dal cache."""
-    global _yolo_model, _yolo_model_path
+    global _yolo_model, _yolo_model_path, _yolo_model_mtime
     model_path = os.path.join(_get_media_root(), 'models', 'port-yolo.pt')
     if not os.path.isfile(model_path):
         return None, None
+    try:
+        mtime = os.path.getmtime(model_path)
+    except OSError:
+        return None, None
     # Ricarica solo se il file è cambiato (nuovo training)
-    if _yolo_model is None or _yolo_model_path != model_path:
+    if _yolo_model is None or _yolo_model_path != model_path or _yolo_model_mtime != mtime:
         from ultralytics import YOLO
         _yolo_model = YOLO(model_path)
         _yolo_model_path = model_path
+        _yolo_model_mtime = mtime
     return _yolo_model, model_path
 
 
