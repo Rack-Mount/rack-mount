@@ -108,7 +108,8 @@ def retrain_yolo(self, data_yaml: str, models_dir: str) -> None:
             shutil.copy2(best, dest)
             logger.info('YOLO retraining complete — weights saved to %s', dest)
         else:
-            logger.warning('YOLO retraining finished but best.pt not found at %s', best)
+            logger.warning(
+                'YOLO retraining finished but best.pt not found at %s', best)
     except Exception:
         logger.exception('YOLO retraining failed')
     finally:
