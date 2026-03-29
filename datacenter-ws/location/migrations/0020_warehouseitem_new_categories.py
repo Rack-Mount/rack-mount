@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='warehouseitem',
             name='category',
-            field=models.CharField(choices=[('cable', 'Cable'), ('fiber', 'Fiber'), ('sfp_switch', 'SFP Switch'), ('sfp_server', 'SFP Server'), ('cable_manager', 'Cable Manager'), ('blanking_panel', 'Blanking Panel'), ('patch_panel', 'Patch Panel'), ('pdu', 'PDU'), ('shelf', 'Shelf'), ('other', 'Other')], default='other', max_length=30),
+            field=models.CharField(choices=[('cable', 'Cable'), ('fiber', 'Fiber'), ('sfp_switch', 'SFP Switch'), ('sfp_server', 'SFP Server'), ('cable_manager', 'Cable Manager'), (
+                'blanking_panel', 'Blanking Panel'), ('patch_panel', 'Patch Panel'), ('pdu', 'PDU'), ('shelf', 'Shelf'), ('other', 'Other')], default='other', max_length=30),
         ),
     ]

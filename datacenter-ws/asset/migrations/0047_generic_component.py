@@ -14,10 +14,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GenericComponent',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
-                ('component_type', models.CharField(choices=[('cable_manager', 'Cable Manager'), ('blanking_panel', 'Blanking Panel'), ('patch_panel', 'Patch Panel'), ('pdu', 'PDU / Power Strip'), ('shelf', 'Shelf'), ('other', 'Other')], default='other', max_length=50)),
-                ('rack_units', models.PositiveIntegerField(default=1, help_text='Number of rack units (U) occupied by this component.')),
+                ('component_type', models.CharField(choices=[('cable_manager', 'Cable Manager'), ('blanking_panel', 'Blanking Panel'), (
+                    'patch_panel', 'Patch Panel'), ('pdu', 'PDU / Power Strip'), ('shelf', 'Shelf'), ('other', 'Other')], default='other', max_length=50)),
+                ('rack_units', models.PositiveIntegerField(
+                    default=1, help_text='Number of rack units (U) occupied by this component.')),
                 ('note', models.TextField(blank=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
@@ -32,6 +35,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='rackunit',
             name='generic_component',
-            field=models.ForeignKey(blank=True, help_text='Generic/consumable component installed in this rack unit (mutually exclusive with device).', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='installed_in_rack_units', to='asset.genericcomponent'),
+            field=models.ForeignKey(blank=True, help_text='Generic/consumable component installed in this rack unit (mutually exclusive with device).',
+                                    null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='installed_in_rack_units', to='asset.genericcomponent'),
         ),
     ]

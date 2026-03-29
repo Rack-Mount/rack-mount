@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='genericcomponent',
             name='warehouse_item',
-            field=models.ForeignKey(blank=True, help_text='Warehouse item used when the component is installed in a rack.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='component_definitions', to='location.warehouseitem'),
+            field=models.ForeignKey(blank=True, help_text='Warehouse item used when the component is installed in a rack.', null=True,
+                                    on_delete=django.db.models.deletion.SET_NULL, related_name='component_definitions', to='location.warehouseitem'),
         ),
     ]

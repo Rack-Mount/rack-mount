@@ -45,7 +45,8 @@ class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
             wi_locked = WarehouseItem.objects.select_for_update().get(pk=wi.pk)
             if wi_locked.quantity <= Decimal('0'):
                 raise ValidationError(
-                    {'generic_component': _('Warehouse stock exhausted for this item.')}
+                    {'generic_component': _(
+                        'Warehouse stock exhausted for this item.')}
                 )
             wi_locked.quantity -= Decimal('1')
             wi_locked.save(update_fields=['quantity'])
