@@ -10,7 +10,7 @@
 
 
 /**
- * * `pcs` - pz * `m` - m * `box` - box
+ * * `pcs` - pcs * `m` - m * `box` - box
  */
 export const UnitEnum = {
     Pcs: 'pcs',

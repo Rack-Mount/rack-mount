@@ -10,7 +10,7 @@
 
 
 /**
- * * `cable` - Cavo * `fiber` - Fibra * `sfp_switch` - SFP Switch * `sfp_server` - SFP Server * `cable_manager` - Passacavi * `blanking_panel` - Pannello cieco * `patch_panel` - Patch Panel * `pdu` - PDU * `shelf` - Ripiano * `other` - Altro
+ * * `cable` - Cable * `fiber` - Fiber * `sfp_switch` - SFP Switch * `sfp_server` - SFP Server * `cable_manager` - Cable Manager * `blanking_panel` - Blanking Panel * `patch_panel` - Patch Panel * `pdu` - PDU * `shelf` - Shelf * `other` - Other
  */
 export const CategoryEnum = {
     Cable: 'cable',

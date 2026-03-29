@@ -28,12 +28,12 @@ class GenericComponent(models.Model):
     """
 
     COMPONENT_TYPE_CHOICES = [
-        ('cable_manager', 'Passacavi / Cable Manager'),
-        ('blanking_panel', 'Pannello cieco / Blanking Panel'),
+        ('cable_manager', 'Cable Manager'),
+        ('blanking_panel', 'Blanking Panel'),
         ('patch_panel', 'Patch Panel'),
         ('pdu', 'PDU / Power Strip'),
-        ('shelf', 'Ripiano / Shelf'),
-        ('other', 'Altro / Other'),
+        ('shelf', 'Shelf'),
+        ('other', 'Other'),
     ]
 
     name = models.CharField(max_length=200)
@@ -61,7 +61,7 @@ class GenericComponent(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         related_name='component_definitions',
-        help_text='Articolo di magazzino da cui attingere quando il componente viene installato in rack.',
+        help_text='Warehouse item used when the component is installed in a rack.',
     )
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

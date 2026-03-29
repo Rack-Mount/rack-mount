@@ -10,7 +10,7 @@
 
 
 /**
- * * `cable_manager` - Passacavi / Cable Manager * `blanking_panel` - Pannello cieco / Blanking Panel * `patch_panel` - Patch Panel * `pdu` - PDU / Power Strip * `shelf` - Ripiano / Shelf * `other` - Altro / Other
+ * * `cable_manager` - Cable Manager * `blanking_panel` - Blanking Panel * `patch_panel` - Patch Panel * `pdu` - PDU / Power Strip * `shelf` - Shelf * `other` - Other
  */
 export const ComponentTypeEnum = {
     CableManager: 'cable_manager',

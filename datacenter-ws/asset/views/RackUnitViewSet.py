@@ -35,8 +35,8 @@ class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     search_fields = ['rack__name', 'device__hostname']
 
     def _decrement_warehouse_stock(self, generic_component):
-        """Decrementa di 1 lo stock dell'articolo di magazzino collegato al componente.
-        Solleva ValidationError se le scorte sono esaurite."""
+        """Decrease linked warehouse item stock by 1.
+        Raises ValidationError when stock is exhausted."""
         wi = getattr(generic_component, 'warehouse_item', None)
         if wi is None:
             return
@@ -59,8 +59,8 @@ class RackUnitViewSet(StandardFilterMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], url_path='return-to-stock')
     def return_to_stock(self, request, pk=None):
         """
-        Ritorna il componente installato al magazzino:
-        incrementa la quantità dell'articolo collegato e rimuove il componente dal rack.
+        Return installed component to warehouse:
+        increment linked item quantity and remove component from rack.
         """
         rack_unit = self.get_object()
         gc = rack_unit.generic_component

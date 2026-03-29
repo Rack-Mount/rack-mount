@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
-                ('component_type', models.CharField(choices=[('cable_manager', 'Passacavi / Cable Manager'), ('blanking_panel', 'Pannello cieco / Blanking Panel'), ('patch_panel', 'Patch Panel'), ('pdu', 'PDU / Power Strip'), ('shelf', 'Ripiano / Shelf'), ('other', 'Altro / Other')], default='other', max_length=50)),
+                ('component_type', models.CharField(choices=[('cable_manager', 'Cable Manager'), ('blanking_panel', 'Blanking Panel'), ('patch_panel', 'Patch Panel'), ('pdu', 'PDU / Power Strip'), ('shelf', 'Shelf'), ('other', 'Other')], default='other', max_length=50)),
                 ('rack_units', models.PositiveIntegerField(default=1, help_text='Number of rack units (U) occupied by this component.')),
                 ('note', models.TextField(blank=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),

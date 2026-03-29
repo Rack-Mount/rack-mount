@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='assetmodel',
             name='power_consumption_watt',
-            field=models.PositiveIntegerField(default=0, help_text='Consumo energetico globale (W)'),
+            field=models.PositiveIntegerField(default=0, help_text='Overall power consumption (W)'),
         ),
     ]

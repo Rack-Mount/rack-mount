@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ],
                 default='datacenter',
                 max_length=20,
-                verbose_name='Tipo di stanza',
+                verbose_name='Room type',
             ),
         ),
     ]

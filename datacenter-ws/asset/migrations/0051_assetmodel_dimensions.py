@@ -13,21 +13,21 @@ class Migration(migrations.Migration):
             name='width_mm',
             field=models.PositiveSmallIntegerField(
                 blank=True, null=True,
-                help_text='Larghezza apparato in millimetri'),
+                help_text='Equipment width in millimeters'),
         ),
         migrations.AddField(
             model_name='assetmodel',
             name='height_mm',
             field=models.PositiveSmallIntegerField(
                 blank=True, null=True,
-                help_text='Altezza apparato in millimetri'),
+                help_text='Equipment height in millimeters'),
         ),
         migrations.AddField(
             model_name='assetmodel',
             name='depth_mm',
             field=models.PositiveSmallIntegerField(
                 blank=True, null=True,
-                help_text='Profondità apparato in millimetri'),
+                help_text='Equipment depth in millimeters'),
         ),
         migrations.AddField(
             model_name='assetmodel',
@@ -35,6 +35,6 @@ class Migration(migrations.Migration):
             field=models.DecimalField(
                 blank=True, null=True,
                 max_digits=6, decimal_places=2,
-                help_text='Peso apparato in chilogrammi'),
+                help_text='Equipment weight in kilograms'),
         ),
     ]

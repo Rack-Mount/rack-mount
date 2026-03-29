@@ -2,20 +2,20 @@ from django.db import models
 
 
 class WarehouseCategory(models.TextChoices):
-    CABLE = 'cable', 'Cavo'
-    FIBER = 'fiber', 'Fibra'
+    CABLE = 'cable', 'Cable'
+    FIBER = 'fiber', 'Fiber'
     SFP_SWITCH = 'sfp_switch', 'SFP Switch'
     SFP_SERVER = 'sfp_server', 'SFP Server'
-    CABLE_MANAGER = 'cable_manager', 'Passacavi'
-    BLANKING_PANEL = 'blanking_panel', 'Pannello cieco'
+    CABLE_MANAGER = 'cable_manager', 'Cable Manager'
+    BLANKING_PANEL = 'blanking_panel', 'Blanking Panel'
     PATCH_PANEL = 'patch_panel', 'Patch Panel'
     PDU = 'pdu', 'PDU'
-    SHELF = 'shelf', 'Ripiano'
-    OTHER = 'other', 'Altro'
+    SHELF = 'shelf', 'Shelf'
+    OTHER = 'other', 'Other'
 
 
 class WarehouseUnit(models.TextChoices):
-    PCS = 'pcs', 'pz'
+    PCS = 'pcs', 'pcs'
     METERS = 'm', 'm'
     BOX = 'box', 'box'
 
