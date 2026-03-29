@@ -127,11 +127,13 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
         # in_production requires rack placement: use the move endpoint instead.
         if to_state.code == AssetStateCode.IN_PRODUCTION:
             return Response(
-                {'error': _('Cannot set in_production via bulk update. Use the move endpoint to assign rack placement.')},
+                {'error': _(
+                    'Cannot set in_production via bulk update. Use the move endpoint to assign rack placement.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        queryset = self.filter_queryset(self.get_queryset()).select_related('state', 'room')
+        queryset = self.filter_queryset(
+            self.get_queryset()).select_related('state', 'room')
         assets = list(queryset)
 
         if not assets:
