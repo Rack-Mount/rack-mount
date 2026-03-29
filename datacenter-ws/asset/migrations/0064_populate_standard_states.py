@@ -1,11 +1,11 @@
 from django.db import migrations
 
 STANDARD_STATES = [
-    {'code': 'in_stock',        'name': 'In Stock',        'description': 'Asset in magazzino, pronto per il deploy.'},
-    {'code': 'in_preparazione', 'name': 'In Preparazione', 'description': 'Asset in fase di configurazione o test in stanza tecnica.'},
-    {'code': 'in_manutenzione', 'name': 'In Manutenzione', 'description': 'Asset temporaneamente rimosso dalla produzione per riparazione o aggiornamento.'},
-    {'code': 'in_produzione',   'name': 'In Produzione',   'description': 'Asset attivo in datacenter.'},
-    {'code': 'dismesso',        'name': 'Dismesso',        'description': 'Asset ritirato dal servizio (storico).'},
+    {'code': 'in_stock',        'name': 'In Stock',        'description': 'Asset in warehouse, ready for deployment.'},
+    {'code': 'in_preparation',  'name': 'In Preparation',  'description': 'Asset being configured or tested in a technical room.'},
+    {'code': 'in_maintenance',  'name': 'In Maintenance',  'description': 'Asset temporarily removed from production for repair or upgrade.'},
+    {'code': 'in_production',   'name': 'In Production',   'description': 'Asset active in the datacenter.'},
+    {'code': 'decommissioned',  'name': 'Decommissioned',  'description': 'Asset retired from service (historical).'},
 ]
 
 

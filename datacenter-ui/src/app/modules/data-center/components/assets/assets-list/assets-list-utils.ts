@@ -30,11 +30,11 @@ export interface BulkPickerOpenEvent {
  * If a state has no code (custom state), all transitions are allowed.
  */
 export const ALLOWED_TRANSITIONS: Record<string, ReadonlySet<string>> = {
-  in_stock:        new Set(['in_preparazione', 'in_produzione', 'dismesso']),
-  in_preparazione: new Set(['in_stock', 'in_produzione', 'dismesso']),
-  in_produzione:   new Set(['in_manutenzione', 'in_stock', 'dismesso']),
-  in_manutenzione: new Set(['in_produzione', 'in_stock', 'dismesso']),
-  dismesso:        new Set(),
+  in_stock:         new Set(['in_preparation', 'in_production', 'decommissioned']),
+  in_preparation:   new Set(['in_stock', 'in_production', 'decommissioned']),
+  in_production:    new Set(['in_maintenance', 'in_stock', 'decommissioned']),
+  in_maintenance:   new Set(['in_production', 'in_stock', 'decommissioned']),
+  decommissioned:   new Set(),
 };
 
 /** Map asset state name to a CSS colour token */

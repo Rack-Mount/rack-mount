@@ -1,39 +1,40 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class AssetStateCode(models.TextChoices):
-    IN_STOCK = 'in_stock', 'In Stock'
-    IN_PREPARAZIONE = 'in_preparazione', 'In Preparazione'
-    IN_MANUTENZIONE = 'in_manutenzione', 'In Manutenzione'
-    IN_PRODUZIONE = 'in_produzione', 'In Produzione'
-    DISMESSO = 'dismesso', 'Dismesso'
+    IN_STOCK = 'in_stock', _('In Stock')
+    IN_PREPARATION = 'in_preparation', _('In Preparation')
+    IN_MAINTENANCE = 'in_maintenance', _('In Maintenance')
+    IN_PRODUCTION = 'in_production', _('In Production')
+    DECOMMISSIONED = 'decommissioned', _('Decommissioned')
 
 
-# Transizioni ammesse tra stati standard.
-# Se from_state o to_state hanno code=None (stato custom) non viene applicata validazione.
-# Lo stato 'dismesso' è terminale: nessuna transizione in uscita è permessa.
+# Allowed transitions between standard states.
+# If from_state or to_state has code=None (custom state), no validation is applied.
+# The 'decommissioned' state is terminal: no outgoing transitions are allowed.
 ALLOWED_TRANSITIONS: dict[str, set[str]] = {
     AssetStateCode.IN_STOCK: {
-        AssetStateCode.IN_PREPARAZIONE,
-        AssetStateCode.IN_PRODUZIONE,
-        AssetStateCode.DISMESSO,
+        AssetStateCode.IN_PREPARATION,
+        AssetStateCode.IN_PRODUCTION,
+        AssetStateCode.DECOMMISSIONED,
     },
-    AssetStateCode.IN_PREPARAZIONE: {
+    AssetStateCode.IN_PREPARATION: {
         AssetStateCode.IN_STOCK,
-        AssetStateCode.IN_PRODUZIONE,
-        AssetStateCode.DISMESSO,
+        AssetStateCode.IN_PRODUCTION,
+        AssetStateCode.DECOMMISSIONED,
     },
-    AssetStateCode.IN_PRODUZIONE: {
-        AssetStateCode.IN_MANUTENZIONE,
+    AssetStateCode.IN_PRODUCTION: {
+        AssetStateCode.IN_MAINTENANCE,
         AssetStateCode.IN_STOCK,
-        AssetStateCode.DISMESSO,
+        AssetStateCode.DECOMMISSIONED,
     },
-    AssetStateCode.IN_MANUTENZIONE: {
-        AssetStateCode.IN_PRODUZIONE,
+    AssetStateCode.IN_MAINTENANCE: {
+        AssetStateCode.IN_PRODUCTION,
         AssetStateCode.IN_STOCK,
-        AssetStateCode.DISMESSO,
+        AssetStateCode.DECOMMISSIONED,
     },
-    AssetStateCode.DISMESSO: set(),
+    AssetStateCode.DECOMMISSIONED: set(),
 }
 
 

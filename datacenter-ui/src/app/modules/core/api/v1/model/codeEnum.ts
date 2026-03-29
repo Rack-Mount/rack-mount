@@ -10,14 +10,14 @@
 
 
 /**
- * * `in_stock` - In Stock * `in_preparazione` - In Preparazione * `in_manutenzione` - In Manutenzione * `in_produzione` - In Produzione * `dismesso` - Dismesso
+ * * `in_stock` - In Stock * `in_preparation` - In Preparation * `in_maintenance` - In Maintenance * `in_production` - In Production * `decommissioned` - Decommissioned
  */
 export const CodeEnum = {
     InStock: 'in_stock',
-    InPreparazione: 'in_preparazione',
-    InManutenzione: 'in_manutenzione',
-    InProduzione: 'in_produzione',
-    Dismesso: 'dismesso'
+    InPreparation: 'in_preparation',
+    InMaintenance: 'in_maintenance',
+    InProduction: 'in_production',
+    Decommissioned: 'decommissioned'
 } as const;
 export type CodeEnum = typeof CodeEnum[keyof typeof CodeEnum];
 

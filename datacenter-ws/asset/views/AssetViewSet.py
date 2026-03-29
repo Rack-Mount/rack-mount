@@ -25,7 +25,7 @@ from accounts.models import SecurityAuditLog
 class AssetFilter(df_filters.FilterSet):
     not_in_rack = df_filters.BooleanFilter(
         method='filter_not_in_rack',
-        label='Apparati non installati in rack'
+        label=_('Assets not installed in rack')
     )
 
     def filter_not_in_rack(self, queryset, name, value):
@@ -99,7 +99,7 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
         Body: { "state_id": <int> }
 
         Updates the state of ALL assets matching the current filter params.
-        Requires can_edit_assets. Forbidden for in_produzione (use move instead).
+        Requires can_edit_assets. Forbidden for in_production (use move instead).
         Writes an AssetTransitionLog entry for each affected asset.
         Returns: { "updated": <int> }
         """
@@ -124,10 +124,10 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # in_produzione requires rack placement: use the move endpoint instead.
-        if to_state.code == AssetStateCode.IN_PRODUZIONE:
+        # in_production requires rack placement: use the move endpoint instead.
+        if to_state.code == AssetStateCode.IN_PRODUCTION:
             return Response(
-                {'error': _('Cannot set in_produzione via bulk update. Use the move endpoint to assign rack placement.')},
+                {'error': _('Cannot set in_production via bulk update. Use the move endpoint to assign rack placement.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
