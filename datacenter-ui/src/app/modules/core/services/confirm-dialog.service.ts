@@ -36,7 +36,8 @@ export class ConfirmDialogService {
       this.queue.push({
         message,
         title: options.title ?? this.t('common.confirm', 'Confirm'),
-        confirmLabel: options.confirmLabel ?? this.t('common.confirm', 'Confirm'),
+        confirmLabel:
+          options.confirmLabel ?? this.t('common.confirm', 'Confirm'),
         confirmDanger: options.danger ?? false,
         cancelLabel: options.cancelLabel ?? this.t('common.cancel', 'Cancel'),
         resolve,
@@ -64,7 +65,10 @@ export class ConfirmDialogService {
    * Opens an informational dialog with a single "OK" button.
    * Resolves when the user dismisses it.
    */
-  alert(message: string, title = this.t('common.notice', 'Notice')): Promise<void> {
+  alert(
+    message: string,
+    title = this.t('common.notice', 'Notice'),
+  ): Promise<void> {
     return this.confirm(message, {
       title,
       confirmLabel: 'OK',
