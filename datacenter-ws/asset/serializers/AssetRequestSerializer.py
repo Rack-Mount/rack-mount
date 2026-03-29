@@ -8,14 +8,22 @@ from location.models import Room
 class AssetRequestSerializer(serializers.ModelSerializer):
     """Read serializer for an asset request (list and detail)."""
 
-    asset_hostname = serializers.CharField(source='asset.hostname', read_only=True)
-    from_state_name = serializers.CharField(source='from_state.name', read_only=True, default=None)
-    to_state_name = serializers.CharField(source='to_state.name', read_only=True)
-    from_room_name = serializers.CharField(source='from_room.name', read_only=True, default=None)
-    to_room_name = serializers.CharField(source='to_room.name', read_only=True, default=None)
-    created_by_username = serializers.CharField(source='created_by.username', read_only=True)
-    assigned_to_username = serializers.CharField(source='assigned_to.username', read_only=True, default=None)
-    executed_by_username = serializers.CharField(source='executed_by.username', read_only=True, default=None)
+    asset_hostname = serializers.CharField(
+        source='asset.hostname', read_only=True)
+    from_state_name = serializers.CharField(
+        source='from_state.name', read_only=True, default=None)
+    to_state_name = serializers.CharField(
+        source='to_state.name', read_only=True)
+    from_room_name = serializers.CharField(
+        source='from_room.name', read_only=True, default=None)
+    to_room_name = serializers.CharField(
+        source='to_room.name', read_only=True, default=None)
+    created_by_username = serializers.CharField(
+        source='created_by.username', read_only=True)
+    assigned_to_username = serializers.CharField(
+        source='assigned_to.username', read_only=True, default=None)
+    executed_by_username = serializers.CharField(
+        source='executed_by.username', read_only=True, default=None)
 
     class Meta:
         model = AssetRequest

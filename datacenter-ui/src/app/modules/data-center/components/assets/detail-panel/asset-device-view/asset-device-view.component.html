@@ -12,7 +12,6 @@
   </div>
 } @else if (asset(); as a) {
   <div class="device-view">
-
     <!-- ── Toolbar ───────────────────────────────────────────────────────────── -->
     <div class="dv-toolbar">
       <div class="dv-title">
@@ -27,7 +26,13 @@
       @if (role.canEditAssets()) {
         <button class="btn-move" (click)="openMoveForm()">
           <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
-            <path d="M8 2v12M2 8l6-6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M8 2v12M2 8l6-6 6 6"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
           {{ "asset_device_view.move_btn" | translate }}
         </button>
@@ -37,7 +42,9 @@
     <!-- ── Move form ─────────────────────────────────────────────────────────── -->
     @if (moveFormOpen()) {
       <div class="move-form">
-        <h4 class="move-form__title">{{ "asset_device_view.move_title" | translate }}</h4>
+        <h4 class="move-form__title">
+          {{ "asset_device_view.move_title" | translate }}
+        </h4>
         <div class="move-form__grid">
           <label class="move-label">
             {{ "asset_device_view.move_state" | translate }}
@@ -57,7 +64,11 @@
             <select
               class="move-select"
               [value]="moveToRoomId() ?? ''"
-              (change)="moveToRoomId.set($any($event.target).value ? +$any($event.target).value : null)"
+              (change)="
+                moveToRoomId.set(
+                  $any($event.target).value ? +$any($event.target).value : null
+                )
+              "
             >
               <option value="">—</option>
               @for (r of availableRooms(); track r.id) {
@@ -72,7 +83,9 @@
               rows="2"
               [value]="moveNotes()"
               (input)="moveNotes.set($any($event.target).value)"
-              [placeholder]="'asset_device_view.move_notes_placeholder' | translate"
+              [placeholder]="
+                'asset_device_view.move_notes_placeholder' | translate
+              "
             ></textarea>
           </label>
         </div>
@@ -85,7 +98,9 @@
             [disabled]="moveSaving() || !moveToStateId()"
             (click)="submitMove()"
           >
-            @if (moveSaving()) { … } @else {
+            @if (moveSaving()) {
+              …
+            } @else {
               {{ "asset_device_view.move_confirm" | translate }}
             }
           </button>
@@ -295,7 +310,9 @@
     <!-- ── Compatible SFPs ───────────────────────────────────────────────────── -->
     @if (isSfpAsset()) {
       <div class="sfp-section">
-        <h4 class="sfp-title">{{ "asset_device_view.compatible_sfps" | translate }}</h4>
+        <h4 class="sfp-title">
+          {{ "asset_device_view.compatible_sfps" | translate }}
+        </h4>
         @let sfps = compatibleSfps();
         @if (sfps.length === 0) {
           <p class="sfp-empty">{{ "asset_device_view.no_sfps" | translate }}</p>
@@ -307,7 +324,10 @@
                 @if (sfp.specs) {
                   <span class="sfp-specs">{{ sfp.specs }}</span>
                 }
-                <span class="sfp-qty" [class.sfp-qty--low]="sfp.below_threshold">
+                <span
+                  class="sfp-qty"
+                  [class.sfp-qty--low]="sfp.below_threshold"
+                >
                   @if (sfp.below_threshold) {
                     <span class="sfp-warn">⚠</span>
                   }
@@ -324,16 +344,35 @@
     <div class="history-section">
       <button class="history-toggle" (click)="toggleHistory()">
         <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
-          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/>
-          <path d="M8 5v3.5l2 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <circle
+            cx="8"
+            cy="8"
+            r="6"
+            stroke="currentColor"
+            stroke-width="1.4"
+          />
+          <path
+            d="M8 5v3.5l2 1"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+          />
         </svg>
         {{ "asset_device_view.history_title" | translate }}
         <svg
           class="chevron"
           [class.chevron--open]="historyOpen()"
-          viewBox="0 0 16 16" fill="none" width="12" height="12"
+          viewBox="0 0 16 16"
+          fill="none"
+          width="12"
+          height="12"
         >
-          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path
+            d="M4 6l4 4 4-4"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
         </svg>
       </button>
 
@@ -342,18 +381,24 @@
           @if (historyLoading()) {
             <div class="history-empty">{{ "common.loading" | translate }}</div>
           } @else if (historyEntries().length === 0) {
-            <div class="history-empty">{{ "asset_device_view.history_empty" | translate }}</div>
+            <div class="history-empty">
+              {{ "asset_device_view.history_empty" | translate }}
+            </div>
           } @else {
             <ol class="history-list">
               @for (entry of historyEntries(); track entry.id) {
                 <li class="history-entry">
                   <div class="history-meta">
-                    <span class="history-time">{{ formatDate(entry.timestamp) }}</span>
+                    <span class="history-time">{{
+                      formatDate(entry.timestamp)
+                    }}</span>
                     <span class="history-user">{{ entry.username }}</span>
                   </div>
                   <div class="history-transition">
                     @if (entry.from_state_name) {
-                      <span class="history-from">{{ entry.from_state_name }}</span>
+                      <span class="history-from">{{
+                        entry.from_state_name
+                      }}</span>
                       <span class="history-arrow">→</span>
                     }
                     <span class="history-to">{{ entry.to_state_name }}</span>
@@ -361,7 +406,9 @@
                   @if (entry.from_room_name || entry.to_room_name) {
                     <div class="history-rooms">
                       @if (entry.from_room_name) {
-                        <span class="history-from">{{ entry.from_room_name }}</span>
+                        <span class="history-from">{{
+                          entry.from_room_name
+                        }}</span>
                         <span class="history-arrow">→</span>
                       }
                       @if (entry.to_room_name) {
@@ -385,16 +432,32 @@
       <div class="history-section">
         <button class="history-toggle" (click)="toggleRequests()">
           <svg viewBox="0 0 16 16" fill="none" width="13" height="13">
-            <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M5 8h6M5 5h6M5 11h4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+            <rect
+              x="2"
+              y="2"
+              width="12"
+              height="12"
+              rx="2"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <path
+              d="M5 8h6M5 5h6M5 11h4"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linecap="round"
+            />
           </svg>
           {{ "asset_device_view.requests_toggle" | translate }}
-          <span class="history-chevron" [class.history-chevron--open]="requestsOpen()">▾</span>
+          <span
+            class="history-chevron"
+            [class.history-chevron--open]="requestsOpen()"
+            >▾</span
+          >
         </button>
 
         @if (requestsOpen()) {
           <div class="history-body">
-
             <!-- Pulsante nuova richiesta -->
             @if (role.canCreateRequests() && !newRequestOpen()) {
               <div class="req-inline-toolbar">
@@ -407,26 +470,41 @@
             <!-- Form nuova richiesta -->
             @if (newRequestOpen()) {
               <div class="move-form">
-                <h4 class="move-form__title">{{ "asset_device_view.new_request_title" | translate }}</h4>
+                <h4 class="move-form__title">
+                  {{ "asset_device_view.new_request_title" | translate }}
+                </h4>
                 <div class="move-form__grid">
-
                   <label class="move-label">
                     {{ "asset_device_view.req_type" | translate }}
-                    <select class="move-select"
+                    <select
+                      class="move-select"
                       [value]="newReqType()"
-                      (change)="newReqType.set($any($event.target).value)">
-                        <option value="registration">{{ "requests.type.registration" | translate }}</option>
-                        <option value="relocation">{{ "requests.type.relocation" | translate }}</option>
-                        <option value="maintenance">{{ "requests.type.maintenance" | translate }}</option>
-                        <option value="decommissioning">{{ "requests.type.decommissioning" | translate }}</option>
+                      (change)="newReqType.set($any($event.target).value)"
+                    >
+                      <option value="registration">
+                        {{ "requests.type.registration" | translate }}
+                      </option>
+                      <option value="relocation">
+                        {{ "requests.type.relocation" | translate }}
+                      </option>
+                      <option value="maintenance">
+                        {{ "requests.type.maintenance" | translate }}
+                      </option>
+                      <option value="decommissioning">
+                        {{ "requests.type.decommissioning" | translate }}
+                      </option>
                     </select>
                   </label>
 
                   <label class="move-label">
                     {{ "asset_device_view.move_state" | translate }}
-                    <select class="move-select"
+                    <select
+                      class="move-select"
                       [value]="newReqToStateId()"
-                      (change)="newReqToStateId.set(+$any($event.target).value || null)">
+                      (change)="
+                        newReqToStateId.set(+$any($event.target).value || null)
+                      "
+                    >
                       <option value="">—</option>
                       @for (s of allowedStates(); track s.id) {
                         <option [value]="s.id">{{ s.name }}</option>
@@ -436,9 +514,17 @@
 
                   <label class="move-label">
                     {{ "asset_device_view.move_room" | translate }}
-                    <select class="move-select"
+                    <select
+                      class="move-select"
                       [value]="newReqToRoomId() ?? ''"
-                      (change)="newReqToRoomId.set($any($event.target).value ? +$any($event.target).value : null)">
+                      (change)="
+                        newReqToRoomId.set(
+                          $any($event.target).value
+                            ? +$any($event.target).value
+                            : null
+                        )
+                      "
+                    >
                       <option value="">—</option>
                       @for (r of availableRooms(); track r.id) {
                         <option [value]="r.id">{{ r.name }}</option>
@@ -448,10 +534,15 @@
 
                   <label class="move-label move-label--full">
                     {{ "asset_device_view.move_notes" | translate }}
-                    <textarea class="move-textarea" rows="2"
+                    <textarea
+                      class="move-textarea"
+                      rows="2"
                       [value]="newReqNotes()"
                       (input)="newReqNotes.set($any($event.target).value)"
-                      [placeholder]="'asset_device_view.move_notes_placeholder' | translate">
+                      [placeholder]="
+                        'asset_device_view.move_notes_placeholder' | translate
+                      "
+                    >
                     </textarea>
                   </label>
                 </div>
@@ -461,10 +552,14 @@
                 }
 
                 <div class="move-form__actions">
-                  <button class="btn-action btn-action--save"
+                  <button
+                    class="btn-action btn-action--save"
                     [disabled]="newReqSaving() || !newReqToStateId()"
-                    (click)="submitNewRequest()">
-                    @if (newReqSaving()) { … } @else {
+                    (click)="submitNewRequest()"
+                  >
+                    @if (newReqSaving()) {
+                      …
+                    } @else {
                       {{ "asset_device_view.request_submit" | translate }}
                     }
                   </button>
@@ -477,48 +572,67 @@
 
             <!-- Lista richieste esistenti -->
             @if (requestsLoading()) {
-              <div class="history-empty">{{ "common.loading" | translate }}</div>
+              <div class="history-empty">
+                {{ "common.loading" | translate }}
+              </div>
             } @else if (assetRequests().length === 0) {
-              <div class="history-empty">{{ "asset_device_view.requests_empty" | translate }}</div>
+              <div class="history-empty">
+                {{ "asset_device_view.requests_empty" | translate }}
+              </div>
             } @else {
               <ol class="history-list">
                 @for (req of assetRequests(); track req.id) {
                   <li class="history-entry">
                     <div class="history-meta">
-                      <span class="history-time">{{ formatDate(req.created_at) }}</span>
-                      <span class="history-user">{{ req.created_by_username }}</span>
+                      <span class="history-time">{{
+                        formatDate(req.created_at)
+                      }}</span>
+                      <span class="history-user">{{
+                        req.created_by_username
+                      }}</span>
                     </div>
                     <div class="history-transition">
-                      <span class="req-type-badge">{{ "requests.type." + req.request_type | translate }}</span>
+                      <span class="req-type-badge">{{
+                        "requests.type." + req.request_type | translate
+                      }}</span>
                       @if (req.from_state_name) {
-                        <span class="history-from">{{ req.from_state_name }}</span>
+                        <span class="history-from">{{
+                          req.from_state_name
+                        }}</span>
                         <span class="history-arrow">→</span>
                       }
                       <span class="history-to">{{ req.to_state_name }}</span>
                     </div>
-                    <div class="history-meta" style="margin-top:.2rem">
-                      <span class="state-badge" [attr.data-color]="requestStatusColor(req.status)">
+                    <div class="history-meta" style="margin-top: 0.2rem">
+                      <span
+                        class="state-badge"
+                        [attr.data-color]="requestStatusColor(req.status)"
+                      >
                         {{ "requests.status." + req.status | translate }}
                       </span>
                       @if (req.planned_date) {
-                        <span class="history-time">📅 {{ formatDate(req.planned_date) }}</span>
+                        <span class="history-time"
+                          >📅 {{ formatDate(req.planned_date) }}</span
+                        >
                       }
                     </div>
                     @if (req.clarification_notes) {
-                      <p class="history-notes" style="color:#92400e">❔ {{ req.clarification_notes }}</p>
+                      <p class="history-notes" style="color: #92400e">
+                        ❔ {{ req.clarification_notes }}
+                      </p>
                     }
                     @if (req.rejection_notes) {
-                      <p class="history-notes" style="color:#991b1b">✕ {{ req.rejection_notes }}</p>
+                      <p class="history-notes" style="color: #991b1b">
+                        ✕ {{ req.rejection_notes }}
+                      </p>
                     }
                   </li>
                 }
               </ol>
             }
-
           </div>
         }
       </div>
     }
-
   </div>
 }

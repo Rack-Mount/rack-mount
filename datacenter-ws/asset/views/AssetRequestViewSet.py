@@ -29,7 +29,8 @@ from shared.mixins import StandardFilterMixin
 class AssetRequestFilter(df_filters.FilterSet):
     class Meta:
         model = AssetRequest
-        fields = ['asset', 'request_type', 'status', 'created_by', 'assigned_to']
+        fields = ['asset', 'request_type',
+                  'status', 'created_by', 'assigned_to']
 
 
 class AssetRequestViewSet(
@@ -88,7 +89,8 @@ class AssetRequestViewSet(
             SecurityAuditLog.Action.ASSET_REQUEST_CREATE,
             'asset_request',
             resource_id=instance.pk,
-            delta_data={'asset_id': instance.asset_id, 'request_type': instance.request_type},
+            delta_data={'asset_id': instance.asset_id,
+                        'request_type': instance.request_type},
         )
 
     # ── Helpers ───────────────────────────────────────────────────────────────
@@ -146,7 +148,8 @@ class AssetRequestViewSet(
         if 'assigned_to' in data:
             from django.contrib.auth.models import User
             try:
-                asset_request.assigned_to = User.objects.get(pk=data['assigned_to']) if data['assigned_to'] else None
+                asset_request.assigned_to = User.objects.get(
+                    pk=data['assigned_to']) if data['assigned_to'] else None
             except User.DoesNotExist:
                 return Response({'error': _('User not found')}, status=status.HTTP_400_BAD_REQUEST)
         if data.get('notes'):
@@ -172,7 +175,8 @@ class AssetRequestViewSet(
         if asset_request is None:
             return Response({'error': _('Request not found')}, status=status.HTTP_404_NOT_FOUND)
 
-        err = self._check_transition(asset_request, AssetRequestStatus.EXECUTED)
+        err = self._check_transition(
+            asset_request, AssetRequestStatus.EXECUTED)
         if err:
             return err
 
@@ -221,7 +225,8 @@ class AssetRequestViewSet(
         if asset_request is None:
             return Response({'error': _('Request not found')}, status=status.HTTP_404_NOT_FOUND)
 
-        err = self._check_transition(asset_request, AssetRequestStatus.REJECTED)
+        err = self._check_transition(
+            asset_request, AssetRequestStatus.REJECTED)
         if err:
             return err
 
@@ -249,7 +254,8 @@ class AssetRequestViewSet(
         if asset_request is None:
             return Response({'error': _('Request not found')}, status=status.HTTP_404_NOT_FOUND)
 
-        err = self._check_transition(asset_request, AssetRequestStatus.NEEDS_CLARIFICATION)
+        err = self._check_transition(
+            asset_request, AssetRequestStatus.NEEDS_CLARIFICATION)
         if err:
             return err
 
@@ -279,11 +285,13 @@ class AssetRequestViewSet(
 
         if asset_request.created_by != request.user and not request.user.is_staff:
             return Response(
-                {'error': _('Only the original requester can resubmit the request')},
+                {'error': _(
+                    'Only the original requester can resubmit the request')},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        err = self._check_transition(asset_request, AssetRequestStatus.SUBMITTED)
+        err = self._check_transition(
+            asset_request, AssetRequestStatus.SUBMITTED)
         if err:
             return err
 

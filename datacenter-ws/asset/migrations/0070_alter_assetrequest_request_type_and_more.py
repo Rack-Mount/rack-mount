@@ -21,7 +21,8 @@ def migrate_assetrequest_enums_to_english(apps, schema_editor):
     }
 
     for old_value, new_value in type_map.items():
-        AssetRequest.objects.filter(request_type=old_value).update(request_type=new_value)
+        AssetRequest.objects.filter(
+            request_type=old_value).update(request_type=new_value)
     for old_value, new_value in status_map.items():
         AssetRequest.objects.filter(status=old_value).update(status=new_value)
 
@@ -44,7 +45,8 @@ def reverse_migrate_assetrequest_enums_to_italian(apps, schema_editor):
     }
 
     for old_value, new_value in type_map.items():
-        AssetRequest.objects.filter(request_type=old_value).update(request_type=new_value)
+        AssetRequest.objects.filter(
+            request_type=old_value).update(request_type=new_value)
     for old_value, new_value in status_map.items():
         AssetRequest.objects.filter(status=old_value).update(status=new_value)
 
@@ -63,11 +65,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='assetrequest',
             name='request_type',
-            field=models.CharField(choices=[('registration', 'Registration'), ('relocation', 'Relocation'), ('maintenance', 'Maintenance'), ('decommissioning', 'Decommissioning')], max_length=20, verbose_name='Request type'),
+            field=models.CharField(choices=[('registration', 'Registration'), ('relocation', 'Relocation'), (
+                'maintenance', 'Maintenance'), ('decommissioning', 'Decommissioning')], max_length=20, verbose_name='Request type'),
         ),
         migrations.AlterField(
             model_name='assetrequest',
             name='status',
-            field=models.CharField(choices=[('submitted', 'Submitted'), ('planned', 'Planned'), ('executed', 'Executed'), ('rejected', 'Rejected'), ('needs_clarification', 'Needs Clarification')], db_index=True, default='submitted', max_length=20, verbose_name='Request status'),
+            field=models.CharField(choices=[('submitted', 'Submitted'), ('planned', 'Planned'), ('executed', 'Executed'), ('rejected', 'Rejected'), (
+                'needs_clarification', 'Needs Clarification')], db_index=True, default='submitted', max_length=20, verbose_name='Request status'),
         ),
     ]

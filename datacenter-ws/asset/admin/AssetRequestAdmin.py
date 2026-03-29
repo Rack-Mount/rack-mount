@@ -68,7 +68,8 @@ class AssetRequestAdmin(admin.ModelAdmin):
     @admin.action(description=_('Execute selected requests'))
     def action_execute(self, request, queryset):
         evadibili = queryset.filter(
-            status__in=[AssetRequestStatus.SUBMITTED, AssetRequestStatus.PLANNED]
+            status__in=[AssetRequestStatus.SUBMITTED,
+                        AssetRequestStatus.PLANNED]
         ).select_related('asset', 'asset__state', 'to_state', 'to_room')
         evase = 0
         for req in evadibili:
@@ -89,12 +90,14 @@ class AssetRequestAdmin(admin.ModelAdmin):
                     asset.save(update_fields=['state', 'room', 'updated_at'])
                     req.status = AssetRequestStatus.EXECUTED
                     req.executed_by = request.user
-                    req.save(update_fields=['status', 'executed_by', 'updated_at'])
+                    req.save(update_fields=[
+                             'status', 'executed_by', 'updated_at'])
                 evase += 1
             except Exception as exc:
                 self.message_user(
                     request,
-                    _('Error on request #%(pk)d: %(error)s') % {'pk': req.pk, 'error': exc},
+                    _('Error on request #%(pk)d: %(error)s') % {
+                        'pk': req.pk, 'error': exc},
                     level='error',
                 )
         if evase:

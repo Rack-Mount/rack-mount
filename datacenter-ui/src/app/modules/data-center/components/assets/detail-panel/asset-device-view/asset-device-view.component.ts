@@ -8,24 +8,37 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
-  catchError,
-  map,
-  Observable,
-  of,
-  startWith,
-  switchMap,
-} from 'rxjs';
+  takeUntilDestroyed,
+  toObservable,
+  toSignal,
+} from '@angular/core/rxjs-interop';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
 import { environment } from '../../../../../../../environments/environment';
 import {
   Asset,
   AssetService,
   AssetState,
+  LocationService,
+  Room,
   WarehouseItem,
 } from '../../../../../core/api/v1';
-import { LocationService, Room } from '../../../../../core/api/v1';
+import {
+  AssetRequest,
+  AssetRequestType,
+  isRequestTerminal,
+  requestStatusColor,
+} from '../../../../../core/models/asset-request.model';
+import { AssetRequestService } from '../../../../../core/services/asset-request.service';
+import { BackendErrorService } from '../../../../../core/services/backend-error.service';
+import { MediaUrlService } from '../../../../../core/services/media-url.service';
+import { RoleService } from '../../../../../core/services/role.service';
+import {
+  ALLOWED_TRANSITIONS,
+  formatDate,
+  stateColor,
+} from '../../assets-list/assets-list-utils';
 
 export interface AssetTransitionLog {
   readonly id: number;
@@ -42,12 +55,6 @@ export interface AssetTransitionLog {
   readonly notes: string;
   readonly timestamp: string;
 }
-import { MediaUrlService } from '../../../../../core/services/media-url.service';
-import { BackendErrorService } from '../../../../../core/services/backend-error.service';
-import { RoleService } from '../../../../../core/services/role.service';
-import { ALLOWED_TRANSITIONS, formatDate, stateColor } from '../../assets-list/assets-list-utils';
-import { AssetRequestService } from '../../../../../core/services/asset-request.service';
-import { AssetRequest, AssetRequestType, isRequestTerminal, requestStatusColor } from '../../../../../core/models/asset-request.model';
 
 type LoadState =
   | { status: 'loading' }
@@ -170,7 +177,10 @@ export class AssetDeviceViewComponent {
   /** States reachable from the current asset state, based on the backend state machine. */
   protected readonly allowedStates = computed(() => {
     const all = this.availableStates();
-    const currentCode = (this.asset()?.state as any)?.code as string | null | undefined;
+    const currentCode = (this.asset()?.state as any)?.code as
+      | string
+      | null
+      | undefined;
     if (!currentCode) return all;
     const allowed = ALLOWED_TRANSITIONS[currentCode];
     if (!allowed) return all;
@@ -218,7 +228,11 @@ export class AssetDeviceViewComponent {
     this.assetService
       .assetAssetMoveCreate({
         id,
-        asset: { to_state, to_room: this.moveToRoomId(), notes: this.moveNotes() } as any,
+        asset: {
+          to_state,
+          to_room: this.moveToRoomId(),
+          notes: this.moveNotes(),
+        } as any,
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -230,7 +244,9 @@ export class AssetDeviceViewComponent {
           // Reload asset state
           toObservable(this.assetId)
             .pipe(
-              switchMap((assetId) => this.assetService.assetAssetRetrieve({ id: assetId })),
+              switchMap((assetId) =>
+                this.assetService.assetAssetRetrieve({ id: assetId }),
+              ),
               takeUntilDestroyed(this.destroyRef),
             )
             .subscribe();
@@ -255,9 +271,13 @@ export class AssetDeviceViewComponent {
       switchMap((a) => {
         if (!a) return of([] as WarehouseItem[]);
         const t = (a.model.type.name ?? '').toLowerCase();
-        if (!t.includes('switch') && !t.includes('server')) return of([] as WarehouseItem[]);
+        if (!t.includes('switch') && !t.includes('server'))
+          return of([] as WarehouseItem[]);
         return this.locationService
-          .locationWarehouseItemList({ compatibleModel: a.model.id, pageSize: 100 })
+          .locationWarehouseItemList({
+            compatibleModel: a.model.id,
+            pageSize: 100,
+          })
           .pipe(
             map((res) => res.results ?? []),
             catchError(() => of([] as WarehouseItem[])),
@@ -282,8 +302,11 @@ export class AssetDeviceViewComponent {
 
   private loadHistory(): void {
     this.historyLoading.set(true);
-    (this.assetService
-      .assetAssetHistoryRetrieve({ id: this.assetId() }) as unknown as Observable<AssetTransitionLog[]>)
+    (
+      this.assetService.assetAssetHistoryRetrieve({
+        id: this.assetId(),
+      }) as unknown as Observable<AssetTransitionLog[]>
+    )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (entries) => {

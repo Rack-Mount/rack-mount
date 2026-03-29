@@ -108,8 +108,7 @@ export class RequestsListComponent {
   protected readonly createAssetResults = signal<Asset[]>([]);
   protected readonly createAssetSearching = signal(false);
   protected readonly createSelectedAsset = signal<Asset | null>(null);
-  protected readonly createRequestType =
-    signal<AssetRequestType>('relocation');
+  protected readonly createRequestType = signal<AssetRequestType>('relocation');
   protected readonly createToState = signal<number | null>(null);
   protected readonly createToRoom = signal<number | null>(null);
   protected readonly createNotes = signal('');

@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AssetRequest',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('request_type', models.CharField(
                     choices=[
                         ('registrazione', 'Registration'),
@@ -40,10 +41,14 @@ class Migration(migrations.Migration):
                     verbose_name='Request status',
                 )),
                 ('notes', models.TextField(blank=True, verbose_name='Note')),
-                ('clarification_notes', models.TextField(blank=True, verbose_name='Clarification notes')),
-                ('rejection_notes', models.TextField(blank=True, verbose_name='Rejection reason')),
-                ('planned_date', models.DateField(blank=True, null=True, verbose_name='Planned date')),
-                ('created_at', models.DateTimeField(auto_now_add=True, db_index=True)),
+                ('clarification_notes', models.TextField(
+                    blank=True, verbose_name='Clarification notes')),
+                ('rejection_notes', models.TextField(
+                    blank=True, verbose_name='Rejection reason')),
+                ('planned_date', models.DateField(
+                    blank=True, null=True, verbose_name='Planned date')),
+                ('created_at', models.DateTimeField(
+                    auto_now_add=True, db_index=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('asset', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,

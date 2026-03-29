@@ -19,7 +19,8 @@ def migrate_assetrequest_values_to_english(apps, schema_editor):
     }
 
     for old_value, new_value in request_type_map.items():
-        AssetRequest.objects.filter(request_type=old_value).update(request_type=new_value)
+        AssetRequest.objects.filter(
+            request_type=old_value).update(request_type=new_value)
 
     for old_value, new_value in status_map.items():
         AssetRequest.objects.filter(status=old_value).update(status=new_value)
@@ -43,7 +44,8 @@ def reverse_migrate_assetrequest_values_to_italian(apps, schema_editor):
     }
 
     for old_value, new_value in request_type_map.items():
-        AssetRequest.objects.filter(request_type=old_value).update(request_type=new_value)
+        AssetRequest.objects.filter(
+            request_type=old_value).update(request_type=new_value)
 
     for old_value, new_value in status_map.items():
         AssetRequest.objects.filter(status=old_value).update(status=new_value)

@@ -1,5 +1,14 @@
-export type AssetRequestType = 'registration' | 'relocation' | 'maintenance' | 'decommissioning';
-export type AssetRequestStatus = 'submitted' | 'planned' | 'executed' | 'rejected' | 'needs_clarification';
+export type AssetRequestType =
+  | 'registration'
+  | 'relocation'
+  | 'maintenance'
+  | 'decommissioning';
+export type AssetRequestStatus =
+  | 'submitted'
+  | 'planned'
+  | 'executed'
+  | 'rejected'
+  | 'needs_clarification';
 
 export interface AssetRequest {
   id: number;
@@ -52,11 +61,17 @@ export function isRequestTerminal(status: AssetRequestStatus): boolean {
 /** CSS token color for request status */
 export function requestStatusColor(status: AssetRequestStatus): string {
   switch (status) {
-    case 'executed': return 'green';
-    case 'planned': return 'blue';
-    case 'submitted': return 'gray';
-    case 'needs_clarification': return 'yellow';
-    case 'rejected': return 'red';
-    default:             return 'gray';
+    case 'executed':
+      return 'green';
+    case 'planned':
+      return 'blue';
+    case 'submitted':
+      return 'gray';
+    case 'needs_clarification':
+      return 'yellow';
+    case 'rejected':
+      return 'red';
+    default:
+      return 'gray';
   }
 }

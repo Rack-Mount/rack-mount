@@ -1,35 +1,62 @@
 <div class="requests-page">
-
   <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
   <div class="req-toolbar">
-    <h2 class="req-title">{{ 'requests.title' | translate }}</h2>
+    <h2 class="req-title">{{ "requests.title" | translate }}</h2>
     <div class="req-filters">
       @if (role.canCreateRequests()) {
         <button class="btn-new-request" (click)="openCreateForm()">
           <svg viewBox="0 0 16 16" fill="none">
-            <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="M8 3v10M3 8h10"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
-          {{ 'requests.create_btn' | translate }}
+          {{ "requests.create_btn" | translate }}
         </button>
       }
-      <select class="req-filter-select"
+      <select
+        class="req-filter-select"
         [value]="filterStatus()"
-        (change)="filterStatus.set($any($event.target).value); applyFilters()">
-        <option value="">{{ 'requests.all_statuses' | translate }}</option>
-        <option value="submitted">{{ 'requests.status.submitted' | translate }}</option>
-        <option value="planned">{{ 'requests.status.planned' | translate }}</option>
-        <option value="executed">{{ 'requests.status.executed' | translate }}</option>
-        <option value="rejected">{{ 'requests.status.rejected' | translate }}</option>
-        <option value="needs_clarification">{{ 'requests.status.needs_clarification' | translate }}</option>
+        (change)="filterStatus.set($any($event.target).value); applyFilters()"
+      >
+        <option value="">{{ "requests.all_statuses" | translate }}</option>
+        <option value="submitted">
+          {{ "requests.status.submitted" | translate }}
+        </option>
+        <option value="planned">
+          {{ "requests.status.planned" | translate }}
+        </option>
+        <option value="executed">
+          {{ "requests.status.executed" | translate }}
+        </option>
+        <option value="rejected">
+          {{ "requests.status.rejected" | translate }}
+        </option>
+        <option value="needs_clarification">
+          {{ "requests.status.needs_clarification" | translate }}
+        </option>
       </select>
-      <select class="req-filter-select"
+      <select
+        class="req-filter-select"
         [value]="filterType()"
-        (change)="filterType.set($any($event.target).value); applyFilters()">
-        <option value="">{{ 'requests.all_types' | translate }}</option>
-        <option value="registration">{{ 'requests.type.registration' | translate }}</option>
-        <option value="relocation">{{ 'requests.type.relocation' | translate }}</option>
-        <option value="maintenance">{{ 'requests.type.maintenance' | translate }}</option>
-        <option value="decommissioning">{{ 'requests.type.decommissioning' | translate }}</option>
+        (change)="filterType.set($any($event.target).value); applyFilters()"
+      >
+        <option value="">{{ "requests.all_types" | translate }}</option>
+        <option value="registration">
+          {{ "requests.type.registration" | translate }}
+        </option>
+        <option value="relocation">
+          {{ "requests.type.relocation" | translate }}
+        </option>
+        <option value="maintenance">
+          {{ "requests.type.maintenance" | translate }}
+        </option>
+        <option value="decommissioning">
+          {{ "requests.type.decommissioning" | translate }}
+        </option>
       </select>
     </div>
   </div>
@@ -39,36 +66,56 @@
     <div class="drawer-backdrop" (click)="closeCreateForm()"></div>
     <div class="create-drawer">
       <div class="drawer-header">
-        <h3>{{ 'requests.create_title' | translate }}</h3>
-        <button class="drawer-close" (click)="closeCreateForm()" [title]="'common.close' | translate">
+        <h3>{{ "requests.create_title" | translate }}</h3>
+        <button
+          class="drawer-close"
+          (click)="closeCreateForm()"
+          [title]="'common.close' | translate"
+        >
           <svg viewBox="0 0 16 16" fill="none">
-            <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M12 4L4 12M4 4l8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
           </svg>
         </button>
       </div>
 
       <div class="drawer-body">
-
         <!-- Asset search -->
         <div class="form-group">
-          <label>{{ 'requests.create_asset' | translate }} <span class="required">*</span></label>
+          <label
+            >{{ "requests.create_asset" | translate }}
+            <span class="required">*</span></label
+          >
           <div class="autocomplete-wrap">
-            <input class="form-input"
+            <input
+              class="form-input"
               type="text"
               autocomplete="off"
               [value]="createAssetSearch()"
               (input)="onAssetSearchInput($any($event.target).value)"
-              [placeholder]="'requests.create_asset_placeholder' | translate" />
+              [placeholder]="'requests.create_asset_placeholder' | translate"
+            />
             @if (createAssetSearching()) {
               <span class="ac-searching">…</span>
             }
             @if (createAssetResults().length > 0) {
               <div class="autocomplete-dropdown">
                 @for (a of createAssetResults(); track a.id) {
-                  <button class="autocomplete-option" type="button"
-                    (mousedown)="$event.preventDefault(); selectCreateAsset(a)">
-                    <span class="ac-model-name">{{ a.hostname || ('requests.no_hostname' | translate) }}</span>
-                    <span class="ac-vendor-name">{{ a.model.name }} · {{ a.state.name }}</span>
+                  <button
+                    class="autocomplete-option"
+                    type="button"
+                    (mousedown)="$event.preventDefault(); selectCreateAsset(a)"
+                  >
+                    <span class="ac-model-name">{{
+                      a.hostname || ("requests.no_hostname" | translate)
+                    }}</span>
+                    <span class="ac-vendor-name"
+                      >{{ a.model.name }} · {{ a.state.name }}</span
+                    >
                   </button>
                 }
               </div>
@@ -78,24 +125,44 @@
 
         <!-- Request type -->
         <div class="form-group">
-          <label>{{ 'requests.col_type' | translate }} <span class="required">*</span></label>
-          <select class="form-select"
+          <label
+            >{{ "requests.col_type" | translate }}
+            <span class="required">*</span></label
+          >
+          <select
+            class="form-select"
             [ngModel]="createRequestType()"
-            (ngModelChange)="createRequestType.set($event)">
-            <option value="registration">{{ 'requests.type.registration' | translate }}</option>
-            <option value="relocation">{{ 'requests.type.relocation' | translate }}</option>
-            <option value="maintenance">{{ 'requests.type.maintenance' | translate }}</option>
-            <option value="decommissioning">{{ 'requests.type.decommissioning' | translate }}</option>
+            (ngModelChange)="createRequestType.set($event)"
+          >
+            <option value="registration">
+              {{ "requests.type.registration" | translate }}
+            </option>
+            <option value="relocation">
+              {{ "requests.type.relocation" | translate }}
+            </option>
+            <option value="maintenance">
+              {{ "requests.type.maintenance" | translate }}
+            </option>
+            <option value="decommissioning">
+              {{ "requests.type.decommissioning" | translate }}
+            </option>
           </select>
         </div>
 
         <!-- To state -->
         <div class="form-group">
-          <label>{{ 'requests.col_to_state' | translate }} <span class="required">*</span></label>
-          <select class="form-select"
+          <label
+            >{{ "requests.col_to_state" | translate }}
+            <span class="required">*</span></label
+          >
+          <select
+            class="form-select"
             [ngModel]="createToState()"
-            (ngModelChange)="createToState.set($event ? +$event : null)">
-            <option [value]="null">{{ 'requests.select_state' | translate }}</option>
+            (ngModelChange)="createToState.set($event ? +$event : null)"
+          >
+            <option [value]="null">
+              {{ "requests.select_state" | translate }}
+            </option>
             @for (s of availableStates(); track s.id) {
               <option [value]="s.id">{{ s.name }}</option>
             }
@@ -104,11 +171,15 @@
 
         <!-- To room (optional) -->
         <div class="form-group">
-          <label>{{ 'requests.to_room' | translate }}</label>
-          <select class="form-select"
+          <label>{{ "requests.to_room" | translate }}</label>
+          <select
+            class="form-select"
             [ngModel]="createToRoom()"
-            (ngModelChange)="createToRoom.set($event ? +$event : null)">
-            <option [value]="null">— {{ 'requests.no_room' | translate }} —</option>
+            (ngModelChange)="createToRoom.set($event ? +$event : null)"
+          >
+            <option [value]="null">
+              — {{ "requests.no_room" | translate }} —
+            </option>
             @for (r of availableRooms(); track r.id) {
               <option [value]="r.id">{{ r.name }}</option>
             }
@@ -117,26 +188,38 @@
 
         <!-- Notes -->
         <div class="form-group">
-          <label>{{ 'requests.notes' | translate }}</label>
-          <textarea class="form-textarea" rows="3"
+          <label>{{ "requests.notes" | translate }}</label>
+          <textarea
+            class="form-textarea"
+            rows="3"
             [ngModel]="createNotes()"
             (ngModelChange)="createNotes.set($event)"
-            [placeholder]="'requests.notes_placeholder' | translate">
+            [placeholder]="'requests.notes_placeholder' | translate"
+          >
           </textarea>
         </div>
 
         @if (createError()) {
           <p class="form-error">{{ createError() }}</p>
         }
-
       </div>
 
       <div class="drawer-footer">
-        <button class="btn-cancel" (click)="closeCreateForm()">{{ 'common.cancel' | translate }}</button>
-        <button class="btn-save"
-          [disabled]="createSaving() || !createSelectedAsset() || !createToState()"
-          (click)="submitCreate()">
-          @if (createSaving()) { … } @else { {{ 'requests.create_submit' | translate }} }
+        <button class="btn-cancel" (click)="closeCreateForm()">
+          {{ "common.cancel" | translate }}
+        </button>
+        <button
+          class="btn-save"
+          [disabled]="
+            createSaving() || !createSelectedAsset() || !createToState()
+          "
+          (click)="submitCreate()"
+        >
+          @if (createSaving()) {
+            …
+          } @else {
+            {{ "requests.create_submit" | translate }}
+          }
         </button>
       </div>
     </div>
@@ -144,52 +227,65 @@
 
   <!-- ── Main layout ─────────────────────────────────────────────────────── -->
   <div class="req-layout" [class.req-layout--detail]="selectedRequest()">
-
     <!-- ── Table ─────────────────────────────────────────────────────────── -->
     <div class="req-table-wrap">
-
-      @if (pageState() === 'loading') {
-        <div class="req-placeholder">{{ 'common.loading' | translate }}</div>
-      } @else if (pageState() === 'error') {
+      @if (pageState() === "loading") {
+        <div class="req-placeholder">{{ "common.loading" | translate }}</div>
+      } @else if (pageState() === "error") {
         <div class="req-placeholder req-placeholder--error">
-          {{ 'common.error_loading' | translate }}
-          <button class="btn-action" (click)="loadRequests()">{{ 'assets.retry' | translate }}</button>
+          {{ "common.error_loading" | translate }}
+          <button class="btn-action" (click)="loadRequests()">
+            {{ "assets.retry" | translate }}
+          </button>
         </div>
       } @else if (requests().length === 0) {
-        <div class="req-placeholder">{{ 'requests.no_data' | translate }}</div>
+        <div class="req-placeholder">{{ "requests.no_data" | translate }}</div>
       } @else {
         <table class="req-table">
           <thead>
             <tr>
-              <th>{{ 'requests.col_id' | translate }}</th>
-              <th>{{ 'requests.col_asset' | translate }}</th>
-              <th>{{ 'requests.col_type' | translate }}</th>
-              <th>{{ 'requests.col_from_state' | translate }}</th>
-              <th>{{ 'requests.col_to_state' | translate }}</th>
-              <th>{{ 'requests.col_status' | translate }}</th>
-              <th>{{ 'requests.col_planned' | translate }}</th>
-              <th>{{ 'requests.col_created_by' | translate }}</th>
-              <th>{{ 'requests.col_created_at' | translate }}</th>
+              <th>{{ "requests.col_id" | translate }}</th>
+              <th>{{ "requests.col_asset" | translate }}</th>
+              <th>{{ "requests.col_type" | translate }}</th>
+              <th>{{ "requests.col_from_state" | translate }}</th>
+              <th>{{ "requests.col_to_state" | translate }}</th>
+              <th>{{ "requests.col_status" | translate }}</th>
+              <th>{{ "requests.col_planned" | translate }}</th>
+              <th>{{ "requests.col_created_by" | translate }}</th>
+              <th>{{ "requests.col_created_at" | translate }}</th>
             </tr>
           </thead>
           <tbody>
             @for (req of requests(); track req.id) {
-              <tr class="req-row"
+              <tr
+                class="req-row"
                 [class.req-row--selected]="selectedRequest()?.id === req.id"
-                (click)="selectRequest(req)">
+                (click)="selectRequest(req)"
+              >
                 <td class="req-cell req-cell--id">#{{ req.id }}</td>
                 <td class="req-cell">{{ req.asset_hostname }}</td>
                 <td class="req-cell">
-                  <span class="req-type-badge">{{ 'requests.type.' + req.request_type | translate }}</span>
+                  <span class="req-type-badge">{{
+                    "requests.type." + req.request_type | translate
+                  }}</span>
                 </td>
-                <td class="req-cell req-cell--state">{{ req.from_state_name ?? '—' }}</td>
-                <td class="req-cell req-cell--state">{{ req.to_state_name }}</td>
+                <td class="req-cell req-cell--state">
+                  {{ req.from_state_name ?? "—" }}
+                </td>
+                <td class="req-cell req-cell--state">
+                  {{ req.to_state_name }}
+                </td>
                 <td class="req-cell">
-                  <span class="state-badge" [attr.data-color]="requestStatusColor(req.status)">
-                    {{ 'requests.status.' + req.status | translate }}
+                  <span
+                    class="state-badge"
+                    [attr.data-color]="requestStatusColor(req.status)"
+                  >
+                    {{ "requests.status." + req.status | translate }}
                   </span>
                 </td>
-                <td class="req-cell">{{ req.planned_date ? formatDate(req.planned_date) : '—' }}</td>
+                <td class="req-cell">
+                  {{ req.planned_date ? formatDate(req.planned_date) : "—" }}
+                </td>
                 <td class="req-cell">{{ req.created_by_username }}</td>
                 <td class="req-cell">{{ formatDate(req.created_at) }}</td>
               </tr>
@@ -200,12 +296,22 @@
         <!-- Pagination -->
         @if (totalPages() > 1) {
           <div class="req-pagination">
-            <button class="btn-page" [disabled]="currentPage() === 1" (click)="setPage(currentPage() - 1)">
-              ← {{ 'assets.prev_page' | translate }}
+            <button
+              class="btn-page"
+              [disabled]="currentPage() === 1"
+              (click)="setPage(currentPage() - 1)"
+            >
+              ← {{ "assets.prev_page" | translate }}
             </button>
-            <span class="req-page-info">{{ currentPage() }} / {{ totalPages() }}</span>
-            <button class="btn-page" [disabled]="currentPage() === totalPages()" (click)="setPage(currentPage() + 1)">
-              {{ 'assets.next_page' | translate }} →
+            <span class="req-page-info"
+              >{{ currentPage() }} / {{ totalPages() }}</span
+            >
+            <button
+              class="btn-page"
+              [disabled]="currentPage() === totalPages()"
+              (click)="setPage(currentPage() + 1)"
+            >
+              {{ "assets.next_page" | translate }} →
             </button>
           </div>
         }
@@ -217,217 +323,306 @@
       <div class="req-detail">
         <div class="req-detail__header">
           <h3 class="req-detail__title">
-            {{ 'requests.detail_title' | translate }} #{{ req.id }}
+            {{ "requests.detail_title" | translate }} #{{ req.id }}
           </h3>
-          <button class="req-detail__close" (click)="closeDetail()" title="{{ 'common.close' | translate }}">✕</button>
+          <button
+            class="req-detail__close"
+            (click)="closeDetail()"
+            title="{{ 'common.close' | translate }}"
+          >
+            ✕
+          </button>
         </div>
 
         <!-- Status badge -->
         <div class="req-detail__status">
-          <span class="state-badge" [attr.data-color]="requestStatusColor(req.status)">
-            {{ 'requests.status.' + req.status | translate }}
+          <span
+            class="state-badge"
+            [attr.data-color]="requestStatusColor(req.status)"
+          >
+            {{ "requests.status." + req.status | translate }}
           </span>
-          <span class="req-detail__type">{{ 'requests.type.' + req.request_type | translate }}</span>
+          <span class="req-detail__type">{{
+            "requests.type." + req.request_type | translate
+          }}</span>
         </div>
 
         <!-- Info grid -->
         <dl class="req-info-grid">
-          <dt>{{ 'requests.col_asset' | translate }}</dt>
+          <dt>{{ "requests.col_asset" | translate }}</dt>
           <dd>{{ req.asset_hostname }}</dd>
 
-          <dt>{{ 'requests.col_from_state' | translate }}</dt>
-          <dd>{{ req.from_state_name ?? '—' }}</dd>
+          <dt>{{ "requests.col_from_state" | translate }}</dt>
+          <dd>{{ req.from_state_name ?? "—" }}</dd>
 
-          <dt>{{ 'requests.col_to_state' | translate }}</dt>
+          <dt>{{ "requests.col_to_state" | translate }}</dt>
           <dd>{{ req.to_state_name }}</dd>
 
           @if (req.from_room_name) {
-            <dt>{{ 'requests.from_room' | translate }}</dt>
+            <dt>{{ "requests.from_room" | translate }}</dt>
             <dd>{{ req.from_room_name }}</dd>
           }
           @if (req.to_room_name) {
-            <dt>{{ 'requests.to_room' | translate }}</dt>
+            <dt>{{ "requests.to_room" | translate }}</dt>
             <dd>{{ req.to_room_name }}</dd>
           }
 
-          <dt>{{ 'requests.col_created_by' | translate }}</dt>
+          <dt>{{ "requests.col_created_by" | translate }}</dt>
           <dd>{{ req.created_by_username }}</dd>
 
-          <dt>{{ 'requests.col_created_at' | translate }}</dt>
+          <dt>{{ "requests.col_created_at" | translate }}</dt>
           <dd>{{ formatDate(req.created_at) }}</dd>
 
           @if (req.assigned_to_username) {
-            <dt>{{ 'requests.assigned_to' | translate }}</dt>
+            <dt>{{ "requests.assigned_to" | translate }}</dt>
             <dd>{{ req.assigned_to_username }}</dd>
           }
           @if (req.planned_date) {
-            <dt>{{ 'requests.col_planned' | translate }}</dt>
+            <dt>{{ "requests.col_planned" | translate }}</dt>
             <dd>{{ formatDate(req.planned_date) }}</dd>
           }
           @if (req.executed_by_username) {
-            <dt>{{ 'requests.executed_by' | translate }}</dt>
+            <dt>{{ "requests.executed_by" | translate }}</dt>
             <dd>{{ req.executed_by_username }}</dd>
           }
           @if (req.notes) {
-            <dt>{{ 'requests.notes' | translate }}</dt>
+            <dt>{{ "requests.notes" | translate }}</dt>
             <dd class="req-info-grid__notes">{{ req.notes }}</dd>
           }
           @if (req.clarification_notes) {
-            <dt>{{ 'requests.clarification_notes' | translate }}</dt>
-            <dd class="req-info-grid__notes req-info-grid__notes--warning">{{ req.clarification_notes }}</dd>
+            <dt>{{ "requests.clarification_notes" | translate }}</dt>
+            <dd class="req-info-grid__notes req-info-grid__notes--warning">
+              {{ req.clarification_notes }}
+            </dd>
           }
           @if (req.rejection_notes) {
-            <dt>{{ 'requests.rejection_notes' | translate }}</dt>
-            <dd class="req-info-grid__notes req-info-grid__notes--error">{{ req.rejection_notes }}</dd>
+            <dt>{{ "requests.rejection_notes" | translate }}</dt>
+            <dd class="req-info-grid__notes req-info-grid__notes--error">
+              {{ req.rejection_notes }}
+            </dd>
           }
         </dl>
 
         <!-- Action error -->
         @if (actionError()) {
-          <p class="form-error" style="margin:0 0 .75rem">{{ actionError() }}</p>
+          <p class="form-error" style="margin: 0 0 0.75rem">
+            {{ actionError() }}
+          </p>
         }
 
         @if (!isRequestTerminal(req.status)) {
           <div class="req-actions">
             @if (role.canManageRequests()) {
               <!-- Execute -->
-              <button class="btn-action btn-action--execute"
+              <button
+                class="btn-action btn-action--execute"
                 [disabled]="actionSaving() !== null"
-                (click)="submitExecute()">
-                @if (actionSaving() === 'execute') { … } @else {
-                  ✓ {{ 'requests.action.execute' | translate }}
+                (click)="submitExecute()"
+              >
+                @if (actionSaving() === "execute") {
+                  …
+                } @else {
+                  ✓ {{ "requests.action.execute" | translate }}
                 }
               </button>
 
-              @if (req.status === 'submitted') {
+              @if (req.status === "submitted") {
                 <!-- Plan -->
-                <button class="btn-action"
+                <button
+                  class="btn-action"
                   [disabled]="actionSaving() !== null"
-                  (click)="openForm('plan')">
-                  📅 {{ 'requests.action.plan' | translate }}
+                  (click)="openForm('plan')"
+                >
+                  📅 {{ "requests.action.plan" | translate }}
                 </button>
               }
 
               <!-- Reject -->
-              <button class="btn-action btn-action--danger"
+              <button
+                class="btn-action btn-action--danger"
                 [disabled]="actionSaving() !== null"
-                (click)="openForm('reject')">
-                ✕ {{ 'requests.action.reject' | translate }}
+                (click)="openForm('reject')"
+              >
+                ✕ {{ "requests.action.reject" | translate }}
               </button>
 
               <!-- Clarify -->
-              <button class="btn-action btn-action--warn"
+              <button
+                class="btn-action btn-action--warn"
                 [disabled]="actionSaving() !== null"
-                (click)="openForm('clarify')">
-                ? {{ 'requests.action.clarify' | translate }}
+                (click)="openForm('clarify')"
+              >
+                ? {{ "requests.action.clarify" | translate }}
               </button>
             }
 
             <!-- Resubmit (requester, after clarification) -->
-            @if (req.status === 'needs_clarification' && role.canCreateRequests()) {
-              <button class="btn-action btn-action--save"
+            @if (
+              req.status === "needs_clarification" && role.canCreateRequests()
+            ) {
+              <button
+                class="btn-action btn-action--save"
                 [disabled]="actionSaving() !== null"
-                (click)="openForm('resubmit')">
-                ↩ {{ 'requests.action.resubmit' | translate }}
+                (click)="openForm('resubmit')"
+              >
+                ↩ {{ "requests.action.resubmit" | translate }}
               </button>
             }
-
           </div>
 
           <!-- Inline form: Plan -->
-          @if (activeForm() === 'plan') {
+          @if (activeForm() === "plan") {
             <div class="req-form">
-              <h4 class="req-form__title">{{ 'requests.action.plan' | translate }}</h4>
+              <h4 class="req-form__title">
+                {{ "requests.action.plan" | translate }}
+              </h4>
               <label class="req-form__label">
-                {{ 'requests.planned_date' | translate }}
-                <input type="date" class="req-form__input"
+                {{ "requests.planned_date" | translate }}
+                <input
+                  type="date"
+                  class="req-form__input"
                   [value]="planDate()"
-                  (change)="planDate.set($any($event.target).value)" />
+                  (change)="planDate.set($any($event.target).value)"
+                />
               </label>
               <div class="req-form__actions">
-                <button class="btn-action btn-action--save"
+                <button
+                  class="btn-action btn-action--save"
                   [disabled]="actionSaving() === 'plan'"
-                  (click)="submitPlan()">
-                  @if (actionSaving() === 'plan') { … } @else { {{ 'common.save' | translate }} }
+                  (click)="submitPlan()"
+                >
+                  @if (actionSaving() === "plan") {
+                    …
+                  } @else {
+                    {{ "common.save" | translate }}
+                  }
                 </button>
-                <button class="btn-action" (click)="activeForm.set(null)">{{ 'common.cancel' | translate }}</button>
+                <button class="btn-action" (click)="activeForm.set(null)">
+                  {{ "common.cancel" | translate }}
+                </button>
               </div>
             </div>
           }
 
           <!-- Inline form: Reject -->
-          @if (activeForm() === 'reject') {
+          @if (activeForm() === "reject") {
             <div class="req-form req-form--danger">
-              <h4 class="req-form__title">{{ 'requests.action.reject' | translate }}</h4>
+              <h4 class="req-form__title">
+                {{ "requests.action.reject" | translate }}
+              </h4>
               <label class="req-form__label">
-                {{ 'requests.rejection_notes' | translate }} *
-                <textarea class="req-form__textarea" rows="3"
+                {{ "requests.rejection_notes" | translate }} *
+                <textarea
+                  class="req-form__textarea"
+                  rows="3"
                   [value]="rejectNotes()"
                   (input)="rejectNotes.set($any($event.target).value)"
-                  [placeholder]="'requests.rejection_notes_placeholder' | translate">
+                  [placeholder]="
+                    'requests.rejection_notes_placeholder' | translate
+                  "
+                >
                 </textarea>
               </label>
               <div class="req-form__actions">
-                <button class="btn-action btn-action--danger"
-                  [disabled]="actionSaving() === 'reject' || !rejectNotes().trim()"
-                  (click)="submitReject()">
-                  @if (actionSaving() === 'reject') { … } @else { {{ 'requests.action.reject' | translate }} }
+                <button
+                  class="btn-action btn-action--danger"
+                  [disabled]="
+                    actionSaving() === 'reject' || !rejectNotes().trim()
+                  "
+                  (click)="submitReject()"
+                >
+                  @if (actionSaving() === "reject") {
+                    …
+                  } @else {
+                    {{ "requests.action.reject" | translate }}
+                  }
                 </button>
-                <button class="btn-action" (click)="activeForm.set(null)">{{ 'common.cancel' | translate }}</button>
+                <button class="btn-action" (click)="activeForm.set(null)">
+                  {{ "common.cancel" | translate }}
+                </button>
               </div>
             </div>
           }
 
           <!-- Inline form: Clarify -->
-          @if (activeForm() === 'clarify') {
+          @if (activeForm() === "clarify") {
             <div class="req-form req-form--warn">
-              <h4 class="req-form__title">{{ 'requests.action.clarify' | translate }}</h4>
+              <h4 class="req-form__title">
+                {{ "requests.action.clarify" | translate }}
+              </h4>
               <label class="req-form__label">
-                {{ 'requests.clarification_notes' | translate }} *
-                <textarea class="req-form__textarea" rows="3"
+                {{ "requests.clarification_notes" | translate }} *
+                <textarea
+                  class="req-form__textarea"
+                  rows="3"
                   [value]="clarifyNotes()"
                   (input)="clarifyNotes.set($any($event.target).value)"
-                  [placeholder]="'requests.clarification_notes_placeholder' | translate">
+                  [placeholder]="
+                    'requests.clarification_notes_placeholder' | translate
+                  "
+                >
                 </textarea>
               </label>
               <div class="req-form__actions">
-                <button class="btn-action btn-action--warn"
-                  [disabled]="actionSaving() === 'clarify' || !clarifyNotes().trim()"
-                  (click)="submitClarify()">
-                  @if (actionSaving() === 'clarify') { … } @else { {{ 'requests.action.clarify' | translate }} }
+                <button
+                  class="btn-action btn-action--warn"
+                  [disabled]="
+                    actionSaving() === 'clarify' || !clarifyNotes().trim()
+                  "
+                  (click)="submitClarify()"
+                >
+                  @if (actionSaving() === "clarify") {
+                    …
+                  } @else {
+                    {{ "requests.action.clarify" | translate }}
+                  }
                 </button>
-                <button class="btn-action" (click)="activeForm.set(null)">{{ 'common.cancel' | translate }}</button>
+                <button class="btn-action" (click)="activeForm.set(null)">
+                  {{ "common.cancel" | translate }}
+                </button>
               </div>
             </div>
           }
 
           <!-- Inline form: Resubmit -->
-          @if (activeForm() === 'resubmit') {
+          @if (activeForm() === "resubmit") {
             <div class="req-form">
-              <h4 class="req-form__title">{{ 'requests.action.resubmit' | translate }}</h4>
+              <h4 class="req-form__title">
+                {{ "requests.action.resubmit" | translate }}
+              </h4>
               <label class="req-form__label">
-                {{ 'requests.notes' | translate }}
-                <textarea class="req-form__textarea" rows="2"
+                {{ "requests.notes" | translate }}
+                <textarea
+                  class="req-form__textarea"
+                  rows="2"
                   [value]="resubmitNotes()"
                   (input)="resubmitNotes.set($any($event.target).value)"
-                  [placeholder]="'requests.notes_placeholder' | translate">
+                  [placeholder]="'requests.notes_placeholder' | translate"
+                >
                 </textarea>
               </label>
               <div class="req-form__actions">
-                <button class="btn-action btn-action--save"
+                <button
+                  class="btn-action btn-action--save"
                   [disabled]="actionSaving() === 'resubmit'"
-                  (click)="submitResubmit()">
-                  @if (actionSaving() === 'resubmit') { … } @else { {{ 'requests.action.resubmit' | translate }} }
+                  (click)="submitResubmit()"
+                >
+                  @if (actionSaving() === "resubmit") {
+                    …
+                  } @else {
+                    {{ "requests.action.resubmit" | translate }}
+                  }
                 </button>
-                <button class="btn-action" (click)="activeForm.set(null)">{{ 'common.cancel' | translate }}</button>
+                <button class="btn-action" (click)="activeForm.set(null)">
+                  {{ "common.cancel" | translate }}
+                </button>
               </div>
             </div>
           }
-
-        } <!-- /non-terminal -->
-
+        }
+        <!-- /non-terminal -->
       </div>
     }
-
-  </div><!-- /req-layout -->
+  </div>
+  <!-- /req-layout -->
 </div>
