@@ -481,7 +481,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint post /location/warehouse_item
 * @param requestParameters
      */
@@ -489,7 +489,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint delete /location/warehouse_item/{id}
 * @param requestParameters
      */
@@ -497,7 +497,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /location/warehouse_item
 * @param requestParameters
      */
@@ -505,7 +505,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint patch /location/warehouse_item/{id}
 * @param requestParameters
      */
@@ -513,7 +513,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /location/warehouse_item/{id}
 * @param requestParameters
      */
@@ -521,7 +521,7 @@ export interface LocationServiceInterface {
 
     /**
      * 
-     * Sets the canonical &#x60;&#x60;pagination_class&#x60;&#x60; and &#x60;&#x60;filter_backends&#x60;&#x60; for every API ViewSet.  Extend this mixin (directly or via &#x60;&#x60;NameSearchMixin&#x60;&#x60;) to avoid repeating these two lines in every class.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint put /location/warehouse_item/{id}
 * @param requestParameters
      */

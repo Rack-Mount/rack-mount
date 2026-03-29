@@ -240,9 +240,9 @@ export interface AssetAssetRequestListRequestParams {
     ordering?: string;
     page?: number;
     pageSize?: number;
-    requestType?: 'dismissione' | 'manutenzione' | 'registrazione' | 'spostamento';
+    requestType?: 'decommissioning' | 'maintenance' | 'registration' | 'relocation';
     search?: string;
-    status?: 'evasa' | 'in_chiarimento' | 'inserita' | 'pianificata' | 'rifiutata';
+    status?: 'executed' | 'needs_clarification' | 'planned' | 'rejected' | 'submitted';
 }
 
 export interface AssetAssetRequestPlanCreateRequestParams {
@@ -473,7 +473,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * PATCH /asset/asset/bulk_state?search&#x3D;...&amp;state&#x3D;...&amp;model__type&#x3D;... Body: { \&quot;state_id\&quot;: &lt;int&gt; }  Updates the state of ALL assets matching the current filter params. Requires can_edit_assets. Forbidden for in_produzione (use move instead). Writes an AssetTransitionLog entry for each affected asset. Returns: { \&quot;updated\&quot;: &lt;int&gt; }
+     * PATCH /asset/asset/bulk_state?search&#x3D;...&amp;state&#x3D;...&amp;model__type&#x3D;... Body: { \&quot;state_id\&quot;: &lt;int&gt; }  Updates the state of ALL assets matching the current filter params. Requires can_edit_assets. Forbidden for in_production (use move instead). Writes an AssetTransitionLog entry for each affected asset. Returns: { \&quot;updated\&quot;: &lt;int&gt; }
      * @endpoint patch /asset/asset/bulk_state
 * @param requestParameters
      */
@@ -560,7 +560,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * GET /asset/asset/{id}/history Returns the ordered transition log for this asset.
+     * GET /asset/asset/{id}/history Returns the ordered transition log for this asset (paginated).
      * @endpoint get /asset/asset/{id}/history
 * @param requestParameters
      */
@@ -719,7 +719,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/asset_request/{id}/clarify Body: { \&quot;clarification_notes\&quot;: \&quot;...\&quot; }  Transizione → IN_CHIARIMENTO.
+     * POST /asset/asset_request/{id}/clarify Body: { \&quot;clarification_notes\&quot;: \&quot;...\&quot; }  Transition → NEEDS_CLARIFICATION.
      * @endpoint post /asset/asset_request/{id}/clarify
 * @param requestParameters
      */
@@ -727,7 +727,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Gestione delle richieste di ciclo di vita degli asset.  Ciclo di vita di una richiesta:     INSERITA → PIANIFICATA → EVASA  (percorso normale)     INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)     INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)  Quando una richiesta viene EVASA, l\&#39;asset cambia effettivamente stato e location, e viene creato un AssetTransitionLog.
+     * Lifecycle management for asset requests.  Request lifecycle:     SUBMITTED → PLANNED → EXECUTED  (normal path)     SUBMITTED / PLANNED → REJECTED  (rejected)     SUBMITTED / PLANNED → NEEDS_CLARIFICATION → SUBMITTED  (clarification)  When a request is EXECUTED, the asset state and location are effectively updated and an AssetTransitionLog is created.
      * @endpoint post /asset/asset_request
 * @param requestParameters
      */
@@ -735,7 +735,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/asset_request/{id}/execute  Transizione → EVASA. Esegue effettivamente la transizione di stato e location sull\&#39;asset, crea un AssetTransitionLog e aggiorna la richiesta come evasa.
+     * POST /asset/asset_request/{id}/execute  Transition → EXECUTED. Applies the requested state/location transition on the asset, creates an AssetTransitionLog and marks the request as executed.
      * @endpoint post /asset/asset_request/{id}/execute
 * @param requestParameters
      */
@@ -743,7 +743,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Gestione delle richieste di ciclo di vita degli asset.  Ciclo di vita di una richiesta:     INSERITA → PIANIFICATA → EVASA  (percorso normale)     INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)     INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)  Quando una richiesta viene EVASA, l\&#39;asset cambia effettivamente stato e location, e viene creato un AssetTransitionLog.
+     * Lifecycle management for asset requests.  Request lifecycle:     SUBMITTED → PLANNED → EXECUTED  (normal path)     SUBMITTED / PLANNED → REJECTED  (rejected)     SUBMITTED / PLANNED → NEEDS_CLARIFICATION → SUBMITTED  (clarification)  When a request is EXECUTED, the asset state and location are effectively updated and an AssetTransitionLog is created.
      * @endpoint get /asset/asset_request
 * @param requestParameters
      */
@@ -751,7 +751,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/asset_request/{id}/plan Body: { \&quot;planned_date\&quot;: \&quot;YYYY-MM-DD\&quot;, \&quot;assigned_to\&quot;: &lt;int|null&gt;, \&quot;notes\&quot;: \&quot;\&quot; }  Transizione INSERITA → PIANIFICATA.
+     * POST /asset/asset_request/{id}/plan Body: { \&quot;planned_date\&quot;: \&quot;YYYY-MM-DD\&quot;, \&quot;assigned_to\&quot;: &lt;int|null&gt;, \&quot;notes\&quot;: \&quot;\&quot; }  Transition SUBMITTED → PLANNED.
      * @endpoint post /asset/asset_request/{id}/plan
 * @param requestParameters
      */
@@ -759,7 +759,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/asset_request/{id}/reject Body: { \&quot;rejection_notes\&quot;: \&quot;...\&quot; }  Transizione → RIFIUTATA (terminale).
+     * POST /asset/asset_request/{id}/reject Body: { \&quot;rejection_notes\&quot;: \&quot;...\&quot; }  Transition → REJECTED (terminal).
      * @endpoint post /asset/asset_request/{id}/reject
 * @param requestParameters
      */
@@ -767,7 +767,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/asset_request/{id}/resubmit Body: { \&quot;notes\&quot;: \&quot;...\&quot; }  (opzionale)  Transizione IN_CHIARIMENTO → INSERITA. Solo il richiedente originale può reinserire la propria richiesta.
+     * POST /asset/asset_request/{id}/resubmit Body: { \&quot;notes\&quot;: \&quot;...\&quot; }  (optional)  Transition NEEDS_CLARIFICATION → SUBMITTED. Only the original requester can resubmit their own request.
      * @endpoint post /asset/asset_request/{id}/resubmit
 * @param requestParameters
      */
@@ -775,7 +775,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Gestione delle richieste di ciclo di vita degli asset.  Ciclo di vita di una richiesta:     INSERITA → PIANIFICATA → EVASA  (percorso normale)     INSERITA / PIANIFICATA → RIFIUTATA  (rifiuto)     INSERITA / PIANIFICATA → IN_CHIARIMENTO → INSERITA  (chiarimento)  Quando una richiesta viene EVASA, l\&#39;asset cambia effettivamente stato e location, e viene creato un AssetTransitionLog.
+     * Lifecycle management for asset requests.  Request lifecycle:     SUBMITTED → PLANNED → EXECUTED  (normal path)     SUBMITTED / PLANNED → REJECTED  (rejected)     SUBMITTED / PLANNED → NEEDS_CLARIFICATION → SUBMITTED  (clarification)  When a request is EXECUTED, the asset state and location are effectively updated and an AssetTransitionLog is created.
      * @endpoint get /asset/asset_request/{id}
 * @param requestParameters
      */
@@ -839,7 +839,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Shared configuration for name-based lookup-table ViewSets.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint post /asset/asset_type
 * @param requestParameters
      */
@@ -847,7 +847,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Shared configuration for name-based lookup-table ViewSets.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint delete /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -855,7 +855,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Shared configuration for name-based lookup-table ViewSets.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/asset_type
 * @param requestParameters
      */
@@ -863,7 +863,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Shared configuration for name-based lookup-table ViewSets.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint patch /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -871,7 +871,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Shared configuration for name-based lookup-table ViewSets.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint get /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -879,7 +879,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Shared configuration for name-based lookup-table ViewSets.
+     * ViewSet mixin that writes a SecurityAuditLog entry after each successful create, update, or destroy operation.  Subclasses must set:     audit_resource_type  str  — e.g. \&#39;asset\&#39;, \&#39;vendor\&#39;, \&#39;rack\&#39;     audit_action_create  str  — SecurityAuditLog.Action value (or \&#39;\&#39; to skip)     audit_action_update  str     audit_action_delete  str
      * @endpoint put /asset/asset_type/{id}
 * @param requestParameters
      */
@@ -1023,7 +1023,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * Ritorna il componente installato al magazzino: incrementa la quantità dell\&#39;articolo collegato e rimuove il componente dal rack.
+     * Return installed component to warehouse: increment linked item quantity and remove component from rack.
      * @endpoint post /asset/rack_unit/{id}/return-to-stock
 * @param requestParameters
      */

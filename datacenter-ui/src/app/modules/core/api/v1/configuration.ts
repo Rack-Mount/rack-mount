@@ -92,9 +92,9 @@ constructor({ accessToken, apiKeys, basePath, credentials, encodeParam, encoder,
         this.encodeParam = encodeParam ?? (param => this.defaultEncodeParam(param));
         this.credentials = credentials ?? {};
 
-        // init default jwtAuth credential
-        if (!this.credentials['jwtAuth']) {
-            this.credentials['jwtAuth'] = () => {
+        // init default JWTAuth credential
+        if (!this.credentials['JWTAuth']) {
+            this.credentials['JWTAuth'] = () => {
                 return typeof this.accessToken === 'function'
                     ? this.accessToken()
                     : this.accessToken;

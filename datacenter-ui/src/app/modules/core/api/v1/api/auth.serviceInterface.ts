@@ -128,7 +128,7 @@ export interface AuthServiceInterface {
 
     /**
      * 
-     * Read-only list of all available roles. Accessible only by Admin role.
+     * Read-only list of all available roles. Accessible only by Admin role. Cached for 5 minutes.
      * @endpoint get /auth/roles/
 */
     authRolesList(extraHttpRequestParams?: any): Observable<Array<Role>>;
