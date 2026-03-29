@@ -262,6 +262,12 @@ REST_FRAMEWORK = {
     },
 }
 
+# Disable API throttling in local development to avoid 429 during intensive
+# annotation/correction workflows. Keep rate limiting enabled in production.
+if DEBUG:
+    REST_FRAMEWORK['DEFAULT_THROTTLE_CLASSES'] = []
+    REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'] = {}
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=3),
