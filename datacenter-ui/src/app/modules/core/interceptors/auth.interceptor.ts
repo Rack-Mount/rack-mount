@@ -38,8 +38,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const translate = inject(TranslateService);
 
   const token = auth.accessToken();
+  // Do not attach an expired access token to public auth endpoints (AllowAny).
+  // JWTAuthentication raises AuthenticationFailed for expired tokens before
+  // AllowAny can bypass the check, causing a spurious 401 on /auth/token/refresh/.
+  const isPublicAuthUrl =
+    req.url.includes('/auth/token/refresh/') ||
+    new URL(req.url, window.location.origin).pathname.endsWith('/auth/token/');
   const outgoing =
-    token && isApiRequest(req.url)
+    token && isApiRequest(req.url) && !isPublicAuthUrl
       ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
       : req;
 

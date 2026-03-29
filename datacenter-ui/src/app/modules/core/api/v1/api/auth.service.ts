@@ -549,9 +549,6 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (JWTAuth) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('JWTAuth', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'
         ]);
@@ -620,9 +617,6 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        // authentication (JWTAuth) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('JWTAuth', 'Authorization', localVarHeaders, 'Bearer ');
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
             'application/json'

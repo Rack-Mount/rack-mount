@@ -142,7 +142,8 @@ class LogoutView(APIView):
         },
     )
     def post(self, request):
-        refresh_token = request.COOKIES.get('refresh_token') or request.data.get('refresh')
+        refresh_token = request.COOKIES.get(
+            'refresh_token') or request.data.get('refresh')
         response = Response(
             {'detail': _('Logout successful. Token blacklisted.')},
             status=status.HTTP_200_OK,
@@ -185,6 +186,7 @@ class CookieTokenObtainView(APIView):
     Accept username + password credentials.
     Return access and refresh tokens in the response body.
     """
+    authentication_classes = []  # AllowAny: skip JWT auth to avoid 401 on expired tokens
     permission_classes = [AllowAny]
     throttle_classes = [LoginAnonThrottle]
 
@@ -254,7 +256,8 @@ class CookieTokenObtainView(APIView):
             httponly=True,
             secure=not django_settings.DEBUG,
             samesite='Lax',
-            max_age=int(django_settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()),
+            max_age=int(
+                django_settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()),
             path='/',
         )
         return response
@@ -267,6 +270,8 @@ class CookieTokenRefreshView(APIView):
     Accept refresh token in request body.
     Return new access token in response body.
     """
+    authentication_classes = []  # AllowAny: skip JWT auth so an expired access token
+    # in the Authorization header doesn't cause a 401 before the cookie is read.
     permission_classes = [AllowAny]
     throttle_classes = [TokenRefreshThrottle]
 
@@ -281,7 +286,8 @@ class CookieTokenRefreshView(APIView):
     def post(self, request):
         # Read refresh token from HTTP-only cookie first, fall back to body for
         # backwards compatibility during transition.
-        refresh_token = request.COOKIES.get('refresh_token') or request.data.get('refresh')
+        refresh_token = request.COOKIES.get(
+            'refresh_token') or request.data.get('refresh')
         if not refresh_token:
             return Response(
                 {'detail': _('Refresh token required.')},
@@ -332,7 +338,8 @@ class CookieTokenRefreshView(APIView):
                 httponly=True,
                 secure=not django_settings.DEBUG,
                 samesite='Lax',
-                max_age=int(django_settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()),
+                max_age=int(
+                    django_settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()),
                 path='/',
             )
         return response
@@ -355,7 +362,8 @@ class CookieTokenBlacklistView(APIView):
         },
     )
     def post(self, request):
-        refresh_token = request.COOKIES.get('refresh_token') or request.data.get('refresh')
+        refresh_token = request.COOKIES.get(
+            'refresh_token') or request.data.get('refresh')
         response = Response(
             {'detail': _('Logout successful.')},
             status=status.HTTP_200_OK,
@@ -379,7 +387,8 @@ class CookieTokenBlacklistView(APIView):
                     status=status.HTTP_403_FORBIDDEN,
                 )
             token.blacklist()
-            response.data = {'detail': _('Logout successful. Token blacklisted.')}
+            response.data = {'detail': _(
+                'Logout successful. Token blacklisted.')}
             return response
         except Exception:
             logger.exception('Cookie token blacklist failed')
