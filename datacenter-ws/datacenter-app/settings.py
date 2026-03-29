@@ -254,9 +254,11 @@ REST_FRAMEWORK = {
         'anon_port_correction': '0/hour',        # Block anonymous
         # ─── Import / Export scopes ────────────────────────────────────────────
         'asset_import': '10/hour',               # CSV import (bulk DB writes)
-        'asset_export': '30/hour',               # XLSX export (full-table reads)
+        # XLSX export (full-table reads)
+        'asset_export': '30/hour',
         'catalog_import': '10/hour',             # JSON catalog import
-        'catalog_export': '30/hour',             # Catalog export (image encoding)
+        # Catalog export (image encoding)
+        'catalog_export': '30/hour',
     },
 }
 
