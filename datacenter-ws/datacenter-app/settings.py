@@ -266,7 +266,10 @@ REST_FRAMEWORK = {
 # annotation/correction workflows. Keep rate limiting enabled in production.
 if DEBUG:
     REST_FRAMEWORK['DEFAULT_THROTTLE_CLASSES'] = []
-    REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'] = {}
+    REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'] = {
+        scope: ('100000/hour' if rate != '0/hour' else rate)
+        for scope, rate in REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'].items()
+    }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
