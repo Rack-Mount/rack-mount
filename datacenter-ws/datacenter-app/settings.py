@@ -394,6 +394,11 @@ CELERY_TASK_IGNORE_RESULT = True
 # Prevent tasks accumulating if the worker is down for a long time
 CELERY_TASK_SOFT_TIME_LIMIT = 3600   # 1 hour soft limit (signals SIGTERM)
 CELERY_TASK_TIME_LIMIT = 3900        # 1 h 5 min hard limit (signals SIGKILL)
+# On macOS, Metal/MPS requires 'spawn' so that each worker process starts
+# fresh and can open its own MTLCompilerService XPC connection.
+# 'spawn' is already set in celery.py; this key enforces it for all pool types.
+CELERY_WORKER_POOL = 'prefork'
+CELERY_WORKER_POOL_RESTARTS = True
 
 # AUTH_USER_MODEL = "accounts.CustomUser"
 

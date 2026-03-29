@@ -52,6 +52,7 @@ def _save_state(state: dict) -> None:
 
 
 def _best_device() -> str:
+    """Return the best available training device (cuda > mps > cpu)."""
     try:
         import torch
         if torch.cuda.is_available():
