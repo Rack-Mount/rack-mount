@@ -16,11 +16,11 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialogComponent {
-  readonly title = input('Conferma');
+  readonly title = input('Confirm');
   readonly message = input('');
-  readonly confirmLabel = input('Conferma');
+  readonly confirmLabel = input('Confirm');
   readonly confirmDanger = input(false);
-  readonly cancelLabel = input('Annulla');
+  readonly cancelLabel = input('Cancel');
 
   readonly confirm = output<boolean>();
   readonly cancel = output<boolean>();

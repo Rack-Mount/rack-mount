@@ -388,7 +388,7 @@ export class PortsMapComponent {
             pos_y: orig.pos_y,
           },
         );
-        // Segnala la correzione al backend se il tipo è cambiato
+        // Report the correction to the backend when the type changed
         if (q.predictedPortType && q.predictedPortType !== q.port_type) {
           this.portAnalyzer.reportCorrection(
             this.imageUrl(),
@@ -417,14 +417,14 @@ export class PortsMapComponent {
       pos_x: q.pos_x,
       pos_y: q.pos_y,
     });
-    // Insegna al backend per futuri rilevamenti
+    // Teach the backend for future detections
     this.portAnalyzer.learnFromAnnotation(this.imageUrl(), this.currentSide(), {
       name: q.name.trim(),
       port_type: q.port_type,
       pos_x: q.pos_x,
       pos_y: q.pos_y,
     });
-    // Se l'utente ha cambiato il tipo rispetto a quello predetto, invia la correzione
+    // If the user changed the type from the predicted one, send the correction
     if (q.predictedPortType && q.predictedPortType !== q.port_type) {
       this.portAnalyzer.reportCorrection(
         this.imageUrl(),

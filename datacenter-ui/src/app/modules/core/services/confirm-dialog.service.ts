@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 export interface ConfirmOptions {
   title?: string;
@@ -22,6 +23,8 @@ export class ConfirmDialogService {
   private readonly queue: ConfirmDialogState[] = [];
   private readonly _activeDialog = signal<ConfirmDialogState | null>(null);
 
+  constructor(private readonly translate: TranslateService) {}
+
   readonly activeDialog = this._activeDialog.asReadonly();
 
   /**
@@ -32,10 +35,10 @@ export class ConfirmDialogService {
     return new Promise<boolean>((resolve) => {
       this.queue.push({
         message,
-        title: options.title ?? 'Conferma',
-        confirmLabel: options.confirmLabel ?? 'Conferma',
+        title: options.title ?? this.t('common.confirm', 'Confirm'),
+        confirmLabel: options.confirmLabel ?? this.t('common.confirm', 'Confirm'),
         confirmDanger: options.danger ?? false,
-        cancelLabel: options.cancelLabel ?? 'Annulla',
+        cancelLabel: options.cancelLabel ?? this.t('common.cancel', 'Cancel'),
         resolve,
       });
 
@@ -61,11 +64,16 @@ export class ConfirmDialogService {
    * Opens an informational dialog with a single "OK" button.
    * Resolves when the user dismisses it.
    */
-  alert(message: string, title = 'Avviso'): Promise<void> {
+  alert(message: string, title = this.t('common.notice', 'Notice')): Promise<void> {
     return this.confirm(message, {
       title,
       confirmLabel: 'OK',
       cancelLabel: '',
     }).then(() => void 0);
+  }
+
+  private t(key: string, fallback: string): string {
+    const translated = this.translate.instant(key);
+    return translated === key ? fallback : translated;
   }
 }
