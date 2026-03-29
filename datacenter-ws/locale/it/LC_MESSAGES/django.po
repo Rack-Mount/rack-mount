@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: datacenter 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-24 18:58+0000\n"
+"POT-Creation-Date: 2026-03-28 22:23+0000\n"
 "PO-Revision-Date: 2026-03-01 07:47+0000\n"
 "Language-Team: \n"
 "Language: it\n"
@@ -14,514 +14,839 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: accounts/admin.py:14 accounts/admin.py:15
 msgid "Profile"
 msgstr "Profilo"
 
+#: accounts/admin.py:68 accounts/admin.py:126 asset/models/Asset.py:99
 msgid "Assets"
 msgstr "Asset"
 
+#: accounts/admin.py:75 accounts/admin.py:138
 msgid "Catalog"
 msgstr "Catalogo"
 
+#: accounts/admin.py:82 accounts/admin.py:148
 msgid "Infrastructure"
 msgstr "Infrastruttura"
 
+#: accounts/admin.py:89 accounts/admin.py:158 location/models/Room.py:41
+msgid "Warehouse"
+msgstr "Magazzino"
+
+#: accounts/admin.py:95
+msgid "Asset Requests"
+msgstr "Richieste asset"
+
+#: accounts/admin.py:101
 msgid "Model Training (YOLO)"
-msgstr ""
+msgstr "Addestramento modello (YOLO)"
 
+#: accounts/admin.py:107
 msgid "Permissions for YOLO port detection model training and feedback"
-msgstr ""
+msgstr "Permessi per l'addestramento del modello YOLO per il rilevamento porte e feedback"
 
+#: accounts/admin.py:109
 msgid "Administration"
 msgstr "Amministrazione"
 
+#: accounts/admin.py:116 accounts/models.py:103 accounts/models.py:132
 msgid "Role"
 msgstr "Ruolo"
 
+#: accounts/admin.py:165
+msgid "Requests"
+msgstr "Richieste"
+
+#: accounts/admin.py:173
 msgid "Users"
 msgstr "Utenti"
 
+#: accounts/admin.py:230 accounts/models.py:197
 msgid "Action"
 msgstr "Azione"
 
+#: accounts/models.py:13
 msgid "Admin"
 msgstr "Amministratore"
 
+#: accounts/models.py:14
 msgid "Editor"
 msgstr "Editor"
 
+#: accounts/models.py:15
 msgid "Viewer"
 msgstr "Visualizzatore"
 
+#: accounts/models.py:21
 msgid "Name"
 msgstr "Nome"
 
+#: accounts/models.py:26
 msgid "Can view assets"
 msgstr "Può visualizzare gli asset"
 
+#: accounts/models.py:28
 msgid "Can create assets"
 msgstr "Può creare asset"
 
+#: accounts/models.py:30
 msgid "Can edit assets"
 msgstr "Può modificare gli asset"
 
+#: accounts/models.py:32
 msgid "Can delete assets"
 msgstr "Può eliminare gli asset"
 
+#: accounts/models.py:34
 msgid "Can import assets"
 msgstr "Può importare asset"
 
+#: accounts/models.py:36
 msgid "Can export assets"
 msgstr "Può esportare asset"
 
+#: accounts/models.py:38
 msgid "Can clone assets"
 msgstr "Può clonare asset"
 
+#: accounts/models.py:42
 msgid "Can view catalog"
 msgstr "Può visualizzare il catalogo"
 
+#: accounts/models.py:44
 msgid "Can create catalog entries"
 msgstr "Può creare voci nel catalogo"
 
+#: accounts/models.py:46
 msgid "Can edit catalog entries"
 msgstr "Può modificare voci nel catalogo"
 
+#: accounts/models.py:48
 msgid "Can delete catalog entries"
 msgstr "Può eliminare voci dal catalogo"
 
+#: accounts/models.py:50
 msgid "Can import catalog"
 msgstr "Può importare il catalogo"
 
+#: accounts/models.py:54
 msgid "Can view infrastructure (racks, rooms, map)"
 msgstr "Può visualizzare l'infrastruttura (rack, stanze, mappa)"
 
+#: accounts/models.py:56
 msgid "Can create racks"
 msgstr "Può creare rack"
 
+#: accounts/models.py:58
 msgid "Can edit racks and rack units"
 msgstr "Può modificare rack e unità rack"
 
+#: accounts/models.py:60
 msgid "Can delete racks"
 msgstr "Può eliminare rack"
 
+#: accounts/models.py:62
 msgid "Can edit floor plans"
 msgstr "Può modificare le planimetrie"
 
+#: accounts/models.py:66
+msgid "Can view warehouse"
+msgstr "Può visualizzare il magazzino"
+
+#: accounts/models.py:68
+msgid "Can manage warehouse (stock movements, inventory)"
+msgstr "Può gestire il magazzino (movimenti stock, inventario)"
+
+#: accounts/models.py:72
+msgid "Can view asset requests"
+msgstr "Può visualizzare le richieste asset"
+
+#: accounts/models.py:74
+msgid "Can create asset requests"
+msgstr "Può creare richieste asset"
+
+#: accounts/models.py:76
+msgid "Can plan, execute, reject or clarify asset requests"
+msgstr "Può pianificare, evadere, rifiutare o chiedere chiarimenti sulle richieste asset"
+
+#: accounts/models.py:80
 msgid "Can manage users"
 msgstr "Può gestire gli utenti"
 
+#: accounts/models.py:85
 msgid "Can provide port training data (annotations)"
-msgstr ""
+msgstr "Può fornire dati di addestramento porte (annotazioni)"
 
+#: accounts/models.py:87
 msgid "Allows users to submit labeled port images for YOLO model training"
-msgstr ""
+msgstr "Consente agli utenti di inviare immagini porte con etichette per l'addestramento YOLO"
 
+#: accounts/models.py:91
 msgid "Can provide port corrections"
-msgstr ""
+msgstr "Può fornire correzioni alle previsioni porte"
 
-msgid ""
-"Allows users to suggest corrections for misclassified ports (triggering "
-"retraining)"
-msgstr ""
+#: accounts/models.py:93
+msgid "Allows users to suggest corrections for misclassified ports (triggering retraining)"
+msgstr "Consente agli utenti di suggerire correzioni per porte classificate erroneamente (avvia riaddestramento)"
 
+#: accounts/models.py:97
 msgid "Can view model training status"
-msgstr ""
+msgstr "Può visualizzare lo stato di addestramento del modello"
 
+#: accounts/models.py:99
 msgid "Allows users to monitor YOLO training progress and validation metrics"
-msgstr ""
+msgstr "Consente agli utenti di monitorare l'avanzamento dell'addestramento YOLO e le metriche di validazione"
 
+#: accounts/models.py:104
 msgid "Roles"
 msgstr "Ruoli"
 
+#: accounts/models.py:118
 msgid "Auto"
-msgstr ""
+msgstr "Automatico"
 
+#: accounts/models.py:119
 msgid "Metric"
-msgstr ""
+msgstr "Metrico"
 
+#: accounts/models.py:120
 msgid "Imperial"
-msgstr ""
+msgstr "Imperiale"
 
+#: accounts/models.py:126 accounts/models.py:192
 msgid "User"
 msgstr "Utente"
 
+#: accounts/models.py:138
 msgid "Measurement System"
-msgstr ""
+msgstr "Sistema di misura"
 
+#: accounts/models.py:142
 msgid "User Profile"
 msgstr "Profilo utente"
 
+#: accounts/models.py:143
 msgid "User Profiles"
 msgstr "Profili utente"
 
-msgid "Port annotation submitted"
-msgstr ""
+#: accounts/models.py:157
+msgid "Login successful"
+msgstr "Accesso effettuato con successo"
 
-msgid "Port correction submitted"
-msgstr ""
-
-msgid "Model retraining triggered"
-msgstr ""
-
-msgid "Model weights updated"
-msgstr ""
-
-msgid "User logged out"
-msgstr ""
-
+#: accounts/models.py:158
 msgid "Failed login attempt"
-msgstr ""
+msgstr "Tentativo di accesso non riuscito"
 
+#: accounts/models.py:159
+msgid "User logged out"
+msgstr "Utente disconnesso"
+
+#: accounts/models.py:161
+msgid "Asset created"
+msgstr "Asset creato"
+
+#: accounts/models.py:162
+msgid "Asset updated"
+msgstr "Asset aggiornato"
+
+#: accounts/models.py:163
+msgid "Asset deleted"
+msgstr "Asset eliminato"
+
+#: accounts/models.py:164
+msgid "Asset cloned"
+msgstr "Asset clonato"
+
+#: accounts/models.py:165
+msgid "Asset bulk state update"
+msgstr "Aggiornamento stato bulk asset"
+
+#: accounts/models.py:166
+msgid "Asset bulk delete"
+msgstr "Eliminazione bulk asset"
+
+#: accounts/models.py:167
+msgid "Asset request created"
+msgstr "Richiesta asset creata"
+
+#: accounts/models.py:168
+msgid "Asset request planned"
+msgstr "Richiesta asset pianificata"
+
+#: accounts/models.py:169
+msgid "Asset request executed"
+msgstr "Richiesta asset evasa"
+
+#: accounts/models.py:170
+msgid "Asset request rejected"
+msgstr "Richiesta asset rifiutata"
+
+#: accounts/models.py:171
+msgid "Asset request sent for clarification"
+msgstr "Richiesta asset inviata per chiarimento"
+
+#: accounts/models.py:172
+msgid "Asset request resubmitted"
+msgstr "Richiesta asset reinserita"
+
+#: accounts/models.py:174
+msgid "Catalog item created"
+msgstr "Elemento catalogo creato"
+
+#: accounts/models.py:175
+msgid "Catalog item updated"
+msgstr "Elemento catalogo aggiornato"
+
+#: accounts/models.py:176
+msgid "Catalog item deleted"
+msgstr "Elemento catalogo eliminato"
+
+#: accounts/models.py:178
+msgid "Infrastructure item created"
+msgstr "Elemento infrastruttura creato"
+
+#: accounts/models.py:179
+msgid "Infrastructure item updated"
+msgstr "Elemento infrastruttura aggiornato"
+
+#: accounts/models.py:180
+msgid "Infrastructure item deleted"
+msgstr "Elemento infrastruttura eliminato"
+
+#: accounts/models.py:182
+msgid "Port annotation submitted"
+msgstr "Annotazione porta inviata"
+
+#: accounts/models.py:183
+msgid "Port correction submitted"
+msgstr "Correzione porta inviata"
+
+#: accounts/models.py:184
+msgid "Model retraining triggered"
+msgstr "Riaddestramento modello avviato"
+
+#: accounts/models.py:185
+msgid "Model weights updated"
+msgstr "Pesi modello aggiornati"
+
+#: accounts/models.py:203
 msgid "Resource Type (e.g. port, model)"
-msgstr ""
+msgstr "Tipo risorsa (es. porta, modello)"
 
+#: accounts/models.py:208
 msgid "Resource ID (e.g. image filename)"
-msgstr ""
+msgstr "ID risorsa (es. nome file immagine)"
 
+#: accounts/models.py:213
 msgid "Change data (JSON)"
-msgstr ""
+msgstr "Dati modifica (JSON)"
 
+#: accounts/models.py:214
 msgid "For corrections: {old_label, new_label, position}"
-msgstr ""
+msgstr "Per le correzioni: {old_label, new_label, position}"
 
+#: accounts/models.py:219
 msgid "Client IP"
-msgstr ""
+msgstr "IP client"
 
+#: accounts/models.py:223
 msgid "Timestamp"
-msgstr ""
+msgstr "Data e ora"
 
+#: accounts/models.py:228
 msgid "Security Audit Log"
-msgstr ""
+msgstr "Log di controllo sicurezza"
 
+#: accounts/models.py:229
 msgid "Security Audit Logs"
-msgstr ""
+msgstr "Log di controllo sicurezza"
 
+#: accounts/serializers.py:124
 msgid "A user with this username already exists."
 msgstr "Esiste già un utente con questo nome utente."
 
+#: accounts/views.py:64
 msgid "You cannot delete your own account."
 msgstr "Non puoi eliminare il tuo account."
 
+#: accounts/views.py:100
 msgid "Incorrect password."
 msgstr "Password errata."
 
+#: accounts/views.py:103
 msgid "Password changed successfully."
 msgstr "Password modificata con successo."
 
-msgid "Refresh token not found in cookies."
-msgstr "Refresh token non trovato nei cookie."
-
-msgid "Refresh token does not belong to the authenticated user."
-msgstr "Il refresh token non appartiene all'utente autenticato."
-
+#: accounts/views.py:147 accounts/views.py:382
 msgid "Logout successful. Token blacklisted."
 msgstr "Logout effettuato. Token invalidato."
 
+#: accounts/views.py:153 accounts/views.py:287
+msgid "Refresh token required."
+msgstr "Refresh token obbligatorio."
+
+#: accounts/views.py:167 accounts/views.py:378
+msgid "Refresh token does not belong to the authenticated user."
+msgstr "Il refresh token non appartiene all'utente autenticato."
+
+#: accounts/views.py:176
 msgid "Unable to logout with the provided refresh token."
 msgstr "Impossibile effettuare il logout con il refresh token fornito."
 
+#: accounts/views.py:207
 msgid "Username and password required."
 msgstr "Nome utente e password sono obbligatori."
 
+#: accounts/views.py:217
 msgid "Invalid credentials."
 msgstr "Credenziali non valide."
 
+#: accounts/views.py:244
 msgid "Login successful."
 msgstr "Accesso effettuato con successo."
 
+#: accounts/views.py:296
 msgid "Invalid or expired refresh token."
 msgstr "Refresh token non valido o scaduto."
 
+#: accounts/views.py:321
 msgid "Token refreshed."
 msgstr "Token aggiornato."
 
+#: accounts/views.py:360
 msgid "Logout successful."
 msgstr "Logout effettuato."
 
+#: accounts/views.py:387
 msgid "Unable to blacklist refresh token."
 msgstr "Impossibile invalidare il refresh token."
 
+#: asset/admin/AssetRequestAdmin.py:59
+msgid "Plan selected requests"
+msgstr "Pianifica le richieste selezionate"
+
+#: asset/admin/AssetRequestAdmin.py:66
+#, python-format
+msgid "%d requests planned."
+msgstr "%d richieste pianificate."
+
+#: asset/admin/AssetRequestAdmin.py:68
+msgid "Execute selected requests"
+msgstr "Evadi le richieste selezionate"
+
+#: asset/admin/AssetRequestAdmin.py:97
+#, python-format
+msgid "Error on request #%(pk)d: %(error)s"
+msgstr "Errore sulla richiesta #%(pk)d: %(error)s"
+
+#: asset/admin/AssetRequestAdmin.py:101
+#, python-format
+msgid "%d requests executed."
+msgstr "%d richieste evase."
+
+#: asset/admin/AssetRequestAdmin.py:103
+msgid "Reject selected requests"
+msgstr "Rifiuta le richieste selezionate"
+
+#: asset/admin/AssetRequestAdmin.py:115
+#, python-format
+msgid "%d requests rejected."
+msgstr "%d richieste rifiutate."
+
+#: asset/admin/AssetRequestAdmin.py:132
+msgid "Request"
+msgstr "Richiesta"
+
+#: asset/admin/AssetRequestAdmin.py:138
+msgid "Planned transition"
+msgstr "Transizione pianificata"
+
+#: asset/admin/AssetRequestAdmin.py:144
+msgid "Planning"
+msgstr "Pianificazione"
+
+#: asset/admin/AssetRequestAdmin.py:149 asset/models/AssetRequest.py:108
+msgid "Note"
+msgstr "Note"
+
+#: asset/admin/AssetRequestAdmin.py:156
+msgid "Users and dates"
+msgstr "Utenti e date"
+
+#: asset/admin/AssetRequestAdmin.py:187
+msgid "Status"
+msgstr "Stato"
+
+#: asset/admin/AssetRequestAdmin.py:197
+msgid "Status (badge)"
+msgstr "Stato (badge)"
+
+#: asset/admin/AssetRequestAdmin.py:201 asset/models/Asset.py:98
+#: asset/models/AssetRequest.py:56
 msgid "Asset"
 msgstr "Asset"
 
-msgid "A rack unit cannot have both a device and a generic component."
-msgstr ""
-"Un'unità rack non può avere sia un dispositivo che un componente generico."
+# -- AssetRequest (lifecycle) --
+#: asset/models/AssetRequest.py:7
+msgid "Registration"
+msgstr "Registrazione"
 
+#: asset/models/AssetRequest.py:8
+msgid "Relocation"
+msgstr "Spostamento"
+
+#: asset/models/AssetRequest.py:9
+msgid "Maintenance"
+msgstr "Manutenzione"
+
+#: asset/models/AssetRequest.py:10
+msgid "Decommissioning"
+msgstr "Dismissione"
+
+#: asset/models/AssetRequest.py:14
+msgid "Submitted"
+msgstr "Inserita"
+
+#: asset/models/AssetRequest.py:15
+msgid "Planned"
+msgstr "Pianificata"
+
+#: asset/models/AssetRequest.py:16
+msgid "Executed"
+msgstr "Evasa"
+
+#: asset/models/AssetRequest.py:17
+msgid "Rejected"
+msgstr "Rifiutata"
+
+#: asset/models/AssetRequest.py:18
+msgid "Needs Clarification"
+msgstr "In Chiarimento"
+
+#: asset/models/AssetRequest.py:61
+msgid "Request type"
+msgstr "Tipo richiesta"
+
+#: asset/models/AssetRequest.py:67
+msgid "Request status"
+msgstr "Stato richiesta"
+
+#: asset/models/AssetRequest.py:78
+msgid "Source asset state"
+msgstr "Stato asset di partenza"
+
+#: asset/models/AssetRequest.py:84
+msgid "Target asset state"
+msgstr "Stato asset di destinazione"
+
+#: asset/models/AssetRequest.py:94
+msgid "Source location"
+msgstr "Location di partenza"
+
+#: asset/models/AssetRequest.py:102
+msgid "Target location"
+msgstr "Location di destinazione"
+
+#: asset/models/AssetRequest.py:109
+msgid "Request rationale or details"
+msgstr "Motivazione o dettagli della richiesta"
+
+#: asset/models/AssetRequest.py:113
+msgid "Clarification notes"
+msgstr "Note di chiarimento"
+
+#: asset/models/AssetRequest.py:114
+msgid "Clarification request sent to the requester"
+msgstr "Richiesta di chiarimento inviata al richiedente"
+
+#: asset/models/AssetRequest.py:118
+msgid "Rejection reason"
+msgstr "Motivo rifiuto"
+
+#: asset/models/AssetRequest.py:125
+msgid "Planned date"
+msgstr "Data pianificata"
+
+#: asset/models/AssetRequest.py:133
+msgid "Created by"
+msgstr "Creata da"
+
+#: asset/models/AssetRequest.py:141
+msgid "Assigned to"
+msgstr "Assegnata a"
+
+#: asset/models/AssetRequest.py:149
+msgid "Executed by"
+msgstr "Evasa da"
+
+#: asset/models/AssetRequest.py:158
+msgid "Asset request"
+msgstr "Richiesta asset"
+
+#: asset/models/AssetRequest.py:159
+msgid "Asset requests"
+msgstr "Richieste asset"
+
+#: asset/models/AssetState.py:6
+msgid "In Stock"
+msgstr "In Magazzino"
+
+#: asset/models/AssetState.py:7
+msgid "In Preparation"
+msgstr "In Preparazione"
+
+#: asset/models/AssetState.py:8
+msgid "In Maintenance"
+msgstr "In Manutenzione"
+
+#: asset/models/AssetState.py:9
+msgid "In Production"
+msgstr "In Produzione"
+
+#: asset/models/AssetState.py:10
+msgid "Decommissioned"
+msgstr "Dismesso"
+
+#: asset/serializers/AssetRequestSerializer.py:77
+#, python-format
+msgid "Transition not allowed: %(from_state)s → %(to_state)s. Allowed: %(allowed)s"
+msgstr "Transizione non ammessa: %(from_state)s → %(to_state)s. Permesse: %(allowed)s"
+
+#: asset/serializers/RackUnitSerializer.py:233
+msgid "A rack unit cannot have both a device and a generic component."
+msgstr "Un'unità rack non può avere sia un dispositivo che un componente generico."
+
+#: asset/serializers/RackUnitSerializer.py:238
 msgid "Position must be greater than or equal to 1."
 msgstr "La posizione deve essere maggiore o uguale a 1."
 
+#: asset/serializers/RackUnitSerializer.py:245
 #, python-brace-format
 msgid "Position {} exceeds rack capacity ({})."
 msgstr "La posizione {} supera la capacità del rack ({})."
 
+#: asset/serializers/RackUnitSerializer.py:255
 #, python-brace-format
 msgid "The device is too deep for this rack (Device: {}mm > Rack: {}mm)."
-msgstr ""
-"Il dispositivo è troppo profondo per questo rack (Dispositivo: {}mm > Rack: "
-"{}mm)."
+msgstr "Il dispositivo è troppo profondo per questo rack (Dispositivo: {}mm > Rack: {}mm)."
 
+#: asset/views/AssetRequestViewSet.py:112 asset/views/AssetViewSet.py:265
+msgid "Transition not allowed"
+msgstr "Transizione non ammessa"
+
+#: asset/views/AssetRequestViewSet.py:133
+#: asset/views/AssetRequestViewSet.py:173
+#: asset/views/AssetRequestViewSet.py:222
+#: asset/views/AssetRequestViewSet.py:250
+#: asset/views/AssetRequestViewSet.py:278
+msgid "Request not found"
+msgstr "Richiesta non trovata"
+
+#: asset/views/AssetRequestViewSet.py:151
+msgid "User not found"
+msgstr "Utente non trovato"
+
+#: asset/views/AssetRequestViewSet.py:282
+msgid "Only the original requester can resubmit the request"
+msgstr "Solo il richiedente originale può reinserire la richiesta"
+
+#: asset/views/AssetViewSet.py:28
+msgid "Assets not installed in rack"
+msgstr "Apparati non installati in rack"
+
+#: asset/views/AssetViewSet.py:109
+msgid "state_id is required"
+msgstr "state_id è obbligatorio"
+
+#: asset/views/AssetViewSet.py:116 asset/views/AssetViewSet.py:123
+msgid "Invalid state_id"
+msgstr "state_id non valido"
+
+#: asset/views/AssetViewSet.py:130
+msgid "Cannot set in_produzione via bulk update. Use the move endpoint to assign rack placement."
+msgstr "Non è possibile impostare in_produzione tramite aggiornamento bulk. Usare l'endpoint di spostamento per assegnare la posizione nel rack."
+
+#: asset/views/AssetViewSet.py:211
+msgid "ids must be a non-empty list"
+msgstr "ids deve essere una lista non vuota"
+
+#: asset/views/AssetViewSet.py:247
+msgid "to_state is required"
+msgstr "to_state è obbligatorio"
+
+#: asset/views/AssetViewSet.py:254
+msgid "Invalid to_state"
+msgstr "to_state non valido"
+
+#: asset/views/AssetViewSet.py:288
+msgid "Invalid to_room"
+msgstr "to_room non valido"
+
+#: asset/views/AssetViewSet.py:344 catalog/views/AssetModelViewSet.py:58
+msgid "ids must be a list"
+msgstr "ids deve essere una lista"
+
+#: asset/views/RackUnitViewSet.py:48
+msgid "Warehouse stock exhausted for this item."
+msgstr "Scorte esaurite per questo articolo di magazzino."
+
+#: asset/views/RackUnitViewSet.py:69
+msgid "No component installed in this rack unit."
+msgstr "Nessun componente installato in questa posizione."
+
+#: asset/views/RackUnitViewSet.py:75
+msgid "This component has no linked warehouse item."
+msgstr "Il componente non ha un articolo di magazzino collegato."
+
+#: asset/views/RackUnitViewSet.py:86
+msgid "Component removed and returned to stock."
+msgstr "Componente rimosso e ritornato al magazzino."
+
+#: catalog/views/AssetModelImportView.py:34
 msgid "Not a valid Data URL."
 msgstr "URL dati non valido."
 
+#: catalog/views/AssetModelImportView.py:38
 msgid "Malformed Data URL."
 msgstr "URL dati malformato."
 
+#: catalog/views/AssetModelImportView.py:44
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "Tipo di immagine non supportato: %s"
 
+#: catalog/views/AssetModelImportView.py:49
 msgid "Invalid base64 data."
 msgstr "Dati base64 non validi."
 
+#: catalog/views/AssetModelImportView.py:53
 #, python-format
 msgid "Image exceeds maximum allowed size of %d MB."
 msgstr "L'immagine supera la dimensione massima consentita di %d MB."
 
+#: catalog/views/AssetModelImportView.py:63
 #, python-format
 msgid "Uploaded file for %s is not a valid image."
 msgstr "Il file caricato per %s non è un'immagine valida."
 
+#: catalog/views/AssetModelImportView.py:104
+#: catalog/views/AssetModelImportView.py:106
+#: catalog/views/AssetModelImportView.py:108
 msgid "This field is required."
 msgstr "Questo campo è obbligatorio."
 
+#: catalog/views/AssetModelImportView.py:118
 #, python-format
 msgid "A model named \"%(name)s\" already exists for %(vendor)s (%(type)s)."
 msgstr "Esiste già un modello chiamato \"%(name)s\" per %(vendor)s (%(type)s)."
 
+#: catalog/views/AssetModelImportView.py:148
 msgid "Invalid front image data."
 msgstr "Dati immagine frontale non validi."
 
+#: catalog/views/AssetModelImportView.py:157
 msgid "Invalid rear image data."
 msgstr "Dati immagine posteriore non validi."
 
+#: catalog/views/AssetModelViewSet.py:45
 #, python-format
 msgid "Cannot delete: this model is used by %(count)d asset(s)."
 msgstr "Impossibile eliminare: questo modello è utilizzato da %(count)d asset."
 
-msgid "ids must be a list"
-msgstr "ids deve essere una lista"
-
-msgid "state_id is required"
-msgstr "state_id è obbligatorio"
-
-msgid "Invalid state_id"
-msgstr "state_id non valido"
-
-msgid "ids must be a non-empty list"
-msgstr "ids deve essere una lista non vuota"
-
-msgid "to_state is required"
-msgstr "to_state è obbligatorio"
-
-msgid "Invalid to_state"
-msgstr "to_state non valido"
-
-msgid "Invalid to_room"
-msgstr "to_room non valido"
-
+#: catalog/views/CatalogImportView.py:62
 msgid "Expected a JSON object."
 msgstr "È atteso un oggetto JSON."
 
+#: catalog/views/CatalogImportView.py:99
 msgid "name, vendor and type are required."
 msgstr "Nome, vendor e tipo sono obbligatori."
 
+#: catalog/views/CatalogImportView.py:151
 msgid "name is required."
 msgstr "Il nome è obbligatorio."
 
-msgid "Warehouse stock exhausted for this item."
-msgstr "Scorte esaurite per questo articolo di magazzino."
-
-msgid "No component installed in this rack unit."
-msgstr "Nessun componente installato in questa posizione."
-
-msgid "This component has no linked warehouse item."
-msgstr "Il componente non ha un articolo di magazzino collegato."
-
-msgid "Component removed and returned to stock."
-msgstr "Componente rimosso e ritornato al magazzino."
-
+#: datacenter-app/settings.py:192
 msgid "English"
 msgstr "Inglese"
 
+#: datacenter-app/settings.py:193
 msgid "Italian"
 msgstr "Italiano"
 
+#: datacenter-app/settings.py:194
 msgid "German"
 msgstr "Tedesco"
 
+#: datacenter-app/settings.py:195
 msgid "French"
 msgstr "Francese"
 
+#: datacenter-app/settings.py:196
 msgid "Chinese (Simplified)"
 msgstr "Cinese (semplificato)"
 
+#: location/models/Location.py:39
 msgid "Location"
 msgstr "Sede"
 
+#: location/models/Location.py:40
 msgid "Locations"
 msgstr "Sedi"
 
+#: location/models/Rack.py:44
 msgid "Rack"
 msgstr "Rack"
 
+#: location/models/Rack.py:45
 msgid "Racks"
 msgstr "Rack"
 
+#: location/models/RackType.py:29
 msgid "Height in cm"
 msgstr "Altezza in cm"
 
+#: location/models/RackType.py:40
 msgid "Rack Type"
 msgstr "Tipo Rack"
 
+#: location/models/RackType.py:41
 msgid "Rack Types"
 msgstr "Tipi Rack"
 
+#: location/models/Room.py:40
 msgid "Datacenter"
 msgstr "Datacenter"
 
-msgid "Warehouse"
-msgstr "Magazzino"
-
+#: location/models/Room.py:42
 msgid "Laboratory"
 msgstr "Laboratorio"
 
+#: location/models/Room.py:43
 msgid "Technical Office"
 msgstr "Ufficio Tecnico"
 
+#: location/models/Room.py:49
 msgid "Room type"
 msgstr "Tipo di stanza"
 
-msgid ""
-"Interactive floor plan elements (walls, racks, doors) from the Angular "
-"editor."
-msgstr ""
-"Elementi del piano interattivo (pareti, rack, porte) dall'editor Angular."
+#: location/models/Room.py:74
+msgid "Interactive floor plan elements (walls, racks, doors) from the Angular editor."
+msgstr "Elementi del piano interattivo (pareti, rack, porte) dall'editor Angular."
 
+#: location/models/Room.py:84
 msgid "Room"
 msgstr "Stanza"
 
+#: location/models/Room.py:85
 msgid "Rooms"
 msgstr "Stanze"
 
+#: location/views/RackViewSet.py:49
 msgid "Rack has associated units — remove them before deleting."
 msgstr "Il rack ha unità associate — rimuoverle prima di eliminarlo."
 
-# -- AssetRequest (ciclo di vita) --
-
-msgid "Registrazione"
-msgstr "Registrazione"
-
-msgid "Spostamento"
-msgstr "Spostamento"
-
-msgid "Manutenzione"
-msgstr "Manutenzione"
-
-msgid "Dismissione"
-msgstr "Dismissione"
-
-msgid "Inserita"
-msgstr "Inserita"
-
-msgid "Pianificata"
-msgstr "Pianificata"
-
-msgid "Evasa"
-msgstr "Evasa"
-
-msgid "Rifiutata"
-msgstr "Rifiutata"
-
-msgid "In Chiarimento"
-msgstr "In Chiarimento"
-
-msgid "Tipo richiesta"
-msgstr "Tipo richiesta"
-
-msgid "Stato richiesta"
-msgstr "Stato richiesta"
-
-msgid "Stato asset di partenza"
-msgstr "Stato asset di partenza"
-
-msgid "Stato asset di destinazione"
-msgstr "Stato asset di destinazione"
-
-msgid "Location di partenza"
-msgstr "Location di partenza"
-
-msgid "Location di destinazione"
-msgstr "Location di destinazione"
-
-msgid "Motivazione o dettagli della richiesta"
-msgstr "Motivazione o dettagli della richiesta"
-
-msgid "Note di chiarimento"
-msgstr "Note di chiarimento"
-
-msgid "Richiesta di chiarimento inviata al richiedente"
-msgstr "Richiesta di chiarimento inviata al richiedente"
-
-msgid "Motivo rifiuto"
-msgstr "Motivo rifiuto"
-
-msgid "Data pianificata"
-msgstr "Data pianificata"
-
-msgid "Creata da"
-msgstr "Creata da"
-
-msgid "Assegnata a"
-msgstr "Assegnata a"
-
-msgid "Evasa da"
-msgstr "Evasa da"
-
-msgid "Richiesta asset"
-msgstr "Richiesta asset"
-
-msgid "Richieste asset"
-msgstr "Richieste asset"
-
-msgid "Transizione non ammessa"
-msgstr "Transizione non ammessa"
-
-msgid "Richiesta non trovata"
-msgstr "Richiesta non trovata"
-
-msgid "Utente non trovato"
-msgstr "Utente non trovato"
-
-msgid "Solo il richiedente originale può reinserire la richiesta"
-msgstr "Solo il richiedente originale può reinserire la richiesta"
-
-msgid "Can view asset requests"
-msgstr "Può visualizzare le richieste asset"
-
-msgid "Can create asset requests"
-msgstr "Può creare richieste asset"
-
-msgid "Can plan, execute, reject or clarify asset requests"
-msgstr "Può pianificare, evadere, rifiutare o chiedere chiarimenti sulle richieste asset"
-
-msgid "Asset request created"
-msgstr "Richiesta asset creata"
-
-msgid "Asset request planned"
-msgstr "Richiesta asset pianificata"
-
-msgid "Asset request executed"
-msgstr "Richiesta asset evasa"
-
-msgid "Asset request rejected"
-msgstr "Richiesta asset rifiutata"
-
-msgid "Asset request sent for clarification"
-msgstr "Richiesta asset inviata per chiarimento"
-
-msgid "Asset request resubmitted"
-msgstr "Richiesta asset reinserita"
-
-msgid "Note"
-msgstr "Note"
+#, fuzzy
+#~| msgid "Clarification notes"
+#~ msgid "Pianificazione"
+#~ msgstr "Note di chiarimento"

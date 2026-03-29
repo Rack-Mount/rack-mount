@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: datacenter 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-24 18:58+0000\n"
+"POT-Creation-Date: 2026-03-29 03:42+0000\n"
 "PO-Revision-Date: 2026-03-01 07:47+0000\n"
 "Language-Team: \n"
 "Language: zh-Hans\n"
@@ -14,510 +14,964 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: accounts/admin.py:14 accounts/admin.py:15
 msgid "Profile"
 msgstr "个人资料"
 
+#: accounts/admin.py:68 accounts/admin.py:126 asset/models/Asset.py:99
 msgid "Assets"
 msgstr "资产"
 
+#: accounts/admin.py:75 accounts/admin.py:138
 msgid "Catalog"
 msgstr "目录"
 
+#: accounts/admin.py:82 accounts/admin.py:148
 msgid "Infrastructure"
 msgstr "基础设施"
 
+#: accounts/admin.py:89 accounts/admin.py:158 location/models/Room.py:41
+msgid "Warehouse"
+msgstr "仓库"
+
+#: accounts/admin.py:95
+#, fuzzy
+#| msgid "Asset request created"
+msgid "Asset Requests"
+msgstr "已创建资产请求"
+
+#: accounts/admin.py:101
 msgid "Model Training (YOLO)"
-msgstr ""
+msgstr "模型训练（YOLO）"
 
+#: accounts/admin.py:107
 msgid "Permissions for YOLO port detection model training and feedback"
-msgstr ""
+msgstr "用于 YOLO 端口检测模型训练和反馈的权限"
 
+#: accounts/admin.py:109
 msgid "Administration"
 msgstr "管理"
 
+#: accounts/admin.py:116 accounts/models.py:103 accounts/models.py:132
 msgid "Role"
 msgstr "角色"
 
+#: accounts/admin.py:165
+msgid "Requests"
+msgstr ""
+
+#: accounts/admin.py:173
 msgid "Users"
 msgstr "用户"
 
+#: accounts/admin.py:230 accounts/models.py:197
 msgid "Action"
 msgstr "操作"
 
+#: accounts/models.py:13
 msgid "Admin"
 msgstr "管理员"
 
+#: accounts/models.py:14
 msgid "Editor"
 msgstr "编辑者"
 
+#: accounts/models.py:15
 msgid "Viewer"
 msgstr "查看者"
 
+#: accounts/models.py:21
 msgid "Name"
 msgstr "名称"
 
+#: accounts/models.py:26
 msgid "Can view assets"
 msgstr "可以查看资产"
 
+#: accounts/models.py:28
 msgid "Can create assets"
 msgstr "可以创建资产"
 
+#: accounts/models.py:30
 msgid "Can edit assets"
 msgstr "可以编辑资产"
 
+#: accounts/models.py:32
 msgid "Can delete assets"
 msgstr "可以删除资产"
 
+#: accounts/models.py:34
 msgid "Can import assets"
 msgstr "可以导入资产"
 
+#: accounts/models.py:36
 msgid "Can export assets"
 msgstr "可以导出资产"
 
+#: accounts/models.py:38
 msgid "Can clone assets"
 msgstr "可以克隆资产"
 
+#: accounts/models.py:42
 msgid "Can view catalog"
 msgstr "可以查看目录"
 
+#: accounts/models.py:44
 msgid "Can create catalog entries"
 msgstr "可以创建目录条目"
 
+#: accounts/models.py:46
 msgid "Can edit catalog entries"
 msgstr "可以编辑目录条目"
 
+#: accounts/models.py:48
 msgid "Can delete catalog entries"
 msgstr "可以删除目录条目"
 
+#: accounts/models.py:50
 msgid "Can import catalog"
 msgstr "可以导入目录"
 
+#: accounts/models.py:54
 msgid "Can view infrastructure (racks, rooms, map)"
 msgstr "可以查看基础设施（机架、房间、地图）"
 
+#: accounts/models.py:56
 msgid "Can create racks"
 msgstr "可以创建机架"
 
+#: accounts/models.py:58
 msgid "Can edit racks and rack units"
 msgstr "可以编辑机架及机架单元"
 
+#: accounts/models.py:60
 msgid "Can delete racks"
 msgstr "可以删除机架"
 
+#: accounts/models.py:62
 msgid "Can edit floor plans"
 msgstr "可以编辑平面图"
 
+#: accounts/models.py:66
+#, fuzzy
+#| msgid "Can view assets"
+msgid "Can view warehouse"
+msgstr "可以查看资产"
+
+#: accounts/models.py:68
+msgid "Can manage warehouse (stock movements, inventory)"
+msgstr ""
+
+#: accounts/models.py:72
+msgid "Can view asset requests"
+msgstr "可查看资产请求"
+
+#: accounts/models.py:74
+msgid "Can create asset requests"
+msgstr "可创建资产请求"
+
+#: accounts/models.py:76
+msgid "Can plan, execute, reject or clarify asset requests"
+msgstr "可计划、执行、拒绝或澄清资产请求"
+
+#: accounts/models.py:80
 msgid "Can manage users"
 msgstr "可以管理用户"
 
+#: accounts/models.py:85
 msgid "Can provide port training data (annotations)"
-msgstr ""
+msgstr "可以提供端口训练数据（标注）"
 
+#: accounts/models.py:87
 msgid "Allows users to submit labeled port images for YOLO model training"
-msgstr ""
+msgstr "允许用户提交带标签的端口图像用于 YOLO 模型训练"
 
+#: accounts/models.py:91
 msgid "Can provide port corrections"
-msgstr ""
+msgstr "可以提供端口纠正"
 
-msgid ""
-"Allows users to suggest corrections for misclassified ports (triggering "
-"retraining)"
-msgstr ""
+#: accounts/models.py:93
+msgid "Allows users to suggest corrections for misclassified ports (triggering retraining)"
+msgstr "允许用户为误分类的端口提出纠正建议（触发重新训练）"
 
+#: accounts/models.py:97
 msgid "Can view model training status"
-msgstr ""
+msgstr "可以查看模型训练状态"
 
+#: accounts/models.py:99
 msgid "Allows users to monitor YOLO training progress and validation metrics"
-msgstr ""
+msgstr "允许用户监控 YOLO 训练进度和验证指标"
 
+#: accounts/models.py:104
 msgid "Roles"
 msgstr "角色列表"
 
+#: accounts/models.py:118
 msgid "Auto"
-msgstr ""
+msgstr "自动"
 
+#: accounts/models.py:119
 msgid "Metric"
-msgstr ""
+msgstr "公制"
 
+#: accounts/models.py:120
 msgid "Imperial"
-msgstr ""
+msgstr "英制"
 
+#: accounts/models.py:126 accounts/models.py:192
 msgid "User"
 msgstr "用户"
 
+#: accounts/models.py:138
 msgid "Measurement System"
-msgstr ""
+msgstr "计量系统"
 
+#: accounts/models.py:142
 msgid "User Profile"
 msgstr "用户资料"
 
+#: accounts/models.py:143
 msgid "User Profiles"
 msgstr "用户资料列表"
 
-msgid "Port annotation submitted"
-msgstr ""
+#: accounts/models.py:157
+#, fuzzy
+#| msgid "Login successful."
+msgid "Login successful"
+msgstr "登录成功。"
 
-msgid "Port correction submitted"
-msgstr ""
-
-msgid "Model retraining triggered"
-msgstr ""
-
-msgid "Model weights updated"
-msgstr ""
-
-msgid "User logged out"
-msgstr ""
-
+#: accounts/models.py:158
 msgid "Failed login attempt"
+msgstr "登录尝试失败"
+
+#: accounts/models.py:159
+msgid "User logged out"
+msgstr "用户已登出"
+
+#: accounts/models.py:161
+#, fuzzy
+#| msgid "Asset request created"
+msgid "Asset created"
+msgstr "已创建资产请求"
+
+#: accounts/models.py:162
+#, fuzzy
+#| msgid "Asset request created"
+msgid "Asset updated"
+msgstr "已创建资产请求"
+
+#: accounts/models.py:163
+#, fuzzy
+#| msgid "Asset request created"
+msgid "Asset deleted"
+msgstr "已创建资产请求"
+
+#: accounts/models.py:164
+#, fuzzy
+#| msgid "Asset request planned"
+msgid "Asset cloned"
+msgstr "已计划资产请求"
+
+#: accounts/models.py:165
+msgid "Asset bulk state update"
 msgstr ""
 
+#: accounts/models.py:166
+#, fuzzy
+#| msgid "Asset request executed"
+msgid "Asset bulk delete"
+msgstr "已执行资产请求"
+
+#: accounts/models.py:167
+msgid "Asset request created"
+msgstr "已创建资产请求"
+
+#: accounts/models.py:168
+msgid "Asset request planned"
+msgstr "已计划资产请求"
+
+#: accounts/models.py:169
+msgid "Asset request executed"
+msgstr "已执行资产请求"
+
+#: accounts/models.py:170
+msgid "Asset request rejected"
+msgstr "已拒绝资产请求"
+
+#: accounts/models.py:171
+msgid "Asset request sent for clarification"
+msgstr "资产请求已发送待澄清"
+
+#: accounts/models.py:172
+msgid "Asset request resubmitted"
+msgstr "资产请求已重新提交"
+
+#: accounts/models.py:174
+msgid "Catalog item created"
+msgstr ""
+
+#: accounts/models.py:175
+msgid "Catalog item updated"
+msgstr ""
+
+#: accounts/models.py:176
+msgid "Catalog item deleted"
+msgstr ""
+
+#: accounts/models.py:178
+#, fuzzy
+#| msgid "Infrastructure"
+msgid "Infrastructure item created"
+msgstr "基础设施"
+
+#: accounts/models.py:179
+#, fuzzy
+#| msgid "Infrastructure"
+msgid "Infrastructure item updated"
+msgstr "基础设施"
+
+#: accounts/models.py:180
+#, fuzzy
+#| msgid "Infrastructure"
+msgid "Infrastructure item deleted"
+msgstr "基础设施"
+
+#: accounts/models.py:182
+msgid "Port annotation submitted"
+msgstr "已提交端口标注"
+
+#: accounts/models.py:183
+msgid "Port correction submitted"
+msgstr "已提交端口纠正"
+
+#: accounts/models.py:184
+msgid "Model retraining triggered"
+msgstr "已触发模型重新训练"
+
+#: accounts/models.py:185
+msgid "Model weights updated"
+msgstr "已更新模型权重"
+
+#: accounts/models.py:203
 msgid "Resource Type (e.g. port, model)"
-msgstr ""
+msgstr "资源类型（例如：端口、模型）"
 
+#: accounts/models.py:208
 msgid "Resource ID (e.g. image filename)"
-msgstr ""
+msgstr "资源 ID（例如：图像文件名）"
 
+#: accounts/models.py:213
 msgid "Change data (JSON)"
-msgstr ""
+msgstr "更改数据（JSON）"
 
+#: accounts/models.py:214
 msgid "For corrections: {old_label, new_label, position}"
-msgstr ""
+msgstr "对于纠正：{old_label, new_label, position}"
 
+#: accounts/models.py:219
 msgid "Client IP"
-msgstr ""
+msgstr "客户端 IP"
 
+#: accounts/models.py:223
 msgid "Timestamp"
-msgstr ""
+msgstr "时间戳"
 
+#: accounts/models.py:228
 msgid "Security Audit Log"
-msgstr ""
+msgstr "安全审计日志"
 
+#: accounts/models.py:229
 msgid "Security Audit Logs"
-msgstr ""
+msgstr "安全审计日志"
 
+#: accounts/serializers.py:124
 msgid "A user with this username already exists."
 msgstr "该用户名已存在。"
 
+#: accounts/views.py:64
 msgid "You cannot delete your own account."
 msgstr "您无法删除自己的账户。"
 
+#: accounts/views.py:100
 msgid "Incorrect password."
 msgstr "密码错误。"
 
+#: accounts/views.py:103
 msgid "Password changed successfully."
 msgstr "密码修改成功。"
 
-msgid "Refresh token not found in cookies."
-msgstr "Cookie 中未找到刷新令牌。"
-
-msgid "Refresh token does not belong to the authenticated user."
-msgstr "刷新令牌不属于当前认证用户。"
-
+#: accounts/views.py:147 accounts/views.py:382
 msgid "Logout successful. Token blacklisted."
 msgstr "已成功退出，令牌已撤销。"
 
+#: accounts/views.py:153 accounts/views.py:287
+#, fuzzy
+#| msgid "Refresh token not found in cookies."
+msgid "Refresh token required."
+msgstr "Cookie 中未找到刷新令牌。"
+
+#: accounts/views.py:167 accounts/views.py:378
+msgid "Refresh token does not belong to the authenticated user."
+msgstr "刷新令牌不属于当前认证用户。"
+
+#: accounts/views.py:176
 msgid "Unable to logout with the provided refresh token."
 msgstr "无法使用提供的刷新令牌退出。"
 
+#: accounts/views.py:207
 msgid "Username and password required."
 msgstr "用户名和密码为必填项。"
 
+#: accounts/views.py:217
 msgid "Invalid credentials."
 msgstr "凭据无效。"
 
+#: accounts/views.py:244
 msgid "Login successful."
 msgstr "登录成功。"
 
+#: accounts/views.py:296
 msgid "Invalid or expired refresh token."
 msgstr "刷新令牌无效或已过期。"
 
+#: accounts/views.py:321
 msgid "Token refreshed."
 msgstr "令牌已刷新。"
 
+#: accounts/views.py:360
 msgid "Logout successful."
 msgstr "退出成功。"
 
+#: accounts/views.py:387
 msgid "Unable to blacklist refresh token."
 msgstr "无法撤销刷新令牌。"
 
+#: asset/admin/AssetRequestAdmin.py:59
+#, fuzzy
+#| msgid "Can view asset requests"
+msgid "Plan selected requests"
+msgstr "可查看资产请求"
+
+#: asset/admin/AssetRequestAdmin.py:66
+#, fuzzy, python-format
+#| msgid "Asset request planned"
+msgid "%d requests planned."
+msgstr "已计划资产请求"
+
+#: asset/admin/AssetRequestAdmin.py:68
+#, fuzzy
+#| msgid "Can create asset requests"
+msgid "Execute selected requests"
+msgstr "可创建资产请求"
+
+#: asset/admin/AssetRequestAdmin.py:97
+#, python-format
+msgid "Error on request #%(pk)d: %(error)s"
+msgstr ""
+
+#: asset/admin/AssetRequestAdmin.py:101
+#, fuzzy, python-format
+#| msgid "Asset request executed"
+msgid "%d requests executed."
+msgstr "已执行资产请求"
+
+#: asset/admin/AssetRequestAdmin.py:103
+#, fuzzy
+#| msgid "Can create asset requests"
+msgid "Reject selected requests"
+msgstr "可创建资产请求"
+
+#: asset/admin/AssetRequestAdmin.py:115
+#, fuzzy, python-format
+#| msgid "Asset request rejected"
+msgid "%d requests rejected."
+msgstr "已拒绝资产请求"
+
+#: asset/admin/AssetRequestAdmin.py:132
+msgid "Request"
+msgstr ""
+
+#: asset/admin/AssetRequestAdmin.py:138
+msgid "Planned transition"
+msgstr ""
+
+#: asset/admin/AssetRequestAdmin.py:144
+msgid "Planning"
+msgstr ""
+
+#: asset/admin/AssetRequestAdmin.py:149 asset/models/AssetRequest.py:108
+msgid "Note"
+msgstr "备注"
+
+#: asset/admin/AssetRequestAdmin.py:156
+msgid "Users and dates"
+msgstr ""
+
+#: asset/admin/AssetRequestAdmin.py:187
+msgid "Status"
+msgstr ""
+
+#: asset/admin/AssetRequestAdmin.py:197
+msgid "Status (badge)"
+msgstr ""
+
+#: asset/admin/AssetRequestAdmin.py:201 asset/models/Asset.py:98
+#: asset/models/AssetRequest.py:56
 msgid "Asset"
 msgstr "资产"
 
+#: asset/models/AssetRequest.py:7
+msgid "Registration"
+msgstr "注册"
+
+#: asset/models/AssetRequest.py:8
+msgid "Relocation"
+msgstr "搬迁"
+
+#: asset/models/AssetRequest.py:9
+msgid "Maintenance"
+msgstr "维护"
+
+#: asset/models/AssetRequest.py:10
+msgid "Decommissioning"
+msgstr "停用"
+
+#: asset/models/AssetRequest.py:14
+msgid "Submitted"
+msgstr "已提交"
+
+#: asset/models/AssetRequest.py:15
+msgid "Planned"
+msgstr "已计划"
+
+#: asset/models/AssetRequest.py:16
+msgid "Executed"
+msgstr "已执行"
+
+#: asset/models/AssetRequest.py:17
+msgid "Rejected"
+msgstr "已拒绝"
+
+#: asset/models/AssetRequest.py:18
+msgid "Needs Clarification"
+msgstr "待澄清"
+
+
+
+#: asset/models/AssetRequest.py:61
+msgid "Request type"
+msgstr ""
+
+#: asset/models/AssetRequest.py:67
+msgid "Request status"
+msgstr ""
+
+#: asset/models/AssetRequest.py:78
+msgid "Source asset state"
+msgstr ""
+
+#: asset/models/AssetRequest.py:84
+#, fuzzy
+#| msgid "Can create assets"
+msgid "Target asset state"
+msgstr "可以创建资产"
+
+#: asset/models/AssetRequest.py:94
+#, fuzzy
+#| msgid "Location"
+msgid "Source location"
+msgstr "位置"
+
+#: asset/models/AssetRequest.py:102
+#, fuzzy
+#| msgid "Location"
+msgid "Target location"
+msgstr "位置"
+
+#: asset/models/AssetRequest.py:109
+msgid "Request rationale or details"
+msgstr ""
+
+#: asset/models/AssetRequest.py:113
+msgid "Clarification notes"
+msgstr ""
+
+#: asset/models/AssetRequest.py:114
+msgid "Clarification request sent to the requester"
+msgstr ""
+
+#: asset/models/AssetRequest.py:118
+msgid "Rejection reason"
+msgstr ""
+
+#: asset/models/AssetRequest.py:125
+msgid "Planned date"
+msgstr ""
+
+#: asset/models/AssetRequest.py:133
+#, fuzzy
+#| msgid "Creata da"
+msgid "Created by"
+msgstr "创建人"
+
+#: asset/models/AssetRequest.py:141
+msgid "Assigned to"
+msgstr ""
+
+#: asset/models/AssetRequest.py:149
+msgid "Executed by"
+msgstr ""
+
+#: asset/models/AssetRequest.py:158
+#, fuzzy
+#| msgid "Asset request created"
+msgid "Asset request"
+msgstr "已创建资产请求"
+
+#: asset/models/AssetRequest.py:159
+#, fuzzy
+#| msgid "Asset request created"
+msgid "Asset requests"
+msgstr "已创建资产请求"
+
+#: asset/models/AssetState.py:6
+msgid "In Stock"
+msgstr "库存中"
+
+#: asset/models/AssetState.py:7
+msgid "In Preparation"
+msgstr "准备中"
+
+#: asset/models/AssetState.py:8
+msgid "In Maintenance"
+msgstr "维护中"
+
+#: asset/models/AssetState.py:9
+msgid "In Production"
+msgstr "生产中"
+
+#: asset/models/AssetState.py:10
+msgid "Decommissioned"
+msgstr "已报废"
+
+#: asset/serializers/AssetRequestSerializer.py:77
+#, python-format
+msgid "Transition not allowed: %(from_state)s → %(to_state)s. Allowed: %(allowed)s"
+msgstr ""
+
+#: asset/serializers/RackUnitSerializer.py:233
 msgid "A rack unit cannot have both a device and a generic component."
 msgstr "一个机架单元不能同时包含设备和通用组件。"
 
+#: asset/serializers/RackUnitSerializer.py:238
 msgid "Position must be greater than or equal to 1."
 msgstr "位置必须大于或等于 1。"
 
+#: asset/serializers/RackUnitSerializer.py:245
 #, python-brace-format
 msgid "Position {} exceeds rack capacity ({})."
 msgstr "位置 {} 超出机架容量（{}）。"
 
+#: asset/serializers/RackUnitSerializer.py:255
 #, python-brace-format
 msgid "The device is too deep for this rack (Device: {}mm > Rack: {}mm)."
 msgstr "设备深度超过机架限制（设备：{}mm > 机架：{}mm）。"
 
+#: asset/views/AssetRequestViewSet.py:112 asset/views/AssetViewSet.py:265
+#, fuzzy
+#| msgid "Transizione non ammessa"
+msgid "Transition not allowed"
+msgstr "不允许的状态转换"
+
+#: asset/views/AssetRequestViewSet.py:133
+#: asset/views/AssetRequestViewSet.py:173
+#: asset/views/AssetRequestViewSet.py:222
+#: asset/views/AssetRequestViewSet.py:250
+#: asset/views/AssetRequestViewSet.py:278
+msgid "Request not found"
+msgstr ""
+
+#: asset/views/AssetRequestViewSet.py:151
+#, fuzzy
+#| msgid "User logged out"
+msgid "User not found"
+msgstr "用户已登出"
+
+#: asset/views/AssetRequestViewSet.py:282
+msgid "Only the original requester can resubmit the request"
+msgstr ""
+
+#: asset/views/AssetViewSet.py:28
+#, fuzzy
+#| msgid "No component installed in this rack unit."
+msgid "Assets not installed in rack"
+msgstr "此机架单元中未安装任何组件。"
+
+#: asset/views/AssetViewSet.py:109
+msgid "state_id is required"
+msgstr "state_id 为必填项"
+
+#: asset/views/AssetViewSet.py:116 asset/views/AssetViewSet.py:123
+msgid "Invalid state_id"
+msgstr "无效的 state_id"
+
+#: asset/views/AssetViewSet.py:130
+msgid "Cannot set in_produzione via bulk update. Use the move endpoint to assign rack placement."
+msgstr ""
+
+#: asset/views/AssetViewSet.py:211
+msgid "ids must be a non-empty list"
+msgstr "ids 必须是非空列表"
+
+#: asset/views/AssetViewSet.py:247
+msgid "to_state is required"
+msgstr "to_state 为必填项"
+
+#: asset/views/AssetViewSet.py:254
+msgid "Invalid to_state"
+msgstr "无效的 to_state"
+
+#: asset/views/AssetViewSet.py:288
+msgid "Invalid to_room"
+msgstr "无效的 to_room"
+
+#: asset/views/AssetViewSet.py:344 catalog/views/AssetModelViewSet.py:58
+msgid "ids must be a list"
+msgstr "ids 必须是列表"
+
+#: asset/views/RackUnitViewSet.py:48
+msgid "Warehouse stock exhausted for this item."
+msgstr "该仓库物品库存已耗尽。"
+
+#: asset/views/RackUnitViewSet.py:69
+msgid "No component installed in this rack unit."
+msgstr "此机架单元中未安装任何组件。"
+
+#: asset/views/RackUnitViewSet.py:75
+msgid "This component has no linked warehouse item."
+msgstr "此组件没有关联的仓库物品。"
+
+#: asset/views/RackUnitViewSet.py:86
+msgid "Component removed and returned to stock."
+msgstr "组件已移除并归还至库存。"
+
+#: catalog/views/AssetModelImportView.py:34
 msgid "Not a valid Data URL."
 msgstr "不是有效的数据URL。"
 
+#: catalog/views/AssetModelImportView.py:38
 msgid "Malformed Data URL."
 msgstr "数据URL格式错误。"
 
+#: catalog/views/AssetModelImportView.py:44
 #, python-format
 msgid "Unsupported image type: %s"
 msgstr "不支持的图片类型：%s"
 
+#: catalog/views/AssetModelImportView.py:49
 msgid "Invalid base64 data."
 msgstr "无效的base64数据。"
 
+#: catalog/views/AssetModelImportView.py:53
 #, python-format
 msgid "Image exceeds maximum allowed size of %d MB."
 msgstr "图片超过最大允许大小 %d MB。"
 
+#: catalog/views/AssetModelImportView.py:63
 #, python-format
 msgid "Uploaded file for %s is not a valid image."
 msgstr "上传的文件 %s 不是有效的图片。"
 
+#: catalog/views/AssetModelImportView.py:104
+#: catalog/views/AssetModelImportView.py:106
+#: catalog/views/AssetModelImportView.py:108
 msgid "This field is required."
 msgstr "此字段为必填项。"
 
+#: catalog/views/AssetModelImportView.py:118
 #, python-format
 msgid "A model named \"%(name)s\" already exists for %(vendor)s (%(type)s)."
 msgstr "%(vendor)s (%(type)s) 下已存在名为“%(name)s”的型号。"
 
+#: catalog/views/AssetModelImportView.py:148
 msgid "Invalid front image data."
 msgstr "无效的正面图片数据。"
 
+#: catalog/views/AssetModelImportView.py:157
 msgid "Invalid rear image data."
 msgstr "无效的背面图片数据。"
 
+#: catalog/views/AssetModelViewSet.py:45
 #, python-format
 msgid "Cannot delete: this model is used by %(count)d asset(s)."
 msgstr "无法删除：此型号被 %(count)d 个资产使用。"
 
-msgid "ids must be a list"
-msgstr "ids 必须是列表"
-
-msgid "state_id is required"
-msgstr "state_id 为必填项"
-
-msgid "Invalid state_id"
-msgstr "无效的 state_id"
-
-msgid "ids must be a non-empty list"
-msgstr "ids 必须是非空列表"
-
-msgid "to_state is required"
-msgstr "to_state 为必填项"
-
-msgid "Invalid to_state"
-msgstr "无效的 to_state"
-
-msgid "Invalid to_room"
-msgstr "无效的 to_room"
-
+#: catalog/views/CatalogImportView.py:62
 msgid "Expected a JSON object."
 msgstr "需要一个 JSON 对象。"
 
+#: catalog/views/CatalogImportView.py:99
 msgid "name, vendor and type are required."
 msgstr "名称、供应商和类型为必填项。"
 
+#: catalog/views/CatalogImportView.py:151
 msgid "name is required."
 msgstr "名称为必填项。"
 
-msgid "Warehouse stock exhausted for this item."
-msgstr "该仓库物品库存已耗尽。"
-
-msgid "No component installed in this rack unit."
-msgstr "此机架单元中未安装任何组件。"
-
-msgid "This component has no linked warehouse item."
-msgstr "此组件没有关联的仓库物品。"
-
-msgid "Component removed and returned to stock."
-msgstr "组件已移除并归还至库存。"
-
+#: datacenter-app/settings.py:192
 msgid "English"
 msgstr "英语"
 
+#: datacenter-app/settings.py:193
 msgid "Italian"
 msgstr "意大利语"
 
+#: datacenter-app/settings.py:194
 msgid "German"
 msgstr "德语"
 
+#: datacenter-app/settings.py:195
 msgid "French"
 msgstr "法语"
 
+#: datacenter-app/settings.py:196
 msgid "Chinese (Simplified)"
 msgstr "中文（简体）"
 
+#: location/models/Location.py:39
 msgid "Location"
 msgstr "位置"
 
+#: location/models/Location.py:40
 msgid "Locations"
 msgstr "位置"
 
+#: location/models/Rack.py:44
 msgid "Rack"
 msgstr "机柜"
 
+#: location/models/Rack.py:45
 msgid "Racks"
 msgstr "机柜"
 
+#: location/models/RackType.py:29
 msgid "Height in cm"
 msgstr "高度（厘米）"
 
+#: location/models/RackType.py:40
 msgid "Rack Type"
 msgstr "机柜类型"
 
+#: location/models/RackType.py:41
 msgid "Rack Types"
 msgstr "机柜类型"
 
+#: location/models/Room.py:40
 msgid "Datacenter"
 msgstr "数据中心"
 
-msgid "Warehouse"
-msgstr "仓库"
-
+#: location/models/Room.py:42
 msgid "Laboratory"
 msgstr "实验室"
 
+#: location/models/Room.py:43
 msgid "Technical Office"
 msgstr "技术办公室"
 
+#: location/models/Room.py:49
 msgid "Room type"
 msgstr "房间类型"
 
-msgid ""
-"Interactive floor plan elements (walls, racks, doors) from the Angular "
-"editor."
+#: location/models/Room.py:74
+msgid "Interactive floor plan elements (walls, racks, doors) from the Angular editor."
 msgstr "Angular编辑器中的交互式平面图元素（墙壁、机柜、门）。"
 
+#: location/models/Room.py:84
 msgid "Room"
 msgstr "房间"
 
+#: location/models/Room.py:85
 msgid "Rooms"
 msgstr "房间"
 
+#: location/views/RackViewSet.py:49
 msgid "Rack has associated units — remove them before deleting."
-msgstr "机柜有关联设备 — 请先移除再删除。"
+msgstr "该机架有关联的单元 — 请先删除它们。"
 
-# -- AssetRequest (生命周期) --
+#~ msgid "Spostamento"
+#~ msgstr "移动"
 
-msgid "Registrazione"
-msgstr "注册"
+#~ msgid "Manutenzione"
+#~ msgstr "维护"
 
-msgid "Spostamento"
-msgstr "移动"
+#~ msgid "Dismissione"
+#~ msgstr "报废"
 
-msgid "Manutenzione"
-msgstr "维护"
+#~ msgid "Inserita"
+#~ msgstr "已提交"
 
-msgid "Dismissione"
-msgstr "报废"
+#~ msgid "Pianificata"
+#~ msgstr "已计划"
 
-msgid "Inserita"
-msgstr "已提交"
+#~ msgid "Evasa"
+#~ msgstr "已执行"
 
-msgid "Pianificata"
-msgstr "已计划"
+#~ msgid "Rifiutata"
+#~ msgstr "已拒绝"
 
-msgid "Evasa"
-msgstr "已执行"
+#~ msgid "In Chiarimento"
+#~ msgstr "待澄清"
 
-msgid "Rifiutata"
-msgstr "已拒绝"
+#~ msgid "Tipo richiesta"
+#~ msgstr "请求类型"
 
-msgid "In Chiarimento"
-msgstr "待澄清"
+#~ msgid "Stato richiesta"
+#~ msgstr "请求状态"
 
-msgid "Tipo richiesta"
-msgstr "请求类型"
+#~ msgid "Stato asset di partenza"
+#~ msgstr "资产原状态"
 
-msgid "Stato richiesta"
-msgstr "请求状态"
+#~ msgid "Stato asset di destinazione"
+#~ msgstr "资产目标状态"
 
-msgid "Stato asset di partenza"
-msgstr "资产原状态"
+#~ msgid "Location di partenza"
+#~ msgstr "来源位置"
 
-msgid "Stato asset di destinazione"
-msgstr "资产目标状态"
+#~ msgid "Location di destinazione"
+#~ msgstr "目标位置"
 
-msgid "Location di partenza"
-msgstr "来源位置"
+#~ msgid "Motivazione o dettagli della richiesta"
+#~ msgstr "请求原因或详情"
 
-msgid "Location di destinazione"
-msgstr "目标位置"
+#~ msgid "Note di chiarimento"
+#~ msgstr "澄清说明"
 
-msgid "Note"
-msgstr "备注"
+#~ msgid "Richiesta di chiarimento inviata al richiedente"
+#~ msgstr "已向申请人发送澄清请求"
 
-msgid "Motivazione o dettagli della richiesta"
-msgstr "请求原因或详情"
+#~ msgid "Motivo rifiuto"
+#~ msgstr "拒绝原因"
 
-msgid "Note di chiarimento"
-msgstr "澄清说明"
+#~ msgid "Data pianificata"
+#~ msgstr "计划日期"
 
-msgid "Richiesta di chiarimento inviata al richiedente"
-msgstr "已向申请人发送澄清请求"
+#~ msgid "Assegnata a"
+#~ msgstr "分配给"
 
-msgid "Motivo rifiuto"
-msgstr "拒绝原因"
+#~ msgid "Evasa da"
+#~ msgstr "执行人"
 
-msgid "Data pianificata"
-msgstr "计划日期"
+#~ msgid "Richiesta asset"
+#~ msgstr "资产请求"
 
-msgid "Creata da"
-msgstr "创建人"
+#~ msgid "Richieste asset"
+#~ msgstr "资产请求列表"
 
-msgid "Assegnata a"
-msgstr "分配给"
+#~ msgid "Richiesta non trovata"
+#~ msgstr "请求未找到"
 
-msgid "Evasa da"
-msgstr "执行人"
+#~ msgid "Utente non trovato"
+#~ msgstr "用户未找到"
 
-msgid "Richiesta asset"
-msgstr "资产请求"
-
-msgid "Richieste asset"
-msgstr "资产请求列表"
-
-msgid "Transizione non ammessa"
-msgstr "不允许的状态转换"
-
-msgid "Richiesta non trovata"
-msgstr "请求未找到"
-
-msgid "Utente non trovato"
-msgstr "用户未找到"
-
-msgid "Solo il richiedente originale può reinserire la richiesta"
-msgstr "只有原申请人才能重新提交请求"
-
-msgid "Can view asset requests"
-msgstr "可查看资产请求"
-
-msgid "Can create asset requests"
-msgstr "可创建资产请求"
-
-msgid "Can plan, execute, reject or clarify asset requests"
-msgstr "可计划、执行、拒绝或澄清资产请求"
-
-msgid "Asset request created"
-msgstr "已创建资产请求"
-
-msgid "Asset request planned"
-msgstr "已计划资产请求"
-
-msgid "Asset request executed"
-msgstr "已执行资产请求"
-
-msgid "Asset request rejected"
-msgstr "已拒绝资产请求"
-
-msgid "Asset request sent for clarification"
-msgstr "资产请求已发送待澄清"
-
-msgid "Asset request resubmitted"
-msgstr "资产请求已重新提交"
+#~ msgid "Solo il richiedente originale può reinserire la richiesta"
+#~ msgstr "只有原申请人才能重新提交请求"
