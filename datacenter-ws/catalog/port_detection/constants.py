@@ -77,9 +77,9 @@ CLASS_NAMES = ['RJ45', 'SFP/SFP+', 'QSFP', 'USB', 'SERIAL', 'LC']
 # ── Default bounding-box sizes (% of image) for IoU NMS ──────────────────────
 # Used when a detection does not carry an explicit bbox size.
 DEFAULT_BW = {'RJ45': 4.5, 'SFP': 3.0, 'SFP+': 3.0,
-               'USB-A': 4.0, 'SERIAL': 6.0, 'LC': 3.5}
+              'USB-A': 4.0, 'SERIAL': 6.0, 'LC': 3.5}
 DEFAULT_BH = {'RJ45': 5.5, 'SFP': 5.0, 'SFP+': 5.0,
-               'USB-A': 4.5, 'SERIAL': 4.0, 'LC': 6.0}
+              'USB-A': 4.5, 'SERIAL': 4.0, 'LC': 6.0}
 
 # ── Bounding-box sizes (fraction of image) for YOLO training labels ───────────
 PORT_BW = {

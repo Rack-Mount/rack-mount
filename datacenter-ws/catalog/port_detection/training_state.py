@@ -170,6 +170,7 @@ def run_background_train(data_yaml: str, models_dir: str) -> None:
         with _state_lock:
             state = load_state()
             state['is_training'] = False
-            state['last_training_iso'] = datetime.now(tz=timezone.utc).isoformat()
+            state['last_training_iso'] = datetime.now(
+                tz=timezone.utc).isoformat()
             state['corrections_since_last_train'] = 0
             save_state(state)

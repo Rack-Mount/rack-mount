@@ -201,8 +201,10 @@ def detect_with_opencv(img, click_x: float, click_y: float):
             sy0, sy1 = max(0, y - margin), min(H, y + ch + margin)
             sx0, sx1 = max(0, x - margin), min(W, x + cw + margin)
             surround = gray[sy0:sy1, sx0:sx1]
-            surround_mean = float(np.mean(surround)) if surround.size else roi_mean
-            darkness = max(0.0, (surround_mean - roi_mean) / (surround_mean + 1.0))
+            surround_mean = float(
+                np.mean(surround)) if surround.size else roi_mean
+            darkness = max(0.0, (surround_mean - roi_mean) /
+                           (surround_mean + 1.0))
             if darkness < 0.04:
                 continue
 

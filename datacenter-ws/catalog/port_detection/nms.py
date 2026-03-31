@@ -195,7 +195,8 @@ def reclassify_by_cluster(detections: list) -> list:
 
         type_counts: dict = {}
         for c in row:
-            type_counts[c['port_type']] = type_counts.get(c['port_type'], 0) + 1
+            type_counts[c['port_type']] = type_counts.get(
+                c['port_type'], 0) + 1
 
         dominant = max(type_counts, key=lambda t: type_counts[t])
         if type_counts[dominant] / len(row) >= 0.65:

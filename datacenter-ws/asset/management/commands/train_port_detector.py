@@ -92,7 +92,8 @@ def _transform_label_r180(line: str) -> str:
     p = line.strip().split()
     if len(p) != 5:
         return line
-    cls, cx, cy, bw, bh = p[0], float(p[1]), float(p[2]), float(p[3]), float(p[4])
+    cls, cx, cy, bw, bh = p[0], float(p[1]), float(
+        p[2]), float(p[3]), float(p[4])
     return f'{cls} {1 - cx:.4f} {1 - cy:.4f} {bw:.4f} {bh:.4f}\n'
 
 
@@ -100,7 +101,8 @@ def _transform_label_r090(line: str) -> str:
     p = line.strip().split()
     if len(p) != 5:
         return line
-    cls, cx, cy, bw, bh = p[0], float(p[1]), float(p[2]), float(p[3]), float(p[4])
+    cls, cx, cy, bw, bh = p[0], float(p[1]), float(
+        p[2]), float(p[3]), float(p[4])
     return f'{cls} {1 - cy:.4f} {cx:.4f} {bh:.4f} {bw:.4f}\n'
 
 
@@ -108,7 +110,8 @@ def _transform_label_r270(line: str) -> str:
     p = line.strip().split()
     if len(p) != 5:
         return line
-    cls, cx, cy, bw, bh = p[0], float(p[1]), float(p[2]), float(p[3]), float(p[4])
+    cls, cx, cy, bw, bh = p[0], float(p[1]), float(
+        p[2]), float(p[3]), float(p[4])
     return f'{cls} {cy:.4f} {1 - cx:.4f} {bh:.4f} {bw:.4f}\n'
 
 
@@ -188,7 +191,7 @@ class Command(BaseCommand):
         media_root = os.path.realpath(settings.MEDIA_ROOT)
         train_imgs = os.path.join(media_root, 'training', 'images')
         train_labs = os.path.join(media_root, 'training', 'labels')
-        data_yaml  = os.path.join(media_root, 'training', 'data.yaml')
+        data_yaml = os.path.join(media_root, 'training', 'data.yaml')
         models_dir = os.path.join(media_root, 'models')
 
         for split in ('train', 'val'):
@@ -258,7 +261,7 @@ class Command(BaseCommand):
                 shutil.copy2(abs_img, dest_img)
 
             am = valid[0][0].asset_model
-            device_w = float(am.width_mm)  if am.width_mm  else None
+            device_w = float(am.width_mm) if am.width_mm else None
             device_h = float(am.height_mm) if am.height_mm else None
 
             label_lines = []
@@ -292,7 +295,7 @@ class Command(BaseCommand):
         import yaml
 
         train_img_split = os.path.join(train_imgs, 'train')
-        val_img_split   = os.path.join(train_imgs, 'val')
+        val_img_split = os.path.join(train_imgs, 'val')
         # Fall back to train images when no val split exists yet.
         if not os.path.isdir(val_img_split) or not os.listdir(val_img_split):
             val_img_split = train_img_split
@@ -335,7 +338,7 @@ class Command(BaseCommand):
             return
 
         epochs = options['epochs']
-        imgsz  = options['imgsz']
+        imgsz = options['imgsz']
         device = options['device'] or best_device()
         self.stdout.write(
             f'\nAvvio training YOLOv8n: '
@@ -374,9 +377,9 @@ class Command(BaseCommand):
         dest = os.path.join(models_dir, 'port-yolo.pt')
         if os.path.isfile(best):
             shutil.copy2(best, dest)
-            self.stdout.write(self.style.SUCCESS(f'\nModello salvato in: {dest}'))
+            self.stdout.write(self.style.SUCCESS(
+                f'\nModello salvato in: {dest}'))
         else:
             self.stdout.write(self.style.WARNING(
                 f'best.pt non trovato in {best}'
             ))
-

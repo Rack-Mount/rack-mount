@@ -251,7 +251,8 @@ def _grid_dedup(detections: list) -> list:
     for col in columns:
         by_y = sorted(col, key=lambda d: d['pos_y'])
         ys_col = [d['pos_y'] for d in by_y]
-        y_gaps_col = [ys_col[i + 1] - ys_col[i] for i in range(len(ys_col) - 1)]
+        y_gaps_col = [ys_col[i + 1] - ys_col[i]
+                      for i in range(len(ys_col) - 1)]
 
         y_groups: list = [[by_y[0]]]
         for j, det in enumerate(by_y[1:]):
