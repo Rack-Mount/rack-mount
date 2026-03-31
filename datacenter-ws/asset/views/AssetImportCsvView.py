@@ -255,7 +255,8 @@ class AssetImportCsvView(APIView):
 
         # Duplicate serial check
         if Asset.objects.filter(serial_number=serial_number).exists():
-            raise ValueError(f"Numero seriale già esistente: '{serial_number}'")
+            raise ValueError(
+                f"Numero seriale già esistente: '{serial_number}'")
 
         # Lookups
         model_obj = lookup.get_model(vendor_name, model_name)
@@ -271,7 +272,8 @@ class AssetImportCsvView(APIView):
         sap_id = _sanitize_cell((row.get('SAP ID') or '').strip())
         order_id = _sanitize_cell((row.get('Order ID') or '').strip())
         note = _sanitize_cell((row.get('Note') or '').strip())
-        power_supplies = int_or_none(row.get('Alimentatori', ''), 'Alimentatori')
+        power_supplies = int_or_none(
+            row.get('Alimentatori', ''), 'Alimentatori')
         power_watt = int_or_none(
             row.get('Assorbimento (W)', ''), 'Assorbimento (W)'
         )
@@ -295,5 +297,5 @@ class AssetImportCsvView(APIView):
             purchase_date=purchase_date,
             decommissioned_date=decommission_date,
         )
-        rows.append({'row': row_num, 'hostname': hostname, 'serial_number': serial_number})
-
+        rows.append({'row': row_num, 'hostname': hostname,
+                    'serial_number': serial_number})

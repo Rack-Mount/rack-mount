@@ -36,4 +36,5 @@ class AssetRequestFilter(df_filters.FilterSet):
 
     class Meta:
         model = AssetRequest
-        fields = ['asset', 'request_type', 'status', 'created_by', 'assigned_to']
+        fields = ['asset', 'request_type',
+                  'status', 'created_by', 'assigned_to']

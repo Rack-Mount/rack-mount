@@ -36,7 +36,8 @@ TEMPLATE_HEADERS = [
 ]
 
 # Required column names (subset of TEMPLATE_HEADERS).
-REQUIRED_COLUMNS = frozenset({'Hostname', 'Modello', 'Vendor', 'Stato', 'Seriale'})
+REQUIRED_COLUMNS = frozenset(
+    {'Hostname', 'Modello', 'Vendor', 'Stato', 'Seriale'})
 
 
 def parse_date(value: str) -> datetime.date | None:
