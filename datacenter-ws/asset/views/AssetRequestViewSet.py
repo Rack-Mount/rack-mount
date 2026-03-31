@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import transaction
 from django.utils.translation import gettext as _
 from rest_framework import viewsets, status, mixins
@@ -22,15 +23,8 @@ from asset.serializers import (
     AssetRequestRejectSerializer,
     AssetRequestResubmitSerializer,
 )
-from django_filters import rest_framework as df_filters
+from asset.utils.filters import AssetRequestFilter
 from shared.mixins import StandardFilterMixin
-
-
-class AssetRequestFilter(df_filters.FilterSet):
-    class Meta:
-        model = AssetRequest
-        fields = ['asset', 'request_type',
-                  'status', 'created_by', 'assigned_to']
 
 
 class AssetRequestViewSet(
@@ -146,7 +140,6 @@ class AssetRequestViewSet(
         if 'planned_date' in data:
             asset_request.planned_date = data['planned_date']
         if 'assigned_to' in data:
-            from django.contrib.auth.models import User
             try:
                 asset_request.assigned_to = User.objects.get(
                     pk=data['assigned_to']) if data['assigned_to'] else None

@@ -1,42 +1,26 @@
 from uuid import uuid4
 
 from django.db import transaction
+from django.utils.translation import gettext as _
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.response import Response
-from django.utils.translation import gettext as _
-from asset.serializers import AssetSerializer, AssetTransitionLogSerializer
-from asset.models import Asset, AssetState, AssetTransitionLog, RackUnit
-from asset.models.AssetState import AssetStateCode, ALLOWED_TRANSITIONS
-from location.models import Room
-from django_filters import rest_framework as df_filters
-from shared.mixins import StandardFilterMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from accounts.audit import AuditLogMixin, log_action
+from accounts.models import SecurityAuditLog
 from accounts.permissions import (
     AssetResourcePermission,
     CloneAssetPermission,
     DeleteAssetPermission,
     EditAssetPermission,
 )
-from accounts.audit import AuditLogMixin, log_action
-from accounts.models import SecurityAuditLog
-
-
-class AssetFilter(df_filters.FilterSet):
-    not_in_rack = df_filters.BooleanFilter(
-        method='filter_not_in_rack',
-        label=_('Assets not installed in rack')
-    )
-
-    def filter_not_in_rack(self, queryset, name, value):
-        if value:
-            return queryset.filter(rackunit__isnull=True)
-        return queryset
-
-    class Meta:
-        model = Asset
-        fields = ['hostname', 'sap_id', 'serial_number', 'order_id',
-                  'model', 'state', 'model__vendor', 'model__type']
+from asset.models import Asset, AssetState, AssetTransitionLog, RackUnit
+from asset.models.AssetState import AssetStateCode, ALLOWED_TRANSITIONS
+from asset.serializers import AssetSerializer, AssetTransitionLogSerializer
+from asset.utils.filters import AssetFilter
+from location.models import Room
+from shared.mixins import StandardFilterMixin
 
 
 class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
