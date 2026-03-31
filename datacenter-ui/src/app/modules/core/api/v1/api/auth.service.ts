@@ -280,7 +280,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     }
 
     /**
-     * GET/PATCH /auth/preferences/ — read or update the authenticated user\&#39;s preferences.
+     * GET / PATCH /auth/preferences/ — read or update the authenticated user\&#39;s preferences.
      * @endpoint patch /auth/preferences/
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -349,7 +349,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     }
 
     /**
-     * GET/PATCH /auth/preferences/ — read or update the authenticated user\&#39;s preferences.
+     * GET / PATCH /auth/preferences/ — read or update the authenticated user\&#39;s preferences.
      * @endpoint get /auth/preferences/
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -404,7 +404,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     }
 
     /**
-     * Read-only list of all available roles. Accessible only by Admin role. Cached for 5 minutes.
+     * Read-only list of all available roles. Admin-only. Cached for 5 minutes.
      * @endpoint get /auth/roles/
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -459,7 +459,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     }
 
     /**
-     * POST /auth/token/blacklist/  Accept refresh token in request body and add it to the blacklist.
+     * POST /auth/token/blacklist/  Read the refresh token from the cookie (or body), validate ownership, and add it to the JWT blacklist.  The cookie is always cleared, even if blacklisting fails, so the browser is left in a logged-out state regardless of server errors.
      * @endpoint post /auth/token/blacklist/
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -531,7 +531,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     }
 
     /**
-     * POST /auth/token/  Accept username + password credentials. Return access and refresh tokens in the response body.
+     * POST /auth/token/  Accept &#x60;&#x60;username&#x60;&#x60; + &#x60;&#x60;password&#x60;&#x60; credentials.  On success:  - return &#x60;&#x60;access&#x60;&#x60; token and user &#x60;&#x60;role&#x60;&#x60; in the response body; - set an HTTP-only &#x60;&#x60;refresh_token&#x60;&#x60; cookie (never returned in body).  &#x60;&#x60;authentication_classes &#x3D; []&#x60;&#x60; prevents an expired *Bearer* header from triggering a premature 401 before credentials are even checked.
      * @endpoint post /auth/token/
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -600,7 +600,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     }
 
     /**
-     * POST /auth/token/refresh/  Accept refresh token in request body. Return new access token in response body.
+     * POST /auth/token/refresh/  Read the refresh token from the HTTP-only cookie (falls back to the request body for transition compatibility).  Return a new &#x60;&#x60;access&#x60;&#x60; token plus the embedded &#x60;&#x60;role&#x60;&#x60; and &#x60;&#x60;username&#x60;&#x60; claims.  &#x60;&#x60;authentication_classes &#x3D; []&#x60;&#x60; prevents an expired *Bearer* header from triggering a 401 before the cookie is read. Respects &#x60;&#x60;ROTATE_REFRESH_TOKENS&#x60;&#x60; / &#x60;&#x60;BLACKLIST_AFTER_ROTATION&#x60;&#x60;.
      * @endpoint post /auth/token/refresh/
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

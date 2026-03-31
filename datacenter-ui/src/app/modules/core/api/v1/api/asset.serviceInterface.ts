@@ -943,7 +943,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/port-analyze  Body: { \&quot;image_path\&quot;: \&quot;components/switch.jpg\&quot;, \&quot;side\&quot;: \&quot;front\&quot; }  Returns a list of detected ports: [{ \&quot;port_type\&quot;: \&quot;RJ45\&quot;, \&quot;pos_x\&quot;: 12.5, \&quot;pos_y\&quot;: 45.0,    \&quot;name\&quot;: \&quot;GigabitEthernet0/0\&quot;, \&quot;confidence\&quot;: 0.82 }, ...]  **Rate Limit**: 100 analyses per hour per user (prevents inference spam).
+     * POST /asset/port-analyze  Body: { \&quot;image_path\&quot;: \&quot;components/switch.jpg\&quot;, \&quot;side\&quot;: \&quot;front\&quot; }  Returns a list of detected ports: [{ \&quot;port_type\&quot;: \&quot;RJ45\&quot;, \&quot;pos_x\&quot;: 12.5, \&quot;pos_y\&quot;: 45.0,    \&quot;name\&quot;: \&quot;GigabitEthernet0/0\&quot;, \&quot;confidence\&quot;: 0.82 }, ...]  Detection order: YOLO (if model available) then OpenCV fallback.  **Rate Limit**: 100 analyses per hour per user (prevents inference spam).
      * @endpoint post /asset/port-analyze
 * @param requestParameters
      */
@@ -967,7 +967,7 @@ export interface AssetServiceInterface {
 
     /**
      * 
-     * POST /asset/port-correction  Riceve una correzione manuale (predicted_type → actual_type) e: 1. Sovrascrive il sample di training con il tipo corretto. 2. Aggiorna il contatore di correzioni. 3. Lancia il retraining in background se le soglie sono raggiunte.  **Permission**: Requires &#x60;can_provide_port_corrections&#x60; role permission. **Audit**: All corrections logged to SecurityAuditLog. **Rate Limit**: 30 corrections per hour per user (prevents retraining floods).
+     * POST /asset/port-correction  Receives a manual correction (predicted_type → actual_type) and: 1. Saves the training sample with the correct type. 2. Increments the correction counter. 3. Triggers background retraining when thresholds are met.  **Permission**: Requires &#x60;&#x60;can_provide_port_corrections&#x60;&#x60; role permission. **Audit**: All corrections logged to SecurityAuditLog. **Rate Limit**: 30 corrections per hour per user (prevents retraining floods).
      * @endpoint post /asset/port-correction
 * @param requestParameters
      */
