@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
@@ -90,14 +90,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'datacenter-app.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# ── Database ─────────────────────────────────────────────────────────────────
+# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # },
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('DB_NAME', default='rack_mount'),
@@ -135,6 +131,13 @@ REDIS_DB = config('REDIS_DB', default=1, cast=int)
 REDIS_PASSWORD = config('REDIS_PASSWORD', default='')
 USE_REDIS_CACHE = config('USE_REDIS_CACHE', default=False, cast=bool)
 
+
+def _redis_url(db: int) -> str:
+    """Build a Redis URL from the shared Redis config variables."""
+    auth = f':{REDIS_PASSWORD}@' if REDIS_PASSWORD else ''
+    return f'redis://{auth}{REDIS_HOST}:{REDIS_PORT}/{db}'
+
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -147,7 +150,7 @@ if USE_REDIS_CACHE:
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}' if REDIS_PASSWORD else f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
+            'LOCATION': _redis_url(REDIS_DB),
             'OPTIONS': {
                 'CONNECTION_POOL_KWARGS': {
                     'max_connections': 50,
@@ -164,8 +167,8 @@ if USE_REDIS_CACHE:
     }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+# ── Authentication & JWT ─────────────────────────────────────────────────────
+# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -183,8 +186,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
+# ── Internationalization ─────────────────────────────────────────────────────
+# https://docs.djangoproject.com/en/6.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -207,14 +210,14 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+# ── Static files ─────────────────────────────────────────────────────────────
+# https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+# https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -381,11 +384,7 @@ EXPORT_FORMATS = [CSV, XLSX]
 # ── Celery ────────────────────────────────────────────────────────────────────
 # Use Redis as broker (same instance as caching when enabled).
 # Worker startup: celery -A datacenter-app worker -l info
-CELERY_BROKER_URL = config(
-    'CELERY_BROKER_URL',
-    default=f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/2' if REDIS_PASSWORD
-    else f'redis://{REDIS_HOST}:{REDIS_PORT}/2',
-)
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default=_redis_url(2))
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TIMEZONE = 'UTC'
