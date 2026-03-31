@@ -63,7 +63,8 @@ def _set_refresh_cookie(response: Response, token_str: str) -> None:
         secure=not django_settings.DEBUG,
         samesite='Lax',
         max_age=int(
-            django_settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()
+            django_settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(
+            )
         ),
         path='/',
     )
@@ -278,7 +279,8 @@ class CookieTokenBlacklistView(APIView):
                     status=status.HTTP_403_FORBIDDEN,
                 )
             token.blacklist()
-            response.data = {'detail': _('Logout successful. Token blacklisted.')}
+            response.data = {'detail': _(
+                'Logout successful. Token blacklisted.')}
             return response
         except Exception:
             logger.exception('Cookie token blacklist failed')
@@ -344,6 +346,7 @@ class LogoutView(APIView):
         except Exception:
             logger.exception('Logout failed while blacklisting refresh token')
             return Response(
-                {'detail': _('Unable to logout with the provided refresh token.')},
+                {'detail': _(
+                    'Unable to logout with the provided refresh token.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )

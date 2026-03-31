@@ -48,7 +48,8 @@ class UserManagementViewSet(
     CRUD for User management. Accessible only by Admin role.
     """
 
-    queryset = User.objects.select_related('profile__role').order_by('username')
+    queryset = User.objects.select_related(
+        'profile__role').order_by('username')
     permission_classes = [IsAuthenticated, IsAdminRole]
 
     def get_serializer_class(self):
@@ -67,7 +68,8 @@ class UserManagementViewSet(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        response_serializer = UserListSerializer(user, context={'request': request})
+        response_serializer = UserListSerializer(
+            user, context={'request': request})
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -95,7 +97,8 @@ class ChangePasswordView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = request.user
         if not user.check_password(serializer.validated_data['current_password']):
-            raise ValidationError({'current_password': _('Incorrect password.')})
+            raise ValidationError(
+                {'current_password': _('Incorrect password.')})
         user.set_password(serializer.validated_data['new_password'])
         user.save()
         return Response(
