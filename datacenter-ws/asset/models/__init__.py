@@ -5,6 +5,7 @@ from .GenericComponent import GenericComponent
 from .RackUnit import RackUnit
 from .AssetTransitionLog import AssetTransitionLog
 from .AssetRequest import AssetRequest, AssetRequestType, AssetRequestStatus
+from .AssetNetworkInterface import AssetNetworkInterface
 
 # Re-exported from catalog for backward compatibility
 from catalog.models import (
@@ -27,6 +28,7 @@ __all__ = [
     'AssetRequest',
     'AssetRequestType',
     'AssetRequestStatus',
+    'AssetNetworkInterface',
     # catalog re-exports
     'CustomFieldName',
     'Vendor',
