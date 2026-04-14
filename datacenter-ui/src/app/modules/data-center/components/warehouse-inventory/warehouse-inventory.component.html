@@ -6,13 +6,25 @@
   @if (alerts.count() > 0 && !store.belowThresholdFilter()) {
     <div class="alert-banner" (click)="store.onBelowThresholdFilter(true)">
       <svg class="alert-icon" viewBox="0 0 20 20" fill="none">
-        <path d="M10 3L1.5 17h17L10 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-        <path d="M10 9v4M10 14.5v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path
+          d="M10 3L1.5 17h17L10 3z"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10 9v4M10 14.5v.5"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+        />
       </svg>
       <span class="alert-text">
         {{ "warehouse.alert_body" | translate: { count: alerts.count() } }}
       </span>
-      <span class="alert-action">{{ "warehouse.alert_filter_btn" | translate }}</span>
+      <span class="alert-action">{{
+        "warehouse.alert_filter_btn" | translate
+      }}</span>
     </div>
   }
 
@@ -23,20 +35,24 @@
 </div>
 
 <!-- Item create/edit drawer -->
-@if (store.drawerMode() !== null) {
-  <app-warehouse-item-drawer
-    [mode]="store.drawerMode()!"
-    [item]="store.editingItem()"
-    (saved)="store.onDrawerSaved($event)"
-    (cancelled)="store.onDrawerClose()"
-  />
+@defer (when store.drawerMode() !== null; prefetch on idle) {
+  @if (store.drawerMode() !== null) {
+    <app-warehouse-item-drawer
+      [mode]="store.drawerMode()!"
+      [item]="store.editingItem()"
+      (saved)="store.onDrawerSaved($event)"
+      (cancelled)="store.onDrawerClose()"
+    />
+  }
 }
 
 <!-- Adjust dialog -->
-@if (store.adjustingItem() !== null) {
-  <app-warehouse-adjust-dialog
-    [item]="store.adjustingItem()!"
-    (saved)="store.onAdjustSaved($event)"
-    (cancelled)="store.onAdjustClose()"
-  />
+@defer (when store.adjustingItem() !== null; prefetch on idle) {
+  @if (store.adjustingItem() !== null) {
+    <app-warehouse-adjust-dialog
+      [item]="store.adjustingItem()!"
+      (saved)="store.onAdjustSaved($event)"
+      (cancelled)="store.onAdjustClose()"
+    />
+  }
 }

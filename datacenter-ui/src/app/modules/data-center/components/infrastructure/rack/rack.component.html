@@ -56,7 +56,9 @@
                   isInDropSpan(row.position) && !canDropAt(_dropTarget())
                 "
                 [class.rack-row--ghost-target]="!row.visible && !!_dragging()"
-                [style.--u-span]="row.device?.id === _dragging()?.id ? 1 : row.rackUnit"
+                [style.--u-span]="
+                  row.device?.id === _dragging()?.id ? 1 : row.rackUnit
+                "
                 (dragover)="onDragOver($event, row.position)"
                 (dragleave)="onDragLeave($event)"
                 (drop)="onDrop($event, row.position)"
@@ -90,7 +92,9 @@
                           (row.device?.rack_installation_front ?? true)
                         "
                         (removeRequest)="onGenericSlotRemoveRequest($event)"
-                        (returnToStockRequest)="onGenericSlotReturnToStock($event)"
+                        (returnToStockRequest)="
+                          onGenericSlotReturnToStock($event)
+                        "
                       />
                     </div>
                   } @else {
@@ -208,56 +212,63 @@
   <!-- /rack-aside -->
 
   <!-- ── Install panel ──────────────────────────────────────── -->
-  @if (_installPos() && rack()) {
-    <app-rack-install-panel
-      [position]="_installPos()!"
-      [anchorX]="_installAnchorX()"
-      [anchorY]="_installAnchorY()"
-      [rackId]="rack()!.id"
-      [availableU]="_installAvailableU()"
-      [face]="!_rearView()"
-      (closed)="closeInstall()"
-      (installed)="onInstalled()"
-    />
+  @defer (when _installPos() != null && rack() != null; prefetch on idle) {
+    @if (_installPos() && rack()) {
+      <app-rack-install-panel
+        [position]="_installPos()!"
+        [anchorX]="_installAnchorX()"
+        [anchorY]="_installAnchorY()"
+        [rackId]="rack()!.id"
+        [availableU]="_installAvailableU()"
+        [face]="!_rearView()"
+        (closed)="closeInstall()"
+        (installed)="onInstalled()"
+      />
+    }
   }
 </div>
 <!-- /rack-view -->
 
 <!-- ── Bulk remove confirmation modal ─────────────────────── -->
-@if (_bulkRemoveConfirm()) {
-  <app-rack-remove-confirm
-    mode="bulk"
-    [bulkRackUnitIds]="_bulkRUIdsForConfirm()"
-    [bulkAssetIds]="_bulkAssetIdsForConfirm()"
-    [selectedCount]="_bulkRUIdsForConfirm().length"
-    [decommissionedStateId]="decommissionedStateId()"
-    (confirmed)="onBulkRemoveConfirmed()"
-    (closed)="closeBulkRemoveConfirm()"
-  />
-}
+@defer (
+  when _bulkRemoveConfirm() || _removeConfirmId() != null || _statePickerDeviceId() != null;
+  prefetch on idle
+) {
+  @if (_bulkRemoveConfirm()) {
+    <app-rack-remove-confirm
+      mode="bulk"
+      [bulkRackUnitIds]="_bulkRUIdsForConfirm()"
+      [bulkAssetIds]="_bulkAssetIdsForConfirm()"
+      [selectedCount]="_bulkRUIdsForConfirm().length"
+      [decommissionedStateId]="decommissionedStateId()"
+      (confirmed)="onBulkRemoveConfirmed()"
+      (closed)="closeBulkRemoveConfirm()"
+    />
+  }
 
-<!-- ── Remove confirmation popover ─────────────────────── -->
-@if (_removeConfirmId()) {
-  <app-rack-remove-confirm
-    mode="single"
-    [rackUnitId]="_removeConfirmId()!"
-    [assetId]="_removeConfirmAssetId()"
-    [anchorX]="_removeConfirmX()"
-    [anchorY]="_removeConfirmY()"
-    [decommissionedStateId]="decommissionedStateId()"
-    (confirmed)="onSingleRemoveConfirmed()"
-    (closed)="closeRemoveConfirm()"
-  />
-}
+  <!-- ── Remove confirmation popover ─────────────────────── -->
+  @if (_removeConfirmId()) {
+    <app-rack-remove-confirm
+      mode="single"
+      [rackUnitId]="_removeConfirmId()!"
+      [assetId]="_removeConfirmAssetId()"
+      [anchorX]="_removeConfirmX()"
+      [anchorY]="_removeConfirmY()"
+      [decommissionedStateId]="decommissionedStateId()"
+      (confirmed)="onSingleRemoveConfirmed()"
+      (closed)="closeRemoveConfirm()"
+    />
+  }
 
-<!-- ── State picker popover ───────────────────────────────────── -->
-@if (_statePickerDeviceId()) {
-  <app-rack-state-picker
-    [states]="availableStates()"
-    [anchorX]="_statePickerX()"
-    [anchorY]="_statePickerY()"
-    [deviceId]="_statePickerDeviceId()!"
-    (stateChanged)="refreshRack()"
-    (closed)="closeStatePicker()"
-  />
+  <!-- ── State picker popover ───────────────────────────────────── -->
+  @if (_statePickerDeviceId()) {
+    <app-rack-state-picker
+      [states]="availableStates()"
+      [anchorX]="_statePickerX()"
+      [anchorY]="_statePickerY()"
+      [deviceId]="_statePickerDeviceId()!"
+      (stateChanged)="refreshRack()"
+      (closed)="closeStatePicker()"
+    />
+  }
 }

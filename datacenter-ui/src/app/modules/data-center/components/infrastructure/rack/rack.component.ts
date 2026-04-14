@@ -29,10 +29,10 @@ import { RackRender } from '../../../models/RackRender';
 import { DeviceComponent } from '../device/device.component';
 import { GenericComponentSlotComponent } from '../generic-component-slot/generic-component-slot.component';
 import {
-  BulkRemoveRequest,
+  type BulkRemoveRequest,
   RackDeviceTableComponent,
-  RemoveRequest,
-  StatePickerRequest,
+  type RemoveRequest,
+  type StatePickerRequest,
 } from './rack-device-table/rack-device-table.component';
 import { RackInstallPanelComponent } from './rack-install-panel/rack-install-panel.component';
 import { RackRemoveConfirmComponent } from './rack-remove-confirm/rack-remove-confirm.component';
@@ -71,9 +71,11 @@ function effectiveRackUnits(u: RackUnit): number {
   imports: [
     DeviceComponent,
     GenericComponentSlotComponent,
+    // RackInstallPanelComponent, RackRemoveConfirmComponent, RackStatePickerComponent
+    // are deferred in the template — loaded only on first user interaction.
     RackInstallPanelComponent,
-    RackStatePickerComponent,
     RackRemoveConfirmComponent,
+    RackStatePickerComponent,
     RackDeviceTableComponent,
     TranslatePipe,
   ],

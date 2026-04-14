@@ -8,12 +8,12 @@ import { AssetsToolbarComponent } from './assets-toolbar/assets-toolbar.componen
 /**
  * Thin shell component. All state and business logic lives in AssetsListStore.
  * Overlays (drawers, pickers) are deferred — loaded lazily on first use.
+ * AssetCreateDrawerComponent and AssetStatePickerComponent are in imports[]
+ * but used exclusively in @defer blocks → Angular splits them into separate chunks.
  */
 @Component({
   selector: 'app-assets-list',
   standalone: true,
-  // AssetCreateDrawerComponent and AssetStatePickerComponent are intentionally
-  // omitted here so Angular can split them into separate lazy chunks via @defer.
   imports: [
     AssetsToolbarComponent,
     AssetsTableComponent,

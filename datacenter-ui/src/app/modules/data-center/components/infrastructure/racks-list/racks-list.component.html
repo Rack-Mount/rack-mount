@@ -9,20 +9,24 @@
 </div>
 
 <!-- ─── Rack drawer ──────────────────────────────────── -->
-@if (store.drawerMode() !== null) {
-  <app-rack-create-drawer
-    [mode]="store.drawerMode()!"
-    [rack]="store.editingRack()"
-    [latestRackType]="store.latestRackType()"
-    (saved)="store.onDrawerSaved($event)"
-    (cancelled)="store.onDrawerClose()"
-  />
+@defer (when store.drawerMode() !== null; prefetch on idle) {
+  @if (store.drawerMode() !== null) {
+    <app-rack-create-drawer
+      [mode]="store.drawerMode()!"
+      [rack]="store.editingRack()"
+      [latestRackType]="store.latestRackType()"
+      (saved)="store.onDrawerSaved($event)"
+      (cancelled)="store.onDrawerClose()"
+    />
+  }
 }
 
 <!-- ─── Rack model drawer ───────────────────────────── -->
-@if (store.rackModelDrawerOpen()) {
-  <app-rack-model-create-drawer
-    (saved)="store.onModelDrawerSaved($event)"
-    (cancelled)="store.onModelDrawerClose()"
-  />
+@defer (when store.rackModelDrawerOpen(); prefetch on idle) {
+  @if (store.rackModelDrawerOpen()) {
+    <app-rack-model-create-drawer
+      (saved)="store.onModelDrawerSaved($event)"
+      (cancelled)="store.onModelDrawerClose()"
+    />
+  }
 }

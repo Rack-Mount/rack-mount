@@ -303,18 +303,23 @@
           @if (store.expandedId() === asset.id) {
             <tr class="detail-row">
               <td colspan="10">
-                <app-asset-row-detail
-                  [asset]="asset"
-                  [today]="store.today"
-                  [deleteConfirmId]="store.deleteConfirmId()"
-                  [deleteSaveState]="store.deleteSaveState()"
-                  [cloneInProgress]="store.cloneInProgressId() === asset.id"
-                  (editRequested)="store.openEditDrawer($event)"
-                  (deleteRequested)="store.requestDelete($event)"
-                  (deleteConfirmed)="store.confirmDelete($event)"
-                  (deleteCancelled)="store.cancelDelete()"
-                  (cloneRequested)="store.cloneAsset($event)"
-                />
+                @defer (
+                  when store.expandedId() === asset.id;
+                  prefetch on idle
+                ) {
+                  <app-asset-row-detail
+                    [asset]="asset"
+                    [today]="store.today"
+                    [deleteConfirmId]="store.deleteConfirmId()"
+                    [deleteSaveState]="store.deleteSaveState()"
+                    [cloneInProgress]="store.cloneInProgressId() === asset.id"
+                    (editRequested)="store.openEditDrawer($event)"
+                    (deleteRequested)="store.requestDelete($event)"
+                    (deleteConfirmed)="store.confirmDelete($event)"
+                    (deleteCancelled)="store.cancelDelete()"
+                    (cloneRequested)="store.cloneAsset($event)"
+                  />
+                }
               </td>
             </tr>
           }
