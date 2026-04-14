@@ -1,0 +1,789 @@
+@if (drawerSvc.drawerOpen()) {
+  <div class="drawer-overlay" (click)="drawerSvc.closeDrawer()"></div>
+  <aside class="drawer" [class.drawer--editing]="drawerSvc.editingImage() !== null">
+    <div class="drawer-header">
+      <h2 class="drawer-title">
+        {{
+          drawerSvc.drawerMode() === "create"
+            ? ("models.drawer_create" | translate)
+            : ("models.drawer_edit" | translate)
+        }}
+      </h2>
+      <button class="drawer-close" (click)="drawerSvc.closeDrawer()">×</button>
+    </div>
+
+    <div class="drawer-body">
+      <label class="field">
+        <span class="field-label"
+          >{{ "models.field_name" | translate }}
+          <span class="req">*</span></span
+        >
+        <input
+          class="field-input"
+          type="text"
+          [placeholder]="'models.field_name_ph' | translate"
+          [value]="drawerSvc.form().name"
+          (input)="drawerSvc.setField('name', $any($event.target).value)"
+        />
+      </label>
+
+      <label class="field">
+        <span class="field-label"
+          >{{ "models.col_vendor" | translate }}
+          <span class="req">*</span></span
+        >
+        <div class="autocomplete-wrap">
+          <input
+            class="field-input"
+            type="text"
+            [placeholder]="'models.field_vendor_ph' | translate"
+            autocomplete="off"
+            [value]="drawerSvc.vendorSearch()"
+            (input)="drawerSvc.onVendorSearch($any($event.target).value)"
+            (focus)="drawerSvc.onVendorFocus()"
+            (blur)="drawerSvc.vendorDropdownOpen.set(false)"
+          />
+          @if (drawerSvc.form().vendor_id) {
+            <button
+              class="autocomplete-clear"
+              type="button"
+              (mousedown)="$event.preventDefault(); drawerSvc.clearVendor()"
+            >
+              ×
+            </button>
+          }
+          @if (drawerSvc.vendorDropdownOpen() && drawerSvc.filteredVendors().length > 0) {
+            <div class="autocomplete-dropdown">
+              @for (v of drawerSvc.filteredVendors(); track v.id) {
+                <button
+                  class="autocomplete-option"
+                  type="button"
+                  (mousedown)="$event.preventDefault(); drawerSvc.selectVendor(v)"
+                >
+                  <span class="ac-name">{{ v.name }}</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </label>
+
+      <label class="field">
+        <span class="field-label"
+          >{{ "models.col_type" | translate }}
+          <span class="req">*</span></span
+        >
+        <div class="autocomplete-wrap">
+          <input
+            class="field-input"
+            type="text"
+            [placeholder]="'models.field_type_ph' | translate"
+            autocomplete="off"
+            [value]="drawerSvc.typeSearch()"
+            (input)="drawerSvc.onTypeSearch($any($event.target).value)"
+            (focus)="drawerSvc.onTypeFocus()"
+            (blur)="drawerSvc.typeDropdownOpen.set(false)"
+          />
+          @if (drawerSvc.form().type_id) {
+            <button
+              class="autocomplete-clear"
+              type="button"
+              (mousedown)="$event.preventDefault(); drawerSvc.clearType()"
+            >
+              ×
+            </button>
+          }
+          @if (drawerSvc.typeDropdownOpen() && drawerSvc.filteredTypes().length > 0) {
+            <div class="autocomplete-dropdown">
+              @for (t of drawerSvc.filteredTypes(); track t.id) {
+                <button
+                  class="autocomplete-option"
+                  type="button"
+                  (mousedown)="$event.preventDefault(); drawerSvc.selectType(t)"
+                >
+                  <span class="ac-name">{{ t.name }}</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </label>
+
+      <label class="field">
+        <span class="field-label">{{
+          "models.field_rack_units" | translate
+        }}</span>
+        <input
+          class="field-input field-input--short"
+          type="number"
+          min="1"
+          max="42"
+          [placeholder]="'models.field_rack_units_ph' | translate"
+          [value]="drawerSvc.form().rack_units ?? ''"
+          (input)="
+            drawerSvc.setField(
+              'rack_units',
+              $any($event.target).value ? +$any($event.target).value : null
+            )
+          "
+        />
+      </label>
+
+      <div class="field field--dimensions">
+        <span class="field-label">{{
+          (drawerSvc.isImperial()
+            ? "models.field_dimensions_in"
+            : "models.field_dimensions"
+          ) | translate
+        }}</span>
+        <div class="dimensions-row">
+          <label class="dimensions-cell">
+            <span class="dimensions-label">{{
+              (drawerSvc.isImperial()
+                ? "models.field_width_in"
+                : "models.field_width_mm"
+              ) | translate
+            }}</span>
+            <input
+              class="field-input field-input--short"
+              type="number"
+              min="0"
+              [step]="drawerSvc.isImperial() ? 0.001 : 1"
+              [placeholder]="
+                (drawerSvc.isImperial()
+                  ? 'models.field_dim_ph_in'
+                  : 'models.field_dim_ph'
+                ) | translate
+              "
+              [value]="drawerSvc.toDimDisplay(drawerSvc.form().width_mm)"
+              (input)="
+                drawerSvc.setField('width_mm', drawerSvc.fromDimInput($any($event.target).value))
+              "
+            />
+          </label>
+          <label class="dimensions-cell">
+            <span class="dimensions-label">{{
+              (drawerSvc.isImperial()
+                ? "models.field_height_in"
+                : "models.field_height_mm"
+              ) | translate
+            }}</span>
+            <input
+              class="field-input field-input--short"
+              type="number"
+              min="0"
+              [step]="drawerSvc.isImperial() ? 0.001 : 1"
+              [placeholder]="
+                (drawerSvc.isImperial()
+                  ? 'models.field_dim_ph_in'
+                  : 'models.field_dim_ph'
+                ) | translate
+              "
+              [value]="drawerSvc.toDimDisplay(drawerSvc.form().height_mm)"
+              (input)="
+                drawerSvc.setField('height_mm', drawerSvc.fromDimInput($any($event.target).value))
+              "
+            />
+          </label>
+          <label class="dimensions-cell">
+            <span class="dimensions-label">{{
+              (drawerSvc.isImperial()
+                ? "models.field_depth_in"
+                : "models.field_depth_mm"
+              ) | translate
+            }}</span>
+            <input
+              class="field-input field-input--short"
+              type="number"
+              min="0"
+              [step]="drawerSvc.isImperial() ? 0.001 : 1"
+              [placeholder]="
+                (drawerSvc.isImperial()
+                  ? 'models.field_dim_ph_in'
+                  : 'models.field_dim_ph'
+                ) | translate
+              "
+              [value]="drawerSvc.toDimDisplay(drawerSvc.form().depth_mm)"
+              (input)="
+                drawerSvc.setField('depth_mm', drawerSvc.fromDimInput($any($event.target).value))
+              "
+            />
+          </label>
+          <label class="dimensions-cell">
+            <span class="dimensions-label">{{
+              (drawerSvc.isImperial()
+                ? "models.field_weight_lb"
+                : "models.field_weight_kg"
+              ) | translate
+            }}</span>
+            <input
+              class="field-input field-input--short"
+              type="number"
+              min="0"
+              step="0.01"
+              [placeholder]="
+                (drawerSvc.isImperial()
+                  ? 'models.field_weight_ph_lb'
+                  : 'models.field_weight_ph'
+                ) | translate
+              "
+              [value]="drawerSvc.toWeightDisplay(drawerSvc.form().weight_kg)"
+              (input)="
+                drawerSvc.setField(
+                  'weight_kg',
+                  drawerSvc.fromWeightInput($any($event.target).value)
+                )
+              "
+            />
+          </label>
+        </div>
+      </div>
+
+      <!-- Power (W) -->
+      <label class="field">
+        <span class="field-label">{{
+          "models.field_power" | translate
+        }}</span>
+        <input
+          class="field-input field-input--short"
+          type="number"
+          min="0"
+          style="max-width: 120px"
+          [placeholder]="'models.field_power_ph' | translate"
+          [value]="drawerSvc.form().power_consumption_watt ?? ''"
+          (input)="
+            drawerSvc.setField(
+              'power_consumption_watt',
+              $any($event.target).value ? +$any($event.target).value : null
+            )
+          "
+        />
+      </label>
+
+      <label class="field">
+        <span class="field-label">{{
+          "models.field_notes" | translate
+        }}</span>
+        <textarea
+          class="field-textarea"
+          rows="3"
+          [placeholder]="'models.field_notes_ph' | translate"
+          [value]="drawerSvc.form().note"
+          (input)="drawerSvc.setField('note', $any($event.target).value)"
+        ></textarea>
+      </label>
+
+      <!-- Front image -->
+      <div class="field">
+        <span class="field-label">{{
+          "models.field_front_img" | translate
+        }}</span>
+        @if (drawerSvc.form().front_image_file || drawerSvc.form().front_image_url) {
+          <div class="img-preview-wrap">
+            <img
+              class="img-preview"
+              [src]="
+                drawerSvc.form().front_preview_url ||
+                (drawerSvc.form().front_image_file
+                  ? drawerSvc.objectUrl(drawerSvc.form().front_image_file!)
+                  : drawerSvc.form().front_image_url!)
+              "
+              [attr.alt]="'models.preview_front' | translate"
+            />
+            <button
+              class="btn-edit-img"
+              type="button"
+              [class.btn-edit-img--active]="drawerSvc.hasTransform('front')"
+              [title]="'models.editor_open' | translate"
+              (click)="drawerSvc.openImageEditor('front')"
+            >
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              @if (drawerSvc.hasTransform("front")) {
+                <span class="transform-dot"></span>
+              }
+            </button>
+            @if (drawerSvc.drawerEditId()) {
+              <button
+                class="btn-fullscreen-img"
+                type="button"
+                [title]="'models.ports_map_open' | translate"
+                (click)="openPortsMapForSide('front')"
+              >
+                <svg viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M2 2h4M2 2v4M14 2h-4M14 2v4M2 14h4M2 14v-4M14 14h-4M14 14v-4"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                @if (portsSvc.frontPorts().length) {
+                  <span class="ports-badge">{{ portsSvc.frontPorts().length }}</span>
+                }
+              </button>
+            }
+            <button
+              class="img-clear-btn"
+              type="button"
+              [title]="'models.remove_img' | translate"
+              (click)="
+                drawerSvc.clearImage('front_image_url');
+                drawerSvc.setField('front_image_file', null);
+                drawerSvc.setField('front_transform', null);
+                drawerSvc.setField('front_preview_url', null)
+              "
+            >
+              ×
+            </button>
+          </div>
+        }
+        <label class="file-input-label">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 3v10M3 8h10"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{
+            drawerSvc.form().front_image_file
+              ? drawerSvc.form().front_image_file!.name
+              : ("models.upload_img" | translate)
+          }}
+          <input
+            type="file"
+            accept="image/*"
+            class="file-input-hidden"
+            (change)="drawerSvc.onFileChange('front_image_file', $event)"
+          />
+        </label>
+      </div>
+
+      <!-- Rear image -->
+      <div class="field">
+        <span class="field-label">{{
+          "models.field_rear_img" | translate
+        }}</span>
+        @if (drawerSvc.form().rear_image_file || drawerSvc.form().rear_image_url) {
+          <div class="img-preview-wrap">
+            <img
+              class="img-preview"
+              [src]="
+                drawerSvc.form().rear_preview_url ||
+                (drawerSvc.form().rear_image_file
+                  ? drawerSvc.objectUrl(drawerSvc.form().rear_image_file!)
+                  : drawerSvc.form().rear_image_url!)
+              "
+              [attr.alt]="'models.preview_rear' | translate"
+            />
+            <button
+              class="btn-edit-img"
+              type="button"
+              [class.btn-edit-img--active]="drawerSvc.hasTransform('rear')"
+              [title]="'models.editor_open' | translate"
+              (click)="drawerSvc.openImageEditor('rear')"
+            >
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              @if (drawerSvc.hasTransform("rear")) {
+                <span class="transform-dot"></span>
+              }
+            </button>
+            @if (drawerSvc.drawerEditId()) {
+              <button
+                class="btn-fullscreen-img"
+                type="button"
+                [title]="'models.ports_map_open' | translate"
+                (click)="openPortsMapForSide('rear')"
+              >
+                <svg viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M2 2h4M2 2v4M14 2h-4M14 2v4M2 14h4M2 14v-4M14 14h-4M14 14v-4"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                @if (portsSvc.rearPorts().length) {
+                  <span class="ports-badge">{{ portsSvc.rearPorts().length }}</span>
+                }
+              </button>
+            }
+            <button
+              class="img-clear-btn"
+              type="button"
+              [title]="'models.remove_img' | translate"
+              (click)="
+                drawerSvc.clearImage('rear_image_url');
+                drawerSvc.setField('rear_image_file', null);
+                drawerSvc.setField('rear_transform', null);
+                drawerSvc.setField('rear_preview_url', null)
+              "
+            >
+              ×
+            </button>
+          </div>
+        }
+        <label class="file-input-label">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 3v10M3 8h10"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+          {{
+            drawerSvc.form().rear_image_file
+              ? drawerSvc.form().rear_image_file!.name
+              : ("models.upload_img" | translate)
+          }}
+          <input
+            type="file"
+            accept="image/*"
+            class="file-input-hidden"
+            (change)="drawerSvc.onFileChange('rear_image_file', $event)"
+          />
+        </label>
+      </div>
+
+      <!-- ── Network ports (edit mode only) ──────────────────── -->
+      @if (drawerSvc.drawerEditId()) {
+        <div class="field ports-section">
+          <div class="ports-header">
+            <span class="field-label">{{
+              "models.ports_section" | translate
+            }}</span>
+            @if (portsSvc.portsLoading()) {
+              <span class="spinner-xs"></span>
+            }
+            @if (role.canEditCatalog()) {
+              <button
+                class="btn-ports-add"
+                type="button"
+                (click)="portsSvc.openPortCreate()"
+              >
+                <svg viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M8 3v10M3 8h10"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                {{ "models.ports_add" | translate }}
+              </button>
+            }
+          </div>
+
+          @if (portsSvc.ports().length > 0) {
+            <table class="ports-table">
+              <thead>
+                <tr>
+                  <th>{{ "models.ports_col_name" | translate }}</th>
+                  <th>{{ "models.ports_col_type" | translate }}</th>
+                  <th>{{ "models.ports_col_side" | translate }}</th>
+                  <th>{{ "models.ports_col_pos" | translate }}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of portsSvc.ports(); track p.id) {
+                  <tr [class.ports-row--deleting]="portsSvc.portDeleteId() === p.id">
+                    <td class="port-cell-name">{{ p.name }}</td>
+                    <td class="port-cell-type">
+                      <span class="port-type-badge">{{
+                        portsSvc.portTypeLabel(p.port_type)
+                      }}</span>
+                    </td>
+                    <td class="port-cell-side">
+                      <span
+                        class="port-side-badge"
+                        [class.port-side-badge--front]="p.side === 'front'"
+                        [class.port-side-badge--rear]="p.side === 'rear'"
+                      >
+                        {{
+                          p.side === "front"
+                            ? ("models.ports_front" | translate)
+                            : ("models.ports_rear" | translate)
+                        }}
+                      </span>
+                    </td>
+                    <td class="port-cell-pos">
+                      @if (p.pos_x !== null) {
+                        <span
+                          class="port-pos-dot"
+                          [title]="p.pos_x + '%, ' + p.pos_y + '%'"
+                        ></span>
+                        @if (role.canEditCatalog()) {
+                          <button
+                            class="btn-port-clear-pos"
+                            type="button"
+                            [title]="'models.ports_clear_pos' | translate"
+                            (click)="portsSvc.clearPortPosition(p.id)"
+                          >
+                            ×
+                          </button>
+                        }
+                      } @else {
+                        <span class="port-no-pos">—</span>
+                        @if (role.canEditCatalog()) {
+                          <button
+                            class="btn-port-pick"
+                            type="button"
+                            [title]="'models.ports_pick_pos' | translate"
+                            (click)="openPortsMapForPort(p)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <circle
+                                cx="8"
+                                cy="8"
+                                r="3"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                              />
+                              <path
+                                d="M8 1v2M8 13v2M1 8h2M13 8h2"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linecap="round"
+                              />
+                            </svg>
+                          </button>
+                        }
+                      }
+                    </td>
+                    <td class="port-cell-actions">
+                      @if (portsSvc.portDeleteId() === p.id) {
+                        <div class="port-delete-confirm">
+                          <button
+                            class="btn-confirm btn-confirm--danger"
+                            [disabled]="portsSvc.portDeleteState() === 'saving'"
+                            (click)="portsSvc.submitDeletePort()"
+                          >
+                            @if (portsSvc.portDeleteState() === "saving") {
+                              …
+                            } @else {
+                              {{ "common.delete" | translate }}
+                            }
+                          </button>
+                          <button
+                            class="btn-confirm"
+                            (click)="portsSvc.cancelDeletePort()"
+                          >
+                            {{ "common.cancel" | translate }}
+                          </button>
+                        </div>
+                      } @else {
+                        @if (role.canEditCatalog()) {
+                          <button
+                            class="btn-port-edit"
+                            type="button"
+                            (click)="portsSvc.openPortEdit(p)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        }
+                        @if (role.canDeleteCatalog()) {
+                          <button
+                            class="btn-port-delete"
+                            type="button"
+                            (click)="portsSvc.confirmDeletePort(p.id)"
+                          >
+                            <svg viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M3 5h10M6 5V3h4v2M7 8v4M9 8v4M4 5l1 8h6l1-8"
+                                stroke="currentColor"
+                                stroke-width="1.4"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        }
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else if (!portsSvc.portsLoading()) {
+            <p class="ports-empty">{{ "models.ports_empty" | translate }}</p>
+          }
+
+          <!-- Port inline form -->
+          @if (portsSvc.portFormOpen()) {
+            <div class="port-form">
+              <div class="port-form-row">
+                <label class="port-form-field">
+                  <span class="port-form-label"
+                    >{{ "models.ports_col_name" | translate }}
+                    <span class="req">*</span></span
+                  >
+                  <input
+                    class="field-input"
+                    type="text"
+                    [value]="portsSvc.portForm().name"
+                    (input)="setPortField('name', $any($event.target).value)"
+                  />
+                </label>
+                <label class="port-form-field">
+                  <span class="port-form-label">{{
+                    "models.ports_col_type" | translate
+                  }}</span>
+                  <select
+                    class="field-input"
+                    [value]="portsSvc.portForm().port_type"
+                    (change)="
+                      setPortField('port_type', $any($event.target).value)
+                    "
+                  >
+                    @for (t of portsSvc.portTypes; track t.value) {
+                      <option
+                        [value]="t.value"
+                        [selected]="portsSvc.portForm().port_type === t.value"
+                      >
+                        {{ t.label }}
+                      </option>
+                    }
+                  </select>
+                </label>
+                <label class="port-form-field">
+                  <span class="port-form-label">{{
+                    "models.ports_col_side" | translate
+                  }}</span>
+                  <select
+                    class="field-input"
+                    [value]="portsSvc.portForm().side"
+                    (change)="setPortField('side', $any($event.target).value)"
+                  >
+                    <option value="front">
+                      {{ "models.ports_front" | translate }}
+                    </option>
+                    <option value="rear">
+                      {{ "models.ports_rear" | translate }}
+                    </option>
+                  </select>
+                </label>
+              </div>
+              <label class="port-form-field">
+                <span class="port-form-label">{{
+                  "models.ports_col_notes" | translate
+                }}</span>
+                <input
+                  class="field-input"
+                  type="text"
+                  [value]="portsSvc.portForm().notes"
+                  (input)="setPortField('notes', $any($event.target).value)"
+                />
+              </label>
+              <div class="port-form-actions">
+                @if (portsSvc.portSaveState() === "error") {
+                  <span class="port-save-error">{{
+                    "common.error" | translate
+                  }}</span>
+                }
+                <button
+                  class="btn-cancel"
+                  type="button"
+                  (click)="portsSvc.portFormOpen.set(false)"
+                >
+                  {{ "common.cancel" | translate }}
+                </button>
+                <button
+                  class="btn-save"
+                  type="button"
+                  [disabled]="
+                    !portsSvc.portForm().name.trim() || portsSvc.portSaveState() === 'saving'
+                  "
+                  (click)="submitPortForm()"
+                >
+                  @if (portsSvc.portSaveState() === "saving") {
+                    …
+                  } @else {
+                    {{ "common.save" | translate }}
+                  }
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      @if (drawerSvc.drawerSave() === "error") {
+        <div class="save-error">{{ drawerSvc.drawerSaveMsg() }}</div>
+      }
+    </div>
+
+    <!-- ── Image editor overlay (inside the drawer) ───────────── -->
+    @defer (when drawerSvc.editingImage() != null; prefetch on idle) {
+      @if (drawerSvc.editingImage(); as side) {
+        <div class="editor-overlay">
+          <div class="editor-overlay-header">
+            <span class="editor-overlay-title">
+              {{
+                side === "front"
+                  ? ("models.field_front_img" | translate)
+                  : ("models.field_rear_img" | translate)
+              }}
+            </span>
+          </div>
+          <div class="editor-overlay-body">
+            <app-image-editor
+              [imageFile]="
+                side === 'front'
+                  ? drawerSvc.form().front_image_file
+                  : drawerSvc.form().rear_image_file
+              "
+              [imageUrl]="
+                side === 'front'
+                  ? drawerSvc.form().front_image_url
+                  : drawerSvc.form().rear_image_url
+              "
+              (confirmed)="drawerSvc.onEditorConfirmed($event, side)"
+              (cancelled)="drawerSvc.onEditorCancelled()"
+            />
+          </div>
+        </div>
+      }
+    }
+
+    <div class="drawer-footer">
+      <button class="btn-cancel" (click)="drawerSvc.closeDrawer()">
+        {{ "common.cancel" | translate }}
+      </button>
+      <button
+        class="btn-save"
+        [disabled]="!drawerSvc.canSave() || drawerSvc.drawerSave() === 'saving'"
+        (click)="drawerSvc.submitDrawer()"
+      >
+        @if (drawerSvc.drawerSave() === "saving") {
+          {{ "models.saving_form" | translate }}
+        } @else {
+          {{ "common.save" | translate }}
+        }
+      </button>
+    </div>
+  </aside>
+}

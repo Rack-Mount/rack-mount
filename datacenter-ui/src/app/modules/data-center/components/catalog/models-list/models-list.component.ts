@@ -28,31 +28,24 @@ import {
   AssetType,
   Vendor,
 } from '../../../../core/api/v1';
-import { AssetModelPort } from '../../../../core/api/v1/model/assetModelPort';
 import {
   DEFAULT_PAGE_SIZE,
   SEARCH_DEBOUNCE_MS,
 } from '../../../../core/constants';
 import { MeasurementPipe } from '../../../../core/pipes/measurement.pipe';
-import { BackendErrorService } from '../../../../core/services/backend-error.service';
-import { LanguageService } from '../../../../core/services/language.service';
 import {
   CatalogImportResult,
   MultipartUploadService,
 } from '../../../../core/services/multipart-upload.service';
 import { RoleService } from '../../../../core/services/role.service';
-import { SettingsService } from '../../../../core/services/settings.service';
 import {
   DestroyableState,
   PaginatedListState,
 } from '../../../../core/types/list-state.types';
 import { toggleSort } from '../../../../core/utils/sort.utils';
-import {
-  ImageEditorComponent,
-  type ImageEditParams,
-} from './image-editor/image-editor.component';
-import { ModelPortsService, type PortForm } from './model-ports.service';
-import { type AssetModelPortType } from './port-types';
+import { ModelFormDrawerComponent } from './model-form-drawer.component';
+import { ModelFormDrawerService } from './model-form-drawer.service';
+import { ModelPortsService } from './model-ports.service';
 import {
   type PortAddEvent,
   type PortEditEvent,
@@ -66,49 +59,8 @@ type ImportState = 'idle' | 'importing' | 'error' | 'conflict' | 'bad_format';
 type ExportState = 'idle' | 'exporting' | 'error';
 type CatalogImportState = 'idle' | 'importing' | 'error' | 'bad_format';
 
-export interface ModelForm {
-  name: string;
-  vendor_id: number | null;
-  type_id: number | null;
-  rack_units: number | null;
-  width_mm: number | null;
-  height_mm: number | null;
-  depth_mm: number | null;
-  weight_kg: string;
-  power_consumption_watt: number | null;
-  note: string;
-  front_image_file: File | null;
-  rear_image_file: File | null;
-  front_image_url: string | null;
-  rear_image_url: string | null;
-  front_transform: ImageEditParams | null;
-  rear_transform: ImageEditParams | null;
-  front_preview_url: string | null;
-  rear_preview_url: string | null;
-}
-
-function emptyForm(): ModelForm {
-  return {
-    name: '',
-    vendor_id: null,
-    type_id: null,
-    rack_units: null,
-    width_mm: null,
-    height_mm: null,
-    depth_mm: null,
-    weight_kg: '',
-    power_consumption_watt: null,
-    note: '',
-    front_image_file: null,
-    rear_image_file: null,
-    front_image_url: null,
-    rear_image_url: null,
-    front_transform: null,
-    rear_transform: null,
-    front_preview_url: null,
-    rear_preview_url: null,
-  };
-}
+// ModelForm is exported from models-list.types.ts — re-export for backward compatibility
+export type { ModelForm } from './models-list.types';
 
 @Component({
   selector: 'app-models-list',
@@ -116,66 +68,32 @@ function emptyForm(): ModelForm {
   imports: [
     SlicePipe,
     TranslatePipe,
-    ImageEditorComponent,
-    PortsMapComponent,
     MeasurementPipe,
+    ModelFormDrawerComponent,
+    PortsMapComponent,
   ],
   templateUrl: './models-list.component.html',
   styleUrl: './models-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ModelPortsService],
+  providers: [ModelPortsService, ModelFormDrawerService],
 })
 export class ModelsListComponent {
   private readonly portsSvc = inject(ModelPortsService);
+  protected readonly drawerSvc = inject(ModelFormDrawerService);
   private readonly svc = inject(AssetService);
   protected readonly role = inject(RoleService);
-  private readonly settings = inject(SettingsService);
-  private readonly lang = inject(LanguageService);
-
-  protected readonly isImperial = computed(() => {
-    const s = this.settings.measurementSystemSetting();
-    if (s !== 'auto') return s === 'imperial';
-    return this.lang.currentLang() === 'en';
-  });
-
-  /** Display a mm value in the current unit (for form field [value]). */
-  protected toDimDisplay(mm: number | null): string {
-    if (mm == null) return '';
-    if (this.isImperial()) return (mm * 0.0393701).toFixed(3);
-    return String(mm);
-  }
-
-  /** Convert a dimension input value back to mm for storage. */
-  protected fromDimInput(value: string): number | null {
-    if (!value) return null;
-    const n = parseFloat(value);
-    if (isNaN(n)) return null;
-    if (this.isImperial()) return Math.round(n / 0.0393701);
-    return n;
-  }
-
-  /** Display a kg value in the current unit (for form field [value]). */
-  protected toWeightDisplay(kg: string): string {
-    if (!kg) return '';
-    const n = Number(kg);
-    if (isNaN(n)) return kg;
-    if (this.isImperial()) return (n * 2.20462).toFixed(3);
-    return kg;
-  }
-
-  /** Convert a weight input value back to kg string for storage. */
-  protected fromWeightInput(value: string): string {
-    if (!value) return '';
-    const n = parseFloat(value);
-    if (isNaN(n)) return value;
-    if (this.isImperial()) return (n / 2.20462).toFixed(4);
-    return value;
-  }
-
   private readonly destroyRef = inject(DestroyRef);
-  private readonly backendErr = inject(BackendErrorService);
   private readonly uploadSvc = inject(MultipartUploadService);
   private readonly http = inject(HttpClient);
+
+  /**
+   * Appends a ?w=<width> query param to an image URL so the backend
+   * serves a resized variant instead of the full-resolution original.
+   */
+  protected imgW(url: string | null | undefined, w: number): string {
+    if (!url) return '';
+    return url.includes('?') ? `${url}&w=${w}` : `${url}?w=${w}`;
+  }
 
   // ── Reference data ────────────────────────────────────────────────────────
   protected readonly vendors = signal<Vendor[]>([]);
@@ -215,14 +133,6 @@ export class ModelsListComponent {
     Math.max(1, Math.ceil(this.totalCount() / PAGE_SIZE)),
   );
 
-  // ── Drawer (create / edit) ────────────────────────────────────────────────
-  protected readonly drawerOpen = signal(false);
-  protected readonly drawerMode = signal<'create' | 'edit'>('create');
-  protected readonly drawerEditId = signal<number | null>(null);
-  protected readonly form = signal<ModelForm>(emptyForm());
-  protected readonly drawerSave = signal<DestroyableState>('idle');
-  protected readonly drawerSaveMsg = signal('');
-
   // ── Preview ───────────────────────────────────────────────────────────────
   protected readonly previewModel = signal<AssetModel | null>(null);
 
@@ -259,65 +169,13 @@ export class ModelsListComponent {
     null,
   );
 
-  // ── Image editor ──────────────────────────────────────────────────────────
-  /** Which image side is currently open in the editor ('front' | 'rear' | null) */
-  protected readonly editingImage = signal<'front' | 'rear' | null>(null);
-
-  // ── Ports (delegated to ModelPortsService) ────────────────────────────────
-  protected get ports() {
-    return this.portsSvc.ports;
-  }
-  protected get portsLoading() {
-    return this.portsSvc.portsLoading;
-  }
-  protected get portTypes() {
-    return this.portsSvc.portTypes;
-  }
-  protected get frontPorts() {
-    return this.portsSvc.frontPorts;
-  }
-  protected get rearPorts() {
-    return this.portsSvc.rearPorts;
-  }
-  protected get portFormOpen() {
-    return this.portsSvc.portFormOpen;
-  }
-  protected get portFormMode() {
-    return this.portsSvc.portFormMode;
-  }
-  protected get portEditId() {
-    return this.portsSvc.portEditId;
-  }
-  protected get portForm() {
-    return this.portsSvc.portForm;
-  }
-  protected get portSaveState() {
-    return this.portsSvc.portSaveState;
-  }
-  protected get portDeleteId() {
-    return this.portsSvc.portDeleteId;
-  }
-  protected get portDeleteState() {
-    return this.portsSvc.portDeleteState;
-  }
+  // ── Ports-map access (for overlay in parent template) ─────────────────────
   protected get portsMapOpen() {
     return this.portsSvc.portsMapOpen;
   }
   protected get placingPortId() {
     return this.portsSvc.placingPortId;
   }
-
-  // ── Autocomplete inputs for vendor / type ─────────────────────────────────
-  protected readonly vendorSearch = signal('');
-  protected readonly vendorDropdownOpen = signal(false);
-  protected readonly typeSearch = signal('');
-  protected readonly typeDropdownOpen = signal(false);
-
-  protected readonly filteredVendors = signal<Vendor[]>([]);
-  protected readonly filteredTypes = signal<AssetType[]>([]);
-
-  private readonly _vendorAcInput = new Subject<string>();
-  private readonly _typeAcInput = new Subject<string>();
 
   constructor() {
     // Load reference data (for toolbar filters)
@@ -330,48 +188,6 @@ export class ModelsListComponent {
         this.vendors.set(vr.results ?? []);
         this.types.set(tr.results ?? []);
       });
-
-    // Autocomplete vendor — live DB search
-    this._vendorAcInput
-      .pipe(
-        debounceTime(250),
-        distinctUntilChanged(),
-        switchMap((q) =>
-          this.svc
-            .assetVendorList({
-              search: q || undefined,
-              pageSize: 25,
-              ordering: 'name',
-            })
-            .pipe(
-              map((r) => r.results ?? []),
-              catchError(() => of([] as Vendor[])),
-            ),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((list) => this.filteredVendors.set(list));
-
-    // Autocomplete type — live DB search
-    this._typeAcInput
-      .pipe(
-        debounceTime(250),
-        distinctUntilChanged(),
-        switchMap((q) =>
-          this.svc
-            .assetAssetTypeList({
-              search: q || undefined,
-              pageSize: 25,
-              ordering: 'name',
-            })
-            .pipe(
-              map((r) => r.results ?? []),
-              catchError(() => of([] as AssetType[])),
-            ),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((list) => this.filteredTypes.set(list));
 
     // Debounce search
     this._searchInput
@@ -430,6 +246,26 @@ export class ModelsListComponent {
           this.selectedIds.set(new Set());
         }
       });
+
+    // Update list when drawer saves a model
+    this.drawerSvc.modelSaved
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(({ saved, mode }) => {
+        if (mode === 'create' || this.listState().status !== 'loaded') {
+          this.listState.update((s) => {
+            if (s.status !== 'loaded') return s;
+            return { ...s, results: [saved, ...s.results], count: s.count + 1 };
+          });
+        } else {
+          this.listState.update((s) => {
+            if (s.status !== 'loaded') return s;
+            return {
+              ...s,
+              results: s.results.map((r) => (r.id === saved.id ? saved : r)),
+            };
+          });
+        }
+      });
   }
 
   // ── Filters ───────────────────────────────────────────────────────────────
@@ -467,68 +303,17 @@ export class ModelsListComponent {
       this.typeFilter() !== null,
   );
 
-  // ── Drawer ────────────────────────────────────────────────────────────────
+  // ── Drawer shortcuts ──────────────────────────────────────────────────────
   protected openCreate(): void {
-    this.form.set(emptyForm());
-    this.vendorSearch.set('');
-    this.typeSearch.set('');
-    this.vendorDropdownOpen.set(false);
-    this.typeDropdownOpen.set(false);
-    this.drawerSave.set('idle');
-    this.drawerSaveMsg.set('');
-    this.drawerMode.set('create');
-    this.drawerEditId.set(null);
-    this.drawerOpen.set(true);
+    this.drawerSvc.openCreate();
   }
 
   protected openEdit(m: AssetModel): void {
-    this.openDrawerFromModel(m, 'edit');
-    this.loadPortsForModel(m.id);
+    this.drawerSvc.openEdit(m);
   }
 
   protected cloneModel(m: AssetModel): void {
-    this.openDrawerFromModel(m, 'create', `(CLONE) ${m.name ?? ''}`);
-  }
-
-  private openDrawerFromModel(
-    m: AssetModel,
-    mode: 'create' | 'edit',
-    nameOverride?: string,
-  ): void {
-    this.vendorSearch.set(m.vendor?.name ?? '');
-    this.typeSearch.set(m.type?.name ?? '');
-    this.vendorDropdownOpen.set(false);
-    this.typeDropdownOpen.set(false);
-    this.form.set({
-      name: nameOverride ?? m.name ?? '',
-      vendor_id: m.vendor?.id ?? null,
-      type_id: m.type?.id ?? null,
-      rack_units: m.rack_units ?? null,
-      width_mm: m.width_mm ?? null,
-      height_mm: m.height_mm ?? null,
-      depth_mm: m.depth_mm ?? null,
-      weight_kg: m.weight_kg ?? '',
-      power_consumption_watt: m.power_consumption_watt ?? null,
-      note: m.note ?? '',
-      front_image_file: null,
-      rear_image_file: null,
-      front_image_url: m.front_image ?? null,
-      rear_image_url: m.rear_image ?? null,
-      front_transform: null,
-      rear_transform: null,
-      front_preview_url: null,
-      rear_preview_url: null,
-    });
-    this.drawerSave.set('idle');
-    this.drawerSaveMsg.set('');
-    this.drawerMode.set(mode);
-    this.drawerEditId.set(mode === 'edit' ? m.id : null);
-    this.drawerOpen.set(true);
-  }
-
-  protected closeDrawer(): void {
-    this.drawerOpen.set(false);
-    this.portsSvc.reset();
+    this.drawerSvc.cloneModel(m);
   }
 
   // ── Preview ───────────────────────────────────────────────────────────────
@@ -544,205 +329,7 @@ export class ModelsListComponent {
     const m = this.previewModel();
     if (!m) return;
     this.closePreview();
-    this.openEdit(m);
-  }
-
-  protected setField<K extends keyof ModelForm>(
-    key: K,
-    value: ModelForm[K],
-  ): void {
-    this.form.update((f) => ({ ...f, [key]: value }));
-  }
-
-  protected readonly canSave = computed(() => {
-    const f = this.form();
-    return !!f.name.trim() && f.vendor_id !== null && f.type_id !== null;
-  });
-
-  protected objectUrl(file: File): string {
-    return URL.createObjectURL(file);
-  }
-
-  /**
-   * Appends a ?w=<width> query param to an image URL so the backend
-   * serves a resized variant instead of the full-resolution original.
-   */
-  protected imgW(url: string | null | undefined, w: number): string {
-    if (!url) return '';
-    return url.includes('?') ? `${url}&w=${w}` : `${url}?w=${w}`;
-  }
-
-  protected onFileChange(
-    field: 'front_image_file' | 'rear_image_file',
-    event: Event,
-  ): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] ?? null;
-    this.form.update((f) => ({ ...f, [field]: file }));
-  }
-
-  protected clearImage(field: 'front_image_url' | 'rear_image_url'): void {
-    this.form.update((f) => ({ ...f, [field]: null }));
-  }
-
-  // ── Image editor ──────────────────────────────────────────────────────────
-
-  protected openImageEditor(side: 'front' | 'rear'): void {
-    this.editingImage.set(side);
-  }
-
-  protected onEditorConfirmed(
-    event: { params: ImageEditParams; previewDataUrl: string },
-    side: 'front' | 'rear',
-  ): void {
-    if (side === 'front') {
-      this.form.update((f) => ({
-        ...f,
-        front_transform: event.params,
-        front_preview_url: event.previewDataUrl,
-      }));
-    } else {
-      this.form.update((f) => ({
-        ...f,
-        rear_transform: event.params,
-        rear_preview_url: event.previewDataUrl,
-      }));
-    }
-    this.editingImage.set(null);
-  }
-
-  protected onEditorCancelled(): void {
-    this.editingImage.set(null);
-  }
-
-  protected onVendorFocus(): void {
-    this.vendorDropdownOpen.set(true);
-    this._vendorAcInput.next(this.vendorSearch());
-  }
-
-  protected onVendorSearch(value: string): void {
-    this.vendorSearch.set(value);
-    this.vendorDropdownOpen.set(true);
-    this._vendorAcInput.next(value);
-    if (!value) this.form.update((f) => ({ ...f, vendor_id: null }));
-  }
-
-  protected selectVendor(v: Vendor): void {
-    this.form.update((f) => ({ ...f, vendor_id: v.id }));
-    this.vendorSearch.set(v.name);
-    this.vendorDropdownOpen.set(false);
-  }
-
-  protected clearVendor(): void {
-    this.form.update((f) => ({ ...f, vendor_id: null }));
-    this.vendorSearch.set('');
-    this.vendorDropdownOpen.set(false);
-    this._vendorAcInput.next('');
-  }
-
-  protected onTypeFocus(): void {
-    this.typeDropdownOpen.set(true);
-    this._typeAcInput.next(this.typeSearch());
-  }
-
-  protected onTypeSearch(value: string): void {
-    this.typeSearch.set(value);
-    this.typeDropdownOpen.set(true);
-    this._typeAcInput.next(value);
-    if (!value) this.form.update((f) => ({ ...f, type_id: null }));
-  }
-
-  protected selectType(t: AssetType): void {
-    this.form.update((f) => ({ ...f, type_id: t.id }));
-    this.typeSearch.set(t.name);
-    this.typeDropdownOpen.set(false);
-  }
-
-  protected clearType(): void {
-    this.form.update((f) => ({ ...f, type_id: null }));
-    this.typeSearch.set('');
-    this.typeDropdownOpen.set(false);
-    this._typeAcInput.next('');
-  }
-
-  /** Returns true if the form has any non-identity transforms configured. */
-  protected hasTransform(side: 'front' | 'rear'): boolean {
-    const t =
-      side === 'front'
-        ? this.form().front_transform
-        : this.form().rear_transform;
-    if (!t) return false;
-    return (
-      !!t.perspective || !!t.crop || t.rotation !== 0 || t.flipH || t.flipV
-    );
-  }
-
-  protected submitDrawer(): void {
-    if (!this.canSave()) return;
-    const f = this.form();
-
-    const fd = new FormData();
-    fd.append('name', f.name.trim());
-    fd.append('vendor_id', String(f.vendor_id));
-    fd.append('type_id', String(f.type_id));
-    if (f.rack_units != null) fd.append('rack_units', String(f.rack_units));
-    if (f.width_mm != null) fd.append('width_mm', String(f.width_mm));
-    if (f.height_mm != null) fd.append('height_mm', String(f.height_mm));
-    if (f.depth_mm != null) fd.append('depth_mm', String(f.depth_mm));
-    if (f.weight_kg) fd.append('weight_kg', f.weight_kg);
-    if (f.power_consumption_watt != null)
-      fd.append('power_consumption_watt', String(f.power_consumption_watt));
-    fd.append('note', f.note ?? '');
-    if (f.front_image_file) {
-      fd.append('front_image', f.front_image_file);
-      if (f.front_transform)
-        fd.append('front_image_transform', JSON.stringify(f.front_transform));
-    } else if (f.front_image_url === null && this.drawerMode() === 'edit') {
-      fd.append('front_image', '');
-    } else if (f.front_image_url && f.front_transform) {
-      // Existing image with editor transforms — send params only; backend applies to stored file
-      fd.append('front_image_transform', JSON.stringify(f.front_transform));
-    }
-    if (f.rear_image_file) {
-      fd.append('rear_image', f.rear_image_file);
-      if (f.rear_transform)
-        fd.append('rear_image_transform', JSON.stringify(f.rear_transform));
-    } else if (f.rear_image_url === null && this.drawerMode() === 'edit') {
-      fd.append('rear_image', '');
-    } else if (f.rear_image_url && f.rear_transform) {
-      fd.append('rear_image_transform', JSON.stringify(f.rear_transform));
-    }
-
-    this.drawerSave.set('saving');
-    const req$ = this.uploadSvc.saveAssetModel(fd, this.drawerEditId());
-
-    req$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (saved) => {
-        this.drawerSave.set('idle');
-        this.drawerOpen.set(false);
-        if (
-          this.drawerMode() === 'create' ||
-          this.listState().status !== 'loaded'
-        ) {
-          this.listState.update((s) => {
-            if (s.status !== 'loaded') return s;
-            return { ...s, results: [saved, ...s.results], count: s.count + 1 };
-          });
-        } else {
-          this.listState.update((s) => {
-            if (s.status !== 'loaded') return s;
-            return {
-              ...s,
-              results: s.results.map((r) => (r.id === saved.id ? saved : r)),
-            };
-          });
-        }
-      },
-      error: (err: HttpErrorResponse) => {
-        this.drawerSave.set('error');
-        this.drawerSaveMsg.set(this.backendErr.parse(err));
-      },
-    });
+    this.drawerSvc.openEdit(m);
   }
 
   // ── Delete ────────────────────────────────────────────────────────────────
@@ -966,35 +553,7 @@ export class ModelsListComponent {
       });
   }
 
-  // ── Ports (delegates to ModelPortsService) ────────────────────────────────
-
-  protected loadPortsForModel(modelId: number): void {
-    this.portsSvc.loadPortsForModel(modelId);
-  }
-  protected openPortCreate(): void {
-    this.portsSvc.openPortCreate();
-  }
-  protected openPortEdit(p: AssetModelPort): void {
-    this.portsSvc.openPortEdit(p);
-  }
-  protected setPortField<K extends keyof PortForm>(
-    key: K,
-    value: PortForm[K],
-  ): void {
-    this.portsSvc.setPortField(key, value);
-  }
-  protected submitPortForm(): void {
-    this.portsSvc.submitPortForm(this.drawerEditId());
-  }
-  protected confirmDeletePort(id: number): void {
-    this.portsSvc.confirmDeletePort(id);
-  }
-  protected cancelDeletePort(): void {
-    this.portsSvc.cancelDeletePort();
-  }
-  protected submitDeletePort(): void {
-    this.portsSvc.submitDeletePort();
-  }
+  // ── Ports-map (stays in parent for preview panel + overlay) ───────────────
   protected openPortsMap(
     side: string | undefined,
     imageUrl: string,
@@ -1002,30 +561,23 @@ export class ModelsListComponent {
   ): void {
     this.portsSvc.openPortsMap(side, imageUrl, readonly);
   }
+
   protected closePortsMap(): void {
     this.portsSvc.closePortsMap();
   }
-  protected startPlacingPort(portId: number): void {
-    this.portsSvc.startPlacingPort(portId);
-  }
-  protected stopPlacingPort(): void {
-    this.portsSvc.stopPlacingPort();
-  }
+
   protected onPortPicked(event: PortPickEvent): void {
     this.portsSvc.onPortPicked(event);
   }
-  protected clearPortPosition(portId: number): void {
-    this.portsSvc.clearPortPosition(portId);
-  }
-  protected portTypeLabel(type: AssetModelPortType | undefined): string {
-    return this.portsSvc.portTypeLabel(type);
-  }
+
   protected onPortAddedFromMap(event: PortAddEvent): void {
-    this.portsSvc.onPortAddedFromMap(event, this.drawerEditId());
+    this.portsSvc.onPortAddedFromMap(event, this.drawerSvc.drawerEditId());
   }
+
   protected onPortRemovedFromMap(portId: number): void {
     this.portsSvc.onPortRemovedFromMap(portId);
   }
+
   protected onPortEditedFromMap(event: PortEditEvent): void {
     this.portsSvc.onPortEditedFromMap(event);
   }
