@@ -75,7 +75,9 @@
           )
         "
       >
-        <option value="">{{ "components.field_warehouse_item_none" | translate }}</option>
+        <option value="">
+          {{ "components.field_warehouse_item_none" | translate }}
+        </option>
         @for (wi of warehouseItems(); track wi.id) {
           <option [value]="wi.id">
             {{ wi.name }}
@@ -86,7 +88,9 @@
         }
       </select>
       @if (warehouseItems().length === 0) {
-        <span class="form-hint">{{ "components.field_warehouse_item_empty" | translate }}</span>
+        <span class="form-hint">{{
+          "components.field_warehouse_item_empty" | translate
+        }}</span>
       }
     </div>
 
@@ -286,7 +290,9 @@
         <div class="editor-overlay-body">
           <app-image-editor
             [imageFile]="
-              side === 'front' ? form().front_image_file : form().rear_image_file
+              side === 'front'
+                ? form().front_image_file
+                : form().rear_image_file
             "
             [imageUrl]="
               side === 'front' ? form().front_image_url : form().rear_image_url
