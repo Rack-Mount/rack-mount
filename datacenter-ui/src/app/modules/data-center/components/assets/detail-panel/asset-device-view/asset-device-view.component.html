@@ -117,8 +117,17 @@
       <div class="device-panel">
         <div class="panel-label">
           {{ "asset_device_view.front" | translate }}
+          @if (nicPlacingId() && isServer()) {
+            <span class="panel-placing-hint">{{ "asset_device_view.nic_place_hint" | translate }}</span>
+          }
         </div>
-        <div class="panel-frame">
+        <div
+          class="panel-frame"
+          [class.panel-frame--placing]="nicPlacingId() !== null && isServer()"
+          (mousedown)="onPanelMouseDown($event, 'front')"
+          (mousemove)="onPanelMouseMove($event)"
+          (mouseup)="onPanelMouseUp($event)"
+        >
           @if (frontImage(); as img) {
             <img
               class="panel-img"
@@ -134,6 +143,40 @@
               }}</span>
             </div>
           }
+          <!-- NIC rects on front panel -->
+          @for (nic of nicsFront(); track nic.id) {
+            <div
+              class="nic-rect"
+              [class.nic-rect--copper]="nic.media_type === 'copper'"
+              [class.nic-rect--fiber]="nic.media_type === 'fiber'"
+              [style.left.%]="nic.pos_x"
+              [style.top.%]="nic.pos_y"
+              [style.width.%]="nic.width"
+              [style.height.%]="nic.height"
+              [title]="nic.name + ' · ' + nic.speed_display"
+            >
+              <div class="nic-ports">
+                @for (p of portRange(nic.port_count); track p) {
+                  <div class="nic-port" [class.nic-port--fiber]="nic.media_type === 'fiber'">
+                    <span class="nic-led"></span>
+                  </div>
+                }
+              </div>
+              <span class="nic-rect__label">{{ nic.name }}</span>
+            </div>
+          }
+          <!-- live draw preview -->
+          @if (nicDrawRect(); as dr) {
+            @if (dr.side === 'front') {
+              <div
+                class="nic-rect nic-rect--preview"
+                [style.left.%]="dr.left"
+                [style.top.%]="dr.top"
+                [style.width.%]="dr.width"
+                [style.height.%]="dr.height"
+              ></div>
+            }
+          }
         </div>
       </div>
 
@@ -141,8 +184,17 @@
       <div class="device-panel">
         <div class="panel-label">
           {{ "asset_device_view.rear" | translate }}
+          @if (nicPlacingId() && isServer()) {
+            <span class="panel-placing-hint">{{ "asset_device_view.nic_place_hint" | translate }}</span>
+          }
         </div>
-        <div class="panel-frame panel-frame--rear">
+        <div
+          class="panel-frame panel-frame--rear"
+          [class.panel-frame--placing]="nicPlacingId() !== null && isServer()"
+          (mousedown)="onPanelMouseDown($event, 'rear')"
+          (mousemove)="onPanelMouseMove($event)"
+          (mouseup)="onPanelMouseUp($event)"
+        >
           @if (rearImage(); as img) {
             <img
               class="panel-img"
@@ -158,9 +210,53 @@
               }}</span>
             </div>
           }
+          <!-- NIC rects on rear panel -->
+          @for (nic of nicsRear(); track nic.id) {
+            <div
+              class="nic-rect"
+              [class.nic-rect--copper]="nic.media_type === 'copper'"
+              [class.nic-rect--fiber]="nic.media_type === 'fiber'"
+              [style.left.%]="nic.pos_x"
+              [style.top.%]="nic.pos_y"
+              [style.width.%]="nic.width"
+              [style.height.%]="nic.height"
+              [title]="nic.name + ' · ' + nic.speed_display"
+            >
+              <div class="nic-ports">
+                @for (p of portRange(nic.port_count); track p) {
+                  <div class="nic-port" [class.nic-port--fiber]="nic.media_type === 'fiber'">
+                    <span class="nic-led"></span>
+                  </div>
+                }
+              </div>
+              <span class="nic-rect__label">{{ nic.name }}</span>
+            </div>
+          }
+          <!-- live draw preview -->
+          @if (nicDrawRect(); as dr) {
+            @if (dr.side === 'rear') {
+              <div
+                class="nic-rect nic-rect--preview"
+                [style.left.%]="dr.left"
+                [style.top.%]="dr.top"
+                [style.width.%]="dr.width"
+                [style.height.%]="dr.height"
+              ></div>
+            }
+          }
         </div>
       </div>
     </div>
+
+    <!-- placing mode cancel bar -->
+    @if (nicPlacingId() && isServer()) {
+      <div class="nic-placing-bar">
+        <span>{{ "asset_device_view.nic_placing_active" | translate }}</span>
+        <button class="btn-action" (click)="cancelPlacingNic()">
+          {{ "common.cancel" | translate }}
+        </button>
+      </div>
+    }
 
     <!-- ── Monitoring info grid ──────────────────────────────────────────────── -->
     <div class="info-grid">
@@ -336,6 +432,197 @@
               </li>
             }
           </ul>
+        }
+      </div>
+    }
+
+    <!-- ── Network Interfaces ───────────────────────────────────────────────── -->
+    @if (isServer()) {
+      <div class="history-section">
+        <button class="history-toggle" (click)="toggleNicSection()">
+          <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+            <rect x="1" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="4" cy="8" r="1" fill="currentColor"/>
+            <path d="M7 8h5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+          </svg>
+          {{ "asset_device_view.section_network_interfaces" | translate }}
+          <span
+            class="history-chevron"
+            [class.history-chevron--open]="nicSectionOpen()"
+            >▾</span
+          >
+        </button>
+
+        @if (nicSectionOpen()) {
+          <div class="history-body">
+            <!-- Add button -->
+            @if (role.canEditAssets() && !nicFormOpen()) {
+              <div class="req-inline-toolbar">
+                <button class="btn-move" (click)="openNicForm()">
+                  + {{ "asset_device_view.nic_add" | translate }}
+                </button>
+              </div>
+            }
+
+            <!-- Add / Edit form -->
+            @if (nicFormOpen()) {
+              <div class="move-form">
+                <h4 class="move-form__title">
+                  @if (nicEditId()) {
+                    {{ "asset_device_view.nic_edit_title" | translate }}
+                  } @else {
+                    {{ "asset_device_view.nic_add_title" | translate }}
+                  }
+                </h4>
+                <div class="move-form__grid">
+                  <label class="move-label">
+                    {{ "asset_device_view.nic_name" | translate }}
+                    <input
+                      class="move-input"
+                      type="text"
+                      [value]="nicFormName()"
+                      (input)="nicFormName.set($any($event.target).value)"
+                      placeholder="e.g. eth0, eno1, NIC 1"
+                    />
+                  </label>
+
+                  <label class="move-label">
+                    {{ "asset_device_view.nic_media_type" | translate }}
+                    <select
+                      class="move-select"
+                      [value]="nicFormMediaType()"
+                      (change)="nicFormMediaType.set($any($event.target).value)"
+                    >
+                      @for (opt of nicMediaOptions; track opt.value) {
+                        <option [value]="opt.value">{{ opt.label }}</option>
+                      }
+                    </select>
+                  </label>
+
+                  <label class="move-label">
+                    {{ "asset_device_view.nic_port_count" | translate }}
+                    <select
+                      class="move-select"
+                      [value]="nicFormPortCount()"
+                      (change)="nicFormPortCount.set($any(+$any($event.target).value))"
+                    >
+                      @for (opt of nicPortCountOptions; track opt.value) {
+                        <option [value]="opt.value">{{ opt.label }}</option>
+                      }
+                    </select>
+                  </label>
+
+                  <label class="move-label">
+                    {{ "asset_device_view.nic_speed" | translate }}
+                    <select
+                      class="move-select"
+                      [value]="nicFormSpeed()"
+                      (change)="nicFormSpeed.set($any($event.target).value)"
+                    >
+                      @for (opt of nicSpeedOptions; track opt.value) {
+                        <option [value]="opt.value">{{ opt.label }}</option>
+                      }
+                    </select>
+                  </label>
+
+                  <label class="move-label">
+                    {{ "asset_device_view.nic_slot" | translate }}
+                    <input
+                      class="move-input"
+                      type="text"
+                      [value]="nicFormSlot()"
+                      (input)="nicFormSlot.set($any($event.target).value)"
+                      placeholder="e.g. PCIe 3, Mezz 1"
+                    />
+                  </label>
+
+                  <label class="move-label move-label--full">
+                    {{ "asset_device_view.nic_notes" | translate }}
+                    <textarea
+                      class="move-textarea"
+                      rows="2"
+                      [value]="nicFormNotes()"
+                      (input)="nicFormNotes.set($any($event.target).value)"
+                    ></textarea>
+                  </label>
+                </div>
+
+                @if (nicError()) {
+                  <p class="move-error">{{ nicError() }}</p>
+                }
+
+                <div class="move-form__actions">
+                  <button
+                    class="btn-action btn-action--save"
+                    [disabled]="nicSaving()"
+                    (click)="submitNicForm()"
+                  >
+                    @if (nicSaving()) { … } @else {
+                      {{ "common.save" | translate }}
+                    }
+                  </button>
+                  <button class="btn-action" (click)="cancelNicForm()">
+                    {{ "common.cancel" | translate }}
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- NIC list -->
+            @if (nicLoading()) {
+              <div class="history-empty">{{ "common.loading" | translate }}</div>
+            } @else if (nicList().length === 0) {
+              <div class="history-empty">
+                {{ "asset_device_view.nic_empty" | translate }}
+              </div>
+            } @else {
+              <ul class="sfp-list">
+                @for (nic of nicList(); track nic.id) {
+                  <li class="sfp-item">
+                    <span class="sfp-name">{{ nic.name }}</span>
+                    <span class="req-type-badge">{{ nic.media_type_display }}</span>
+                    <span class="sfp-specs">
+                      {{ nic.port_count_display }} · {{ nic.speed_display }}
+                      @if (nic.slot) { · {{ nic.slot }} }
+                    </span>
+                    @if (nic.pos_x != null) {
+                      <span class="nic-pos-badge" [class.nic-pos-badge--front]="nic.side === 'front'">
+                        {{ nic.side === 'front' ? ('asset_device_view.front' | translate) : ('asset_device_view.rear' | translate) }}
+                      </span>
+                    }
+                    @if (role.canEditAssets()) {
+                      <span class="sfp-actions">
+                        <button
+                          class="btn-icon"
+                          title="{{ 'common.edit' | translate }}"
+                          (click)="openNicForm(nic)"
+                        >✎</button>
+                        <button
+                          class="btn-icon"
+                          [class.btn-icon--active]="nicPlacingId() === nic.id"
+                          title="{{ 'asset_device_view.nic_place_btn' | translate }}"
+                          (click)="nicPlacingId() === nic.id ? cancelPlacingNic() : startPlacingNic(nic.id)"
+                        >⊕</button>
+                        @if (nic.pos_x != null) {
+                          <button
+                            class="btn-icon btn-icon--danger"
+                            title="{{ 'asset_device_view.nic_clear_pos' | translate }}"
+                            (click)="clearNicPosition(nic.id)"
+                          >⊗</button>
+                        }
+                        <button
+                          class="btn-icon btn-icon--danger"
+                          title="{{ 'common.delete' | translate }}"
+                          [disabled]="nicDeleteId() === nic.id"
+                          (click)="deleteNic(nic.id)"
+                        >✕</button>
+                      </span>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </div>
         }
       </div>
     }

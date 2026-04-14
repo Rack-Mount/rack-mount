@@ -18,10 +18,15 @@ import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
 import { environment } from '../../../../../../../environments/environment';
 import {
   Asset,
+  AssetNetworkInterface,
   AssetService,
   AssetState,
   LocationService,
+  MediaTypeEnum,
+  PortCountEnum,
   Room,
+  SideEnum,
+  SpeedEnum,
   WarehouseItem,
 } from '../../../../../core/api/v1';
 import {
@@ -31,6 +36,10 @@ import {
   requestStatusColor,
 } from '../../../../../core/models/asset-request.model';
 import { AssetRequestService } from '../../../../../core/services/asset-request.service';
+import {
+  AssetNetworkInterfaceService,
+  AssetNetworkInterfaceWrite,
+} from '../../../../../core/services/asset-network-interface.service';
 import { BackendErrorService } from '../../../../../core/services/backend-error.service';
 import { MediaUrlService } from '../../../../../core/services/media-url.service';
 import { RoleService } from '../../../../../core/services/role.service';
@@ -80,6 +89,7 @@ export class AssetDeviceViewComponent {
   private readonly destroyRef = inject(DestroyRef);
   protected readonly role = inject(RoleService);
   private readonly requestSvc = inject(AssetRequestService);
+  private readonly nicSvc = inject(AssetNetworkInterfaceService);
 
   protected readonly serviceUrl = environment.service_url;
   protected readonly stateColor = stateColor;
@@ -403,10 +413,288 @@ export class AssetDeviceViewComponent {
           this.requestsOpen.set(true);
           this.assetRequests.update((list) => [created, ...list]);
         },
-        error: (err: import('@angular/common/http').HttpErrorResponse) => {
+        error: (err: HttpErrorResponse) => {
           this.newReqSaving.set(false);
           this.newReqError.set(this.backendErr.parse(err));
         },
+      });
+  }
+
+  // ── Network Interfaces ─────────────────────────────────────────────────────
+
+  /** True only when the asset type is 'server'. */
+  protected readonly isServer = computed(() => {
+    const a = this.asset();
+    if (!a) return false;
+    return (a.model.type.name ?? '').toLowerCase().includes('server');
+  });
+
+  protected readonly nicList = signal<AssetNetworkInterface[]>([]);
+  protected readonly nicLoading = signal(false);
+  protected readonly nicSectionOpen = signal(false);
+
+  /** Inline add/edit form state */
+  protected readonly nicFormOpen = signal(false);
+  protected readonly nicEditId = signal<number | null>(null);
+  protected readonly nicFormName = signal('');
+  protected readonly nicFormMediaType = signal<MediaTypeEnum>(MediaTypeEnum.Copper);
+  protected readonly nicFormPortCount = signal<PortCountEnum>(PortCountEnum.NUMBER_1);
+  protected readonly nicFormSpeed = signal<SpeedEnum>(SpeedEnum._1G);
+  protected readonly nicFormSlot = signal('');
+  protected readonly nicFormNotes = signal('');
+  protected readonly nicSaving = signal(false);
+  protected readonly nicError = signal('');
+  protected readonly nicDeleteId = signal<number | null>(null);
+
+  /**
+   * ID of the NIC currently being positioned on the panel canvas.
+   * When non-null the panel enters crosshair/place mode.
+   */
+  protected readonly nicPlacingId = signal<number | null>(null);
+
+  /** Live rectangle being drawn while the user drags on a panel */
+  protected readonly nicDrawRect = signal<{
+    side: 'front' | 'rear';
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
+  /** Internal drag state (not reactive — only used inside event handlers) */
+  private nicDragState: {
+    side: 'front' | 'rear';
+    startX: number;
+    startY: number;
+    el: HTMLElement;
+  } | null = null;
+
+  /** NICs that have been placed on the front panel */
+  protected readonly nicsFront = computed(() =>
+    this.nicList().filter(
+      (n) => n.pos_x != null && n.width != null && n.side === SideEnum.Front,
+    ),
+  );
+  /** NICs that have been placed on the rear panel */
+  protected readonly nicsRear = computed(() =>
+    this.nicList().filter(
+      (n) => n.pos_x != null && n.width != null && (n.side === SideEnum.Rear || !n.side),
+    ),
+  );
+
+  protected readonly nicMediaOptions: { value: MediaTypeEnum; label: string }[] = [
+    { value: MediaTypeEnum.Copper, label: 'Copper (RJ45)' },
+    { value: MediaTypeEnum.Fiber,  label: 'Fiber (SFP/DAC)' },
+  ];
+  protected readonly nicPortCountOptions: { value: PortCountEnum; label: string }[] = [
+    { value: PortCountEnum.NUMBER_1, label: '1× (Single)' },
+    { value: PortCountEnum.NUMBER_2, label: '2× (Dual)' },
+    { value: PortCountEnum.NUMBER_4, label: '4× (Quad)' },
+  ];
+  protected readonly nicSpeedOptions: { value: SpeedEnum; label: string }[] = [
+    { value: SpeedEnum._100M, label: '100 Mbps' },
+    { value: SpeedEnum._1G,   label: '1 GbE' },
+    { value: SpeedEnum._10G,  label: '10 GbE' },
+    { value: SpeedEnum._25G,  label: '25 GbE' },
+    { value: SpeedEnum._40G,  label: '40 GbE' },
+    { value: SpeedEnum._100G, label: '100 GbE' },
+    { value: SpeedEnum._200G, label: '200 GbE' },
+    { value: SpeedEnum._400G, label: '400 GbE' },
+  ];
+
+  /** Returns an index array [0…n-1] for driving @for port loops in the template */
+  protected portRange(count: number | null | undefined): number[] {
+    return Array.from({ length: count ?? 1 }, (_, i) => i);
+  }
+
+  protected toggleNicSection(): void {
+    const next = !this.nicSectionOpen();
+    this.nicSectionOpen.set(next);
+    if (next && this.nicList().length === 0) {
+      this.loadNics();
+    }
+  }
+
+  private loadNics(): void {
+    this.nicLoading.set(true);
+    this.nicSvc
+      .list(this.assetId())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.nicList.set(res.results ?? []);
+          this.nicLoading.set(false);
+        },
+        error: () => this.nicLoading.set(false),
+      });
+  }
+
+  protected openNicForm(nic?: AssetNetworkInterface): void {
+    if (nic) {
+      this.nicEditId.set(nic.id);
+      this.nicFormName.set(nic.name);
+      this.nicFormMediaType.set(nic.media_type ?? MediaTypeEnum.Copper);
+      this.nicFormPortCount.set(nic.port_count ?? PortCountEnum.NUMBER_1);
+      this.nicFormSpeed.set(nic.speed ?? SpeedEnum._1G);
+      this.nicFormSlot.set(nic.slot ?? '');
+      this.nicFormNotes.set(nic.notes ?? '');
+    } else {
+      this.nicEditId.set(null);
+      this.nicFormName.set('');
+      this.nicFormMediaType.set(MediaTypeEnum.Copper);
+      this.nicFormPortCount.set(PortCountEnum.NUMBER_1);
+      this.nicFormSpeed.set(SpeedEnum._1G);
+      this.nicFormSlot.set('');
+      this.nicFormNotes.set('');
+    }
+    this.nicError.set('');
+    this.nicFormOpen.set(true);
+  }
+
+  protected cancelNicForm(): void {
+    this.nicFormOpen.set(false);
+    this.nicEditId.set(null);
+  }
+
+  protected submitNicForm(): void {
+    const name = this.nicFormName().trim();
+    if (!name) {
+      this.nicError.set('Name is required');
+      return;
+    }
+    this.nicSaving.set(true);
+    this.nicError.set('');
+
+    const body: AssetNetworkInterfaceWrite = {
+      asset: this.assetId(),
+      name,
+      media_type: this.nicFormMediaType(),
+      port_count: this.nicFormPortCount(),
+      speed: this.nicFormSpeed(),
+      slot: this.nicFormSlot(),
+      notes: this.nicFormNotes(),
+    };
+
+    const editId = this.nicEditId();
+    const req = editId
+      ? this.nicSvc.update(editId, body)
+      : this.nicSvc.create(body);
+
+    req.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (saved) => {
+        this.nicSaving.set(false);
+        this.nicFormOpen.set(false);
+        this.nicEditId.set(null);
+        if (editId) {
+          this.nicList.update((list) =>
+            list.map((n) => (n.id === editId ? saved : n)),
+          );
+        } else {
+          this.nicList.update((list) => [...list, saved]);
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.nicSaving.set(false);
+        this.nicError.set(this.backendErr.parse(err));
+      },
+    });
+  }
+
+  protected deleteNic(id: number): void {
+    this.nicDeleteId.set(id);
+    this.nicSvc
+      .delete(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.nicDeleteId.set(null);
+          this.nicList.update((list) => list.filter((n) => n.id !== id));
+        },
+        error: () => this.nicDeleteId.set(null),
+      });
+  }
+
+  // ── NIC positioning on panel ───────────────────────────────────────────────
+
+  protected startPlacingNic(nicId: number): void {
+    this.nicPlacingId.set(nicId);
+    this.nicDrawRect.set(null);
+    document.querySelector('.panels-row')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  protected cancelPlacingNic(): void {
+    this.nicPlacingId.set(null);
+    this.nicDragState = null;
+    this.nicDrawRect.set(null);
+  }
+
+  // ── Drag-to-draw rectangle on the panel ───────────────────────────────────
+
+  protected onPanelMouseDown(event: MouseEvent, side: 'front' | 'rear'): void {
+    if (!this.nicPlacingId()) return;
+    event.preventDefault();
+    const el = event.currentTarget as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    const startX = ((event.clientX - rect.left) / rect.width) * 100;
+    const startY = ((event.clientY - rect.top) / rect.height) * 100;
+    this.nicDragState = { side, startX, startY, el };
+    this.nicDrawRect.set({ side, left: startX, top: startY, width: 0, height: 0 });
+  }
+
+  protected onPanelMouseMove(event: MouseEvent): void {
+    if (!this.nicDragState) return;
+    const { startX, startY, el, side } = this.nicDragState;
+    const rect = el.getBoundingClientRect();
+    const curX = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+    const curY = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
+    this.nicDrawRect.set({
+      side,
+      left: Math.min(startX, curX),
+      top: Math.min(startY, curY),
+      width: Math.abs(curX - startX),
+      height: Math.abs(curY - startY),
+    });
+  }
+
+  protected onPanelMouseUp(event: MouseEvent): void {
+    if (!this.nicDragState) return;
+    const draw = this.nicDrawRect();
+    this.nicDragState = null;
+    // Ignore accidental clicks (too small)
+    if (!draw || draw.width < 2 || draw.height < 1) {
+      this.nicDrawRect.set(null);
+      return;
+    }
+    const placingId = this.nicPlacingId();
+    if (!placingId) { this.nicDrawRect.set(null); return; }
+
+    this.nicSvc
+      .patch(placingId, {
+        side: draw.side === 'front' ? SideEnum.Front : SideEnum.Rear,
+        pos_x: draw.left,
+        pos_y: draw.top,
+        width: draw.width,
+        height: draw.height,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (saved) => {
+          this.nicList.update((list) => list.map((n) => (n.id === saved.id ? saved : n)));
+          this.nicPlacingId.set(null);
+          this.nicDrawRect.set(null);
+        },
+      });
+  }
+
+  protected clearNicPosition(id: number): void {
+    this.nicSvc
+      .patch(id, { pos_x: null, pos_y: null, width: null, height: null })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (saved) =>
+          this.nicList.update((list) =>
+            list.map((n) => (n.id === saved.id ? saved : n)),
+          ),
       });
   }
 }
