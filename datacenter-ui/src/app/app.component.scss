@@ -1,6 +1,8 @@
 :host {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100vw;
   height: 100vh;
   overflow: hidden;
 }
@@ -40,6 +42,13 @@
     flex: 1;
     min-height: 0;
     overflow: hidden;
+  }
+
+  &.asset-pane {
+    > :not(router-outlet) {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
   }
 }
 

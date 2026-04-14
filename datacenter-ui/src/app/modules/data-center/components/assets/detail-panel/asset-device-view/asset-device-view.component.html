@@ -118,7 +118,9 @@
         <div class="panel-label">
           {{ "asset_device_view.front" | translate }}
           @if (nicPlacingId() && isServer()) {
-            <span class="panel-placing-hint">{{ "asset_device_view.nic_place_hint" | translate }}</span>
+            <span class="panel-placing-hint">{{
+              "asset_device_view.nic_place_hint" | translate
+            }}</span>
           }
         </div>
         <div
@@ -157,7 +159,10 @@
             >
               <div class="nic-ports">
                 @for (p of portRange(nic.port_count); track p) {
-                  <div class="nic-port" [class.nic-port--fiber]="nic.media_type === 'fiber'">
+                  <div
+                    class="nic-port"
+                    [class.nic-port--fiber]="nic.media_type === 'fiber'"
+                  >
                     <span class="nic-led"></span>
                   </div>
                 }
@@ -167,7 +172,7 @@
           }
           <!-- live draw preview -->
           @if (nicDrawRect(); as dr) {
-            @if (dr.side === 'front') {
+            @if (dr.side === "front") {
               <div
                 class="nic-rect nic-rect--preview"
                 [style.left.%]="dr.left"
@@ -185,7 +190,9 @@
         <div class="panel-label">
           {{ "asset_device_view.rear" | translate }}
           @if (nicPlacingId() && isServer()) {
-            <span class="panel-placing-hint">{{ "asset_device_view.nic_place_hint" | translate }}</span>
+            <span class="panel-placing-hint">{{
+              "asset_device_view.nic_place_hint" | translate
+            }}</span>
           }
         </div>
         <div
@@ -224,7 +231,10 @@
             >
               <div class="nic-ports">
                 @for (p of portRange(nic.port_count); track p) {
-                  <div class="nic-port" [class.nic-port--fiber]="nic.media_type === 'fiber'">
+                  <div
+                    class="nic-port"
+                    [class.nic-port--fiber]="nic.media_type === 'fiber'"
+                  >
                     <span class="nic-led"></span>
                   </div>
                 }
@@ -234,7 +244,7 @@
           }
           <!-- live draw preview -->
           @if (nicDrawRect(); as dr) {
-            @if (dr.side === 'rear') {
+            @if (dr.side === "rear") {
               <div
                 class="nic-rect nic-rect--preview"
                 [style.left.%]="dr.left"
@@ -441,9 +451,22 @@
       <div class="history-section">
         <button class="history-toggle" (click)="toggleNicSection()">
           <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
-            <rect x="1" y="4" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
-            <circle cx="4" cy="8" r="1" fill="currentColor"/>
-            <path d="M7 8h5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+            <rect
+              x="1"
+              y="4"
+              width="14"
+              height="8"
+              rx="1.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <circle cx="4" cy="8" r="1" fill="currentColor" />
+            <path
+              d="M7 8h5"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linecap="round"
+            />
           </svg>
           {{ "asset_device_view.section_network_interfaces" | translate }}
           <span
@@ -504,7 +527,9 @@
                     <select
                       class="move-select"
                       [value]="nicFormPortCount()"
-                      (change)="nicFormPortCount.set($any(+$any($event.target).value))"
+                      (change)="
+                        nicFormPortCount.set($any(+$any($event.target).value))
+                      "
                     >
                       @for (opt of nicPortCountOptions; track opt.value) {
                         <option [value]="opt.value">{{ opt.label }}</option>
@@ -557,7 +582,9 @@
                     [disabled]="nicSaving()"
                     (click)="submitNicForm()"
                   >
-                    @if (nicSaving()) { … } @else {
+                    @if (nicSaving()) {
+                      …
+                    } @else {
                       {{ "common.save" | translate }}
                     }
                   </button>
@@ -570,7 +597,9 @@
 
             <!-- NIC list -->
             @if (nicLoading()) {
-              <div class="history-empty">{{ "common.loading" | translate }}</div>
+              <div class="history-empty">
+                {{ "common.loading" | translate }}
+              </div>
             } @else if (nicList().length === 0) {
               <div class="history-empty">
                 {{ "asset_device_view.nic_empty" | translate }}
@@ -580,14 +609,25 @@
                 @for (nic of nicList(); track nic.id) {
                   <li class="sfp-item">
                     <span class="sfp-name">{{ nic.name }}</span>
-                    <span class="req-type-badge">{{ nic.media_type_display }}</span>
+                    <span class="req-type-badge">{{
+                      nic.media_type_display
+                    }}</span>
                     <span class="sfp-specs">
                       {{ nic.port_count_display }} · {{ nic.speed_display }}
-                      @if (nic.slot) { · {{ nic.slot }} }
+                      @if (nic.slot) {
+                        · {{ nic.slot }}
+                      }
                     </span>
                     @if (nic.pos_x != null) {
-                      <span class="nic-pos-badge" [class.nic-pos-badge--front]="nic.side === 'front'">
-                        {{ nic.side === 'front' ? ('asset_device_view.front' | translate) : ('asset_device_view.rear' | translate) }}
+                      <span
+                        class="nic-pos-badge"
+                        [class.nic-pos-badge--front]="nic.side === 'front'"
+                      >
+                        {{
+                          nic.side === "front"
+                            ? ("asset_device_view.front" | translate)
+                            : ("asset_device_view.rear" | translate)
+                        }}
                       </span>
                     }
                     @if (role.canEditAssets()) {
@@ -596,26 +636,42 @@
                           class="btn-icon"
                           title="{{ 'common.edit' | translate }}"
                           (click)="openNicForm(nic)"
-                        >✎</button>
+                        >
+                          ✎
+                        </button>
                         <button
                           class="btn-icon"
                           [class.btn-icon--active]="nicPlacingId() === nic.id"
-                          title="{{ 'asset_device_view.nic_place_btn' | translate }}"
-                          (click)="nicPlacingId() === nic.id ? cancelPlacingNic() : startPlacingNic(nic.id)"
-                        >⊕</button>
+                          title="{{
+                            'asset_device_view.nic_place_btn' | translate
+                          }}"
+                          (click)="
+                            nicPlacingId() === nic.id
+                              ? cancelPlacingNic()
+                              : startPlacingNic(nic.id)
+                          "
+                        >
+                          ⊕
+                        </button>
                         @if (nic.pos_x != null) {
                           <button
                             class="btn-icon btn-icon--danger"
-                            title="{{ 'asset_device_view.nic_clear_pos' | translate }}"
+                            title="{{
+                              'asset_device_view.nic_clear_pos' | translate
+                            }}"
                             (click)="clearNicPosition(nic.id)"
-                          >⊗</button>
+                          >
+                            ⊗
+                          </button>
                         }
                         <button
                           class="btn-icon btn-icon--danger"
                           title="{{ 'common.delete' | translate }}"
                           [disabled]="nicDeleteId() === nic.id"
                           (click)="deleteNic(nic.id)"
-                        >✕</button>
+                        >
+                          ✕
+                        </button>
                       </span>
                     }
                   </li>

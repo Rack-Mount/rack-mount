@@ -35,11 +35,11 @@ import {
   isRequestTerminal,
   requestStatusColor,
 } from '../../../../../core/models/asset-request.model';
-import { AssetRequestService } from '../../../../../core/services/asset-request.service';
 import {
   AssetNetworkInterfaceService,
   AssetNetworkInterfaceWrite,
 } from '../../../../../core/services/asset-network-interface.service';
+import { AssetRequestService } from '../../../../../core/services/asset-request.service';
 import { BackendErrorService } from '../../../../../core/services/backend-error.service';
 import { MediaUrlService } from '../../../../../core/services/media-url.service';
 import { RoleService } from '../../../../../core/services/role.service';
@@ -437,8 +437,12 @@ export class AssetDeviceViewComponent {
   protected readonly nicFormOpen = signal(false);
   protected readonly nicEditId = signal<number | null>(null);
   protected readonly nicFormName = signal('');
-  protected readonly nicFormMediaType = signal<MediaTypeEnum>(MediaTypeEnum.Copper);
-  protected readonly nicFormPortCount = signal<PortCountEnum>(PortCountEnum.NUMBER_1);
+  protected readonly nicFormMediaType = signal<MediaTypeEnum>(
+    MediaTypeEnum.Copper,
+  );
+  protected readonly nicFormPortCount = signal<PortCountEnum>(
+    PortCountEnum.NUMBER_1,
+  );
   protected readonly nicFormSpeed = signal<SpeedEnum>(SpeedEnum._1G);
   protected readonly nicFormSlot = signal('');
   protected readonly nicFormNotes = signal('');
@@ -478,25 +482,34 @@ export class AssetDeviceViewComponent {
   /** NICs that have been placed on the rear panel */
   protected readonly nicsRear = computed(() =>
     this.nicList().filter(
-      (n) => n.pos_x != null && n.width != null && (n.side === SideEnum.Rear || !n.side),
+      (n) =>
+        n.pos_x != null &&
+        n.width != null &&
+        (n.side === SideEnum.Rear || !n.side),
     ),
   );
 
-  protected readonly nicMediaOptions: { value: MediaTypeEnum; label: string }[] = [
+  protected readonly nicMediaOptions: {
+    value: MediaTypeEnum;
+    label: string;
+  }[] = [
     { value: MediaTypeEnum.Copper, label: 'Copper (RJ45)' },
-    { value: MediaTypeEnum.Fiber,  label: 'Fiber (SFP/DAC)' },
+    { value: MediaTypeEnum.Fiber, label: 'Fiber (SFP/DAC)' },
   ];
-  protected readonly nicPortCountOptions: { value: PortCountEnum; label: string }[] = [
+  protected readonly nicPortCountOptions: {
+    value: PortCountEnum;
+    label: string;
+  }[] = [
     { value: PortCountEnum.NUMBER_1, label: '1× (Single)' },
     { value: PortCountEnum.NUMBER_2, label: '2× (Dual)' },
     { value: PortCountEnum.NUMBER_4, label: '4× (Quad)' },
   ];
   protected readonly nicSpeedOptions: { value: SpeedEnum; label: string }[] = [
     { value: SpeedEnum._100M, label: '100 Mbps' },
-    { value: SpeedEnum._1G,   label: '1 GbE' },
-    { value: SpeedEnum._10G,  label: '10 GbE' },
-    { value: SpeedEnum._25G,  label: '25 GbE' },
-    { value: SpeedEnum._40G,  label: '40 GbE' },
+    { value: SpeedEnum._1G, label: '1 GbE' },
+    { value: SpeedEnum._10G, label: '10 GbE' },
+    { value: SpeedEnum._25G, label: '25 GbE' },
+    { value: SpeedEnum._40G, label: '40 GbE' },
     { value: SpeedEnum._100G, label: '100 GbE' },
     { value: SpeedEnum._200G, label: '200 GbE' },
     { value: SpeedEnum._400G, label: '400 GbE' },
@@ -619,7 +632,9 @@ export class AssetDeviceViewComponent {
   protected startPlacingNic(nicId: number): void {
     this.nicPlacingId.set(nicId);
     this.nicDrawRect.set(null);
-    document.querySelector('.panels-row')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document
+      .querySelector('.panels-row')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   protected cancelPlacingNic(): void {
@@ -638,15 +653,27 @@ export class AssetDeviceViewComponent {
     const startX = ((event.clientX - rect.left) / rect.width) * 100;
     const startY = ((event.clientY - rect.top) / rect.height) * 100;
     this.nicDragState = { side, startX, startY, el };
-    this.nicDrawRect.set({ side, left: startX, top: startY, width: 0, height: 0 });
+    this.nicDrawRect.set({
+      side,
+      left: startX,
+      top: startY,
+      width: 0,
+      height: 0,
+    });
   }
 
   protected onPanelMouseMove(event: MouseEvent): void {
     if (!this.nicDragState) return;
     const { startX, startY, el, side } = this.nicDragState;
     const rect = el.getBoundingClientRect();
-    const curX = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
-    const curY = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
+    const curX = Math.max(
+      0,
+      Math.min(100, ((event.clientX - rect.left) / rect.width) * 100),
+    );
+    const curY = Math.max(
+      0,
+      Math.min(100, ((event.clientY - rect.top) / rect.height) * 100),
+    );
     this.nicDrawRect.set({
       side,
       left: Math.min(startX, curX),
@@ -666,7 +693,10 @@ export class AssetDeviceViewComponent {
       return;
     }
     const placingId = this.nicPlacingId();
-    if (!placingId) { this.nicDrawRect.set(null); return; }
+    if (!placingId) {
+      this.nicDrawRect.set(null);
+      return;
+    }
 
     this.nicSvc
       .patch(placingId, {
@@ -679,7 +709,9 @@ export class AssetDeviceViewComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (saved) => {
-          this.nicList.update((list) => list.map((n) => (n.id === saved.id ? saved : n)));
+          this.nicList.update((list) =>
+            list.map((n) => (n.id === saved.id ? saved : n)),
+          );
           this.nicPlacingId.set(null);
           this.nicDrawRect.set(null);
         },

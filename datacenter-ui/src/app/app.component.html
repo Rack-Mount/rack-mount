@@ -86,7 +86,7 @@
     <!-- Asset (device monitor) panes: lazy chunk, state preserved by [hidden] -->
     @for (tab of tabService.tabs(); track tab.id) {
       @if (tab.type === "asset") {
-        <div class="content-pane" [hidden]="activeTabId() !== tab.id">
+        <div class="content-pane asset-pane" [hidden]="activeTabId() !== tab.id">
           @defer (when activeTabId() === tab.id; prefetch on idle) {
             <app-asset-device-view [assetId]="tab.assetId!" />
           } @loading (minimum 150ms) {
