@@ -16,6 +16,7 @@ import { AssetAssetModelImportCreateRequest } from '../model/models';
 import { AssetCustomField } from '../model/models';
 import { AssetModel } from '../model/models';
 import { AssetModelPort } from '../model/models';
+import { AssetNetworkInterface } from '../model/models';
 import { AssetRequest } from '../model/models';
 import { AssetRequestClarify } from '../model/models';
 import { AssetRequestCreate } from '../model/models';
@@ -29,6 +30,7 @@ import { PaginatedAssetCustomFieldList } from '../model/models';
 import { PaginatedAssetList } from '../model/models';
 import { PaginatedAssetModelList } from '../model/models';
 import { PaginatedAssetModelPortList } from '../model/models';
+import { PaginatedAssetNetworkInterfaceList } from '../model/models';
 import { PaginatedAssetRequestList } from '../model/models';
 import { PaginatedAssetStateList } from '../model/models';
 import { PaginatedAssetTypeList } from '../model/models';
@@ -39,6 +41,7 @@ import { PatchedAsset } from '../model/models';
 import { PatchedAssetCustomField } from '../model/models';
 import { PatchedAssetModel } from '../model/models';
 import { PatchedAssetModelPort } from '../model/models';
+import { PatchedAssetNetworkInterface } from '../model/models';
 import { PatchedAssetState } from '../model/models';
 import { PatchedAssetType } from '../model/models';
 import { PatchedGenericComponent } from '../model/models';
@@ -361,6 +364,35 @@ export interface AssetGenericComponentRetrieveRequestParams {
 export interface AssetGenericComponentUpdateRequestParams {
     id: number;
     genericComponent: GenericComponent;
+}
+
+export interface AssetNetworkInterfaceCreateRequestParams {
+    assetNetworkInterface: AssetNetworkInterface;
+}
+
+export interface AssetNetworkInterfaceDestroyRequestParams {
+    id: number;
+}
+
+export interface AssetNetworkInterfaceListRequestParams {
+    asset?: number;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+}
+
+export interface AssetNetworkInterfacePartialUpdateRequestParams {
+    id: number;
+    patchedAssetNetworkInterface?: PatchedAssetNetworkInterface;
+}
+
+export interface AssetNetworkInterfaceRetrieveRequestParams {
+    id: number;
+}
+
+export interface AssetNetworkInterfaceUpdateRequestParams {
+    id: number;
+    assetNetworkInterface: AssetNetworkInterface;
 }
 
 export interface AssetPortAnalyzeCreateRequestParams {
@@ -940,6 +972,54 @@ export interface AssetServiceInterface {
 * @param requestParameters
      */
     assetGenericComponentUpdate(requestParameters: AssetGenericComponentUpdateRequestParams, extraHttpRequestParams?: any): Observable<GenericComponent>;
+
+    /**
+     * 
+     * CRUD for per-asset network interfaces.  Filter by asset: GET /asset/network_interface?asset&#x3D;&lt;id&gt;
+     * @endpoint post /asset/network_interface
+* @param requestParameters
+     */
+    assetNetworkInterfaceCreate(requestParameters: AssetNetworkInterfaceCreateRequestParams, extraHttpRequestParams?: any): Observable<AssetNetworkInterface>;
+
+    /**
+     * 
+     * CRUD for per-asset network interfaces.  Filter by asset: GET /asset/network_interface?asset&#x3D;&lt;id&gt;
+     * @endpoint delete /asset/network_interface/{id}
+* @param requestParameters
+     */
+    assetNetworkInterfaceDestroy(requestParameters: AssetNetworkInterfaceDestroyRequestParams, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * CRUD for per-asset network interfaces.  Filter by asset: GET /asset/network_interface?asset&#x3D;&lt;id&gt;
+     * @endpoint get /asset/network_interface
+* @param requestParameters
+     */
+    assetNetworkInterfaceList(requestParameters: AssetNetworkInterfaceListRequestParams, extraHttpRequestParams?: any): Observable<PaginatedAssetNetworkInterfaceList>;
+
+    /**
+     * 
+     * CRUD for per-asset network interfaces.  Filter by asset: GET /asset/network_interface?asset&#x3D;&lt;id&gt;
+     * @endpoint patch /asset/network_interface/{id}
+* @param requestParameters
+     */
+    assetNetworkInterfacePartialUpdate(requestParameters: AssetNetworkInterfacePartialUpdateRequestParams, extraHttpRequestParams?: any): Observable<AssetNetworkInterface>;
+
+    /**
+     * 
+     * CRUD for per-asset network interfaces.  Filter by asset: GET /asset/network_interface?asset&#x3D;&lt;id&gt;
+     * @endpoint get /asset/network_interface/{id}
+* @param requestParameters
+     */
+    assetNetworkInterfaceRetrieve(requestParameters: AssetNetworkInterfaceRetrieveRequestParams, extraHttpRequestParams?: any): Observable<AssetNetworkInterface>;
+
+    /**
+     * 
+     * CRUD for per-asset network interfaces.  Filter by asset: GET /asset/network_interface?asset&#x3D;&lt;id&gt;
+     * @endpoint put /asset/network_interface/{id}
+* @param requestParameters
+     */
+    assetNetworkInterfaceUpdate(requestParameters: AssetNetworkInterfaceUpdateRequestParams, extraHttpRequestParams?: any): Observable<AssetNetworkInterface>;
 
     /**
      * 

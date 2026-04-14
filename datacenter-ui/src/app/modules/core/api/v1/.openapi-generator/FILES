@@ -22,6 +22,8 @@ model/assetCatalogImportCreateRequestVendorsInner.ts
 model/assetCustomField.ts
 model/assetModel.ts
 model/assetModelPort.ts
+model/assetNetworkInterface.ts
+model/assetNetworkInterfaceSide.ts
 model/assetRack.ts
 model/assetRequest.ts
 model/assetRequestClarify.ts
@@ -47,12 +49,14 @@ model/locationCustomField.ts
 model/logoutRequest.ts
 model/meResponse.ts
 model/measurementSystemEnum.ts
+model/mediaTypeEnum.ts
 model/models.ts
 model/nameEnum.ts
 model/paginatedAssetCustomFieldList.ts
 model/paginatedAssetList.ts
 model/paginatedAssetModelList.ts
 model/paginatedAssetModelPortList.ts
+model/paginatedAssetNetworkInterfaceList.ts
 model/paginatedAssetRequestList.ts
 model/paginatedAssetStateList.ts
 model/paginatedAssetTypeList.ts
@@ -70,6 +74,7 @@ model/patchedAsset.ts
 model/patchedAssetCustomField.ts
 model/patchedAssetModel.ts
 model/patchedAssetModelPort.ts
+model/patchedAssetNetworkInterface.ts
 model/patchedAssetState.ts
 model/patchedAssetType.ts
 model/patchedGenericComponent.ts
@@ -92,6 +97,7 @@ model/portClickAnalyzeRequest.ts
 model/portClickAnalyzeResponse.ts
 model/portCorrectionRequest.ts
 model/portCorrectionResponse.ts
+model/portCountEnum.ts
 model/portTypeEnum.ts
 model/privateMediaSignedUrlRequest.ts
 model/privateMediaSignedUrlResponse.ts
@@ -103,6 +109,7 @@ model/role.ts
 model/room.ts
 model/roomTypeEnum.ts
 model/sideEnum.ts
+model/speedEnum.ts
 model/statusEnum.ts
 model/tokenObtainResponse.ts
 model/tokenRefreshRequest.ts

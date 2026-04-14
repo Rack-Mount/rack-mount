@@ -21,6 +21,7 @@ router.register('network_interface', AssetNetworkInterfaceViewSet)
 urlpatterns = [
     path('asset/export', AssetExportView.as_view(), name='asset-export'),
     path('asset/import-csv', AssetImportCsvView.as_view(), name='asset-import-csv'),
-    path('private-media-url', PrivateMediaSignedUrlView.as_view(), name='private-media-url'),
+    path('private-media-url', PrivateMediaSignedUrlView.as_view(),
+         name='private-media-url'),
     path('', include(router.urls)),
 ]
