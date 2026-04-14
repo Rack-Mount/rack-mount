@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from asset.views import (
     AssetViewSet, AssetStateViewSet, RackUnitViewSet,
     AssetCustomFieldViewSet, GenericComponentViewSet, AssetRequestViewSet,
+    AssetNetworkInterfaceViewSet,
 )
 from asset.views.AssetExportView import AssetExportView
 from asset.views.AssetImportCsvView import AssetImportCsvView
@@ -15,6 +16,7 @@ router.register('rack_unit', RackUnitViewSet)
 router.register('asset_custom_field', AssetCustomFieldViewSet)
 router.register('generic_component', GenericComponentViewSet)
 router.register('asset_request', AssetRequestViewSet)
+router.register('network_interface', AssetNetworkInterfaceViewSet)
 
 urlpatterns = [
     path('asset/export', AssetExportView.as_view(), name='asset-export'),

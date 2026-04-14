@@ -4,6 +4,7 @@ from .RackUnitSerializer import RackUnitSerializer
 from .AssetCustomFieldSerializer import AssetCustomFieldSerializer
 from .GenericComponentSerializer import GenericComponentSerializer
 from .AssetTransitionLogSerializer import AssetTransitionLogSerializer
+from .AssetNetworkInterfaceSerializer import AssetNetworkInterfaceSerializer
 from .AssetRequestSerializer import (
     AssetRequestSerializer,
     AssetRequestCreateSerializer,

@@ -5,6 +5,7 @@ from .AssetCustomFieldViewSet import AssetCustomFieldViewSet
 from .GenericComponentViewSet import GenericComponentViewSet
 from .PrivateMediaSignedUrlView import PrivateMediaSignedUrlView
 from .AssetRequestViewSet import AssetRequestViewSet
+from .AssetNetworkInterfaceViewSet import AssetNetworkInterfaceViewSet
 
 # Re-exported from catalog for backward compatibility
 from catalog.views import (
