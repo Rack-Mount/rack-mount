@@ -669,19 +669,27 @@
     </div>
   }
 
-  @if (activeTab() === "vendors") {
-    <app-vendors-list />
+  @defer (when activeTab() === "vendors"; prefetch on idle) {
+    @if (activeTab() === "vendors") {
+      <app-vendors-list />
+    }
   }
 
-  @if (activeTab() === "rack-models") {
-    <app-rack-models-list />
+  @defer (when activeTab() === "rack-models"; prefetch on idle) {
+    @if (activeTab() === "rack-models") {
+      <app-rack-models-list />
+    }
   }
 
-  @if (activeTab() === "locations") {
-    <app-locations-list />
+  @defer (when activeTab() === "locations"; prefetch on idle) {
+    @if (activeTab() === "locations") {
+      <app-locations-list />
+    }
   }
 
-  @if (activeTab() === "components") {
-    <app-components-list />
+  @defer (when activeTab() === "components"; prefetch on idle) {
+    @if (activeTab() === "components") {
+      <app-components-list />
+    }
   }
 </div>
