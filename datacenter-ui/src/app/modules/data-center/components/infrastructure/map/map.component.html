@@ -1,42 +1,46 @@
 <div class="map-container">
-  <app-map-sidebar
-    [activeTool]="selectedTool()"
-    [disabled]="!selectedRoomId"
-    (toolChange)="onToolChange($event)"
-  >
-  </app-map-sidebar>
+  @defer (on idle) {
+    <app-map-sidebar
+      [activeTool]="selectedTool()"
+      [disabled]="!selectedRoomId"
+      (toolChange)="onToolChange($event)"
+    >
+    </app-map-sidebar>
+  }
   <div class="map-content">
     <!-- Floor plan toolbar -->
-    <app-map-floor-plan-toolbar
-      [roomId]="roomId()"
-      [locations]="availableLocations"
-      [selectedLocationId]="selectedLocationId"
-      [rooms]="filteredRooms"
-      [selectedRoomId]="selectedRoomId"
-      [saveStatus]="saveStatus"
-      [autosave]="autosave"
-      [activeTool]="selectedTool()"
-      [rackTypes]="availableRackTypes"
-      [selectedRackType]="selectedRackType"
-      [doorWidth]="doorWidth"
-      [showTextOptions]="editingTextId() !== null || !!selectedTextElement()"
-      [textFontSize]="currentTextFontSize()"
-      [textFill]="currentTextFill()"
-      [textBold]="currentTextBold()"
-      [textItalic]="currentTextItalic()"
-      [textUnderline]="currentTextUnderline()"
-      (locationChange)="onLocationSelect($event)"
-      (roomChange)="onRoomSelect($event)"
-      (save)="saveFloorPlan()"
-      (autosaveChange)="onAutosaveChange($event)"
-      (rackTypeChange)="onRackTypeChange($event)"
-      (doorWidthChange)="onDoorWidthChange($event)"
-      (textFontSizeChange)="onTextFontSizeChange($event)"
-      (textFillChange)="onTextFillChange($event)"
-      (textBoldChange)="onTextBoldChange($event)"
-      (textItalicChange)="onTextItalicChange($event)"
-      (textUnderlineChange)="onTextUnderlineChange($event)"
-    />
+    @defer (on idle) {
+      <app-map-floor-plan-toolbar
+        [roomId]="roomId()"
+        [locations]="availableLocations"
+        [selectedLocationId]="selectedLocationId"
+        [rooms]="filteredRooms"
+        [selectedRoomId]="selectedRoomId"
+        [saveStatus]="saveStatus"
+        [autosave]="autosave"
+        [activeTool]="selectedTool()"
+        [rackTypes]="availableRackTypes"
+        [selectedRackType]="selectedRackType"
+        [doorWidth]="doorWidth"
+        [showTextOptions]="editingTextId() !== null || !!selectedTextElement()"
+        [textFontSize]="currentTextFontSize()"
+        [textFill]="currentTextFill()"
+        [textBold]="currentTextBold()"
+        [textItalic]="currentTextItalic()"
+        [textUnderline]="currentTextUnderline()"
+        (locationChange)="onLocationSelect($event)"
+        (roomChange)="onRoomSelect($event)"
+        (save)="saveFloorPlan()"
+        (autosaveChange)="onAutosaveChange($event)"
+        (rackTypeChange)="onRackTypeChange($event)"
+        (doorWidthChange)="onDoorWidthChange($event)"
+        (textFontSizeChange)="onTextFontSizeChange($event)"
+        (textFillChange)="onTextFillChange($event)"
+        (textBoldChange)="onTextBoldChange($event)"
+        (textItalicChange)="onTextItalicChange($event)"
+        (textUnderlineChange)="onTextUnderlineChange($event)"
+      />
+    }
     <svg
       #svgContainer
       class="drawing-area"
@@ -872,14 +876,16 @@
       </g>
     </svg>
     <!-- Zoom Controls -->
-    <app-map-zoom-controls
-      [zoom]="zoom"
-      [roomSelected]="!!selectedRoomId"
-      (zoomIn)="zoomIn()"
-      (zoomOut)="zoomOut()"
-      (fitToView)="fitToView()"
-      (centerAndSnap)="centerAndSnapFloorPlan()"
-      (resetZoom)="resetZoom()"
-    />
+    @defer (on idle) {
+      <app-map-zoom-controls
+        [zoom]="zoom"
+        [roomSelected]="!!selectedRoomId"
+        (zoomIn)="zoomIn()"
+        (zoomOut)="zoomOut()"
+        (fitToView)="fitToView()"
+        (centerAndSnap)="centerAndSnapFloorPlan()"
+        (resetZoom)="resetZoom()"
+      />
+    }
   </div>
 </div>

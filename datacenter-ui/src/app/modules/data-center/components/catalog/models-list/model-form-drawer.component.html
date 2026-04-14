@@ -1,6 +1,9 @@
 @if (drawerSvc.drawerOpen()) {
   <div class="drawer-overlay" (click)="drawerSvc.closeDrawer()"></div>
-  <aside class="drawer" [class.drawer--editing]="drawerSvc.editingImage() !== null">
+  <aside
+    class="drawer"
+    [class.drawer--editing]="drawerSvc.editingImage() !== null"
+  >
     <div class="drawer-header">
       <h2 class="drawer-title">
         {{
@@ -52,13 +55,18 @@
               ×
             </button>
           }
-          @if (drawerSvc.vendorDropdownOpen() && drawerSvc.filteredVendors().length > 0) {
+          @if (
+            drawerSvc.vendorDropdownOpen() &&
+            drawerSvc.filteredVendors().length > 0
+          ) {
             <div class="autocomplete-dropdown">
               @for (v of drawerSvc.filteredVendors(); track v.id) {
                 <button
                   class="autocomplete-option"
                   type="button"
-                  (mousedown)="$event.preventDefault(); drawerSvc.selectVendor(v)"
+                  (mousedown)="
+                    $event.preventDefault(); drawerSvc.selectVendor(v)
+                  "
                 >
                   <span class="ac-name">{{ v.name }}</span>
                 </button>
@@ -70,8 +78,7 @@
 
       <label class="field">
         <span class="field-label"
-          >{{ "models.col_type" | translate }}
-          <span class="req">*</span></span
+          >{{ "models.col_type" | translate }} <span class="req">*</span></span
         >
         <div class="autocomplete-wrap">
           <input
@@ -93,7 +100,9 @@
               ×
             </button>
           }
-          @if (drawerSvc.typeDropdownOpen() && drawerSvc.filteredTypes().length > 0) {
+          @if (
+            drawerSvc.typeDropdownOpen() && drawerSvc.filteredTypes().length > 0
+          ) {
             <div class="autocomplete-dropdown">
               @for (t of drawerSvc.filteredTypes(); track t.id) {
                 <button
@@ -157,7 +166,10 @@
               "
               [value]="drawerSvc.toDimDisplay(drawerSvc.form().width_mm)"
               (input)="
-                drawerSvc.setField('width_mm', drawerSvc.fromDimInput($any($event.target).value))
+                drawerSvc.setField(
+                  'width_mm',
+                  drawerSvc.fromDimInput($any($event.target).value)
+                )
               "
             />
           </label>
@@ -181,7 +193,10 @@
               "
               [value]="drawerSvc.toDimDisplay(drawerSvc.form().height_mm)"
               (input)="
-                drawerSvc.setField('height_mm', drawerSvc.fromDimInput($any($event.target).value))
+                drawerSvc.setField(
+                  'height_mm',
+                  drawerSvc.fromDimInput($any($event.target).value)
+                )
               "
             />
           </label>
@@ -205,7 +220,10 @@
               "
               [value]="drawerSvc.toDimDisplay(drawerSvc.form().depth_mm)"
               (input)="
-                drawerSvc.setField('depth_mm', drawerSvc.fromDimInput($any($event.target).value))
+                drawerSvc.setField(
+                  'depth_mm',
+                  drawerSvc.fromDimInput($any($event.target).value)
+                )
               "
             />
           </label>
@@ -241,9 +259,7 @@
 
       <!-- Power (W) -->
       <label class="field">
-        <span class="field-label">{{
-          "models.field_power" | translate
-        }}</span>
+        <span class="field-label">{{ "models.field_power" | translate }}</span>
         <input
           class="field-input field-input--short"
           type="number"
@@ -261,9 +277,7 @@
       </label>
 
       <label class="field">
-        <span class="field-label">{{
-          "models.field_notes" | translate
-        }}</span>
+        <span class="field-label">{{ "models.field_notes" | translate }}</span>
         <textarea
           class="field-textarea"
           rows="3"
@@ -278,7 +292,9 @@
         <span class="field-label">{{
           "models.field_front_img" | translate
         }}</span>
-        @if (drawerSvc.form().front_image_file || drawerSvc.form().front_image_url) {
+        @if (
+          drawerSvc.form().front_image_file || drawerSvc.form().front_image_url
+        ) {
           <div class="img-preview-wrap">
             <img
               class="img-preview"
@@ -325,7 +341,9 @@
                   />
                 </svg>
                 @if (portsSvc.frontPorts().length) {
-                  <span class="ports-badge">{{ portsSvc.frontPorts().length }}</span>
+                  <span class="ports-badge">{{
+                    portsSvc.frontPorts().length
+                  }}</span>
                 }
               </button>
             }
@@ -372,7 +390,9 @@
         <span class="field-label">{{
           "models.field_rear_img" | translate
         }}</span>
-        @if (drawerSvc.form().rear_image_file || drawerSvc.form().rear_image_url) {
+        @if (
+          drawerSvc.form().rear_image_file || drawerSvc.form().rear_image_url
+        ) {
           <div class="img-preview-wrap">
             <img
               class="img-preview"
@@ -419,7 +439,9 @@
                   />
                 </svg>
                 @if (portsSvc.rearPorts().length) {
-                  <span class="ports-badge">{{ portsSvc.rearPorts().length }}</span>
+                  <span class="ports-badge">{{
+                    portsSvc.rearPorts().length
+                  }}</span>
                 }
               </button>
             }
@@ -503,7 +525,11 @@
               </thead>
               <tbody>
                 @for (p of portsSvc.ports(); track p.id) {
-                  <tr [class.ports-row--deleting]="portsSvc.portDeleteId() === p.id">
+                  <tr
+                    [class.ports-row--deleting]="
+                      portsSvc.portDeleteId() === p.id
+                    "
+                  >
                     <td class="port-cell-name">{{ p.name }}</td>
                     <td class="port-cell-type">
                       <span class="port-type-badge">{{
@@ -715,7 +741,8 @@
                   class="btn-save"
                   type="button"
                   [disabled]="
-                    !portsSvc.portForm().name.trim() || portsSvc.portSaveState() === 'saving'
+                    !portsSvc.portForm().name.trim() ||
+                    portsSvc.portSaveState() === 'saving'
                   "
                   (click)="submitPortForm()"
                 >

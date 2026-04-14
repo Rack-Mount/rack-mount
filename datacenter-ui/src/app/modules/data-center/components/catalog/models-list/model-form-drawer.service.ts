@@ -113,7 +113,11 @@ export class ModelFormDrawerService {
         distinctUntilChanged(),
         switchMap((q) =>
           this.svc
-            .assetVendorList({ search: q || undefined, pageSize: 25, ordering: 'name' })
+            .assetVendorList({
+              search: q || undefined,
+              pageSize: 25,
+              ordering: 'name',
+            })
             .pipe(
               map((r) => r.results ?? []),
               catchError(() => of([] as Vendor[])),
@@ -130,7 +134,11 @@ export class ModelFormDrawerService {
         distinctUntilChanged(),
         switchMap((q) =>
           this.svc
-            .assetAssetTypeList({ search: q || undefined, pageSize: 25, ordering: 'name' })
+            .assetAssetTypeList({
+              search: q || undefined,
+              pageSize: 25,
+              ordering: 'name',
+            })
             .pipe(
               map((r) => r.results ?? []),
               catchError(() => of([] as AssetType[])),
