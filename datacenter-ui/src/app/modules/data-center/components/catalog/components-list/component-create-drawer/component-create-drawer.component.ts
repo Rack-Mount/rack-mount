@@ -24,7 +24,7 @@ import { BackendErrorService } from '../../../../../core/services/backend-error.
 import { MultipartUploadService } from '../../../../../core/services/multipart-upload.service';
 import {
   ImageEditorComponent,
-  ImageEditParams,
+  type ImageEditParams,
 } from '../../models-list/image-editor/image-editor.component';
 
 interface ComponentForm {

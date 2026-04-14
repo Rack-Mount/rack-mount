@@ -1559,34 +1559,36 @@
       </div>
 
       <!-- ── Image editor overlay (inside the drawer) ───────────── -->
-      @if (editingImage(); as side) {
-        <div class="editor-overlay">
-          <div class="editor-overlay-header">
-            <span class="editor-overlay-title">
-              {{
-                side === "front"
-                  ? ("models.field_front_img" | translate)
-                  : ("models.field_rear_img" | translate)
-              }}
-            </span>
+      @defer (when editingImage() != null; prefetch on idle) {
+        @if (editingImage(); as side) {
+          <div class="editor-overlay">
+            <div class="editor-overlay-header">
+              <span class="editor-overlay-title">
+                {{
+                  side === "front"
+                    ? ("models.field_front_img" | translate)
+                    : ("models.field_rear_img" | translate)
+                }}
+              </span>
+            </div>
+            <div class="editor-overlay-body">
+              <app-image-editor
+                [imageFile]="
+                  side === 'front'
+                    ? form().front_image_file
+                    : form().rear_image_file
+                "
+                [imageUrl]="
+                  side === 'front'
+                    ? form().front_image_url
+                    : form().rear_image_url
+                "
+                (confirmed)="onEditorConfirmed($event, side)"
+                (cancelled)="onEditorCancelled()"
+              />
+            </div>
           </div>
-          <div class="editor-overlay-body">
-            <app-image-editor
-              [imageFile]="
-                side === 'front'
-                  ? form().front_image_file
-                  : form().rear_image_file
-              "
-              [imageUrl]="
-                side === 'front'
-                  ? form().front_image_url
-                  : form().rear_image_url
-              "
-              (confirmed)="onEditorConfirmed($event, side)"
-              (cancelled)="onEditorCancelled()"
-            />
-          </div>
-        </div>
+        }
       }
 
       <div class="drawer-footer">
@@ -1609,22 +1611,24 @@
   }
 </div>
 
-@if (portsMapOpen(); as pm) {
-  <app-ports-map
-    [imageUrl]="pm.imageUrl"
-    [sideLabel]="
-      pm.side === 'front'
-        ? ('models.preview_front' | translate)
-        : ('models.preview_rear' | translate)
-    "
-    [ports]="portsForMap()"
-    [placingPortId]="placingPortId()"
-    [analyzeEnabled]="!pm.readonly"
-    [currentSide]="pm.side"
-    (portPicked)="onPortPicked($event)"
-    (portAdded)="onPortAddedFromMap($event)"
-    (portEdited)="onPortEditedFromMap($event)"
-    (portRemoved)="onPortRemovedFromMap($event)"
-    (closed)="closePortsMap()"
-  />
+@defer (when portsMapOpen() != null; prefetch on idle) {
+  @if (portsMapOpen(); as pm) {
+    <app-ports-map
+      [imageUrl]="pm.imageUrl"
+      [sideLabel]="
+        pm.side === 'front'
+          ? ('models.preview_front' | translate)
+          : ('models.preview_rear' | translate)
+      "
+      [ports]="portsForMap()"
+      [placingPortId]="placingPortId()"
+      [analyzeEnabled]="!pm.readonly"
+      [currentSide]="pm.side"
+      (portPicked)="onPortPicked($event)"
+      (portAdded)="onPortAddedFromMap($event)"
+      (portEdited)="onPortEditedFromMap($event)"
+      (portRemoved)="onPortRemovedFromMap($event)"
+      (closed)="closePortsMap()"
+    />
+  }
 }

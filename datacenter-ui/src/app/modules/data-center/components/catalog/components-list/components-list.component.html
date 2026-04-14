@@ -427,12 +427,14 @@
   }
 
   <!-- ── Drawer (create / edit) ───────────────────────────────── -->
-  @if (drawerOpen()) {
-    <app-component-create-drawer
-      [mode]="drawerMode()"
-      [editComponent]="drawerEditComponent()"
-      (saved)="onDrawerSaved($event)"
-      (cancelled)="closeDrawer()"
-    />
+  @defer (when drawerOpen(); prefetch on idle) {
+    @if (drawerOpen()) {
+      <app-component-create-drawer
+        [mode]="drawerMode()"
+        [editComponent]="drawerEditComponent()"
+        (saved)="onDrawerSaved($event)"
+        (cancelled)="closeDrawer()"
+      />
+    }
   }
 </div>

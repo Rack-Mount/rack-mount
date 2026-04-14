@@ -49,14 +49,14 @@ import {
 import { toggleSort } from '../../../../core/utils/sort.utils';
 import {
   ImageEditorComponent,
-  ImageEditParams,
+  type ImageEditParams,
 } from './image-editor/image-editor.component';
-import { ModelPortsService, PortForm } from './model-ports.service';
-import { AssetModelPortType } from './port-types';
+import { ModelPortsService, type PortForm } from './model-ports.service';
+import { type AssetModelPortType } from './port-types';
 import {
-  PortAddEvent,
-  PortEditEvent,
-  PortPickEvent,
+  type PortAddEvent,
+  type PortEditEvent,
+  type PortPickEvent,
   PortsMapComponent,
 } from './ports-map/ports-map.component';
 
