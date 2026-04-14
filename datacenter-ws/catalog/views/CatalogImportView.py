@@ -11,6 +11,7 @@ from accounts.permissions import ImportCatalogPermission
 from accounts.throttles import CatalogImportThrottle
 from catalog.models import AssetModel, Vendor
 from catalog.models.AssetType import AssetType
+from catalog.models.AssetModelPort import AssetModelPort
 from catalog.views.AssetModelImportView import _decode_image
 from asset.models.GenericComponent import GenericComponent
 
@@ -125,7 +126,8 @@ class CatalogImportView(APIView):
 
             if front_raw:
                 try:
-                    instance.front_image = _decode_image(front_raw, 'front_image')
+                    instance.front_image = _decode_image(
+                        front_raw, 'front_image')
                 except ValueError as exc:
                     model_errors.append({'index': idx, 'message': str(exc)})
                     continue
@@ -139,6 +141,38 @@ class CatalogImportView(APIView):
 
             instance.save()
             models_created += 1
+
+            # Import port mappings
+            for port_item in item.get('ports') or []:
+                port_name = str(port_item.get('name', '')).strip()
+                if not port_name:
+                    continue
+                port_type = str(port_item.get('port_type') or 'RJ45').strip()
+                valid_types = {c[0] for c in AssetModelPort.PORT_TYPE_CHOICES}
+                if port_type not in valid_types:
+                    port_type = 'RJ45'
+                side = str(port_item.get('side') or 'rear').strip()
+                if side not in ('front', 'rear'):
+                    side = 'rear'
+                try:
+                    pos_x = float(port_item['pos_x']) if port_item.get(
+                        'pos_x') is not None else None
+                except (ValueError, TypeError):
+                    pos_x = None
+                try:
+                    pos_y = float(port_item['pos_y']) if port_item.get(
+                        'pos_y') is not None else None
+                except (ValueError, TypeError):
+                    pos_y = None
+                AssetModelPort.objects.create(
+                    asset_model=instance,
+                    name=port_name,
+                    port_type=port_type,
+                    side=side,
+                    pos_x=pos_x,
+                    pos_y=pos_y,
+                    notes=str(port_item.get('notes') or ''),
+                )
 
         components_created = components_skipped = 0
         component_errors: list[dict] = []

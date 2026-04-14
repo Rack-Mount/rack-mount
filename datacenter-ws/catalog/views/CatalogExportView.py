@@ -12,6 +12,7 @@ from accounts.permissions import CatalogResourcePermission
 from accounts.throttles import CatalogExportThrottle
 from catalog.models import AssetModel, Vendor
 from catalog.models.AssetType import AssetType
+from catalog.models.AssetModelPort import AssetModelPort
 from asset.models.GenericComponent import GenericComponent
 
 
@@ -61,6 +62,7 @@ class CatalogExportView(APIView):
         models_qs = (
             AssetModel.objects
             .select_related('vendor', 'type')
+            .prefetch_related('network_ports')
             .order_by('vendor__name', 'name')
         )
         asset_models = [
@@ -72,6 +74,17 @@ class CatalogExportView(APIView):
                 'note': m.note or '',
                 'front_image': _image_to_data_url(m.front_image),
                 'rear_image': _image_to_data_url(m.rear_image),
+                'ports': [
+                    {
+                        'name': p.name,
+                        'port_type': p.port_type,
+                        'side': p.side,
+                        'pos_x': p.pos_x,
+                        'pos_y': p.pos_y,
+                        'notes': p.notes or '',
+                    }
+                    for p in m.network_ports.all()
+                ],
             }
             for m in models_qs
         ]
