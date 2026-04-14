@@ -197,16 +197,18 @@
       }
     </div>
 
-    <!-- Device table: visible only when data is ready -->
-    @if (!loading() && !error() && deviceRows().length) {
-      <app-rack-device-table
-        [rows]="deviceRows()"
-        [clearTrigger]="_refresh()"
-        [availableStatesCount]="availableStates().length"
-        (removeRequest)="onRemoveRequest($event)"
-        (statePickerRequest)="onStatePickerRequest($event)"
-        (bulkRemoveRequest)="onBulkRemoveRequest($event)"
-      />
+    <!-- Device table: visible only when data is ready (deferred lazy chunk) -->
+    @defer (when !loading() && deviceRows().length > 0; prefetch on idle) {
+      @if (!loading() && !error() && deviceRows().length) {
+        <app-rack-device-table
+          [rows]="deviceRows()"
+          [clearTrigger]="_refresh()"
+          [availableStatesCount]="availableStates().length"
+          (removeRequest)="onRemoveRequest($event)"
+          (statePickerRequest)="onStatePickerRequest($event)"
+          (bulkRemoveRequest)="onBulkRemoveRequest($event)"
+        />
+      }
     }
   </div>
   <!-- /rack-aside -->
