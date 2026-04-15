@@ -8,6 +8,8 @@
  * Do not edit the class manually.
  */
 import { AssetNetworkInterfaceSide } from './assetNetworkInterfaceSide';
+import { OrientationEnum } from './orientationEnum';
+import { FormFactorEnum } from './formFactorEnum';
 import { MediaTypeEnum } from './mediaTypeEnum';
 import { PortCountEnum } from './portCountEnum';
 import { SpeedEnum } from './speedEnum';
@@ -26,6 +28,16 @@ export interface AssetNetworkInterface {
     readonly port_count_display: string;
     speed?: SpeedEnum;
     readonly speed_display: string;
+    /**
+     * PCIe bracket height: full profile or low profile  * `full` - Full profile * `low` - Low profile
+     */
+    form_factor?: FormFactorEnum;
+    readonly form_factor_display: string;
+    /**
+     * Physical installation orientation: vertical (standard) or horizontal  * `vertical` - Vertical * `horizontal` - Horizontal
+     */
+    orientation?: OrientationEnum;
+    readonly orientation_display: string;
     /**
      * Physical slot identifier, e.g. \"PCIe 3\", \"Mezz 1\"
      */

@@ -43,6 +43,7 @@ model/codeEnum.ts
 model/compatibleModelBrief.ts
 model/componentTypeEnum.ts
 model/cookieTokenObtainRequest.ts
+model/formFactorEnum.ts
 model/genericComponent.ts
 model/location.ts
 model/locationCustomField.ts
@@ -52,6 +53,7 @@ model/measurementSystemEnum.ts
 model/mediaTypeEnum.ts
 model/models.ts
 model/nameEnum.ts
+model/orientationEnum.ts
 model/paginatedAssetCustomFieldList.ts
 model/paginatedAssetList.ts
 model/paginatedAssetModelList.ts
