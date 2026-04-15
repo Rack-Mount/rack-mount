@@ -465,12 +465,24 @@ export class AssetDeviceViewComponent {
     height: number;
   } | null>(null);
 
-  /** Internal drag state (not reactive — only used inside event handlers) */
-  private nicDragState: {
+  /** ID of the NIC currently being drag-moved or resized on the canvas */
+  protected readonly nicDraggingId = signal<number | null>(null);
+
+  /**
+   * Unified interaction state for draw / move / resize.
+   * mode='draw'  : startX/Y = rect origin, nicId = null
+   * mode='move'  : startX/Y = mousedown offset within rect, w0/h0 = preserved size
+   * mode='resize': startX/Y = fixed top-left corner of rect
+   */
+  private nicInteractState: {
+    mode: 'draw' | 'move' | 'resize';
     side: 'front' | 'rear';
+    el: HTMLElement;
     startX: number;
     startY: number;
-    el: HTMLElement;
+    nicId: number | null;
+    w0: number;
+    h0: number;
   } | null = null;
 
   /** NICs that have been placed on the front panel */
@@ -639,12 +651,14 @@ export class AssetDeviceViewComponent {
 
   protected cancelPlacingNic(): void {
     this.nicPlacingId.set(null);
-    this.nicDragState = null;
+    this.nicInteractState = null;
+    this.nicDraggingId.set(null);
     this.nicDrawRect.set(null);
   }
 
-  // ── Drag-to-draw rectangle on the panel ───────────────────────────────────
+  // ── Panel interaction: draw / move / resize ────────────────────────────────
 
+  /** Draw a new rect (only active in placing mode). */
   protected onPanelMouseDown(event: MouseEvent, side: 'front' | 'rear'): void {
     if (!this.nicPlacingId()) return;
     event.preventDefault();
@@ -652,19 +666,90 @@ export class AssetDeviceViewComponent {
     const rect = el.getBoundingClientRect();
     const startX = ((event.clientX - rect.left) / rect.width) * 100;
     const startY = ((event.clientY - rect.top) / rect.height) * 100;
-    this.nicDragState = { side, startX, startY, el };
+    this.nicInteractState = { mode: 'draw', side, startX, startY, el, nicId: null, w0: 0, h0: 0 };
+    this.nicDrawRect.set({ side, left: startX, top: startY, width: 0, height: 0 });
+  }
+
+  /** Start moving an already-placed NIC by dragging its body. */
+  protected onNicMouseDown(
+    event: MouseEvent,
+    nic: AssetNetworkInterface,
+    side: 'front' | 'rear',
+  ): void {
+    if (!this.role.canEditAssets() || this.nicPlacingId()) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const el = (event.currentTarget as HTMLElement).closest(
+      '.panel-img-wrap',
+    ) as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    const curX = ((event.clientX - rect.left) / rect.width) * 100;
+    const curY = ((event.clientY - rect.top) / rect.height) * 100;
+    const w0 = nic.width ?? 0;
+    const h0 = nic.height ?? 0;
+    this.nicInteractState = {
+      mode: 'move',
+      side,
+      el,
+      startX: curX - (nic.pos_x ?? 0),
+      startY: curY - (nic.pos_y ?? 0),
+      nicId: nic.id,
+      w0,
+      h0,
+    };
+    this.nicDraggingId.set(nic.id);
+    this.nicDrawRect.set({ side, left: nic.pos_x ?? 0, top: nic.pos_y ?? 0, width: w0, height: h0 });
+    this.addGlobalMouseUp();
+  }
+
+  /** Start resizing a placed NIC by dragging its bottom-right handle. */
+  protected onResizeMouseDown(
+    event: MouseEvent,
+    nic: AssetNetworkInterface,
+    side: 'front' | 'rear',
+  ): void {
+    if (!this.role.canEditAssets() || this.nicPlacingId()) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const el = (event.currentTarget as HTMLElement).closest(
+      '.panel-img-wrap',
+    ) as HTMLElement;
+    this.nicInteractState = {
+      mode: 'resize',
+      side,
+      el,
+      startX: nic.pos_x ?? 0,
+      startY: nic.pos_y ?? 0,
+      nicId: nic.id,
+      w0: 0,
+      h0: 0,
+    };
+    this.nicDraggingId.set(nic.id);
     this.nicDrawRect.set({
       side,
-      left: startX,
-      top: startY,
-      width: 0,
-      height: 0,
+      left: nic.pos_x ?? 0,
+      top: nic.pos_y ?? 0,
+      width: nic.width ?? 0,
+      height: nic.height ?? 0,
     });
+    this.addGlobalMouseUp();
+  }
+
+  /**
+   * Registers a one-shot document-level mouseup listener so that releasing
+   * outside the panel frame always ends the drag/resize cleanly.
+   */
+  private addGlobalMouseUp(): void {
+    const handler = (e: MouseEvent): void => {
+      document.removeEventListener('mouseup', handler);
+      this.onPanelMouseUp(e);
+    };
+    document.addEventListener('mouseup', handler);
   }
 
   protected onPanelMouseMove(event: MouseEvent): void {
-    if (!this.nicDragState) return;
-    const { startX, startY, el, side } = this.nicDragState;
+    if (!this.nicInteractState) return;
+    const { mode, startX, startY, el, side, w0, h0 } = this.nicInteractState;
     const rect = el.getBoundingClientRect();
     const curX = Math.max(
       0,
@@ -674,48 +759,96 @@ export class AssetDeviceViewComponent {
       0,
       Math.min(100, ((event.clientY - rect.top) / rect.height) * 100),
     );
-    this.nicDrawRect.set({
-      side,
-      left: Math.min(startX, curX),
-      top: Math.min(startY, curY),
-      width: Math.abs(curX - startX),
-      height: Math.abs(curY - startY),
-    });
+
+    if (mode === 'draw') {
+      this.nicDrawRect.set({
+        side,
+        left: Math.min(startX, curX),
+        top: Math.min(startY, curY),
+        width: Math.abs(curX - startX),
+        height: Math.abs(curY - startY),
+      });
+    } else if (mode === 'move') {
+      this.nicDrawRect.set({
+        side,
+        left: Math.max(0, Math.min(100 - w0, curX - startX)),
+        top: Math.max(0, Math.min(100 - h0, curY - startY)),
+        width: w0,
+        height: h0,
+      });
+    } else {
+      // resize
+      this.nicDrawRect.set({
+        side,
+        left: startX,
+        top: startY,
+        width: Math.max(2, curX - startX),
+        height: Math.max(1, curY - startY),
+      });
+    }
   }
 
   protected onPanelMouseUp(event: MouseEvent): void {
-    if (!this.nicDragState) return;
+    if (!this.nicInteractState) return;
     const draw = this.nicDrawRect();
-    this.nicDragState = null;
-    // Ignore accidental clicks (too small)
-    if (!draw || draw.width < 2 || draw.height < 1) {
-      this.nicDrawRect.set(null);
-      return;
-    }
-    const placingId = this.nicPlacingId();
-    if (!placingId) {
-      this.nicDrawRect.set(null);
-      return;
-    }
+    const { mode, nicId } = this.nicInteractState;
+    this.nicInteractState = null;
+    this.nicDraggingId.set(null);
 
-    this.nicSvc
-      .patch(placingId, {
-        side: draw.side === 'front' ? SideEnum.Front : SideEnum.Rear,
-        pos_x: draw.left,
-        pos_y: draw.top,
-        width: draw.width,
-        height: draw.height,
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (saved) => {
-          this.nicList.update((list) =>
-            list.map((n) => (n.id === saved.id ? saved : n)),
-          );
-          this.nicPlacingId.set(null);
-          this.nicDrawRect.set(null);
-        },
-      });
+    if (!draw) return;
+
+    if (mode === 'draw') {
+      // Ignore accidental clicks (too small)
+      if (draw.width < 2 || draw.height < 1) {
+        this.nicDrawRect.set(null);
+        return;
+      }
+      const placingId = this.nicPlacingId();
+      if (!placingId) {
+        this.nicDrawRect.set(null);
+        return;
+      }
+      this.nicSvc
+        .patch(placingId, {
+          side: draw.side === 'front' ? SideEnum.Front : SideEnum.Rear,
+          pos_x: draw.left,
+          pos_y: draw.top,
+          width: draw.width,
+          height: draw.height,
+        })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (saved) => {
+            this.nicList.update((list) =>
+              list.map((n) => (n.id === saved.id ? saved : n)),
+            );
+            this.nicPlacingId.set(null);
+            this.nicDrawRect.set(null);
+          },
+        });
+    } else {
+      if (!nicId) {
+        this.nicDrawRect.set(null);
+        return;
+      }
+      this.nicSvc
+        .patch(nicId, {
+          side: draw.side === 'front' ? SideEnum.Front : SideEnum.Rear,
+          pos_x: draw.left,
+          pos_y: draw.top,
+          width: draw.width,
+          height: draw.height,
+        })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (saved) => {
+            this.nicList.update((list) =>
+              list.map((n) => (n.id === saved.id ? saved : n)),
+            );
+            this.nicDrawRect.set(null);
+          },
+        });
+    }
   }
 
   protected clearNicPosition(id: number): void {

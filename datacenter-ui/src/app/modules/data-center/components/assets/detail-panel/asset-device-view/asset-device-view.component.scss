@@ -726,6 +726,62 @@
     background: rgba(255, 255, 255, 0.06);
     box-shadow: none;
   }
+
+  // NIC in edit mode — becomes interactive
+  &--editable {
+    pointer-events: auto;
+    cursor: grab;
+
+    &:hover {
+      outline: 1px solid rgba(255, 255, 255, 0.35);
+      outline-offset: 1px;
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  // Ghost state while the NIC is being moved / resized
+  &--dragging {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+}
+
+/* Resize handle — bottom-right corner of an editable NIC rect */
+.nic-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+  z-index: 30;
+  pointer-events: auto;
+
+  // L-shaped corner indicator
+  &::before {
+    content: "";
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid rgba(255, 255, 255, 0.75);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.75);
+    border-radius: 0 0 2px 0;
+  }
+}
+
+// Only reveal on hover of the parent
+.nic-rect--editable .nic-resize-handle {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.nic-rect--editable:hover .nic-resize-handle {
+  opacity: 1;
 }
 
 /* Port row — fills card body leaving room for label at bottom */

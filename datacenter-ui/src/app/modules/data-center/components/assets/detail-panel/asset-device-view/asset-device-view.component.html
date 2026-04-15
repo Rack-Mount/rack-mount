@@ -149,11 +149,14 @@
                   class="nic-rect"
                   [class.nic-rect--copper]="nic.media_type === 'copper'"
                   [class.nic-rect--fiber]="nic.media_type === 'fiber'"
+                  [class.nic-rect--editable]="role.canEditAssets() && !nicPlacingId()"
+                  [class.nic-rect--dragging]="nicDraggingId() === nic.id"
                   [style.left.%]="nic.pos_x"
                   [style.top.%]="nic.pos_y"
                   [style.width.%]="nic.width"
                   [style.height.%]="nic.height"
                   [title]="nic.name + ' · ' + nic.speed_display"
+                  (mousedown)="onNicMouseDown($event, nic, 'front')"
                 >
                   <div class="nic-ports">
                     @for (p of portRange(nic.port_count); track p) {
@@ -166,6 +169,12 @@
                     }
                   </div>
                   <span class="nic-rect__label">{{ nic.name }}</span>
+                  @if (role.canEditAssets() && !nicPlacingId()) {
+                    <div
+                      class="nic-resize-handle"
+                      (mousedown)="onResizeMouseDown($event, nic, 'front')"
+                    ></div>
+                  }
                 </div>
               }
               <!-- live draw preview -->
@@ -228,11 +237,14 @@
                   class="nic-rect"
                   [class.nic-rect--copper]="nic.media_type === 'copper'"
                   [class.nic-rect--fiber]="nic.media_type === 'fiber'"
+                  [class.nic-rect--editable]="role.canEditAssets() && !nicPlacingId()"
+                  [class.nic-rect--dragging]="nicDraggingId() === nic.id"
                   [style.left.%]="nic.pos_x"
                   [style.top.%]="nic.pos_y"
                   [style.width.%]="nic.width"
                   [style.height.%]="nic.height"
                   [title]="nic.name + ' · ' + nic.speed_display"
+                  (mousedown)="onNicMouseDown($event, nic, 'rear')"
                 >
                   <div class="nic-ports">
                     @for (p of portRange(nic.port_count); track p) {
@@ -245,6 +257,12 @@
                     }
                   </div>
                   <span class="nic-rect__label">{{ nic.name }}</span>
+                  @if (role.canEditAssets() && !nicPlacingId()) {
+                    <div
+                      class="nic-resize-handle"
+                      (mousedown)="onResizeMouseDown($event, nic, 'rear')"
+                    ></div>
+                  }
                 </div>
               }
               <!-- live draw preview -->
