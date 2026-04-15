@@ -666,8 +666,23 @@ export class AssetDeviceViewComponent {
     const rect = el.getBoundingClientRect();
     const startX = ((event.clientX - rect.left) / rect.width) * 100;
     const startY = ((event.clientY - rect.top) / rect.height) * 100;
-    this.nicInteractState = { mode: 'draw', side, startX, startY, el, nicId: null, w0: 0, h0: 0 };
-    this.nicDrawRect.set({ side, left: startX, top: startY, width: 0, height: 0 });
+    this.nicInteractState = {
+      mode: 'draw',
+      side,
+      startX,
+      startY,
+      el,
+      nicId: null,
+      w0: 0,
+      h0: 0,
+    };
+    this.nicDrawRect.set({
+      side,
+      left: startX,
+      top: startY,
+      width: 0,
+      height: 0,
+    });
   }
 
   /** Start moving an already-placed NIC by dragging its body. */
@@ -698,7 +713,13 @@ export class AssetDeviceViewComponent {
       h0,
     };
     this.nicDraggingId.set(nic.id);
-    this.nicDrawRect.set({ side, left: nic.pos_x ?? 0, top: nic.pos_y ?? 0, width: w0, height: h0 });
+    this.nicDrawRect.set({
+      side,
+      left: nic.pos_x ?? 0,
+      top: nic.pos_y ?? 0,
+      width: w0,
+      height: h0,
+    });
     this.addGlobalMouseUp();
   }
 

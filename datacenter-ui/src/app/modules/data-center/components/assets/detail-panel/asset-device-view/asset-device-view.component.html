@@ -149,7 +149,9 @@
                   class="nic-rect"
                   [class.nic-rect--copper]="nic.media_type === 'copper'"
                   [class.nic-rect--fiber]="nic.media_type === 'fiber'"
-                  [class.nic-rect--editable]="role.canEditAssets() && !nicPlacingId()"
+                  [class.nic-rect--editable]="
+                    role.canEditAssets() && !nicPlacingId()
+                  "
                   [class.nic-rect--dragging]="nicDraggingId() === nic.id"
                   [style.left.%]="nic.pos_x"
                   [style.top.%]="nic.pos_y"
@@ -237,7 +239,9 @@
                   class="nic-rect"
                   [class.nic-rect--copper]="nic.media_type === 'copper'"
                   [class.nic-rect--fiber]="nic.media_type === 'fiber'"
-                  [class.nic-rect--editable]="role.canEditAssets() && !nicPlacingId()"
+                  [class.nic-rect--editable]="
+                    role.canEditAssets() && !nicPlacingId()
+                  "
                   [class.nic-rect--dragging]="nicDraggingId() === nic.id"
                   [style.left.%]="nic.pos_x"
                   [style.top.%]="nic.pos_y"
