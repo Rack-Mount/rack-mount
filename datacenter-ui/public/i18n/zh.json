@@ -490,6 +490,8 @@
     "nic_speed": "速率",
     "nic_slot": "插槽",
     "nic_notes": "备注",
+    "nic_form_factor": "外形规格",
+    "nic_orientation": "安装方向",
     "nic_place_btn": "在面板上定位",
     "nic_place_hint": "点击图片进行定位",
     "nic_placing_active": "点击前面板或后面板设置NIC位置",

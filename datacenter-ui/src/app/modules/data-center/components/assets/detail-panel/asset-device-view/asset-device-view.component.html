@@ -135,6 +135,7 @@
               [class.panel-img-wrap--placing]="
                 nicPlacingId() !== null && isServer()
               "
+              [style.aspect-ratio]="frontImageAspect() || null"
               (mousedown)="onPanelMouseDown($event, 'front')"
             >
               <img
@@ -142,6 +143,7 @@
                 [src]="img"
                 [alt]="a.hostname || a.model.name"
                 loading="lazy"
+                (load)="onImageLoad($event, 'front')"
               />
               <!-- NIC rects on front panel -->
               @for (nic of nicsFront(); track nic.id) {
@@ -149,6 +151,8 @@
                   class="nic-rect"
                   [class.nic-rect--copper]="nic.media_type === 'copper'"
                   [class.nic-rect--fiber]="nic.media_type === 'fiber'"
+                  [class.nic-rect--low-profile]="nic.form_factor === 'low'"
+                  [class.nic-rect--horizontal]="nic.orientation === 'horizontal'"
                   [class.nic-rect--editable]="
                     role.canEditAssets() && !nicPlacingId()
                   "
@@ -225,6 +229,7 @@
               [class.panel-img-wrap--placing]="
                 nicPlacingId() !== null && isServer()
               "
+              [style.aspect-ratio]="rearImageAspect() || null"
               (mousedown)="onPanelMouseDown($event, 'rear')"
             >
               <img
@@ -232,6 +237,7 @@
                 [src]="img"
                 [alt]="a.hostname || a.model.name"
                 loading="lazy"
+                (load)="onImageLoad($event, 'rear')"
               />
               <!-- NIC rects on rear panel -->
               @for (nic of nicsRear(); track nic.id) {
@@ -239,6 +245,8 @@
                   class="nic-rect"
                   [class.nic-rect--copper]="nic.media_type === 'copper'"
                   [class.nic-rect--fiber]="nic.media_type === 'fiber'"
+                  [class.nic-rect--low-profile]="nic.form_factor === 'low'"
+                  [class.nic-rect--horizontal]="nic.orientation === 'horizontal'"
                   [class.nic-rect--editable]="
                     role.canEditAssets() && !nicPlacingId()
                   "
@@ -549,11 +557,10 @@
                     {{ "asset_device_view.nic_media_type" | translate }}
                     <select
                       class="move-select"
-                      [value]="nicFormMediaType()"
                       (change)="nicFormMediaType.set($any($event.target).value)"
                     >
                       @for (opt of nicMediaOptions; track opt.value) {
-                        <option [value]="opt.value">{{ opt.label }}</option>
+                        <option [value]="opt.value" [selected]="opt.value === nicFormMediaType()">{{ opt.label }}</option>
                       }
                     </select>
                   </label>
@@ -562,13 +569,10 @@
                     {{ "asset_device_view.nic_port_count" | translate }}
                     <select
                       class="move-select"
-                      [value]="nicFormPortCount()"
-                      (change)="
-                        nicFormPortCount.set($any(+$any($event.target).value))
-                      "
+                      (change)="nicFormPortCount.set($any(+$any($event.target).value))"
                     >
                       @for (opt of nicPortCountOptions; track opt.value) {
-                        <option [value]="opt.value">{{ opt.label }}</option>
+                        <option [value]="opt.value" [selected]="opt.value === nicFormPortCount()">{{ opt.label }}</option>
                       }
                     </select>
                   </label>
@@ -577,11 +581,10 @@
                     {{ "asset_device_view.nic_speed" | translate }}
                     <select
                       class="move-select"
-                      [value]="nicFormSpeed()"
                       (change)="nicFormSpeed.set($any($event.target).value)"
                     >
                       @for (opt of nicSpeedOptions; track opt.value) {
-                        <option [value]="opt.value">{{ opt.label }}</option>
+                        <option [value]="opt.value" [selected]="opt.value === nicFormSpeed()">{{ opt.label }}</option>
                       }
                     </select>
                   </label>
@@ -605,6 +608,30 @@
                       [value]="nicFormNotes()"
                       (input)="nicFormNotes.set($any($event.target).value)"
                     ></textarea>
+                  </label>
+
+                  <label class="move-label">
+                    {{ "asset_device_view.nic_form_factor" | translate }}
+                    <select
+                      class="move-select"
+                      (change)="nicFormFormFactor.set($any($event.target).value)"
+                    >
+                      @for (opt of nicFormFactorOptions; track opt.value) {
+                        <option [value]="opt.value" [selected]="opt.value === nicFormFormFactor()">{{ opt.label }}</option>
+                      }
+                    </select>
+                  </label>
+
+                  <label class="move-label">
+                    {{ "asset_device_view.nic_orientation" | translate }}
+                    <select
+                      class="move-select"
+                      (change)="nicFormOrientation.set($any($event.target).value)"
+                    >
+                      @for (opt of nicOrientationOptions; track opt.value) {
+                        <option [value]="opt.value" [selected]="opt.value === nicFormOrientation()">{{ opt.label }}</option>
+                      }
+                    </select>
                   </label>
                 </div>
 
@@ -648,6 +675,9 @@
                     <span class="req-type-badge">{{
                       nic.media_type_display
                     }}</span>
+                    @if (nic.form_factor === 'low') {
+                      <span class="nic-ff-badge">LP</span>
+                    }
                     <span class="sfp-specs">
                       {{ nic.port_count_display }} · {{ nic.speed_display }}
                       @if (nic.slot) {

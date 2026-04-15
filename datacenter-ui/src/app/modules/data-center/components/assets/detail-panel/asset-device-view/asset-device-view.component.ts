@@ -23,6 +23,7 @@ import {
   AssetState,
   LocationService,
   MediaTypeEnum,
+  OrientationEnum,
   PortCountEnum,
   Room,
   SideEnum,
@@ -429,6 +430,20 @@ export class AssetDeviceViewComponent {
     return (a.model.type.name ?? '').toLowerCase().includes('server');
   });
 
+  /** Aspect-ratio string (e.g. "1400 / 88") set once the image loads. */
+  protected readonly frontImageAspect = signal<string>('');
+  protected readonly rearImageAspect = signal<string>('');
+
+  protected onImageLoad(event: Event, side: 'front' | 'rear'): void {
+    const img = event.target as HTMLImageElement;
+    const ratio = `${img.naturalWidth} / ${img.naturalHeight}`;
+    if (side === 'front') {
+      this.frontImageAspect.set(ratio);
+    } else {
+      this.rearImageAspect.set(ratio);
+    }
+  }
+
   protected readonly nicList = signal<AssetNetworkInterface[]>([]);
   protected readonly nicLoading = signal(false);
   protected readonly nicSectionOpen = signal(false);
@@ -446,6 +461,8 @@ export class AssetDeviceViewComponent {
   protected readonly nicFormSpeed = signal<SpeedEnum>(SpeedEnum._1G);
   protected readonly nicFormSlot = signal('');
   protected readonly nicFormNotes = signal('');
+  protected readonly nicFormFormFactor = signal<'full' | 'low'>('full');
+  protected readonly nicFormOrientation = signal<OrientationEnum>(OrientationEnum.Vertical);
   protected readonly nicSaving = signal(false);
   protected readonly nicError = signal('');
   protected readonly nicDeleteId = signal<number | null>(null);
@@ -526,6 +543,14 @@ export class AssetDeviceViewComponent {
     { value: SpeedEnum._200G, label: '200 GbE' },
     { value: SpeedEnum._400G, label: '400 GbE' },
   ];
+  protected readonly nicFormFactorOptions: { value: 'full' | 'low'; label: string }[] = [
+    { value: 'full', label: 'Full profile' },
+    { value: 'low',  label: 'Low profile' },
+  ];
+  protected readonly nicOrientationOptions: { value: OrientationEnum; label: string }[] = [
+    { value: OrientationEnum.Vertical,   label: 'Vertical' },
+    { value: OrientationEnum.Horizontal, label: 'Horizontal' },
+  ];
 
   /** Returns an index array [0…n-1] for driving @for port loops in the template */
   protected portRange(count: number | null | undefined): number[] {
@@ -563,6 +588,8 @@ export class AssetDeviceViewComponent {
       this.nicFormSpeed.set(nic.speed ?? SpeedEnum._1G);
       this.nicFormSlot.set(nic.slot ?? '');
       this.nicFormNotes.set(nic.notes ?? '');
+      this.nicFormFormFactor.set(nic.form_factor ?? 'full');
+      this.nicFormOrientation.set((nic.orientation as OrientationEnum) ?? OrientationEnum.Vertical);
     } else {
       this.nicEditId.set(null);
       this.nicFormName.set('');
@@ -571,6 +598,8 @@ export class AssetDeviceViewComponent {
       this.nicFormSpeed.set(SpeedEnum._1G);
       this.nicFormSlot.set('');
       this.nicFormNotes.set('');
+      this.nicFormFormFactor.set('full');
+      this.nicFormOrientation.set(OrientationEnum.Vertical);
     }
     this.nicError.set('');
     this.nicFormOpen.set(true);
@@ -596,6 +625,8 @@ export class AssetDeviceViewComponent {
       media_type: this.nicFormMediaType(),
       port_count: this.nicFormPortCount(),
       speed: this.nicFormSpeed(),
+      form_factor: this.nicFormFormFactor(),
+      orientation: this.nicFormOrientation(),
       slot: this.nicFormSlot(),
       notes: this.nicFormNotes(),
     };
@@ -757,6 +788,31 @@ export class AssetDeviceViewComponent {
   }
 
   /**
+   * Returns the height/width ratio for the NIC draw rect in % coordinates.
+   * Uses the physical PCIe bracket dimensions corrected by the panel image's
+   * own pixel aspect ratio so the drawn shape reflects reality.
+   *   full height:  111.15 mm tall × 18.75 mm wide → ratio 5.928
+   *   low  profile:  79.2 mm tall × 18.75 mm wide → ratio 4.224
+   * When horizontal the card is rotated 90°: width and height are swapped.
+   */
+  private calcNicDrawRatio(
+    formFactor: 'full' | 'low',
+    orientation: OrientationEnum,
+    aspectStr: string,
+  ): number {
+    const physH = formFactor === 'low' ? 79.2 : 111.15;
+    const physW = 18.75;
+    const physRatio = orientation === OrientationEnum.Horizontal
+      ? (physW / physH)   // rotated 90° → wide and short
+      : (physH / physW);  // standard   → tall and narrow
+    if (!aspectStr) return physRatio;
+    const parts = aspectStr.split('/').map(s => parseFloat(s.trim()));
+    const imgW = parts[0] > 0 ? parts[0] : 1;
+    const imgH = parts[1] > 0 ? parts[1] : 1;
+    return physRatio * (imgW / imgH);
+  }
+
+  /**
    * Registers a one-shot document-level mouseup listener so that releasing
    * outside the panel frame always ends the drag/resize cleanly.
    */
@@ -782,13 +838,15 @@ export class AssetDeviceViewComponent {
     );
 
     if (mode === 'draw') {
-      this.nicDrawRect.set({
-        side,
-        left: Math.min(startX, curX),
-        top: Math.min(startY, curY),
-        width: Math.abs(curX - startX),
-        height: Math.abs(curY - startY),
-      });
+      const left = Math.min(startX, curX);
+      const w = Math.abs(curX - startX);
+      const placingNic = this.nicList().find(n => n.id === this.nicPlacingId());
+      const ff = (placingNic?.form_factor as 'full' | 'low') ?? 'full';
+      const orient = (placingNic?.orientation as OrientationEnum) ?? OrientationEnum.Vertical;
+      const aspectStr = side === 'front' ? this.frontImageAspect() : this.rearImageAspect();
+      const ratio = this.calcNicDrawRatio(ff, orient, aspectStr);
+      const h = Math.min(Math.max(1, w * ratio), 100 - startY);
+      this.nicDrawRect.set({ side, left, top: startY, width: w, height: h });
     } else if (mode === 'move') {
       this.nicDrawRect.set({
         side,

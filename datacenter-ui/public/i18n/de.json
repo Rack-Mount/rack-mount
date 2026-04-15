@@ -438,6 +438,8 @@
     "nic_speed": "Geschwindigkeit",
     "nic_slot": "Slot",
     "nic_notes": "Notizen",
+    "nic_form_factor": "Formfaktor",
+    "nic_orientation": "Ausrichtung",
     "nic_place_btn": "Auf Panel platzieren",
     "nic_place_hint": "Klicken Sie auf das Bild zum Platzieren",
     "nic_placing_active": "Klicken Sie auf das Vorder- oder Rückpanel, um die NIC-Position festzulegen",

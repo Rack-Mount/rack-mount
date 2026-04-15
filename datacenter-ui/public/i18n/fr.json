@@ -490,6 +490,8 @@
     "nic_speed": "Vitesse",
     "nic_slot": "Slot",
     "nic_notes": "Notes",
+    "nic_form_factor": "Facteur de forme",
+    "nic_orientation": "Orientation",
     "nic_place_btn": "Placer sur le panneau",
     "nic_place_hint": "Cliquez sur l'image pour placer",
     "nic_placing_active": "Cliquez sur le panneau avant ou arrière pour définir la position de la NIC",

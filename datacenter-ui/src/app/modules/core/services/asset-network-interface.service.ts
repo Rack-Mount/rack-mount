@@ -17,6 +17,8 @@ export interface AssetNetworkInterfaceWrite {
   media_type: MediaTypeEnum;
   port_count: PortCountEnum;
   speed: SpeedEnum;
+  form_factor?: 'full' | 'low';
+  orientation?: 'vertical' | 'horizontal';
   slot?: string;
   notes?: string;
   side?: SideEnum;
