@@ -750,7 +750,7 @@
   // Low-profile PCIe bracket — adds an "LP" corner badge
   &--low-profile {
     &::before {
-      content: 'LP';
+      content: "LP";
       position: absolute;
       top: 2px;
       right: 3px;
@@ -768,7 +768,7 @@
   // Horizontal installation — ports in a ROW (wide-short bracket), badge "H"
   &--horizontal {
     .nic-ports {
-      flex-direction: row;       // side by side along the wide dimension
+      flex-direction: row; // side by side along the wide dimension
       align-items: center;
       justify-content: space-evenly;
       inset: 10% 5% 26%;
@@ -776,13 +776,13 @@
 
     .nic-port {
       width: auto;
-      height: 80%;               // fill the short bracket height
+      height: 80%; // fill the short bracket height
       max-height: 100%;
       flex: 0 0 auto;
     }
 
     &::after {
-      content: 'H';
+      content: "H";
       position: absolute;
       top: 2px;
       left: 3px;

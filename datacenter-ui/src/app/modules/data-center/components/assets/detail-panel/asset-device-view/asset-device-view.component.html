@@ -152,7 +152,9 @@
                   [class.nic-rect--copper]="nic.media_type === 'copper'"
                   [class.nic-rect--fiber]="nic.media_type === 'fiber'"
                   [class.nic-rect--low-profile]="nic.form_factor === 'low'"
-                  [class.nic-rect--horizontal]="nic.orientation === 'horizontal'"
+                  [class.nic-rect--horizontal]="
+                    nic.orientation === 'horizontal'
+                  "
                   [class.nic-rect--editable]="
                     role.canEditAssets() && !nicPlacingId()
                   "
@@ -246,7 +248,9 @@
                   [class.nic-rect--copper]="nic.media_type === 'copper'"
                   [class.nic-rect--fiber]="nic.media_type === 'fiber'"
                   [class.nic-rect--low-profile]="nic.form_factor === 'low'"
-                  [class.nic-rect--horizontal]="nic.orientation === 'horizontal'"
+                  [class.nic-rect--horizontal]="
+                    nic.orientation === 'horizontal'
+                  "
                   [class.nic-rect--editable]="
                     role.canEditAssets() && !nicPlacingId()
                   "
@@ -560,7 +564,12 @@
                       (change)="nicFormMediaType.set($any($event.target).value)"
                     >
                       @for (opt of nicMediaOptions; track opt.value) {
-                        <option [value]="opt.value" [selected]="opt.value === nicFormMediaType()">{{ opt.label }}</option>
+                        <option
+                          [value]="opt.value"
+                          [selected]="opt.value === nicFormMediaType()"
+                        >
+                          {{ opt.label }}
+                        </option>
                       }
                     </select>
                   </label>
@@ -569,10 +578,17 @@
                     {{ "asset_device_view.nic_port_count" | translate }}
                     <select
                       class="move-select"
-                      (change)="nicFormPortCount.set($any(+$any($event.target).value))"
+                      (change)="
+                        nicFormPortCount.set($any(+$any($event.target).value))
+                      "
                     >
                       @for (opt of nicPortCountOptions; track opt.value) {
-                        <option [value]="opt.value" [selected]="opt.value === nicFormPortCount()">{{ opt.label }}</option>
+                        <option
+                          [value]="opt.value"
+                          [selected]="opt.value === nicFormPortCount()"
+                        >
+                          {{ opt.label }}
+                        </option>
                       }
                     </select>
                   </label>
@@ -584,7 +600,12 @@
                       (change)="nicFormSpeed.set($any($event.target).value)"
                     >
                       @for (opt of nicSpeedOptions; track opt.value) {
-                        <option [value]="opt.value" [selected]="opt.value === nicFormSpeed()">{{ opt.label }}</option>
+                        <option
+                          [value]="opt.value"
+                          [selected]="opt.value === nicFormSpeed()"
+                        >
+                          {{ opt.label }}
+                        </option>
                       }
                     </select>
                   </label>
@@ -614,10 +635,17 @@
                     {{ "asset_device_view.nic_form_factor" | translate }}
                     <select
                       class="move-select"
-                      (change)="nicFormFormFactor.set($any($event.target).value)"
+                      (change)="
+                        nicFormFormFactor.set($any($event.target).value)
+                      "
                     >
                       @for (opt of nicFormFactorOptions; track opt.value) {
-                        <option [value]="opt.value" [selected]="opt.value === nicFormFormFactor()">{{ opt.label }}</option>
+                        <option
+                          [value]="opt.value"
+                          [selected]="opt.value === nicFormFormFactor()"
+                        >
+                          {{ opt.label }}
+                        </option>
                       }
                     </select>
                   </label>
@@ -626,10 +654,17 @@
                     {{ "asset_device_view.nic_orientation" | translate }}
                     <select
                       class="move-select"
-                      (change)="nicFormOrientation.set($any($event.target).value)"
+                      (change)="
+                        nicFormOrientation.set($any($event.target).value)
+                      "
                     >
                       @for (opt of nicOrientationOptions; track opt.value) {
-                        <option [value]="opt.value" [selected]="opt.value === nicFormOrientation()">{{ opt.label }}</option>
+                        <option
+                          [value]="opt.value"
+                          [selected]="opt.value === nicFormOrientation()"
+                        >
+                          {{ opt.label }}
+                        </option>
                       }
                     </select>
                   </label>
@@ -675,7 +710,7 @@
                     <span class="req-type-badge">{{
                       nic.media_type_display
                     }}</span>
-                    @if (nic.form_factor === 'low') {
+                    @if (nic.form_factor === "low") {
                       <span class="nic-ff-badge">LP</span>
                     }
                     <span class="sfp-specs">

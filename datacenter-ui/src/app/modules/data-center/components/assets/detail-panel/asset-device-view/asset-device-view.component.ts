@@ -462,7 +462,9 @@ export class AssetDeviceViewComponent {
   protected readonly nicFormSlot = signal('');
   protected readonly nicFormNotes = signal('');
   protected readonly nicFormFormFactor = signal<'full' | 'low'>('full');
-  protected readonly nicFormOrientation = signal<OrientationEnum>(OrientationEnum.Vertical);
+  protected readonly nicFormOrientation = signal<OrientationEnum>(
+    OrientationEnum.Vertical,
+  );
   protected readonly nicSaving = signal(false);
   protected readonly nicError = signal('');
   protected readonly nicDeleteId = signal<number | null>(null);
@@ -543,12 +545,18 @@ export class AssetDeviceViewComponent {
     { value: SpeedEnum._200G, label: '200 GbE' },
     { value: SpeedEnum._400G, label: '400 GbE' },
   ];
-  protected readonly nicFormFactorOptions: { value: 'full' | 'low'; label: string }[] = [
+  protected readonly nicFormFactorOptions: {
+    value: 'full' | 'low';
+    label: string;
+  }[] = [
     { value: 'full', label: 'Full profile' },
-    { value: 'low',  label: 'Low profile' },
+    { value: 'low', label: 'Low profile' },
   ];
-  protected readonly nicOrientationOptions: { value: OrientationEnum; label: string }[] = [
-    { value: OrientationEnum.Vertical,   label: 'Vertical' },
+  protected readonly nicOrientationOptions: {
+    value: OrientationEnum;
+    label: string;
+  }[] = [
+    { value: OrientationEnum.Vertical, label: 'Vertical' },
     { value: OrientationEnum.Horizontal, label: 'Horizontal' },
   ];
 
@@ -589,7 +597,9 @@ export class AssetDeviceViewComponent {
       this.nicFormSlot.set(nic.slot ?? '');
       this.nicFormNotes.set(nic.notes ?? '');
       this.nicFormFormFactor.set(nic.form_factor ?? 'full');
-      this.nicFormOrientation.set((nic.orientation as OrientationEnum) ?? OrientationEnum.Vertical);
+      this.nicFormOrientation.set(
+        (nic.orientation as OrientationEnum) ?? OrientationEnum.Vertical,
+      );
     } else {
       this.nicEditId.set(null);
       this.nicFormName.set('');
@@ -802,11 +812,12 @@ export class AssetDeviceViewComponent {
   ): number {
     const physH = formFactor === 'low' ? 79.2 : 111.15;
     const physW = 18.75;
-    const physRatio = orientation === OrientationEnum.Horizontal
-      ? (physW / physH)   // rotated 90° → wide and short
-      : (physH / physW);  // standard   → tall and narrow
+    const physRatio =
+      orientation === OrientationEnum.Horizontal
+        ? physW / physH // rotated 90° → wide and short
+        : physH / physW; // standard   → tall and narrow
     if (!aspectStr) return physRatio;
-    const parts = aspectStr.split('/').map(s => parseFloat(s.trim()));
+    const parts = aspectStr.split('/').map((s) => parseFloat(s.trim()));
     const imgW = parts[0] > 0 ? parts[0] : 1;
     const imgH = parts[1] > 0 ? parts[1] : 1;
     return physRatio * (imgW / imgH);
@@ -840,10 +851,15 @@ export class AssetDeviceViewComponent {
     if (mode === 'draw') {
       const left = Math.min(startX, curX);
       const w = Math.abs(curX - startX);
-      const placingNic = this.nicList().find(n => n.id === this.nicPlacingId());
+      const placingNic = this.nicList().find(
+        (n) => n.id === this.nicPlacingId(),
+      );
       const ff = (placingNic?.form_factor as 'full' | 'low') ?? 'full';
-      const orient = (placingNic?.orientation as OrientationEnum) ?? OrientationEnum.Vertical;
-      const aspectStr = side === 'front' ? this.frontImageAspect() : this.rearImageAspect();
+      const orient =
+        (placingNic?.orientation as OrientationEnum) ??
+        OrientationEnum.Vertical;
+      const aspectStr =
+        side === 'front' ? this.frontImageAspect() : this.rearImageAspect();
       const ratio = this.calcNicDrawRatio(ff, orient, aspectStr);
       const h = Math.min(Math.max(1, w * ratio), 100 - startY);
       this.nicDrawRect.set({ side, left, top: startY, width: w, height: h });
