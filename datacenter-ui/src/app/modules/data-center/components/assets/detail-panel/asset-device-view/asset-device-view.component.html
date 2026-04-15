@@ -132,7 +132,9 @@
           @if (frontImage(); as img) {
             <div
               class="panel-img-wrap"
-              [class.panel-img-wrap--placing]="nicPlacingId() !== null && isServer()"
+              [class.panel-img-wrap--placing]="
+                nicPlacingId() !== null && isServer()
+              "
               (mousedown)="onPanelMouseDown($event, 'front')"
             >
               <img
@@ -209,7 +211,9 @@
           @if (rearImage(); as img) {
             <div
               class="panel-img-wrap"
-              [class.panel-img-wrap--placing]="nicPlacingId() !== null && isServer()"
+              [class.panel-img-wrap--placing]="
+                nicPlacingId() !== null && isServer()
+              "
               (mousedown)="onPanelMouseDown($event, 'rear')"
             >
               <img
