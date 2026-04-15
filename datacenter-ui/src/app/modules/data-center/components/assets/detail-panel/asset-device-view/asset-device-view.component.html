@@ -126,17 +126,59 @@
         <div
           class="panel-frame"
           [class.panel-frame--placing]="nicPlacingId() !== null && isServer()"
-          (mousedown)="onPanelMouseDown($event, 'front')"
           (mousemove)="onPanelMouseMove($event)"
           (mouseup)="onPanelMouseUp($event)"
         >
           @if (frontImage(); as img) {
-            <img
-              class="panel-img"
-              [src]="img"
-              [alt]="a.hostname || a.model.name"
-              loading="lazy"
-            />
+            <div
+              class="panel-img-wrap"
+              [class.panel-img-wrap--placing]="nicPlacingId() !== null && isServer()"
+              (mousedown)="onPanelMouseDown($event, 'front')"
+            >
+              <img
+                class="panel-img"
+                [src]="img"
+                [alt]="a.hostname || a.model.name"
+                loading="lazy"
+              />
+              <!-- NIC rects on front panel -->
+              @for (nic of nicsFront(); track nic.id) {
+                <div
+                  class="nic-rect"
+                  [class.nic-rect--copper]="nic.media_type === 'copper'"
+                  [class.nic-rect--fiber]="nic.media_type === 'fiber'"
+                  [style.left.%]="nic.pos_x"
+                  [style.top.%]="nic.pos_y"
+                  [style.width.%]="nic.width"
+                  [style.height.%]="nic.height"
+                  [title]="nic.name + ' · ' + nic.speed_display"
+                >
+                  <div class="nic-ports">
+                    @for (p of portRange(nic.port_count); track p) {
+                      <div
+                        class="nic-port"
+                        [class.nic-port--fiber]="nic.media_type === 'fiber'"
+                      >
+                        <span class="nic-led"></span>
+                      </div>
+                    }
+                  </div>
+                  <span class="nic-rect__label">{{ nic.name }}</span>
+                </div>
+              }
+              <!-- live draw preview -->
+              @if (nicDrawRect(); as dr) {
+                @if (dr.side === "front") {
+                  <div
+                    class="nic-rect nic-rect--preview"
+                    [style.left.%]="dr.left"
+                    [style.top.%]="dr.top"
+                    [style.width.%]="dr.width"
+                    [style.height.%]="dr.height"
+                  ></div>
+                }
+              }
+            </div>
           } @else {
             <div class="panel-placeholder">
               <span class="panel-icon">{{ typeIcon() }}</span>
@@ -144,43 +186,6 @@
                 "asset_device_view.no_image" | translate
               }}</span>
             </div>
-          }
-          <!-- NIC rects on front panel -->
-          @for (nic of nicsFront(); track nic.id) {
-            <div
-              class="nic-rect"
-              [class.nic-rect--copper]="nic.media_type === 'copper'"
-              [class.nic-rect--fiber]="nic.media_type === 'fiber'"
-              [style.left.%]="nic.pos_x"
-              [style.top.%]="nic.pos_y"
-              [style.width.%]="nic.width"
-              [style.height.%]="nic.height"
-              [title]="nic.name + ' · ' + nic.speed_display"
-            >
-              <div class="nic-ports">
-                @for (p of portRange(nic.port_count); track p) {
-                  <div
-                    class="nic-port"
-                    [class.nic-port--fiber]="nic.media_type === 'fiber'"
-                  >
-                    <span class="nic-led"></span>
-                  </div>
-                }
-              </div>
-              <span class="nic-rect__label">{{ nic.name }}</span>
-            </div>
-          }
-          <!-- live draw preview -->
-          @if (nicDrawRect(); as dr) {
-            @if (dr.side === "front") {
-              <div
-                class="nic-rect nic-rect--preview"
-                [style.left.%]="dr.left"
-                [style.top.%]="dr.top"
-                [style.width.%]="dr.width"
-                [style.height.%]="dr.height"
-              ></div>
-            }
           }
         </div>
       </div>
@@ -198,17 +203,59 @@
         <div
           class="panel-frame panel-frame--rear"
           [class.panel-frame--placing]="nicPlacingId() !== null && isServer()"
-          (mousedown)="onPanelMouseDown($event, 'rear')"
           (mousemove)="onPanelMouseMove($event)"
           (mouseup)="onPanelMouseUp($event)"
         >
           @if (rearImage(); as img) {
-            <img
-              class="panel-img"
-              [src]="img"
-              [alt]="a.hostname || a.model.name"
-              loading="lazy"
-            />
+            <div
+              class="panel-img-wrap"
+              [class.panel-img-wrap--placing]="nicPlacingId() !== null && isServer()"
+              (mousedown)="onPanelMouseDown($event, 'rear')"
+            >
+              <img
+                class="panel-img"
+                [src]="img"
+                [alt]="a.hostname || a.model.name"
+                loading="lazy"
+              />
+              <!-- NIC rects on rear panel -->
+              @for (nic of nicsRear(); track nic.id) {
+                <div
+                  class="nic-rect"
+                  [class.nic-rect--copper]="nic.media_type === 'copper'"
+                  [class.nic-rect--fiber]="nic.media_type === 'fiber'"
+                  [style.left.%]="nic.pos_x"
+                  [style.top.%]="nic.pos_y"
+                  [style.width.%]="nic.width"
+                  [style.height.%]="nic.height"
+                  [title]="nic.name + ' · ' + nic.speed_display"
+                >
+                  <div class="nic-ports">
+                    @for (p of portRange(nic.port_count); track p) {
+                      <div
+                        class="nic-port"
+                        [class.nic-port--fiber]="nic.media_type === 'fiber'"
+                      >
+                        <span class="nic-led"></span>
+                      </div>
+                    }
+                  </div>
+                  <span class="nic-rect__label">{{ nic.name }}</span>
+                </div>
+              }
+              <!-- live draw preview -->
+              @if (nicDrawRect(); as dr) {
+                @if (dr.side === "rear") {
+                  <div
+                    class="nic-rect nic-rect--preview"
+                    [style.left.%]="dr.left"
+                    [style.top.%]="dr.top"
+                    [style.width.%]="dr.width"
+                    [style.height.%]="dr.height"
+                  ></div>
+                }
+              }
+            </div>
           } @else {
             <div class="panel-placeholder">
               <span class="panel-icon">{{ typeIcon() }}</span>
@@ -216,43 +263,6 @@
                 "asset_device_view.no_image" | translate
               }}</span>
             </div>
-          }
-          <!-- NIC rects on rear panel -->
-          @for (nic of nicsRear(); track nic.id) {
-            <div
-              class="nic-rect"
-              [class.nic-rect--copper]="nic.media_type === 'copper'"
-              [class.nic-rect--fiber]="nic.media_type === 'fiber'"
-              [style.left.%]="nic.pos_x"
-              [style.top.%]="nic.pos_y"
-              [style.width.%]="nic.width"
-              [style.height.%]="nic.height"
-              [title]="nic.name + ' · ' + nic.speed_display"
-            >
-              <div class="nic-ports">
-                @for (p of portRange(nic.port_count); track p) {
-                  <div
-                    class="nic-port"
-                    [class.nic-port--fiber]="nic.media_type === 'fiber'"
-                  >
-                    <span class="nic-led"></span>
-                  </div>
-                }
-              </div>
-              <span class="nic-rect__label">{{ nic.name }}</span>
-            </div>
-          }
-          <!-- live draw preview -->
-          @if (nicDrawRect(); as dr) {
-            @if (dr.side === "rear") {
-              <div
-                class="nic-rect nic-rect--preview"
-                [style.left.%]="dr.left"
-                [style.top.%]="dr.top"
-                [style.width.%]="dr.width"
-                [style.height.%]="dr.height"
-              ></div>
-            }
           }
         </div>
       </div>
