@@ -9,6 +9,10 @@ class AssetNetworkInterfaceSerializer(serializers.ModelSerializer):
         source='get_port_count_display', read_only=True)
     speed_display = serializers.CharField(
         source='get_speed_display', read_only=True)
+    form_factor_display = serializers.CharField(
+        source='get_form_factor_display', read_only=True)
+    orientation_display = serializers.CharField(
+        source='get_orientation_display', read_only=True)
 
     class Meta:
         model = AssetNetworkInterface
@@ -22,6 +26,10 @@ class AssetNetworkInterfaceSerializer(serializers.ModelSerializer):
             'port_count_display',
             'speed',
             'speed_display',
+            'form_factor',
+            'form_factor_display',
+            'orientation',
+            'orientation_display',
             'slot',
             'notes',
             'side',

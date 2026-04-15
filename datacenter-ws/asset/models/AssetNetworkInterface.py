@@ -31,6 +31,16 @@ class AssetNetworkInterface(models.Model):
         ('400G', '400 GbE'),
     ]
 
+    FORM_FACTOR_CHOICES = [
+        ('full', _('Full profile')),
+        ('low',  _('Low profile')),
+    ]
+
+    ORIENTATION_CHOICES = [
+        ('vertical',   _('Vertical')),
+        ('horizontal', _('Horizontal')),
+    ]
+
     asset = models.ForeignKey(
         'asset.Asset',
         on_delete=models.CASCADE,
@@ -58,6 +68,21 @@ class AssetNetworkInterface(models.Model):
         choices=SPEED_CHOICES,
         default='1G',
         verbose_name=_('Speed'),
+    )
+    form_factor = models.CharField(
+        max_length=4,
+        choices=FORM_FACTOR_CHOICES,
+        default='full',
+        verbose_name=_('Form factor'),
+        help_text=_('PCIe bracket height: full profile or low profile'),
+    )
+    orientation = models.CharField(
+        max_length=10,
+        choices=ORIENTATION_CHOICES,
+        default='vertical',
+        verbose_name=_('Orientation'),
+        help_text=_(
+            'Physical installation orientation: vertical (standard) or horizontal'),
     )
     slot = models.CharField(
         max_length=32,
