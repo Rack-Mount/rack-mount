@@ -378,6 +378,13 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+    _access_list_default = {'127.0.0.1', '::1'}
+    if set(ACCESS_LIST) == _access_list_default:
+        raise RuntimeError(
+            'ACCESS_LIST must be explicitly configured when DEBUG=False. '
+            'Leaving it as the default localhost-only value exposes the '
+            'OpenAPI schema to any client reaching the server.'
+        )
 
 EXPORT_FORMATS = [CSV, XLSX]
 

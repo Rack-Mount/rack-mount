@@ -115,6 +115,12 @@ class ImageView(APIView):
             response['Cache-Control'] = 'private, no-store'
         else:
             response['Cache-Control'] = 'public, max-age=31536000, immutable'
+        # Force SVG download to prevent stored XSS via inline script execution
+        if path.lower().endswith('.svg'):
+            import os as _os
+            response['Content-Disposition'] = (
+                f'attachment; filename="{_os.path.basename(path)}"'
+            )
         return response
 
     def _serve_resized(self, original_path, media_root, filename, width, is_private=False):
