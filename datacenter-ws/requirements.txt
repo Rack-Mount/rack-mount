@@ -52,7 +52,7 @@ python-decouple==3.8
 PyYAML==6.0.3
 redis==7.4.0
 referencing==0.37.0
-requests==2.33.1
+requests==2.34.0
 rpds-py==0.30.0
 scipy==1.17.1
 setuptools==81.0.0
