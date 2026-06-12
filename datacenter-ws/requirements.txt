@@ -21,7 +21,7 @@ djangorestframework==3.17.1
 djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.29.0
 et_xmlfile==2.0.0
-filelock==3.29.1
+filelock==3.29.3
 fonttools==4.63.0
 fsspec==2026.4.0
 idna==3.18
@@ -32,11 +32,12 @@ jsonschema-specifications==2025.9.1
 kiwisolver==1.5.0
 kombu==5.6.2
 MarkupSafe==3.0.3
-matplotlib==3.10.9
+matplotlib==3.11.0
 mpmath==1.3.0
 mysqlclient==2.2.8
 networkx==3.6.1
 numpy==2.4.6
+nvidia-ml-py==13.610.43
 opencv-python==4.13.0.92
 openpyxl==3.1.5
 packaging==26.2
@@ -65,9 +66,9 @@ torchvision==0.27.0
 typing_extensions==4.15.0
 tzdata==2026.2
 tzlocal==5.3.1
-ultralytics==8.4.60
-ultralytics-thop==2.0.19
+ultralytics==8.4.66
+ultralytics-thop==2.0.20
 uritemplate==4.2.0
 urllib3==2.7.0
 vine==5.1.0
-wcwidth==0.7.0
+wcwidth==0.8.1
