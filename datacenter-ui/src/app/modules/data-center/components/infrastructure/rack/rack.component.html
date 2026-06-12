@@ -79,7 +79,7 @@
                         [position]="row.position"
                         [rearView]="
                           _rearView() ===
-                          (row.device?.rack_installation_front ?? true)
+                          (row.device!.rack_installation_front ?? true)
                         "
                       />
                     </div>
@@ -89,7 +89,7 @@
                         [rackUnit]="row.device!"
                         [rearView]="
                           _rearView() ===
-                          (row.device?.rack_installation_front ?? true)
+                          (row.device!.rack_installation_front ?? true)
                         "
                         (removeRequest)="onGenericSlotRemoveRequest($event)"
                         (returnToStockRequest)="
