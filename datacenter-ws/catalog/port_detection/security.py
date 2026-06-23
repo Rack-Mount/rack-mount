@@ -2,7 +2,7 @@
 Media-path security helpers shared by all port detection views.
 
 Every endpoint that accepts a user-supplied ``image_path`` must call
-:func:`is_safe_relpath` before constructing an absolute path.  This prevents
+:func:`resolve_safe_path` before touching the filesystem.  This prevents
 path-traversal attacks (e.g. ``../../etc/passwd``) and symlink-based escapes
 from MEDIA_ROOT.
 """
@@ -16,11 +16,14 @@ def get_media_root() -> str:
     return os.path.realpath(settings.MEDIA_ROOT)
 
 
-def is_safe_relpath(relpath: str) -> bool:
+def resolve_safe_path(relpath: str) -> str | None:
     """
-    Return True only if *relpath* cannot escape MEDIA_ROOT.
+    Validate *relpath* and return the resolved absolute path inside
+    MEDIA_ROOT, or ``None`` if it is unsafe.
 
-    Two complementary checks:
+    Two complementary checks, applied to the *same* resolved path that is
+    returned (never re-joined at the call site from the raw, untrusted
+    value):
     1. Static pattern guard – rejects paths that start with '/' or contain
        '..', catching the most common traversal attempts before touching the
        filesystem.
@@ -29,10 +32,12 @@ def is_safe_relpath(relpath: str) -> bool:
        that would pass the static check.
     """
     if not relpath or relpath.startswith('/') or '..' in relpath.split('/'):
-        return False
+        return None
     trusted = get_media_root()
     abs_path = os.path.realpath(os.path.join(trusted, relpath))
-    return abs_path.startswith(trusted + os.sep)
+    if not abs_path.startswith(trusted + os.sep):
+        return None
+    return abs_path
 
 
 def is_private_media_path(relpath: str) -> bool:

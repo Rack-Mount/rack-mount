@@ -20,9 +20,8 @@ from catalog.port_detection.click_detector import (
 from catalog.port_detection.ocr import read_label_ocr
 from catalog.port_detection.security import (
     can_access_private_media,
-    get_media_root,
     is_private_media_path,
-    is_safe_relpath,
+    resolve_safe_path,
 )
 
 
@@ -59,7 +58,6 @@ class PortClickAnalyzeView(APIView):
     )
     def post(self, request):
         image_path = (request.data.get('image_path') or '').strip()
-        side = request.data.get('side', 'front')  # noqa: F841
         click_x = request.data.get('click_x')
         click_y = request.data.get('click_y')
 
@@ -77,7 +75,8 @@ class PortClickAnalyzeView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if not is_safe_relpath(image_path):
+        abs_path = resolve_safe_path(image_path)
+        if abs_path is None:
             return Response(
                 {'error': 'Percorso immagine non valido'},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -89,7 +88,6 @@ class PortClickAnalyzeView(APIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        abs_path = os.path.join(get_media_root(), image_path)
         if not os.path.isfile(abs_path):
             return Response(
                 {'error': 'Immagine non trovata'},

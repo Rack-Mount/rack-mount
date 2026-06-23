@@ -21,7 +21,7 @@ from accounts.models import SecurityAuditLog
 from accounts.permissions import PortCorrectionPermission
 from accounts.throttles import PortCorrectionThrottle
 from catalog.port_detection.constants import PORT_CLASS_ID, PORT_BW, PORT_BH
-from catalog.port_detection.security import get_media_root, is_safe_relpath
+from catalog.port_detection.security import get_media_root, resolve_safe_path
 from catalog.port_detection.training_state import (
     _state_lock,
     load_state,
@@ -82,7 +82,7 @@ class PortCorrectionView(APIView):
     )
     def post(self, request):
         image_path = (request.data.get('image_path') or '').strip()
-        side = request.data.get('side', 'front')  # noqa: F841
+        side = request.data.get('side', 'front')
         predicted_type = (request.data.get('predicted_type') or '').strip()
         actual_type = (request.data.get('actual_type') or '').strip()
 
@@ -101,14 +101,14 @@ class PortCorrectionView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if not is_safe_relpath(image_path):
+        abs_image_path = resolve_safe_path(image_path)
+        if abs_image_path is None:
             return Response(
                 {'error': 'Percorso immagine non valido'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         media_root = get_media_root()
-        abs_image_path = os.path.join(media_root, image_path)
         if not os.path.isfile(abs_image_path):
             return Response(
                 {'error': 'Immagine non trovata'},

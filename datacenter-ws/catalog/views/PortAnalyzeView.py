@@ -21,7 +21,7 @@ from catalog.port_detection import (
     detect_with_yolo,
     get_media_root,
     is_private_media_path,
-    is_safe_relpath,
+    resolve_safe_path,
 )
 
 
@@ -66,9 +66,9 @@ class PortAnalyzeView(APIView):
     )
     def post(self, request):
         image_path = request.data.get('image_path', '')
-        side = request.data.get('side', 'front')  # noqa: F841
 
-        if not is_safe_relpath(image_path):
+        abs_image_path = resolve_safe_path(image_path)
+        if abs_image_path is None:
             return Response(
                 {'error': 'Invalid image path.'},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -80,7 +80,6 @@ class PortAnalyzeView(APIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        abs_image_path = os.path.join(get_media_root(), image_path)
         if not os.path.isfile(abs_image_path):
             return Response(
                 {'error': 'Image not found.'},

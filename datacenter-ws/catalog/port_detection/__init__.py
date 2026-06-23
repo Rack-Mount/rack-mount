@@ -6,12 +6,12 @@ from .security import (
     can_access_private_media,
     get_media_root,
     is_private_media_path,
-    is_safe_relpath,
+    resolve_safe_path,
 )
 
 __all__ = [
     'get_media_root',
-    'is_safe_relpath',
+    'resolve_safe_path',
     'is_private_media_path',
     'can_access_private_media',
     'detect_with_opencv',

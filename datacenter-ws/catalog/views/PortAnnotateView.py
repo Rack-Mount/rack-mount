@@ -13,6 +13,7 @@ from rest_framework.views import APIView
 from accounts.permissions import PortTrainingPermission
 from accounts.throttles import PortTrainingThrottle
 from accounts.models import SecurityAuditLog
+from catalog.port_detection.security import get_media_root, resolve_safe_path
 
 # ── Constants ──────────────────────────────────────────────────────────────────
 # Must stay in sync with CLASS_NAMES / PORT_CLASS_ID in train_port_detector.py.
@@ -46,22 +47,6 @@ _PORT_BH = {
     'SERIAL': 0.040,
     'LC': 0.060, 'SC': 0.060, 'FC': 0.060,
 }
-
-# ── Security helpers ───────────────────────────────────────────────────────────
-
-
-def _get_media_root() -> str:
-    return os.path.realpath(settings.MEDIA_ROOT)
-
-
-def _is_safe_relpath(relpath: str) -> bool:
-    """Reject any path that could escape MEDIA_ROOT."""
-    if not relpath or relpath.startswith('/') or '..' in relpath.split('/'):
-        return False
-    trusted = _get_media_root()
-    abs_path = os.path.realpath(os.path.join(trusted, relpath))
-    return abs_path.startswith(trusted + os.sep)
-
 
 # ── Training helpers ───────────────────────────────────────────────────────────
 
@@ -142,14 +127,14 @@ class PortAnnotateView(APIView):
         side = request.data.get('side', 'front')
         annotations = request.data.get('annotations', [])
 
-        if not _is_safe_relpath(image_path):
+        abs_image_path = resolve_safe_path(image_path)
+        if abs_image_path is None:
             return Response(
                 {'error': 'Invalid image path.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        media_root = _get_media_root()
-        abs_image_path = os.path.join(media_root, image_path)
+        media_root = get_media_root()
         if not os.path.isfile(abs_image_path):
             return Response(
                 {'error': 'Image not found.'},
