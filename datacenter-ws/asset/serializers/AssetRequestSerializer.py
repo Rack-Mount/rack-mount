@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from django.utils.translation import gettext as _
-from asset.models import AssetRequest, AssetState
-from asset.models.AssetRequest import AssetRequestStatus, ALLOWED_REQUEST_TRANSITIONS
-from location.models import Room
+from asset.models import AssetRequest
 
 
 class AssetRequestSerializer(serializers.ModelSerializer):

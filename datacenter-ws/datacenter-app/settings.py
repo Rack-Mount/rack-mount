@@ -370,14 +370,17 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024   # 10 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024   # 10 MB
 
 # ── HTTPS / Security headers (enforced only outside DEBUG) ───────────────────
+# These are read by Django itself (django.conf.settings attribute lookup),
+# not by any code in this file, so static analysis cannot see their use.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+SECURE_CONTENT_TYPE_NOSNIFF = not DEBUG
+
 if not DEBUG:
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
     _access_list_default = {'127.0.0.1', '::1'}
     if set(ACCESS_LIST) == _access_list_default:
         raise RuntimeError(
@@ -402,7 +405,7 @@ CELERY_TASK_SOFT_TIME_LIMIT = 3600   # 1 hour soft limit (signals SIGTERM)
 CELERY_TASK_TIME_LIMIT = 3900        # 1 h 5 min hard limit (signals SIGKILL)
 # On macOS, Metal/MPS requires 'spawn' so that each worker process starts
 # fresh and can open its own MTLCompilerService XPC connection.
-# 'spawn' is already set in celery.py; this key enforces it for all pool types.
+# 'spawn' is already set in celery_app.py; this key enforces it for all pool types.
 CELERY_WORKER_POOL = 'prefork'
 CELERY_WORKER_POOL_RESTARTS = True
 

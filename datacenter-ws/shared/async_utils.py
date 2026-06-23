@@ -14,7 +14,7 @@ Django 6.0 async views example:
         return Response(ProfileSerializer(profile).data)
 """
 
-from asgiref.sync import sync_to_async, async_to_sync
+from asgiref.sync import sync_to_async
 from django.core.cache import cache
 from typing import TypeVar, Callable, Any
 
@@ -81,22 +81,3 @@ def validate_asset_serial(serial_number: str) -> bool:
     """Async-safe check if serial number exists."""
     from asset.models import Asset
     return Asset.objects.filter(serial_number=serial_number).exists()
-
-
-# ── Example of async view using these utilities (for reference) ──
-
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from rest_framework.permissions import IsAuthenticated
-#
-# class AsyncAssetDetailView(APIView):
-#     """Example async view pattern for Django 6.0."""
-#     permission_classes = [IsAuthenticated]
-#
-#     async def get(self, request, asset_id):
-#         try:
-#             asset = await get_asset_summary(asset_id)
-#             serializer = AssetSerializer(asset)
-#             return Response(serializer.data)
-#         except Asset.DoesNotExist:
-#             return Response({'detail': 'Not found'}, status=404)

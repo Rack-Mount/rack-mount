@@ -1,10 +1,9 @@
 """
 Tests for rate limiting throttle classes.
 """
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.contrib.auth.models import User
 from rest_framework.test import APIRequestFactory
-from rest_framework import status
 
 from accounts.throttles import (
     PortTrainingThrottle,

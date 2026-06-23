@@ -13,10 +13,19 @@ model is never resident twice in the same worker process.
 import os
 import threading
 
-_yolo_model = None
-_yolo_model_path: str | None = None
-_yolo_model_mtime: float | None = None
-_yolo_model_lock = threading.Lock()
+
+class _YoloModelCache:
+    """Holds the singleton model instance and the weights file's identity
+    (path + mtime) used to detect that a new training run has replaced it."""
+
+    def __init__(self):
+        self.model = None
+        self.path: str | None = None
+        self.mtime: float | None = None
+        self.lock = threading.Lock()
+
+
+_cache = _YoloModelCache()
 
 
 def get_yolo_model(model_path: str | None = None):
@@ -35,8 +44,6 @@ def get_yolo_model(model_path: str | None = None):
         The loaded model, or *None* if the file does not exist yet (e.g.
         first run before training has completed).
     """
-    global _yolo_model, _yolo_model_path, _yolo_model_mtime
-
     if model_path is None:
         from .security import get_media_root
         model_path = os.path.join(get_media_root(), 'models', 'port-yolo.pt')
@@ -49,14 +56,14 @@ def get_yolo_model(model_path: str | None = None):
     except OSError:
         return None
 
-    with _yolo_model_lock:
+    with _cache.lock:
         if (
-            _yolo_model is None
-            or _yolo_model_path != model_path
-            or _yolo_model_mtime != mtime
+            _cache.model is None
+            or _cache.path != model_path
+            or _cache.mtime != mtime
         ):
             from ultralytics import YOLO
-            _yolo_model = YOLO(model_path)
-            _yolo_model_path = model_path
-            _yolo_model_mtime = mtime
-        return _yolo_model
+            _cache.model = YOLO(model_path)
+            _cache.path = model_path
+            _cache.mtime = mtime
+        return _cache.model

@@ -12,7 +12,6 @@ from accounts.permissions import CatalogResourcePermission
 from accounts.throttles import CatalogExportThrottle
 from catalog.models import AssetModel, Vendor
 from catalog.models.AssetType import AssetType
-from catalog.models.AssetModelPort import AssetModelPort
 from asset.models.GenericComponent import GenericComponent
 
 

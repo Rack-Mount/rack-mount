@@ -12,8 +12,6 @@ AssetCustomField) so the state reflects that they now point to catalog.*.
 import django.db.models.deletion
 from django.db import migrations, models
 
-import asset.utils.upload_paths
-
 
 class Migration(migrations.Migration):
 

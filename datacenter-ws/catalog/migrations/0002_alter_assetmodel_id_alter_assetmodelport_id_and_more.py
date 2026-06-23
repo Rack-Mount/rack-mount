@@ -6,7 +6,6 @@ tables were created by asset migrations with regular AutoField (INT).
 This migration updates the Django migration state to reflect BigAutoField
 without touching the database (tables keep their existing INT primary keys).
 """
-import django.db.models.deletion
 from django.db import migrations, models
 
 

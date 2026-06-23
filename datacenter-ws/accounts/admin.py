@@ -57,9 +57,7 @@ class RoleAdmin(admin.ModelAdmin):
     )
 
     def get_readonly_fields(self, request, obj=None):
-        if obj is not None:
-            return ('name',)
-        return ()
+        return ['name'] if obj is not None else []
 
     fieldsets = (
         (None, {

@@ -8,7 +8,6 @@ No database operations are performed — the tables are reused as-is.
 import uuid
 
 import django.db.models.deletion
-import reversion.models
 from django.db import migrations, models
 
 import asset.utils.upload_paths

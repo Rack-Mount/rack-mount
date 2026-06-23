@@ -1,4 +1,3 @@
-import hashlib
 import os
 import pathlib
 
@@ -41,7 +40,6 @@ class ImageView(APIView):
             raise Http404
 
         media_root = os.path.realpath(settings.MEDIA_ROOT)
-        cache_root = os.path.realpath(os.path.join(media_root, CACHE_SUBDIR))
         # realpath resolves all symlinks → prevents symlink-escape attacks
         original_path = os.path.realpath(os.path.join(media_root, filename))
 

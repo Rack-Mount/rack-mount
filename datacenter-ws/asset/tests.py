@@ -1,7 +1,6 @@
 """
 Tests for asset app functionality.
 """
-import time
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 from rest_framework import status

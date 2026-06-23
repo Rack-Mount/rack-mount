@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from location.models import Location
 from catalog.models import AssetModel
 from asset.models.AssetState import AssetState
 import reversion

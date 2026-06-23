@@ -13,16 +13,12 @@ import shutil
 import threading
 from datetime import datetime, timezone
 
-from django.conf import settings
-
 from .constants import CLASS_NAMES
 from .security import get_media_root
 
 logger = logging.getLogger(__name__)
 
 _state_lock = threading.Lock()
-# Separate lock so _background_train() doesn't hold _state_lock while training.
-_training_lock = threading.Lock()
 
 
 # ── State persistence ──────────────────────────────────────────────────────────
@@ -45,6 +41,7 @@ def load_state() -> dict:
             with open(path) as f:
                 return json.load(f)
         except Exception:
+            # Corrupt or unreadable state file: fall back to the default state.
             pass
     return {
         'last_training_iso': None,
@@ -93,6 +90,7 @@ def best_device() -> str:
         if getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
             return 'mps'
     except Exception:
+        # torch missing or its backend probes failed; fall back to CPU.
         pass
     return 'cpu'
 
@@ -165,6 +163,8 @@ def run_background_train(data_yaml: str, models_dir: str) -> None:
         if os.path.isfile(best):
             shutil.copy2(best, dest)
     except Exception:
+        # Training failures must not crash the worker; state is reset below
+        # regardless so the correction counter can accumulate again.
         pass
     finally:
         with _state_lock:

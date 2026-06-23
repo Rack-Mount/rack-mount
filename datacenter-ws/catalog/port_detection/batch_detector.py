@@ -13,7 +13,7 @@ the list reaches the view.
 import os
 import tempfile
 
-from .constants import PORT_CONFIG, YOLO_ID_TO_TYPE
+from .constants import YOLO_ID_TO_TYPE
 from .model_cache import get_yolo_model
 from .naming import classify_port_type
 from .nms import bbox_nms, deduplicate_by_grid, reclassify_by_cluster
@@ -335,6 +335,7 @@ def detect_with_yolo(image_path: str, model_path: str | None = None) -> list:
                         [cv2.IMWRITE_JPEG_QUALITY, 95])
             infer_path = preprocessed_path
     except Exception:
+        # Preprocessing is an optional enhancement; fall back to the raw image.
         pass
 
     # Use imgsz=1280 for panels wider than 640 px.  Dense 48-port panels at
@@ -347,6 +348,7 @@ def detect_with_yolo(image_path: str, model_path: str | None = None) -> list:
             if w <= 640 and h <= 640:
                 imgsz = 640
         except Exception:
+            # Keep the default imgsz if the image shape is unreadable.
             pass
 
     try:
@@ -367,6 +369,7 @@ def detect_with_yolo(image_path: str, model_path: str | None = None) -> list:
             try:
                 os.remove(preprocessed_path)
             except OSError:
+                # Temp file cleanup is best-effort; the OS will reclaim it eventually.
                 pass
 
     return reclassify_by_cluster(bbox_nms(_grid_dedup(raw)))

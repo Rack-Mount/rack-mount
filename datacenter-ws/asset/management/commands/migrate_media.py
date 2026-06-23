@@ -27,9 +27,6 @@ class Command(BaseCommand):
         private_subdir = getattr(settings, 'PRIVATE_MEDIA_SUBDIR', 'private')
         dry_run = options.get('dry_run', False)
 
-        public_dir = media_root / public_subdir
-        private_dir = media_root / private_subdir
-
         mode_str = "[DRY RUN] " if dry_run else ""
 
         self.stdout.write(self.style.SUCCESS(
