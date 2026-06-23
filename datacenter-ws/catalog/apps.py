@@ -24,4 +24,6 @@ class CatalogConfig(AppConfig):
                 with open(state_path, 'w') as f:
                     json.dump(state, f, indent=2)
         except Exception:
+            # Best-effort cleanup at startup; a corrupt/missing state file
+            # must never prevent the app from starting.
             pass

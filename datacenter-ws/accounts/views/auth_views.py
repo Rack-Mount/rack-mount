@@ -205,6 +205,8 @@ class CookieTokenRefreshView(APIView):
                 try:
                     refresh.blacklist()
                 except Exception:
+                    # Blacklist app may not be installed, or the token may
+                    # already be blacklisted; rotation must proceed either way.
                     pass
             refresh.set_jti()
             refresh.set_exp()

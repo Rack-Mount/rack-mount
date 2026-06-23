@@ -62,6 +62,8 @@ def _apply_mps_training_patch() -> None:
 
         TaskAlignedAssigner.get_box_metrics = _patched
     except Exception:
+        # Ultralytics internals may have changed; skip the MPS patch and
+        # let training proceed (it will fail loudly later on MPS if needed).
         pass
 
 

@@ -182,6 +182,7 @@ def apply_transforms(
             ch = max(1, min(ch, ih - y))
             img = img.crop((x, y, x + cw, y + ch))
         except (KeyError, TypeError, ValueError):
+            # Malformed crop params: skip cropping and keep the original image.
             pass
 
     # ── 3. Rotation ───────────────────────────────────────────────────────────

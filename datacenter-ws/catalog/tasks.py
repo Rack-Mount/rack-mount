@@ -60,6 +60,7 @@ def _best_device() -> str:
         if getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
             return 'mps'
     except Exception:
+        # torch missing or its backend probes failed; fall back to CPU.
         pass
     return 'cpu'
 
