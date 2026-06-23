@@ -63,7 +63,7 @@ class AssetModelViewSet(AuditLogMixin, ImageTransformMixin, viewsets.ModelViewSe
             queryset.filter(assets__isnull=False).values_list('id', flat=True)
         )
         to_delete = queryset.exclude(id__in=in_use_ids)
-        deleted_count, _ = to_delete.delete()
+        deleted_count, _deleted_breakdown = to_delete.delete()
         log_action(request, SecurityAuditLog.Action.CATALOG_DELETE, 'asset_model',
                    delta_data={'deleted': deleted_count, 'skipped': len(in_use_ids)})
         return Response({'deleted': deleted_count, 'skipped': len(in_use_ids)})

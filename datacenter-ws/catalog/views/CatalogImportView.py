@@ -69,7 +69,7 @@ class CatalogImportView(APIView):
             name = str(item.get('name', '')).strip()
             if not name:
                 continue
-            _, created = Vendor.objects.get_or_create(name=name)
+            _vendor, created = Vendor.objects.get_or_create(name=name)
             if created:
                 vendors_created += 1
             else:
@@ -80,7 +80,7 @@ class CatalogImportView(APIView):
             name = str(item.get('name', '')).strip()
             if not name:
                 continue
-            _, created = AssetType.objects.get_or_create(name=name)
+            _asset_type, created = AssetType.objects.get_or_create(name=name)
             if created:
                 types_created += 1
             else:
@@ -101,8 +101,8 @@ class CatalogImportView(APIView):
                 })
                 continue
 
-            vendor, _ = Vendor.objects.get_or_create(name=vendor_name)
-            asset_type, _ = AssetType.objects.get_or_create(name=type_name)
+            vendor, _vendor_created = Vendor.objects.get_or_create(name=vendor_name)
+            asset_type, _type_created = AssetType.objects.get_or_create(name=type_name)
 
             if AssetModel.objects.filter(name=name, vendor=vendor, type=asset_type).exists():
                 models_skipped += 1

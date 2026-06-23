@@ -9,8 +9,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from accounts.permissions import ImportCatalogPermission
 from catalog.models import AssetModel, Vendor
@@ -109,8 +108,8 @@ class AssetModelImportView(APIView):
         if errors:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-        vendor, _ = Vendor.objects.get_or_create(name=vendor_name)
-        asset_type, _ = AssetType.objects.get_or_create(name=type_name)
+        vendor, _vendor_created = Vendor.objects.get_or_create(name=vendor_name)
+        asset_type, _type_created = AssetType.objects.get_or_create(name=type_name)
 
         if AssetModel.objects.filter(name=name, vendor=vendor, type=asset_type).exists():
             return Response(

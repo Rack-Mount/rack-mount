@@ -225,7 +225,6 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
         asset = self.get_object()
 
         to_state_id = request.data.get('to_state')
-        to_room_id = request.data.get('to_room')
         notes = request.data.get('notes', '')
 
         if to_state_id is None:
@@ -339,7 +338,7 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
             .values_list('device_id', flat=True)
         )
         to_delete = queryset.exclude(id__in=mounted_ids)
-        deleted_count, _ = to_delete.delete()
+        deleted_count, _deleted_breakdown = to_delete.delete()
         log_action(request, SecurityAuditLog.Action.ASSET_BULK_DELETE, 'asset',
                    delta_data={'deleted': deleted_count, 'skipped': len(mounted_ids)})
         return Response({'deleted': deleted_count, 'skipped': len(mounted_ids)})
