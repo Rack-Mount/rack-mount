@@ -1,3 +1,4 @@
+import logging
 import pathlib
 
 from django.conf import settings
@@ -9,6 +10,8 @@ from rest_framework.views import APIView
 
 from accounts.permissions import ViewModelTrainingStatusPermission
 from asset.utils.signed_url import generate_signed_url
+
+logger = logging.getLogger(__name__)
 
 
 class PrivateMediaSignedUrlView(APIView):
@@ -77,9 +80,11 @@ class PrivateMediaSignedUrlView(APIView):
                 relative_private_path,
                 expiry_seconds=expiry_seconds,
             )
-        except RuntimeError as exc:
+        except RuntimeError:
+            safe_path = relative_private_path.replace('\r', '').replace('\n', '')
+            logger.exception('Failed to generate signed URL for %s', safe_path)
             return Response(
-                {'detail': str(exc)},
+                {'detail': 'Signed URL service is currently unavailable.'},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
 

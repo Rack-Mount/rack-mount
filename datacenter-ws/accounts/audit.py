@@ -20,6 +20,12 @@ from accounts.models import SecurityAuditLog
 logger = logging.getLogger(__name__)
 
 
+def _log_safe(value: str) -> str:
+    """Strip newlines from a value before it is written to the log, to
+    prevent log forging via attacker-controlled fields (e.g. resource_id)."""
+    return str(value).replace('\r', '').replace('\n', '')
+
+
 def _get_client_ip(request) -> str | None:
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -47,7 +53,7 @@ def log_action(
     except Exception:
         logger.exception(
             'Failed to write audit log entry (action=%s resource_type=%s resource_id=%s)',
-            action, resource_type, resource_id,
+            _log_safe(action), _log_safe(resource_type), _log_safe(resource_id),
         )
 
 
