@@ -37,7 +37,8 @@ export class MeasurementPipe implements PipeTransform {
   private get effectiveSystem(): MeasurementSystem {
     const setting = this.settings.measurementSystemSetting();
     if (setting !== 'auto') return setting;
-    return IMPERIAL_LANGS.has(this.translate.currentLang)
+    const lang = this.translate.getCurrentLang();
+    return lang != null && IMPERIAL_LANGS.has(lang)
       ? 'imperial'
       : 'metric';
   }

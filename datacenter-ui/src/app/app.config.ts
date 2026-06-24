@@ -11,15 +11,8 @@ import {
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
-import {
-  TranslateLoader,
-  TranslateService,
-  provideTranslateService,
-} from '@ngx-translate/core';
-import {
-  TRANSLATE_HTTP_LOADER_CONFIG,
-  TranslateHttpLoader,
-} from '@ngx-translate/http-loader';
+import { TranslateService, provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { Configuration, ConfigurationParameters } from './modules/core/api/v1';
@@ -40,7 +33,6 @@ function initTranslations() {
     // ignore (SSR / private mode)
   }
   translate.addLangs(AVAILABLE_LANG_CODES);
-  translate.setDefaultLang(defaultLang);
   return translate.use(lang);
 }
 
@@ -70,15 +62,9 @@ export const appConfig: ApplicationConfig = {
         notFoundInterceptor,
       ]),
     ),
-    {
-      provide: TRANSLATE_HTTP_LOADER_CONFIG,
-      useValue: { prefix: '/i18n/', suffix: '.json' },
-    },
     provideTranslateService({
-      loader: {
-        provide: TranslateLoader,
-        useClass: TranslateHttpLoader,
-      },
+      fallbackLang: 'en',
+      loader: provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
     }),
     provideAppInitializer(initTranslations),
   ],

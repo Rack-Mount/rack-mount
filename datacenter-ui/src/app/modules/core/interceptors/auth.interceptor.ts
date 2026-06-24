@@ -33,6 +33,11 @@ function isApiRequest(url: string): boolean {
 }
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  // Only API requests need auth/translate handling. Bailing out here also
+  // avoids injecting TranslateService while it's still being constructed by
+  // its own translation-file load (NG0200 circular dependency).
+  if (!isApiRequest(req.url)) return next(req);
+
   const auth = inject(AuthService);
   const toast = inject(ToastService);
   const translate = inject(TranslateService);

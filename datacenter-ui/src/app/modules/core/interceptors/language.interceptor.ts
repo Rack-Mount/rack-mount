@@ -8,6 +8,11 @@ const LANG_MAP: Record<string, string> = {
 };
 
 export const languageInterceptor: HttpInterceptorFn = (req, next) => {
+  // Skip the i18n translation files themselves: this interceptor runs on the
+  // HTTP request the TranslateService's loader issues, which would otherwise
+  // inject TranslateService while it's still being constructed (NG0200).
+  if (req.url.startsWith('/i18n/')) return next(req);
+
   const translate = inject(TranslateService);
   const lang =
     translate.getCurrentLang() ?? translate.getFallbackLang() ?? 'en';
