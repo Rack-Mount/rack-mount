@@ -25,34 +25,6 @@ interface RackObstacle {
   rotation: number; // degrees, pivot = centre
 }
 
-/** True if (px,py) falls inside the oriented rack rectangle expanded by `margin` on all sides. */
-function isInsideRotatedRect(
-  px: number,
-  py: number,
-  o: RackObstacle,
-  margin = 0,
-): boolean {
-  const cx = o.x + o.w / 2;
-  const cy = o.y + o.h / 2;
-  const dx = px - cx;
-  const dy = py - cy;
-  const rad = (o.rotation * Math.PI) / 180;
-  const cosA = Math.cos(-rad);
-  const sinA = Math.sin(-rad);
-  const lx = dx * cosA - dy * sinA;
-  const ly = dx * sinA + dy * cosA;
-  return Math.abs(lx) <= o.w / 2 + margin && Math.abs(ly) <= o.h / 2 + margin;
-}
-
-function isInAnyObstacle(
-  px: number,
-  py: number,
-  obs: RackObstacle[],
-  margin = 0,
-): boolean {
-  return obs.some((o) => isInsideRotatedRect(px, py, o, margin));
-}
-
 /**
  * Signed Euclidean distance from (px,py) to the oriented rack rectangle
  * expanded by `margin` on every side.

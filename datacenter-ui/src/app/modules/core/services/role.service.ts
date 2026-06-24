@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { Observable, of, Subject, switchMap } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 
 export interface RoleData {
   name: string;
