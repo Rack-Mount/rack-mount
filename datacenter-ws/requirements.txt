@@ -41,9 +41,9 @@ nvidia-ml-py==13.610.43
 opencv-python==4.13.0.92
 openpyxl==3.1.5
 packaging==26.2
-pillow==12.2.0
-polars==1.42.0
-polars-runtime-32==1.42.0
+pillow==12.3.0
+polars==1.42.1
+polars-runtime-32==1.42.1
 prompt_toolkit==3.0.52
 psutil==7.2.2
 PyJWT==2.13.0
@@ -54,7 +54,7 @@ PyYAML==6.0.3
 redis==8.0.1
 referencing==0.37.0
 requests==2.34.2
-rpds-py==2026.5.1
+rpds-py==2026.6.3
 scipy==1.18.0
 setuptools==81.0.0
 six==1.17.0
@@ -65,11 +65,11 @@ torch==2.12.1
 torchvision==0.27.1
 typing_extensions==4.15.0
 tzdata==2026.2
-tzlocal==5.4.3
-ultralytics==8.4.80
+tzlocal==5.4.4
+ultralytics==8.4.84
 ultralytics-thop==2.0.20
 uritemplate==4.2.0
 urllib3==2.7.0
 vine==5.1.0
-wcwidth==0.8.1
+wcwidth==0.8.2
 websocket-client==1.9.0
