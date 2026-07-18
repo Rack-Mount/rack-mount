@@ -8,6 +8,7 @@
  * Do not edit the class manually.
  */
 import { RoomTypeEnum } from './roomTypeEnum';
+import { PatchedRoomManagerMail } from './patchedRoomManagerMail';
 
 
 /**
@@ -24,7 +25,7 @@ export interface PatchedRoom {
     description?: string | null;
     capacity?: number | null;
     manager?: string;
-    manager_mail?: string | null;
+    manager_mail?: PatchedRoomManagerMail;
     floor_plan?: string | null;
     readonly created_at?: string;
     readonly updated_at?: string;

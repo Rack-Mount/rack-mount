@@ -7,7 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { HttpHeaders, HttpParams, HttpParameterCodec } from '@angular/common/http';
+import { HttpHeaders, HttpParameterCodec } from '@angular/common/http';
 import { CustomHttpParameterCodec } from './encoder';
 import { Configuration } from './configuration';
 import { OpenApiHttpParams, QueryParamStyle, concatHttpParamsObject} from './query.params';

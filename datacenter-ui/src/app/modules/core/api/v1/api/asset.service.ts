@@ -10,7 +10,7 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
+import { HttpClient, HttpParams,
          HttpResponse, HttpEvent, HttpContext 
         }       from '@angular/common/http';
 import { Observable }                                        from 'rxjs';
@@ -19,7 +19,6 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 // @ts-ignore
 import { Asset } from '../model/asset';
 // @ts-ignore
-import { AssetAssetModelImportCreateRequest } from '../model/assetAssetModelImportCreateRequest';
 // @ts-ignore
 import { AssetCustomField } from '../model/assetCustomField';
 // @ts-ignore
@@ -69,43 +68,28 @@ import { PaginatedRackUnitList } from '../model/paginatedRackUnitList';
 // @ts-ignore
 import { PaginatedVendorList } from '../model/paginatedVendorList';
 // @ts-ignore
-import { PatchedAsset } from '../model/patchedAsset';
 // @ts-ignore
-import { PatchedAssetCustomField } from '../model/patchedAssetCustomField';
 // @ts-ignore
-import { PatchedAssetModel } from '../model/patchedAssetModel';
 // @ts-ignore
-import { PatchedAssetModelPort } from '../model/patchedAssetModelPort';
 // @ts-ignore
-import { PatchedAssetNetworkInterface } from '../model/patchedAssetNetworkInterface';
 // @ts-ignore
-import { PatchedAssetState } from '../model/patchedAssetState';
 // @ts-ignore
-import { PatchedAssetType } from '../model/patchedAssetType';
 // @ts-ignore
-import { PatchedGenericComponent } from '../model/patchedGenericComponent';
 // @ts-ignore
-import { PatchedRackUnit } from '../model/patchedRackUnit';
 // @ts-ignore
-import { PatchedVendor } from '../model/patchedVendor';
 // @ts-ignore
-import { PortAnalyzeRequest } from '../model/portAnalyzeRequest';
 // @ts-ignore
 import { PortAnalyzeResult } from '../model/portAnalyzeResult';
 // @ts-ignore
-import { PortAnnotateRequest } from '../model/portAnnotateRequest';
 // @ts-ignore
 import { PortAnnotateResponse } from '../model/portAnnotateResponse';
 // @ts-ignore
-import { PortClickAnalyzeRequest } from '../model/portClickAnalyzeRequest';
 // @ts-ignore
 import { PortClickAnalyzeResponse } from '../model/portClickAnalyzeResponse';
 // @ts-ignore
-import { PortCorrectionRequest } from '../model/portCorrectionRequest';
 // @ts-ignore
 import { PortCorrectionResponse } from '../model/portCorrectionResponse';
 // @ts-ignore
-import { PrivateMediaSignedUrlRequest } from '../model/privateMediaSignedUrlRequest';
 // @ts-ignore
 import { PrivateMediaSignedUrlResponse } from '../model/privateMediaSignedUrlResponse';
 // @ts-ignore
@@ -114,7 +98,7 @@ import { RackUnit } from '../model/rackUnit';
 import { Vendor } from '../model/vendor';
 
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
+import { BASE_PATH }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { BaseService } from '../api.base.service';
 import {
@@ -1235,9 +1219,8 @@ export class AssetService extends BaseService implements AssetServiceInterface {
             localVarFormParams = new HttpParams({encoder: this.encoder});
         }
 
-        if (file !== undefined) {
-            localVarFormParams = localVarFormParams.append('file', <any>file) as any || localVarFormParams;
-        }
+        localVarFormParams = localVarFormParams.append('file', <any>file) as any || localVarFormParams;
+        
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
         if (localVarHttpHeaderAcceptSelected) {

@@ -7,11 +7,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { EmailAddress } from './emailAddress';
 
 
 export interface PatchedUserUpdate { 
     username?: string;
-    email?: string;
+    email?: EmailAddress;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
      */

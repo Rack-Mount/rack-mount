@@ -10,17 +10,15 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
+import { HttpClient, 
          HttpResponse, HttpEvent, HttpContext 
         }       from '@angular/common/http';
 import { Observable }                                        from 'rxjs';
-import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
-import { AssetCatalogImportCreateRequest } from '../model/assetCatalogImportCreateRequest';
 
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
+import { BASE_PATH }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { BaseService } from '../api.base.service';
 import {

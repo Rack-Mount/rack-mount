@@ -7,6 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { EmailAddress } from './emailAddress';
 
 
 export interface UserCreate { 
@@ -14,7 +15,7 @@ export interface UserCreate {
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
      */
     username: string;
-    email?: string;
+    email?: EmailAddress;
     password: string;
     role_id: number;
 }

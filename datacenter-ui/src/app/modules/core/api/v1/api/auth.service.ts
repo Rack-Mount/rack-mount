@@ -10,7 +10,7 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
+import { HttpClient, 
          HttpResponse, HttpEvent, HttpContext 
         }       from '@angular/common/http';
 import { Observable }                                        from 'rxjs';
@@ -21,23 +21,18 @@ import { AuthDetail } from '../model/authDetail';
 // @ts-ignore
 import { ChangePassword } from '../model/changePassword';
 // @ts-ignore
-import { CookieTokenObtainRequest } from '../model/cookieTokenObtainRequest';
 // @ts-ignore
-import { LogoutRequest } from '../model/logoutRequest';
 // @ts-ignore
 import { MeResponse } from '../model/meResponse';
 // @ts-ignore
 import { PaginatedUserListList } from '../model/paginatedUserListList';
 // @ts-ignore
-import { PatchedUserPreferences } from '../model/patchedUserPreferences';
 // @ts-ignore
-import { PatchedUserUpdate } from '../model/patchedUserUpdate';
 // @ts-ignore
 import { Role } from '../model/role';
 // @ts-ignore
 import { TokenObtainResponse } from '../model/tokenObtainResponse';
 // @ts-ignore
-import { TokenRefreshRequest } from '../model/tokenRefreshRequest';
 // @ts-ignore
 import { TokenRefreshResponse } from '../model/tokenRefreshResponse';
 // @ts-ignore
@@ -50,7 +45,7 @@ import { UserPreferences } from '../model/userPreferences';
 import { UserUpdate } from '../model/userUpdate';
 
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
+import { BASE_PATH }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { BaseService } from '../api.base.service';
 import {

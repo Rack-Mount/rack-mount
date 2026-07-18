@@ -8,6 +8,7 @@
  * Do not edit the class manually.
  */
 import { Role } from './role';
+import { EmailAddress } from './emailAddress';
 
 
 export interface UserList { 
@@ -16,7 +17,7 @@ export interface UserList {
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
      */
     readonly username: string;
-    email?: string;
+    email?: EmailAddress;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
      */

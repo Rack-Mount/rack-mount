@@ -43,6 +43,7 @@ model/codeEnum.ts
 model/compatibleModelBrief.ts
 model/componentTypeEnum.ts
 model/cookieTokenObtainRequest.ts
+model/emailAddress.ts
 model/formFactorEnum.ts
 model/genericComponent.ts
 model/location.ts
@@ -86,6 +87,7 @@ model/patchedRack.ts
 model/patchedRackType.ts
 model/patchedRackUnit.ts
 model/patchedRoom.ts
+model/patchedRoomManagerMail.ts
 model/patchedUserPreferences.ts
 model/patchedUserUpdate.ts
 model/patchedVendor.ts

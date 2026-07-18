@@ -10,7 +10,7 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
+import { HttpClient, 
          HttpResponse, HttpEvent, HttpContext 
         }       from '@angular/common/http';
 import { Observable }                                        from 'rxjs';
@@ -33,17 +33,11 @@ import { PaginatedRoomList } from '../model/paginatedRoomList';
 // @ts-ignore
 import { PaginatedWarehouseItemList } from '../model/paginatedWarehouseItemList';
 // @ts-ignore
-import { PatchedLocation } from '../model/patchedLocation';
 // @ts-ignore
-import { PatchedLocationCustomField } from '../model/patchedLocationCustomField';
 // @ts-ignore
-import { PatchedRack } from '../model/patchedRack';
 // @ts-ignore
-import { PatchedRackType } from '../model/patchedRackType';
 // @ts-ignore
-import { PatchedRoom } from '../model/patchedRoom';
 // @ts-ignore
-import { PatchedWarehouseItem } from '../model/patchedWarehouseItem';
 // @ts-ignore
 import { Rack } from '../model/rack';
 // @ts-ignore
@@ -54,7 +48,7 @@ import { Room } from '../model/room';
 import { WarehouseItem } from '../model/warehouseItem';
 
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
+import { BASE_PATH }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { BaseService } from '../api.base.service';
 import {
