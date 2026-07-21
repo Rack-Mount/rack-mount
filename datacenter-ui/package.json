@@ -28,7 +28,7 @@
     "@angular/build": "^22.0.7",
     "@angular/cli": "^22.0.7",
     "@angular/compiler-cli": "^22.0.7",
-    "@openapitools/openapi-generator-cli": "^2.39.1",
+    "@openapitools/openapi-generator-cli": "^2.40.0",
     "@types/jasmine": "~6.0.0",
     "istanbul-lib-instrument": "^6.0.3",
     "karma": "~6.4.4",
