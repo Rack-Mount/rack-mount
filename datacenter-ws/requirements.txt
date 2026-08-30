@@ -6,7 +6,7 @@ billiard==4.2.4
 celery==5.6.3
 certifi==2026.7.22
 charset-normalizer==3.5.1
-click==8.4.2
+click==8.5.0
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
 click-repl==0.3.0
@@ -22,8 +22,8 @@ djangorestframework==3.18.0
 djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.30.0
 et_xmlfile==2.0.0
-filelock==3.32.3
-fonttools==4.63.0
+filelock==3.32.5
+fonttools==4.64.0
 fsspec==2026.7.0
 h11==0.16.0
 httpcore==1.0.9
@@ -33,7 +33,7 @@ inflection==0.5.1
 Jinja2==3.1.6
 jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
-kiwisolver==1.5.0
+kiwisolver==1.5.1
 kombu==5.6.2
 MarkupSafe==3.0.3
 matplotlib==3.11.1
@@ -46,8 +46,8 @@ opencv-python==5.0.0.93
 openpyxl==3.1.5
 packaging==26.3
 pillow==12.3.0
-polars==1.43.2
-polars-runtime-32==1.43.2
+polars==1.44.1
+polars-runtime-32==1.44.1
 prompt_toolkit==3.0.53
 psutil==7.2.2
 PyJWT==2.13.0
@@ -59,7 +59,7 @@ redis==8.1.0
 referencing==0.37.0
 requests==2.34.2
 rpds-py==2026.6.3
-scipy==1.18.0
+scipy==1.18.1
 setuptools==84.0.0
 six==1.17.0
 sqlparse==0.6.0
@@ -70,11 +70,11 @@ torchvision==0.28.0
 typing_extensions==4.16.0
 tzdata==2026.3
 tzlocal==5.4.4
-ultralytics==8.4.124
-ultralytics-platform==0.1.8
+ultralytics==8.4.137
+ultralytics-platform==0.1.21
 ultralytics-thop==2.1.6
 uritemplate==4.2.0
 urllib3==2.7.0
 vine==5.1.0
-wcwidth==0.8.2
-websocket-client==1.9.0
+wcwidth==0.8.3
+websocket-client==1.9.2
