@@ -67,7 +67,7 @@ export namespace PatchedAssetNetworkInterface {
     export const SideEnum = {
         Front: 'front',
         Rear: 'rear',
-        Empty: ''
+        Empty: '',
     } as const;
     export type SideEnum = typeof SideEnum[keyof typeof SideEnum];
 }

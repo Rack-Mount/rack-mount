@@ -16,7 +16,7 @@ export const RoomTypeEnum = {
     Datacenter: 'datacenter',
     Warehouse: 'warehouse',
     Laboratory: 'laboratory',
-    TechnicalOffice: 'technical_office'
+    TechnicalOffice: 'technical_office',
 } as const;
 export type RoomTypeEnum = typeof RoomTypeEnum[keyof typeof RoomTypeEnum];
 

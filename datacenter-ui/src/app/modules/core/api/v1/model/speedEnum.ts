@@ -20,7 +20,7 @@ export const SpeedEnum = {
     _40G: '40G',
     _100G: '100G',
     _200G: '200G',
-    _400G: '400G'
+    _400G: '400G',
 } as const;
 export type SpeedEnum = typeof SpeedEnum[keyof typeof SpeedEnum];
 

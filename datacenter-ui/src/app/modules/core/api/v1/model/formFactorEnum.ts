@@ -14,7 +14,7 @@
  */
 export const FormFactorEnum = {
     Full: 'full',
-    Low: 'low'
+    Low: 'low',
 } as const;
 export type FormFactorEnum = typeof FormFactorEnum[keyof typeof FormFactorEnum];
 

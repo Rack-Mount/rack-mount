@@ -18,7 +18,7 @@ export const ComponentTypeEnum = {
     PatchPanel: 'patch_panel',
     Pdu: 'pdu',
     Shelf: 'shelf',
-    Other: 'other'
+    Other: 'other',
 } as const;
 export type ComponentTypeEnum = typeof ComponentTypeEnum[keyof typeof ComponentTypeEnum];
 

@@ -14,7 +14,7 @@
  */
 export const MediaTypeEnum = {
     Copper: 'copper',
-    Fiber: 'fiber'
+    Fiber: 'fiber',
 } as const;
 export type MediaTypeEnum = typeof MediaTypeEnum[keyof typeof MediaTypeEnum];
 

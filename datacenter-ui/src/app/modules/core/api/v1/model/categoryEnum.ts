@@ -22,7 +22,7 @@ export const CategoryEnum = {
     PatchPanel: 'patch_panel',
     Pdu: 'pdu',
     Shelf: 'shelf',
-    Other: 'other'
+    Other: 'other',
 } as const;
 export type CategoryEnum = typeof CategoryEnum[keyof typeof CategoryEnum];
 

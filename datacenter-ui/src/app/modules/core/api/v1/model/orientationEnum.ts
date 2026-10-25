@@ -14,7 +14,7 @@
  */
 export const OrientationEnum = {
     Vertical: 'vertical',
-    Horizontal: 'horizontal'
+    Horizontal: 'horizontal',
 } as const;
 export type OrientationEnum = typeof OrientationEnum[keyof typeof OrientationEnum];
 

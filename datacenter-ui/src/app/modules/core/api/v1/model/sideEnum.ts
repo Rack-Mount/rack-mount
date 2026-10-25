@@ -14,7 +14,7 @@
  */
 export const SideEnum = {
     Front: 'front',
-    Rear: 'rear'
+    Rear: 'rear',
 } as const;
 export type SideEnum = typeof SideEnum[keyof typeof SideEnum];
 

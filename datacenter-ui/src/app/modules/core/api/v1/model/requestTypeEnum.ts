@@ -16,7 +16,7 @@ export const RequestTypeEnum = {
     Registration: 'registration',
     Relocation: 'relocation',
     Maintenance: 'maintenance',
-    Decommissioning: 'decommissioning'
+    Decommissioning: 'decommissioning',
 } as const;
 export type RequestTypeEnum = typeof RequestTypeEnum[keyof typeof RequestTypeEnum];
 

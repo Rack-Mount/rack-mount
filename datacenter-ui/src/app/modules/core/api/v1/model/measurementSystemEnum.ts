@@ -15,7 +15,7 @@
 export const MeasurementSystemEnum = {
     Auto: 'auto',
     Metric: 'metric',
-    Imperial: 'imperial'
+    Imperial: 'imperial',
 } as const;
 export type MeasurementSystemEnum = typeof MeasurementSystemEnum[keyof typeof MeasurementSystemEnum];
 

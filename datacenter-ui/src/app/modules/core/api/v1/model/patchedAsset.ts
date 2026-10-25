@@ -26,8 +26,8 @@ export interface PatchedAsset {
     room_id?: number | null;
     serial_number?: string | null;
     sap_id?: string | null;
-    rack?: AssetRack;
-    room?: AssetRoom;
+    rack?: AssetRack | null;
+    room?: AssetRoom | null;
     hostname?: string;
     order_id?: string;
     purchase_date?: string | null;

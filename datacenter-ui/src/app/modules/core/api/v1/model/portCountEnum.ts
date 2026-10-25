@@ -15,7 +15,7 @@
 export const PortCountEnum = {
     NUMBER_1: 1,
     NUMBER_2: 2,
-    NUMBER_4: 4
+    NUMBER_4: 4,
 } as const;
 export type PortCountEnum = typeof PortCountEnum[keyof typeof PortCountEnum];
 

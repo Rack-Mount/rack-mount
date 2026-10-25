@@ -29,7 +29,7 @@ export const PortTypeEnum = {
     Mgmt: 'MGMT',
     Hdmi: 'HDMI',
     Vga: 'VGA',
-    Other: 'OTHER'
+    Other: 'OTHER',
 } as const;
 export type PortTypeEnum = typeof PortTypeEnum[keyof typeof PortTypeEnum];
 

@@ -15,7 +15,7 @@
 export const NameEnum = {
     Admin: 'admin',
     Editor: 'editor',
-    Viewer: 'viewer'
+    Viewer: 'viewer',
 } as const;
 export type NameEnum = typeof NameEnum[keyof typeof NameEnum];
 

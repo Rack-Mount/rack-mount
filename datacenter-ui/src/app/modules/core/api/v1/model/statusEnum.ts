@@ -17,7 +17,7 @@ export const StatusEnum = {
     Planned: 'planned',
     Executed: 'executed',
     Rejected: 'rejected',
-    NeedsClarification: 'needs_clarification'
+    NeedsClarification: 'needs_clarification',
 } as const;
 export type StatusEnum = typeof StatusEnum[keyof typeof StatusEnum];
 

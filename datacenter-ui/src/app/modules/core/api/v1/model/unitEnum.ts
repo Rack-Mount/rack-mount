@@ -15,7 +15,7 @@
 export const UnitEnum = {
     Pcs: 'pcs',
     M: 'm',
-    Box: 'box'
+    Box: 'box',
 } as const;
 export type UnitEnum = typeof UnitEnum[keyof typeof UnitEnum];
 

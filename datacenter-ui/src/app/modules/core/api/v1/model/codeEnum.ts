@@ -17,7 +17,7 @@ export const CodeEnum = {
     InPreparation: 'in_preparation',
     InMaintenance: 'in_maintenance',
     InProduction: 'in_production',
-    Decommissioned: 'decommissioned'
+    Decommissioned: 'decommissioned',
 } as const;
 export type CodeEnum = typeof CodeEnum[keyof typeof CodeEnum];
 
