@@ -204,8 +204,8 @@ class AssetViewSet(AuditLogMixin, StandardFilterMixin, viewsets.ModelViewSet):
             try:
                 self._clone_asset(asset)
                 created += 1
-            except Exception as exc:
-                errors.append({'id': asset.id, 'error': str(exc)})
+            except Exception:
+                errors.append({'id': asset.id, 'error': _('Clone failed')})
         response_data = {'created': created}
         if errors:
             response_data['errors'] = errors
