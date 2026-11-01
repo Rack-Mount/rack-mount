@@ -128,15 +128,15 @@ class CatalogImportView(APIView):
                 try:
                     instance.front_image = _decode_image(
                         front_raw, 'front_image')
-                except ValueError as exc:
-                    model_errors.append({'index': idx, 'message': str(exc)})
+                except ValueError:
+                    model_errors.append({'index': idx, 'message': _('Invalid front image data.')})
                     continue
 
             if rear_raw:
                 try:
                     instance.rear_image = _decode_image(rear_raw, 'rear_image')
-                except ValueError as exc:
-                    model_errors.append({'index': idx, 'message': str(exc)})
+                except ValueError:
+                    model_errors.append({'index': idx, 'message': _('Invalid rear image data.')})
                     continue
 
             instance.save()
